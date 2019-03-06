@@ -1,4 +1,4 @@
-package rs.cybertrade.gps.prati;
+package rs.cybertrade.prati;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

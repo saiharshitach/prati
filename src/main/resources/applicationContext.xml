@@ -16,10 +16,10 @@
 	http://www.springframework.org/schema/task 
 	http://www.springframework.org/schema/task/spring-task-4.1.xsd">
 
-  <context:component-scan base-package="jpgzBaza.*" />
+  <context:component-scan base-package="pratiBaza.*" />
   <import resource="classpath*:baza.xml" /> <!-- /jpgzCrud/src/main/resources/ -->
   
-    <bean id="applicationContextProvider" class="rs.cybertrade.gps.prati.ApplicationContextProvider"/>
+    <bean id="applicationContextProvider" class="rs.cybertrade.prati.ApplicationContextProvider"/>
     
     <!-- <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> -->
        <!-- <property name="driverClassName" value="com.mysql.jdbc.Driver" />    -->
@@ -62,8 +62,31 @@
     <property name="dataSource" ref="dataSource"></property>
      <property name="annotatedClasses">
             <list>
-               <value>pratiBaza.AlarmiKorisnik</value>  
-               <!--  <value>jpgzBaza.procedure.SelectUgovoriObracunKamate</value> -->
+               <value>pratiBaza.tabele.AlarmiKorisnik</value>
+               <value>pratiBaza.tabele.Grupe</value>
+               <value>pratiBaza.tabele.GrupeKorisnici</value>
+               <value>pratiBaza.tabele.GrupeObjekti</value> 
+               <value>pratiBaza.tabele.GrupeObjektiPK</value>
+               <value>pratiBaza.tabele.Javljanja</value>
+               <value>pratiBaza.tabele.JavljanjaPoslednja</value> 
+               <value>pratiBaza.tabele.Korisnici</value> 
+               <value>pratiBaza.tabele.Obd</value>
+               <value>pratiBaza.tabele.Objekti</value>
+               <value>pratiBaza.tabele.ObjektiDetalji</value>
+               <value>pratiBaza.tabele.Organizacije</value>
+               <value>pratiBaza.tabele.Sim</value>
+               <value>pratiBaza.tabele.Sistem</value>
+               <value>pratiBaza.tabele.SistemAlarmi</value>
+               <value>pratiBaza.tabele.SistemGoriva</value>
+               <value>pratiBaza.tabele.SistemObracuni</value>
+               <value>pratiBaza.tabele.SistemOperateri</value>
+               <value>pratiBaza.tabele.SistemPretplatnici</value>
+               <value>pratiBaza.tabele.SistemSesije</value>
+               <value>pratiBaza.tabele.SistemUredjajiModeli</value>
+               <value>pratiBaza.tabele.SistemUredjajiProizvodjac</value>
+               <value>pratiBaza.tabele.Uredjaji</value>
+               <value>pratiBaza.tabele.Zone</value>
+               <value>pratiBaza.tabele.ZoneObjekti</value>
             </list>
         </property>
     <property name="hibernateProperties">

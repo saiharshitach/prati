@@ -8,11 +8,9 @@
 	<packaging>war</packaging>
 	<version>1.0-SNAPSHOT</version>
 	<name>prati</name>
-
 	<prerequisites>
 		<maven>3</maven>
 	</prerequisites>
-
 	<properties>
 		<vaadin.version>8.6.4</vaadin.version>
 		<vaadin.plugin.version>8.6.4</vaadin.plugin.version>
@@ -45,7 +43,7 @@
 	
 	<dependencies>
 	    <dependency>
-	        <groupId>rs.cybertrade.gps.prati</groupId>
+	        <groupId>rs.cybertrade.prati</groupId>
             <artifactId>pratiBaza</artifactId>
             <version>0.0.1-SNAPSHOT</version>
 	    </dependency>

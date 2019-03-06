@@ -1,4 +1,4 @@
-package rs.cybertrade.gps.prati;
+package rs.cybertrade.prati;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
