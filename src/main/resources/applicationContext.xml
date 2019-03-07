@@ -35,7 +35,7 @@
 	   
        <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
        <property name="driverClass" value="com.mysql.jdbc.Driver" /> 
-       <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/pracenje?characterEncoding=UTF-8&amp;useSSL=false" /> 
+       <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/prati?characterEncoding=UTF-8&amp;useSSL=false" /> 
        <property name="user" value="pracenje" /> 
        <property name="password" value="pracenje" /> 
  
@@ -107,11 +107,11 @@
   </bean>
   <tx:annotation-driven transaction-manager="txManager" />
   
-  <!-- <bean id="akcijaDAO" class="jpgzBaza.daoimpl.AkcijeDAOImpl">
+  <bean id="korisnikDAO" class="pratiBaza.daoImpl.KorisniciDAOImpl">
         <property name="sessionFactory" ref="sessionFactory" />
   </bean>
-  <bean id="akcijaService" class="jpgzBaza.serviceimpl.AkcijeServiceImpl">
-        <property name="akcijaDAO" ref="akcijaDAO"></property>
-  </bean> -->
+  <bean id="korisnikServis" class="pratiBaza.servisImpl.KorisniciServisImpl">
+        <property name="korisnikDAO" ref="korisnikDAO"></property>
+  </bean>
   
 </beans>
