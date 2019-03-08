@@ -106,12 +106,142 @@
 	        <property name="sessionFactory" ref="sessionFactory" />
   </bean>
   <tx:annotation-driven transaction-manager="txManager" />
-  
+  <bean id="alarmKorisnikDAO" class="pratiBaza.daoImpl.AlarmiKorisnikDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="alarmKorisnikServis" class="pratiBaza.servisImpl.AlarmiKorisnikServisImpl">
+        <property name="alarmKorisnikDAO" ref="alarmKorisnikDAO"></property>
+  </bean>
+  <bean id="grupaDAO" class="pratiBaza.daoImpl.GrupeDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="grupaServis" class="pratiBaza.servisImpl.GrupeServisImpl">
+        <property name="grupaDAO" ref="grupaDAO"></property>
+  </bean>
+  <bean id="grupaKorisnikDAO" class="pratiBaza.daoImpl.GrupeKorisniciDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="grupaKorisnikServis" class="pratiBaza.servisImpl.GrupeKorisniciServisImpl">
+        <property name="grupaKorisnikDAO" ref="grupaKorisnikDAO"></property>
+  </bean>
+    <bean id="grupaObjekatDAO" class="pratiBaza.daoImpl.GrupeObjektiDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="grupaObjekatServis" class="pratiBaza.servisImpl.GrupeObjektiServisImpl">
+        <property name="grupaObjekatDAO" ref="grupaObjekatDAO"></property>
+  </bean>
+  <bean id="javljanjeDAO" class="pratiBaza.daoImpl.JavljanjaDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="javljanjeServis" class="pratiBaza.servisImpl.JavljanjaServisImpl">
+        <property name="javljanjeDAO" ref="javljanjeDAO"></property>
+  </bean>
+  <bean id="javljanjePoslednjeDAO" class="pratiBaza.daoImpl.JavljanjaPoslednjaDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="javljanjePoslednjeServis" class="pratiBaza.servisImpl.JavljanjaPoslednjaServisImpl">
+        <property name="javljanjePoslednjeDAO" ref="javljanjePoslednjeDAO"></property>
+  </bean>
   <bean id="korisnikDAO" class="pratiBaza.daoImpl.KorisniciDAOImpl">
         <property name="sessionFactory" ref="sessionFactory" />
   </bean>
   <bean id="korisnikServis" class="pratiBaza.servisImpl.KorisniciServisImpl">
         <property name="korisnikDAO" ref="korisnikDAO"></property>
   </bean>
-  
+  <bean id="obdDAO" class="pratiBaza.daoImpl.ObdDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="obdServis" class="pratiBaza.servisImpl.ObdServisImpl">
+        <property name="obdDAO" ref="obdDAO"></property>
+  </bean>
+  <bean id="objekatDAO" class="pratiBaza.daoImpl.ObjektiDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="objekatServis" class="pratiBaza.servisImpl.ObjektiServisImpl">
+        <property name="objekatDAO" ref="objekatDAO"></property>
+  </bean>
+  <bean id="objekatDetaljDAO" class="pratiBaza.daoImpl.ObjektiDetaljiDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="objekatDetaljServis" class="pratiBaza.servisImpl.ObjektiDetaljiServisImpl">
+        <property name="objekatDetaljDAO" ref="objekatDetaljDAO"></property>
+  </bean>
+    <bean id="organizacijaDAO" class="pratiBaza.daoImpl.OrganizacijeDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="organizacijaServis" class="pratiBaza.servisImpl.OrganizacijeServisImpl">
+        <property name="organizacijaDAO" ref="organizacijaDAO"></property>
+  </bean>
+    <bean id="simDAO" class="pratiBaza.daoImpl.SimDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="simServis" class="pratiBaza.servisImpl.SimServisImpl">
+        <property name="simDAO" ref="simDAO"></property>
+  </bean>
+  <bean id="sistemDAO" class="pratiBaza.daoImpl.SistemDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="sistemServis" class="pratiBaza.servisImpl.SistemServisImpl">
+        <property name="sistemDAO" ref="sistemDAO"></property>
+  </bean>
+  <bean id="sistemAlarmDAO" class="pratiBaza.daoImpl.SistemAlarmiDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="sistemAlarmServis" class="pratiBaza.servisImpl.SistemAlarmiServisImpl">
+        <property name="sistemAlarmDAO" ref="sistemAlarmDAO"></property>
+  </bean>
+  <bean id="sistemGorivoDAO" class="pratiBaza.daoImpl.SistemGorivoDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="sistemGorivoServis" class="pratiBaza.servisImpl.SistemGorivoServisImpl">
+        <property name="sistemGorivoDAO" ref="sistemGorivoDAO"></property>
+  </bean>
+    <bean id="sistemOperaterDAO" class="pratiBaza.daoImpl.SistemOperateriDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="sistemOperaterServis" class="pratiBaza.servisImpl.SistemOperateriServisImpl">
+        <property name="sistemOperaterDAO" ref="sistemOperaterDAO"></property>
+  </bean>
+  <bean id="sistemPretplatnikDAO" class="pratiBaza.daoImpl.SistemPretplatniciDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="sistemPretplatnikServis" class="pratiBaza.servisImpl.SistemPretplatniciServisImpl">
+        <property name="sistemPretplatnikDAO" ref="sistemPretplatnikDAO"></property>
+  </bean>
+  <bean id="sistemSesijaDAO" class="pratiBaza.daoImpl.SistemSesijeDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="sistemSesijaServis" class="pratiBaza.servisImpl.SistemSesijeServisImpl">
+        <property name="sistemSesijaDAO" ref="sistemSesijaDAO"></property>
+  </bean>
+  <bean id="sistemUredjajModelDAO" class="pratiBaza.daoImpl.SistemUredjajiModeliDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="sistemUredjajModelServis" class="pratiBaza.servisImpl.SistemUredjajiModeliServisImpl">
+        <property name="sistemUredjajModelDAO" ref="sistemUredjajModelDAO"></property>
+  </bean>
+  <bean id="sistemUredjajProizvodjacDAO" class="pratiBaza.daoImpl.SistemUredjajiProizvodjaciDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="sistemUredjajProizvodjacServis" class="pratiBaza.servisImpl.SistemUredjajiProizvodjaciServisImpl">
+        <property name="sistemUredjajProizvodjacDAO" ref="sistemUredjajProizvodjacDAO"></property>
+  </bean>
+  <bean id="uredjajDAO" class="pratiBaza.daoImpl.UredjajiDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="uredjajServis" class="pratiBaza.servisImpl.UredjajiServisImpl">
+        <property name="uredjajDAO" ref="uredjajDAO"></property>
+  </bean>
+  <bean id="zonaDAO" class="pratiBaza.daoImpl.ZoneDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="zonaServis" class="pratiBaza.servisImpl.ZoneServisImpl">
+        <property name="zonaDAO" ref="zonaDAO"></property>
+  </bean>
+  <bean id="zonaObjekatDAO" class="pratiBaza.daoImpl.ZoneObjektiDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="zonaObjekatServis" class="pratiBaza.servisImpl.ZoneObjektiServisImpl">
+        <property name="zonaObjekatDAO" ref="zonaObjekatDAO"></property>
+  </bean>
 </beans>

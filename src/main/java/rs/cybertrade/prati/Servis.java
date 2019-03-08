@@ -5,7 +5,6 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
 import pratiBaza.servis.AlarmiKorisnikServis;
 import pratiBaza.servis.GrupeKorisniciServis;
 import pratiBaza.servis.GrupeObjektiServis;
@@ -20,7 +19,15 @@ import pratiBaza.servis.OrganizacijeServis;
 import pratiBaza.servis.SimServis;
 import pratiBaza.servis.SistemAlarmiServis;
 import pratiBaza.servis.SistemGorivoServis;
+import pratiBaza.servis.SistemOperateriServis;
+import pratiBaza.servis.SistemPretplatniciServis;
 import pratiBaza.servis.SistemServis;
+import pratiBaza.servis.SistemSesijeServis;
+import pratiBaza.servis.SistemUredjajiModeliServis;
+import pratiBaza.servis.SistemUredjajiProizvodjaciServis;
+import pratiBaza.servis.UredjajiServis;
+import pratiBaza.servis.ZoneObjektiServis;
+import pratiBaza.servis.ZoneServis;
 
 @WebListener
 public class Servis implements ServletContextListener{
@@ -40,8 +47,16 @@ public class Servis implements ServletContextListener{
 	public static SimServis simServis;
 	public static SistemAlarmiServis sistemAlarmServis;
 	public static SistemGorivoServis sistemGorivoServis;
+	public static SistemOperateriServis sistemOperaterServis;
+	public static SistemPretplatniciServis sistemPretplatnikServis;
 	public static SistemServis sistemServis;
-
+	public static SistemSesijeServis sistemSesijaServis;
+	public static SistemUredjajiModeliServis sistemUredjajModelServis;
+	public static SistemUredjajiProizvodjaciServis sistemUredjajProizvodjacServis;
+	public static UredjajiServis uredjajServis;
+	public static ZoneObjektiServis zonaObjekatServis;
+	public static ZoneServis zonaServis;
+	
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
 		context = new ClassPathXmlApplicationContext("applicationContext.xml");
@@ -59,7 +74,15 @@ public class Servis implements ServletContextListener{
 		simServis = ApplicationContextProvider.getApplicationContext().getBean("simServis", SimServis.class);
 		sistemAlarmServis = ApplicationContextProvider.getApplicationContext().getBean("sistemAlarmServis", SistemAlarmiServis.class);
 		sistemGorivoServis = ApplicationContextProvider.getApplicationContext().getBean("sistemGorivoServis", SistemGorivoServis.class);
+		sistemOperaterServis = ApplicationContextProvider.getApplicationContext().getBean("sistemOperaterServis", SistemOperateriServis.class);
+		sistemPretplatnikServis = ApplicationContextProvider.getApplicationContext().getBean("sistemPretplatnikServis", SistemPretplatniciServis.class);
 		sistemServis = ApplicationContextProvider.getApplicationContext().getBean("sistemServis", SistemServis.class);
+		sistemSesijaServis = ApplicationContextProvider.getApplicationContext().getBean("sistemSesijaServis", SistemSesijeServis.class);
+		sistemUredjajModelServis = ApplicationContextProvider.getApplicationContext().getBean("sistemUredjajModelServis", SistemUredjajiModeliServis.class);
+		sistemUredjajProizvodjacServis = ApplicationContextProvider.getApplicationContext().getBean("sistemUredjajProizvodjacServis", SistemUredjajiProizvodjaciServis.class);
+		uredjajServis = ApplicationContextProvider.getApplicationContext().getBean("uredjajServis", UredjajiServis.class);
+		zonaObjekatServis = ApplicationContextProvider.getApplicationContext().getBean("zonaObjekatServis", ZoneObjektiServis.class);
+		zonaServis = ApplicationContextProvider.getApplicationContext().getBean("zonaServis", ZoneServis.class);
 	}
 
 	@Override
