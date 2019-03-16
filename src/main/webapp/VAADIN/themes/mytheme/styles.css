@@ -1077,7 +1077,7 @@
  */
 
 .v-vaadin-version:after {
-	content: "8.6.4";
+	content: "8.7.1";
 }
 
 .v-widget {
@@ -12123,6 +12123,70 @@ div.v-layout.v-horizontal.v-widget {
 	padding-left: 15em;
 }
 
+.mytheme .v-tree8-node.depth-16 {
+	padding-left: 16em;
+}
+
+.mytheme .v-tree8-node.depth-17 {
+	padding-left: 17em;
+}
+
+.mytheme .v-tree8-node.depth-18 {
+	padding-left: 18em;
+}
+
+.mytheme .v-tree8-node.depth-19 {
+	padding-left: 19em;
+}
+
+.mytheme .v-tree8-node.depth-20 {
+	padding-left: 20em;
+}
+
+.mytheme .v-tree8-node.depth-21 {
+	padding-left: 21em;
+}
+
+.mytheme .v-tree8-node.depth-22 {
+	padding-left: 22em;
+}
+
+.mytheme .v-tree8-node.depth-23 {
+	padding-left: 23em;
+}
+
+.mytheme .v-tree8-node.depth-24 {
+	padding-left: 24em;
+}
+
+.mytheme .v-tree8-node.depth-25 {
+	padding-left: 25em;
+}
+
+.mytheme .v-tree8-node.depth-26 {
+	padding-left: 26em;
+}
+
+.mytheme .v-tree8-node.depth-27 {
+	padding-left: 27em;
+}
+
+.mytheme .v-tree8-node.depth-28 {
+	padding-left: 28em;
+}
+
+.mytheme .v-tree8-node.depth-29 {
+	padding-left: 29em;
+}
+
+.mytheme .v-tree8-node.depth-30 {
+	padding-left: 30em;
+}
+
+.mytheme .v-tree8-node.depth-31 {
+	padding-left: 31em;
+}
+
 .mytheme .v-tree8-cell-content {
 	display: inline-block;
 	vertical-align: middle;
@@ -13203,6 +13267,70 @@ div.v-layout.v-horizontal.v-widget {
 
 .mytheme .v-treegrid-node.depth-15 {
 	padding-left: 15em;
+}
+
+.mytheme .v-treegrid-node.depth-16 {
+	padding-left: 16em;
+}
+
+.mytheme .v-treegrid-node.depth-17 {
+	padding-left: 17em;
+}
+
+.mytheme .v-treegrid-node.depth-18 {
+	padding-left: 18em;
+}
+
+.mytheme .v-treegrid-node.depth-19 {
+	padding-left: 19em;
+}
+
+.mytheme .v-treegrid-node.depth-20 {
+	padding-left: 20em;
+}
+
+.mytheme .v-treegrid-node.depth-21 {
+	padding-left: 21em;
+}
+
+.mytheme .v-treegrid-node.depth-22 {
+	padding-left: 22em;
+}
+
+.mytheme .v-treegrid-node.depth-23 {
+	padding-left: 23em;
+}
+
+.mytheme .v-treegrid-node.depth-24 {
+	padding-left: 24em;
+}
+
+.mytheme .v-treegrid-node.depth-25 {
+	padding-left: 25em;
+}
+
+.mytheme .v-treegrid-node.depth-26 {
+	padding-left: 26em;
+}
+
+.mytheme .v-treegrid-node.depth-27 {
+	padding-left: 27em;
+}
+
+.mytheme .v-treegrid-node.depth-28 {
+	padding-left: 28em;
+}
+
+.mytheme .v-treegrid-node.depth-29 {
+	padding-left: 29em;
+}
+
+.mytheme .v-treegrid-node.depth-30 {
+	padding-left: 30em;
+}
+
+.mytheme .v-treegrid-node.depth-31 {
+	padding-left: 31em;
 }
 
 .mytheme .v-treegrid-cell-content {

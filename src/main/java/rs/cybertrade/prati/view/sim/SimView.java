@@ -45,10 +45,10 @@ public class SimView extends OsnovniView implements OpstiViewInterface{
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
+		tabela.addColumn(sim -> sim.getSistemPretplatnici() == null ? "" : sim.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		tabela.addColumn(Sim::getBroj).setCaption("број");
 		tabela.addColumn(Sim::getIccid).setCaption("иццид");
 		tabela.addColumn(sim -> sim.getSistemOperateri() == null ? "" : sim.getSistemOperateri().getNaziv()).setCaption("оператер");
-		tabela.addColumn(sim -> sim.getSistemPretplatnici() == null ? "" : sim.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		tabela.addColumn(sim -> sim.getUredjaji() == null ? "" : sim.getUredjaji().getSistemUredjajiModeli() == null ? "" :
 			sim.getUredjaji().getSistemUredjajiModeli().getNaziv()).setCaption("модел");
 		tabela.addColumn(sim -> sim.getUredjaji() == null ? "" : sim.getUredjaji().getSerijskiBr()).setCaption("уређај");

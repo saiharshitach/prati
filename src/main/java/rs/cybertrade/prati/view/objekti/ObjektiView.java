@@ -46,6 +46,7 @@ public class ObjektiView extends OsnovniView implements OpstiViewInterface{
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
+		tabela.addColumn(objekti -> objekti.getSistemPretplatnici() == null ? "" : objekti.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		tabela.addColumn(Objekti::getOznaka).setCaption("ознака");
 		tabela.addColumn(objekti -> objekti.getUredjaji() == null ? "" : objekti.getUredjaji().getKod()).setCaption("уређај");
 		tabela.addColumn(objekti -> objekti.getUredjaji() == null ? "" : objekti.getUredjaji().getSerijskiBr()).setCaption("уређај сер.бр");
