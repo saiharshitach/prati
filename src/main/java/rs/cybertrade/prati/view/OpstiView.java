@@ -18,7 +18,7 @@ import com.vaadin.ui.themes.ValoTheme;
 
 import rs.cybertrade.prati.Prati;
 
-public abstract class OsnovniView extends CssLayout implements View{
+public abstract class OpstiView extends CssLayout implements View{
 	private static final long serialVersionUID = 1L;
 	public static final String DANFORMAT = "%1$td/%1$tm/%1$tY";
 	public static final String DANSATFORMAT = "%1$td/%1$tm/%1$tY %1$tH:%1$tM:%1$tS";
@@ -35,7 +35,7 @@ public abstract class OsnovniView extends CssLayout implements View{
 	public TextField filter;
 
 	
-	public OsnovniView() {
+	public OpstiView() {
 		setSizeFull();
 		addStyleName("crud-view");
 		decimalni  = new NumberRenderer(new DecimalFormat("###,##0.00"));

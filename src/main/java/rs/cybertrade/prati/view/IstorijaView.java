@@ -8,7 +8,7 @@ import com.vaadin.icons.VaadinIcons;
 @NavigatorViewName("istorija") // an empty view name will also be the default view
 @MenuCaption("Историја")
 @MenuIcon(VaadinIcons.LINES)
-public class IstorijaView extends OsnovniView{
+public class IstorijaView extends OpstiView{
 
 	private static final long serialVersionUID = 1L;
 

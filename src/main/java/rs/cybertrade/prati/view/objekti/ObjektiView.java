@@ -8,20 +8,22 @@ import com.github.appreciated.app.layout.annotations.NavigatorViewName;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.SerializablePredicate;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
 
+import pratiBaza.tabele.Korisnici;
 import pratiBaza.tabele.Objekti;
 import rs.cybertrade.prati.Servis;
 import rs.cybertrade.prati.view.OpstiViewInterface;
-import rs.cybertrade.prati.view.OsnovniView;
+import rs.cybertrade.prati.view.OpstiView;
 
 @NavigatorViewName("objekti") // an empty view name will also be the default view
 @MenuCaption("Објекти")
 @MenuIcon(VaadinIcons.CAR)
-public class ObjektiView extends OsnovniView implements OpstiViewInterface{
+public class ObjektiView extends OpstiView implements OpstiViewInterface{
 
 	private static final long serialVersionUID = 1L;
 	private Grid<Objekti> tabela;
@@ -57,8 +59,8 @@ public class ObjektiView extends OsnovniView implements OpstiViewInterface{
 		tabela.addComponentColumn(objekti -> {CheckBox chb = new CheckBox(); if(objekti.isDetalji()) {chb.setValue(true);} return chb;}).setCaption("детаљи").setStyleGenerator(objekti -> "v-align-right");
 		tabela.addComponentColumn(objekti -> {CheckBox chb = new CheckBox(); if(objekti.isAktivan()) {chb.setValue(true);} return chb;}).setCaption("активан").setStyleGenerator(objekti -> "v-align-right");
 		tabela.addComponentColumn(objekti -> {CheckBox chb = new CheckBox(); if(objekti.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(objekti -> "v-align-right");
-		tabela.addColumn(Objekti::getIzmenjeno, new DateRenderer(DANFORMAT)).setCaption("измењено").setStyleGenerator(objekti -> "v-align-right");
-		tabela.addColumn(Objekti::getKreirano, new DateRenderer(DANFORMAT)).setCaption("уписано").setStyleGenerator(objekti -> "v-align-right");
+		tabela.addColumn(Objekti::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(objekti -> "v-align-right");
+		tabela.addColumn(Objekti::getKreirano, new DateRenderer(DANSATFORMAT)).setCaption("уписано").setStyleGenerator(objekti -> "v-align-right");
 	}
 
 	@Override
@@ -96,7 +98,7 @@ public class ObjektiView extends OsnovniView implements OpstiViewInterface{
 	public void updateTable() {
 		filter.clear();
 		pocetno = new ArrayList<Objekti>();
-		lista = Servis.objekatServis.vratiSveObjekte();
+		lista = Servis.objekatServis.vratiSveObjekte((Korisnici) VaadinSession.getCurrent().getAttribute(Korisnici.class.getName()));
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {
@@ -107,7 +109,12 @@ public class ObjektiView extends OsnovniView implements OpstiViewInterface{
 			private static final long serialVersionUID = 1L;
 			@Override
 			public boolean test(Objekti t) {
-				return (t.getOznaka().toLowerCase().contains(filter.getValue().toLowerCase()));
+				return (t.getOznaka().toLowerCase().contains(filter.getValue().toLowerCase()) ||
+						t.getSistemPretplatnici().getNaziv().contains(filter.getValue().toLowerCase()) ||
+						t.getUredjaji().getKod().toLowerCase().contains(filter.getValue().toLowerCase()) ||
+						t.getUredjaji().getSerijskiBr().toLowerCase().contains(filter.getValue().toLowerCase()) ||
+						t.getUredjaji().getSim().getBroj().toLowerCase().contains(filter.getValue().toLowerCase()) ||
+						t.getUredjaji().getSim().getIccid().toLowerCase().contains(filter.getValue().toLowerCase()));
 			}
 		};
 		filter.addValueChangeListener(e -> {osveziFilter();});

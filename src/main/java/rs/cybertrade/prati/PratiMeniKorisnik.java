@@ -18,9 +18,13 @@ import rs.cybertrade.prati.meni.PratiEventBus;
 import rs.cybertrade.prati.view.IstorijaView;
 import rs.cybertrade.prati.view.PocetnaView;
 import rs.cybertrade.prati.view.PracenjeView;
+import rs.cybertrade.prati.view.UredjajiModeliView;
 import rs.cybertrade.prati.view.alarmi.AlarmiView;
 import rs.cybertrade.prati.view.gorivo.GorivoView;
+import rs.cybertrade.prati.view.korisnici.KorisniciView;
 import rs.cybertrade.prati.view.objekti.ObjektiView;
+import rs.cybertrade.prati.view.pretplatnici.PretplatniciView;
+import rs.cybertrade.prati.view.proizvodjaci.UredjajiProizvodjaciView;
 import rs.cybertrade.prati.view.sim.SimView;
 import rs.cybertrade.prati.view.sistem.SistemView;
 import rs.cybertrade.prati.view.uredjaji.UredjajiView;
@@ -68,9 +72,10 @@ public class PratiMeniKorisnik{
                 .add(IstorijaView.class)
                 .build())
         .add(SubmenuBuilder.get("Подаци", VaadinIcons.COG)
+        		.add(KorisniciView.class)
                 .add(ObjektiView.class)
-                .add(UredjajiView.class)
                 .add(SimView.class)
+                .add(UredjajiView.class)
                 .build())
         //.add(View6.class)
         .addClickable("Одјава", VaadinIcons.SIGN_OUT, clickEvent -> PratiEventBus.post(new KorisnikLoggedOutEvent()), FOOTER)
@@ -91,14 +96,18 @@ public class PratiMeniKorisnik{
 		                .add(IstorijaView.class)
 		                .build())
 		        .add(SubmenuBuilder.get("Подаци", VaadinIcons.COG)
+		        		.add(KorisniciView.class)
 		                .add(ObjektiView.class)
-		                .add(UredjajiView.class)
 		                .add(SimView.class)
+		                .add(UredjajiView.class)
 		                .build())
 		        .add(SubmenuBuilder.get("Систем", VaadinIcons.DOCTOR)
 		        		.add(AlarmiView.class)
 		        		.add(GorivoView.class)
+		        		.add(PretplatniciView.class)
 		        		.add(SistemView.class)
+		        		.add(UredjajiModeliView.class)
+		        		.add(UredjajiProizvodjaciView.class)
 		        		.build())
 		        .addClickable("Одјава", VaadinIcons.SIGN_OUT, clickEvent -> PratiEventBus.post(new KorisnikLoggedOutEvent()), FOOTER)
 		        .build();

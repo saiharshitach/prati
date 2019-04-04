@@ -1,7 +1,6 @@
-package rs.cybertrade.prati.view.gorivo;
+package rs.cybertrade.prati.view;
 
 import java.util.ArrayList;
-
 import com.github.appreciated.app.layout.annotations.MenuCaption;
 import com.github.appreciated.app.layout.annotations.MenuIcon;
 import com.github.appreciated.app.layout.annotations.NavigatorViewName;
@@ -11,24 +10,21 @@ import com.vaadin.server.SerializablePredicate;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
-
-import pratiBaza.tabele.SistemGoriva;
+import pratiBaza.tabele.SistemUredjajiModeli;
 import rs.cybertrade.prati.Servis;
-import rs.cybertrade.prati.view.OpstiViewInterface;
-import rs.cybertrade.prati.view.OpstiView;
 
-@NavigatorViewName("gorivo") // an empty view name will also be the default view
-@MenuCaption("Гориво")
-@MenuIcon(VaadinIcons.INBOX)
-public class GorivoView extends OpstiView implements OpstiViewInterface{
+@NavigatorViewName("uredjajiModeli") // an empty view name will also be the default view
+@MenuCaption("Уређаји модели")
+@MenuIcon(VaadinIcons.MOBILE)
+public class UredjajiModeliView extends OpstiView implements OpstiViewInterface{
 	
 	private static final long serialVersionUID = 1L;
-	private Grid<SistemGoriva> tabela;
-	private ListDataProvider<SistemGoriva> dataProvider;
-	private SerializablePredicate<SistemGoriva> filterPredicate;
-	private ArrayList<SistemGoriva> pocetno, lista;
+	private Grid<SistemUredjajiModeli> tabela;
+	private ListDataProvider<SistemUredjajiModeli> dataProvider;
+	private SerializablePredicate<SistemUredjajiModeli> filterPredicate;
+	private ArrayList<SistemUredjajiModeli> pocetno, lista;
 
-	public GorivoView() {
+	public UredjajiModeliView() {
 		topLayout = buildToolbar();
 		buildlayout();
 		buildTable();
@@ -40,13 +36,16 @@ public class GorivoView extends OpstiView implements OpstiViewInterface{
 	
 	@Override
 	public void buildTable() {
-		tabela = new Grid<SistemGoriva>();
+		tabela = new Grid<SistemUredjajiModeli>();
 		updateTable();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
-		tabela.addColumn(SistemGoriva::getNaziv).setCaption("назив");
-		tabela.addComponentColumn(sistemGoriva -> {CheckBox chb = new CheckBox(); if(sistemGoriva.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(sistemGoriva -> "v-align-right");
+		tabela.addColumn(sistemUredjajiModeli -> sistemUredjajiModeli.getSistemUredjajiProizvodjac().getNaziv()).setCaption("произвођач");
+		tabela.addColumn(SistemUredjajiModeli::getNaziv).setCaption("назив");
+		tabela.addColumn(SistemUredjajiModeli::getOpis).setCaption("опис");
+		tabela.addComponentColumn(sistemUredjajiModeli -> {CheckBox chb = new CheckBox(); if(sistemUredjajiModeli.isObd()) {chb.setValue(true); }return chb;}).setCaption("обд").setStyleGenerator(sistemUredjajiModeli -> "v-align-right");
+		tabela.addComponentColumn(sistemUredjajiModeli -> {CheckBox chb = new CheckBox(); if(sistemUredjajiModeli.isIzbrisan()) {chb.setValue(true); }return chb;}).setCaption("избрисан").setStyleGenerator(sistemUredjajiModeli -> "v-align-right");
 	}
 
 	@Override
@@ -83,19 +82,18 @@ public class GorivoView extends OpstiView implements OpstiViewInterface{
 	@Override
 	public void updateTable() {
 		filter.clear();
-		pocetno = new ArrayList<SistemGoriva>();
-		lista = Servis.sistemGorivoServis.vratiSvaGoriva();
+		pocetno = new ArrayList<SistemUredjajiModeli>();
+		lista = Servis.sistemUredjajModelServis.nadjiSveUredjajModele();
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {
 			tabela.setItems(pocetno);
 		}
-		dataProvider = (ListDataProvider<SistemGoriva>)tabela.getDataProvider();
-		filterPredicate = new SerializablePredicate<SistemGoriva>() {
+		dataProvider = (ListDataProvider<SistemUredjajiModeli>)tabela.getDataProvider();
+		filterPredicate = new SerializablePredicate<SistemUredjajiModeli>() {
 			private static final long serialVersionUID = 1L;
-
 			@Override
-			public boolean test(SistemGoriva t) {
+			public boolean test(SistemUredjajiModeli t) {
 				return (t.getNaziv().toLowerCase().contains(filter.getValue().toLowerCase()));
 			}
 		};

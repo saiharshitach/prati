@@ -1,7 +1,6 @@
 package rs.cybertrade.prati.view.alarmi;
 
 import java.util.ArrayList;
-
 import com.github.appreciated.app.layout.annotations.MenuCaption;
 import com.github.appreciated.app.layout.annotations.MenuIcon;
 import com.github.appreciated.app.layout.annotations.NavigatorViewName;
@@ -11,16 +10,15 @@ import com.vaadin.server.SerializablePredicate;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
-
 import pratiBaza.tabele.SistemAlarmi;
 import rs.cybertrade.prati.Servis;
 import rs.cybertrade.prati.view.OpstiViewInterface;
-import rs.cybertrade.prati.view.OsnovniView;
+import rs.cybertrade.prati.view.OpstiView;
 
 @NavigatorViewName("alarmi") // an empty view name will also be the default view
 @MenuCaption("Аларми")
 @MenuIcon(VaadinIcons.BELL)
-public class AlarmiView extends OsnovniView implements OpstiViewInterface{
+public class AlarmiView extends OpstiView implements OpstiViewInterface{
 	
 	private static final long serialVersionUID = 1L;
 	private Grid<SistemAlarmi> tabela;
@@ -48,12 +46,12 @@ public class AlarmiView extends OsnovniView implements OpstiViewInterface{
 		tabela.addColumn(SistemAlarmi::getSifra).setCaption("шифра");
 		tabela.addColumn(SistemAlarmi::getNaziv).setCaption("назив");
 		tabela.addColumn(SistemAlarmi::getOpis).setCaption("шифра");
-		tabela.addComponentColumn(sistemAlarmi -> {CheckBox chb = new CheckBox(); if(sistemAlarmi.isAdresa()) {chb.setValue(true); }return chb;}).setCaption("адреса").setStyleGenerator(objekti -> "v-align-right");
-		tabela.addComponentColumn(sistemAlarmi -> {CheckBox chb = new CheckBox(); if(sistemAlarmi.isAlarmiranje()) {chb.setValue(true); }return chb;}).setCaption("алармирање").setStyleGenerator(objekti -> "v-align-right");
-		tabela.addComponentColumn(sistemAlarmi -> {CheckBox chb = new CheckBox(); if(sistemAlarmi.isPrikaz()) {chb.setValue(true); }return chb;}).setCaption("приказ").setStyleGenerator(objekti -> "v-align-right");
-		tabela.addComponentColumn(sistemAlarmi -> {CheckBox chb = new CheckBox(); if(sistemAlarmi.isPregled()) {chb.setValue(true); }return chb;}).setCaption("преглед").setStyleGenerator(objekti -> "v-align-right");
-		tabela.addComponentColumn(sistemAlarmi -> {CheckBox chb = new CheckBox(); if(sistemAlarmi.isAktivan()) {chb.setValue(true); }return chb;}).setCaption("активан").setStyleGenerator(objekti -> "v-align-right");
-		tabela.addComponentColumn(sistemAlarmi -> {CheckBox chb = new CheckBox(); if(sistemAlarmi.isIzbrisan()) {chb.setValue(true); }return chb;}).setCaption("избрисан").setStyleGenerator(objekti -> "v-align-right");
+		tabela.addComponentColumn(sistemAlarmi -> {CheckBox chb = new CheckBox(); if(sistemAlarmi.isAdresa()) {chb.setValue(true); }return chb;}).setCaption("адреса").setStyleGenerator(sistemAlarmi -> "v-align-right");
+		tabela.addComponentColumn(sistemAlarmi -> {CheckBox chb = new CheckBox(); if(sistemAlarmi.isAlarmiranje()) {chb.setValue(true); }return chb;}).setCaption("алармирање").setStyleGenerator(sistemAlarmi -> "v-align-right");
+		tabela.addComponentColumn(sistemAlarmi -> {CheckBox chb = new CheckBox(); if(sistemAlarmi.isPrikaz()) {chb.setValue(true); }return chb;}).setCaption("приказ").setStyleGenerator(sistemAlarmi -> "v-align-right");
+		tabela.addComponentColumn(sistemAlarmi -> {CheckBox chb = new CheckBox(); if(sistemAlarmi.isPregled()) {chb.setValue(true); }return chb;}).setCaption("преглед").setStyleGenerator(sistemAlarmi -> "v-align-right");
+		tabela.addComponentColumn(sistemAlarmi -> {CheckBox chb = new CheckBox(); if(sistemAlarmi.isAktivan()) {chb.setValue(true); }return chb;}).setCaption("активан").setStyleGenerator(sistemAlarmi -> "v-align-right");
+		tabela.addComponentColumn(sistemAlarmi -> {CheckBox chb = new CheckBox(); if(sistemAlarmi.isIzbrisan()) {chb.setValue(true); }return chb;}).setCaption("избрисан").setStyleGenerator(sistemAlarmi -> "v-align-right");
 		}
 
 	@Override

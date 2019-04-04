@@ -1,4 +1,6 @@
-package rs.cybertrade.prati.view.gorivo;
+package rs.cybertrade.prati.view.proizvodjaci;
+
+import rs.cybertrade.prati.view.OpstiViewInterface;
 
 import java.util.ArrayList;
 
@@ -12,23 +14,22 @@ import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 
-import pratiBaza.tabele.SistemGoriva;
+import pratiBaza.tabele.SistemUredjajiProizvodjac;
 import rs.cybertrade.prati.Servis;
-import rs.cybertrade.prati.view.OpstiViewInterface;
 import rs.cybertrade.prati.view.OpstiView;
 
-@NavigatorViewName("gorivo") // an empty view name will also be the default view
-@MenuCaption("Гориво")
-@MenuIcon(VaadinIcons.INBOX)
-public class GorivoView extends OpstiView implements OpstiViewInterface{
-	
-	private static final long serialVersionUID = 1L;
-	private Grid<SistemGoriva> tabela;
-	private ListDataProvider<SistemGoriva> dataProvider;
-	private SerializablePredicate<SistemGoriva> filterPredicate;
-	private ArrayList<SistemGoriva> pocetno, lista;
+@NavigatorViewName("uredjajiProizvodjaci") // an empty view name will also be the default view
+@MenuCaption("Уређаји произвођачи")
+@MenuIcon(VaadinIcons.AUTOMATION)
+public class UredjajiProizvodjaciView extends OpstiView implements OpstiViewInterface{
 
-	public GorivoView() {
+	private static final long serialVersionUID = 1L;
+	private Grid<SistemUredjajiProizvodjac> tabela;
+	private ListDataProvider<SistemUredjajiProizvodjac> dataProvider;
+	private SerializablePredicate<SistemUredjajiProizvodjac> filterPredicate;
+	private ArrayList<SistemUredjajiProizvodjac> pocetno, lista;
+
+	public UredjajiProizvodjaciView() {
 		topLayout = buildToolbar();
 		buildlayout();
 		buildTable();
@@ -40,18 +41,19 @@ public class GorivoView extends OpstiView implements OpstiViewInterface{
 	
 	@Override
 	public void buildTable() {
-		tabela = new Grid<SistemGoriva>();
+		tabela = new Grid<SistemUredjajiProizvodjac>();
 		updateTable();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
-		tabela.addColumn(SistemGoriva::getNaziv).setCaption("назив");
-		tabela.addComponentColumn(sistemGoriva -> {CheckBox chb = new CheckBox(); if(sistemGoriva.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(sistemGoriva -> "v-align-right");
+		tabela.addColumn(SistemUredjajiProizvodjac::getNaziv).setCaption("naziv");
+		tabela.addColumn(SistemUredjajiProizvodjac::getOpis).setCaption("опис");
+		tabela.addColumn(SistemUredjajiProizvodjac::getAdresa).setCaption("адреса");
+		tabela.addComponentColumn(sistemUredjajiProizvodjac-> {CheckBox chb = new CheckBox(); if(sistemUredjajiProizvodjac.isIzbrisan()) {chb.setValue(true); }return chb;}).setCaption("обд").setStyleGenerator(sistemUredjajiProizvodjaci -> "v-align-right");
 	}
 
 	@Override
 	public void ocistiIzbor() {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -83,19 +85,18 @@ public class GorivoView extends OpstiView implements OpstiViewInterface{
 	@Override
 	public void updateTable() {
 		filter.clear();
-		pocetno = new ArrayList<SistemGoriva>();
-		lista = Servis.sistemGorivoServis.vratiSvaGoriva();
+		pocetno = new ArrayList<SistemUredjajiProizvodjac>();
+		lista = Servis.sistemUredjajProizvodjacServis.nadjiSveSistemUredjajeProizvodjace();
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {
 			tabela.setItems(pocetno);
 		}
-		dataProvider = (ListDataProvider<SistemGoriva>)tabela.getDataProvider();
-		filterPredicate = new SerializablePredicate<SistemGoriva>() {
+		dataProvider = (ListDataProvider<SistemUredjajiProizvodjac>)tabela.getDataProvider();
+		filterPredicate = new SerializablePredicate<SistemUredjajiProizvodjac>() {
 			private static final long serialVersionUID = 1L;
-
 			@Override
-			public boolean test(SistemGoriva t) {
+			public boolean test(SistemUredjajiProizvodjac t) {
 				return (t.getNaziv().toLowerCase().contains(filter.getValue().toLowerCase()));
 			}
 		};

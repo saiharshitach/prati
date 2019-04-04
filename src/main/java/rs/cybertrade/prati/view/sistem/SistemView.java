@@ -15,12 +15,12 @@ import com.vaadin.ui.Grid.SelectionMode;
 import pratiBaza.tabele.Sistem;
 import rs.cybertrade.prati.Servis;
 import rs.cybertrade.prati.view.OpstiViewInterface;
-import rs.cybertrade.prati.view.OsnovniView;
+import rs.cybertrade.prati.view.OpstiView;
 
 @NavigatorViewName("sistem") // an empty view name will also be the default view
 @MenuCaption("Систем")
 @MenuIcon(VaadinIcons.COG_O)
-public class SistemView extends OsnovniView implements OpstiViewInterface{
+public class SistemView extends OpstiView implements OpstiViewInterface{
 
 	private static final long serialVersionUID = 1L;
 	private Grid<Sistem> tabela;
@@ -57,7 +57,7 @@ public class SistemView extends OsnovniView implements OpstiViewInterface{
 		tabela.addColumn(Sistem::getEmailLozinka).setCaption("е-поште лозинка");
 		tabela.addColumn(Sistem::getEmailServer).setCaption("е-пошта сервер");
 		tabela.addColumn(Sistem::getEmailServerPort).setCaption("е-пошта порт");
-		tabela.addComponentColumn(sistem -> {CheckBox chb = new CheckBox(); if(sistem.isServerMape()) {chb.setValue(true);} return chb;}).setCaption("користи сервер мапе").setStyleGenerator(objekti -> "v-align-right");
+		tabela.addComponentColumn(sistem -> {CheckBox chb = new CheckBox(); if(sistem.isServerMape()) {chb.setValue(true);} return chb;}).setCaption("користи сервер мапе").setStyleGenerator(sistem -> "v-align-right");
 		tabela.addColumn(Sistem::getNominatimAdresa).setCaption("номинатим");
 	}
 

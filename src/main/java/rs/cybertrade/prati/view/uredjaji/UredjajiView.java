@@ -8,20 +8,22 @@ import com.github.appreciated.app.layout.annotations.NavigatorViewName;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.SerializablePredicate;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
 
+import pratiBaza.tabele.Korisnici;
 import pratiBaza.tabele.Uredjaji;
 import rs.cybertrade.prati.Servis;
 import rs.cybertrade.prati.view.OpstiViewInterface;
-import rs.cybertrade.prati.view.OsnovniView;
+import rs.cybertrade.prati.view.OpstiView;
 
 @NavigatorViewName("uredjaji") // an empty view name will also be the default view
 @MenuCaption("Уређаји")
 @MenuIcon(VaadinIcons.MOBILE)
-public class UredjajiView extends OsnovniView implements OpstiViewInterface{
+public class UredjajiView extends OpstiView implements OpstiViewInterface{
 
 	private static final long serialVersionUID = 1L;
 	private Grid<Uredjaji> tabela;
@@ -55,10 +57,10 @@ public class UredjajiView extends OsnovniView implements OpstiViewInterface{
 		tabela.addColumn(Uredjaji::getSerijskiBr).setCaption("серијски број");
 		tabela.addColumn(uredjaji -> uredjaji.getSim() == null ? "" : uredjaji.getSim().getBroj()).setCaption("сим број");
 		tabela.addColumn(uredjaji -> uredjaji.getSim() == null ? "" : uredjaji.getSim().getIccid()).setCaption("сим iccid");
-		tabela.addComponentColumn(uredjaji -> {CheckBox chb = new CheckBox(); if(uredjaji.isAktivno()) {chb.setValue(true); }return chb;}).setCaption("активан").setStyleGenerator(objekti -> "v-align-right");
-		tabela.addComponentColumn(uredjaji -> {CheckBox chb = new CheckBox(); if(uredjaji.isIzbrisan()) {chb.setValue(true); }return chb;}).setCaption("избрисан").setStyleGenerator(objekti -> "v-align-right");
-		tabela.addColumn(Uredjaji::getIzmenjeno, new DateRenderer(DANFORMAT)).setCaption("измењено").setStyleGenerator(objekti -> "v-align-right");
-		tabela.addColumn(Uredjaji::getIzmenjeno, new DateRenderer(DANFORMAT)).setCaption("измењено").setStyleGenerator(objekti -> "v-align-right");
+		tabela.addComponentColumn(uredjaji -> {CheckBox chb = new CheckBox(); if(uredjaji.isAktivno()) {chb.setValue(true); }return chb;}).setCaption("активан").setStyleGenerator(uredjaji -> "v-align-right");
+		tabela.addComponentColumn(uredjaji -> {CheckBox chb = new CheckBox(); if(uredjaji.isIzbrisan()) {chb.setValue(true); }return chb;}).setCaption("избрисан").setStyleGenerator(uredjaji -> "v-align-right");
+		tabela.addColumn(Uredjaji::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(uredjaji -> "v-align-right");
+		tabela.addColumn(Uredjaji::getKreirano, new DateRenderer(DANSATFORMAT)).setCaption("креирано").setStyleGenerator(uredjaji -> "v-align-right");
 	}
 
 	@Override
@@ -95,7 +97,7 @@ public class UredjajiView extends OsnovniView implements OpstiViewInterface{
 	public void updateTable() {
 		filter.clear();
 		pocetno = new ArrayList<Uredjaji>();
-		lista = Servis.uredjajServis.nadjiSveUredjaje();
+		lista = Servis.uredjajServis.nadjiSveUredjaje((Korisnici) VaadinSession.getCurrent().getAttribute(Korisnici.class.getName()));
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {
@@ -106,7 +108,12 @@ public class UredjajiView extends OsnovniView implements OpstiViewInterface{
 			private static final long serialVersionUID = 1L;
 			@Override
 			public boolean test(Uredjaji t) {
-				return false;
+				return (t.getKod().toLowerCase().contains(filter.getValue().toLowerCase()) ||
+						t.getSerijskiBr().toLowerCase().contains(filter.getValue().toLowerCase()) ||
+						t.getObjekti().getOznaka().toLowerCase().contains(filter.getValue().toLowerCase()) ||
+						t.getSistemPretplatnici().getNaziv().contains(filter.getValue().toLowerCase()) ||
+						t.getSim().getBroj().toLowerCase().contains(filter.getValue().toLowerCase()) ||
+						t.getSistemUredjajiModeli().getNaziv().toLowerCase().contains(filter.getValue().toLowerCase()));
 			}
 		};
 		filter.addValueChangeListener(e -> {osveziFilter();});

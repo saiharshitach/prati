@@ -8,20 +8,22 @@ import com.github.appreciated.app.layout.annotations.NavigatorViewName;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.SerializablePredicate;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
 
+import pratiBaza.tabele.Korisnici;
 import pratiBaza.tabele.Sim;
 import rs.cybertrade.prati.Servis;
 import rs.cybertrade.prati.view.OpstiViewInterface;
-import rs.cybertrade.prati.view.OsnovniView;
+import rs.cybertrade.prati.view.OpstiView;
 
 @NavigatorViewName("sim") // an empty view name will also be the default view
 @MenuCaption("СИМ")
 @MenuIcon(VaadinIcons.CREDIT_CARD)
-public class SimView extends OsnovniView implements OpstiViewInterface{
+public class SimView extends OpstiView implements OpstiViewInterface{
 
 	private static final long serialVersionUID = 1L;
 	private Grid<Sim> tabela;
@@ -54,10 +56,10 @@ public class SimView extends OsnovniView implements OpstiViewInterface{
 		tabela.addColumn(sim -> sim.getUredjaji() == null ? "" : sim.getUredjaji().getSerijskiBr()).setCaption("уређај");
 		tabela.addColumn(sim -> sim.getUredjaji() == null ? "" : sim.getUredjaji().getObjekti() == null ? "" : 
 			sim.getUredjaji().getObjekti().getOznaka()).setCaption("објекат");
-		tabela.addComponentColumn(sim -> {CheckBox chb = new CheckBox(); if(sim.isAktivno()) {chb.setValue(true);} return chb;}).setCaption("активан").setStyleGenerator(objekti -> "v-align-right");
-		tabela.addComponentColumn(sim -> {CheckBox chb = new CheckBox(); if(sim.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(objekti -> "v-align-right");
-		tabela.addColumn(Sim::getIzmenjeno, new DateRenderer(DANFORMAT)).setCaption("измењено").setStyleGenerator(objekti -> "v-align-right");
-		tabela.addColumn(Sim::getKreirano, new DateRenderer(DANFORMAT)).setCaption("измењено").setStyleGenerator(objekti -> "v-align-right");
+		tabela.addComponentColumn(sim -> {CheckBox chb = new CheckBox(); if(sim.isAktivno()) {chb.setValue(true);} return chb;}).setCaption("активан").setStyleGenerator(sim -> "v-align-right");
+		tabela.addComponentColumn(sim -> {CheckBox chb = new CheckBox(); if(sim.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(sim -> "v-align-right");
+		tabela.addColumn(Sim::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(sim -> "v-align-right");
+		tabela.addColumn(Sim::getKreirano, new DateRenderer(DANSATFORMAT)).setCaption("креирано").setStyleGenerator(sim -> "v-align-right");
 	}
 
 	@Override
@@ -95,7 +97,7 @@ public class SimView extends OsnovniView implements OpstiViewInterface{
 	public void updateTable() {
 		filter.clear();
 		pocetno = new ArrayList<Sim>();
-		lista = Servis.simServis.vratiSveSimKartice();
+		lista = Servis.simServis.vratiSveSimKartice((Korisnici) VaadinSession.getCurrent().getAttribute(Korisnici.class.getName()));
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {

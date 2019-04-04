@@ -1,16 +1,7 @@
 package rs.cybertrade.prati;
 
 import javax.servlet.annotation.WebServlet;
-
-import com.github.appreciated.app.layout.AppLayout;
 import com.github.appreciated.app.layout.behaviour.AppLayoutComponent;
-import com.github.appreciated.app.layout.behaviour.Behaviour;
-import com.github.appreciated.app.layout.builder.design.AppLayoutDesign;
-import com.github.appreciated.app.layout.builder.elements.builders.SubmenuBuilder;
-import com.github.appreciated.app.layout.builder.entities.DefaultBadgeHolder;
-import com.github.appreciated.app.layout.builder.entities.DefaultNotificationHolder;
-import com.github.appreciated.app.layout.builder.factories.DefaultNavigationElementInfoProducer;
-import com.github.appreciated.app.layout.component.button.AppBarNotificationButton;
 import com.google.common.eventbus.Subscribe;
 import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Push;
@@ -18,25 +9,18 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.annotations.Viewport;
-import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.Page;
-import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
-import com.vaadin.ui.themes.ValoTheme;
 import pratiBaza.tabele.Javljanja;
 import pratiBaza.tabele.Korisnici;
 import rs.cybertrade.prati.Broadcaster.BroadcastListener;
 import rs.cybertrade.prati.meni.PratiEventBus;
 import rs.cybertrade.prati.meni.PratiEvent.KorisnikLoggedOutEvent;
 import rs.cybertrade.prati.meni.PratiEvent.KorisnikLoginRequestedEvent;
-import rs.cybertrade.prati.view.IstorijaView;
-import rs.cybertrade.prati.view.PocetnaView;
-import rs.cybertrade.prati.view.PracenjeView;
-import rs.cybertrade.prati.view.objekti.ObjektiView;
 
 @Viewport("user-scalable=no,initial-scale=1.0")
 @Theme("mytheme")
@@ -64,7 +48,14 @@ public class Prati extends UI implements BroadcastListener{
 			//setContent(new GlavniView());
 			//DefaultBadgeHolder badge = new DefaultBadgeHolder();
 			PratiMeniKorisnik meniKlasa = new PratiMeniKorisnik();
-			AppLayoutComponent meni = meniKlasa.vratiMeniSistem(korisnik.getIme() + " " + korisnik.getPrezime());
+			AppLayoutComponent meni;
+			if(korisnik.getSistemPretplatnici() == null && korisnik.isSistem()) {
+				meni = meniKlasa.vratiMeniSistem(korisnik.getIme() + " " + korisnik.getPrezime());
+			}else if (korisnik.getSistemPretplatnici() != null && korisnik.isAdmin()){
+				meni = meniKlasa.vratiMeniAdministrator(korisnik.getIme() + " " + korisnik.getPrezime());
+			}else {
+				meni = meniKlasa.vratiMeniKorisnik(korisnik.getIme() + " " + korisnik.getPrezime());
+			}
 			
 		    setContent(meni);
 			removeStyleName("loginview");

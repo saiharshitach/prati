@@ -8,7 +8,7 @@ import com.vaadin.icons.VaadinIcons;
 @NavigatorViewName("") // an empty view name will also be the default view
 @MenuCaption("Почетна")
 @MenuIcon(VaadinIcons.HOME)
-public class PocetnaView extends OsnovniView{
+public class PocetnaView extends OpstiView{
 	
 	private static final long serialVersionUID = 1L;
 

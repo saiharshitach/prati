@@ -8,7 +8,7 @@ import com.vaadin.icons.VaadinIcons;
 @NavigatorViewName("pracenje") // an empty view name will also be the default view
 @MenuCaption("Праћење")
 @MenuIcon(VaadinIcons.MAP_MARKER)
-public class PracenjeView extends OsnovniView{
+public class PracenjeView extends OpstiView{
 	
 	private static final long serialVersionUID = 1L;
 
