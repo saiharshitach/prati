@@ -18,16 +18,18 @@ import rs.cybertrade.prati.meni.PratiEventBus;
 import rs.cybertrade.prati.view.IstorijaView;
 import rs.cybertrade.prati.view.PocetnaView;
 import rs.cybertrade.prati.view.PracenjeView;
-import rs.cybertrade.prati.view.UredjajiModeliView;
 import rs.cybertrade.prati.view.alarmi.AlarmiView;
 import rs.cybertrade.prati.view.gorivo.GorivoView;
+import rs.cybertrade.prati.view.grupe.GrupeView;
 import rs.cybertrade.prati.view.korisnici.KorisniciView;
 import rs.cybertrade.prati.view.objekti.ObjektiView;
 import rs.cybertrade.prati.view.pretplatnici.PretplatniciView;
 import rs.cybertrade.prati.view.proizvodjaci.UredjajiProizvodjaciView;
 import rs.cybertrade.prati.view.sim.SimView;
+import rs.cybertrade.prati.view.simSistemOperateri.SimOperateriView;
 import rs.cybertrade.prati.view.sistem.SistemView;
 import rs.cybertrade.prati.view.uredjaji.UredjajiView;
+import rs.cybertrade.prati.view.uredjajiModeli.UredjajiModeliView;
 
 public class PratiMeniKorisnik{
 	
@@ -72,6 +74,7 @@ public class PratiMeniKorisnik{
                 .add(IstorijaView.class)
                 .build())
         .add(SubmenuBuilder.get("Подаци", VaadinIcons.COG)
+        		.add(GrupeView.class)
         		.add(KorisniciView.class)
                 .add(ObjektiView.class)
                 .add(SimView.class)
@@ -96,6 +99,7 @@ public class PratiMeniKorisnik{
 		                .add(IstorijaView.class)
 		                .build())
 		        .add(SubmenuBuilder.get("Подаци", VaadinIcons.COG)
+		        		.add(GrupeView.class)
 		        		.add(KorisniciView.class)
 		                .add(ObjektiView.class)
 		                .add(SimView.class)
@@ -104,6 +108,7 @@ public class PratiMeniKorisnik{
 		        .add(SubmenuBuilder.get("Систем", VaadinIcons.DOCTOR)
 		        		.add(AlarmiView.class)
 		        		.add(GorivoView.class)
+		        		.add(SimOperateriView.class)
 		        		.add(PretplatniciView.class)
 		        		.add(SistemView.class)
 		        		.add(UredjajiModeliView.class)

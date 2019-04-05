@@ -109,11 +109,11 @@ public class UredjajiView extends OpstiView implements OpstiViewInterface{
 			@Override
 			public boolean test(Uredjaji t) {
 				return (t.getKod().toLowerCase().contains(filter.getValue().toLowerCase()) ||
-						t.getSerijskiBr().toLowerCase().contains(filter.getValue().toLowerCase()) ||
-						t.getObjekti().getOznaka().toLowerCase().contains(filter.getValue().toLowerCase()) ||
-						t.getSistemPretplatnici().getNaziv().contains(filter.getValue().toLowerCase()) ||
-						t.getSim().getBroj().toLowerCase().contains(filter.getValue().toLowerCase()) ||
-						t.getSistemUredjajiModeli().getNaziv().toLowerCase().contains(filter.getValue().toLowerCase()));
+						(t.getSerijskiBr() == null ? "" : t.getSerijskiBr()).toLowerCase().contains(filter.getValue().toLowerCase()) ||
+						(t.getObjekti().getOznaka() == null ? "" : t.getObjekti().getOznaka()).toLowerCase().contains(filter.getValue().toLowerCase()) ||
+						(t.getSistemPretplatnici().getNaziv() == null ? "" : t.getSistemPretplatnici().getNaziv()).contains(filter.getValue().toLowerCase()) ||
+						(t.getSim().getBroj() == null ? "" : t.getSim().getBroj()).toLowerCase().contains(filter.getValue().toLowerCase()) ||
+						(t.getSistemUredjajiModeli().getNaziv() == null ? "" : t.getSistemUredjajiModeli().getNaziv()).toLowerCase().contains(filter.getValue().toLowerCase()));
 			}
 		};
 		filter.addValueChangeListener(e -> {osveziFilter();});

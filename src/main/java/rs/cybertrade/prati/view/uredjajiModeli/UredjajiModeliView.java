@@ -1,4 +1,4 @@
-package rs.cybertrade.prati.view;
+package rs.cybertrade.prati.view.uredjajiModeli;
 
 import java.util.ArrayList;
 import com.github.appreciated.app.layout.annotations.MenuCaption;
@@ -12,6 +12,8 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import pratiBaza.tabele.SistemUredjajiModeli;
 import rs.cybertrade.prati.Servis;
+import rs.cybertrade.prati.view.OpstiView;
+import rs.cybertrade.prati.view.OpstiViewInterface;
 
 @NavigatorViewName("uredjajiModeli") // an empty view name will also be the default view
 @MenuCaption("Уређаји модели")

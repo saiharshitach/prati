@@ -99,9 +99,9 @@ public class KorisniciView extends OpstiView implements OpstiViewInterface{
 			private static final long serialVersionUID = 1L;
 			@Override
 			public boolean test(Korisnici t) {
-				return (t.getIme().toLowerCase().contains(filter.getValue().toLowerCase()) ||
-						t.getPrezime().toLowerCase().contains(filter.getValue().toLowerCase()) ||
-						t.getEmail().toLowerCase().contains(filter.getValue().toLowerCase()) ||
+				return ((t.getIme().toLowerCase() == null ? "" : t.getIme()).contains(filter.getValue().toLowerCase()) ||
+						(t.getPrezime() == null ? "" : t.getPrezime()).toLowerCase().contains(filter.getValue().toLowerCase()) ||
+						(t.getEmail() == null ? "" : t.getEmail()).toLowerCase().contains(filter.getValue().toLowerCase()) ||
 						(t.getIbutton() == null ? "" : t.getIbutton()).toLowerCase().contains(filter.getValue().toLowerCase()));
 			}
 		};

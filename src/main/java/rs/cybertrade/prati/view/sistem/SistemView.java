@@ -46,11 +46,10 @@ public class SistemView extends OpstiView implements OpstiViewInterface{
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
 		tabela.addColumn(Sistem::getVlasnik).setCaption("власник");
+		tabela.addColumn(Sistem::getAdresaVlasnika).setCaption("адреса");
+		tabela.addColumn(Sistem::getTelVlasnika).setCaption("телефон");
 		tabela.addColumn(Sistem::getSajtVlasnika).setCaption("сајт");
 		tabela.addColumn(Sistem::getEmailVlasnika).setCaption("е-пошта власника");
-		tabela.addColumn(Sistem::getAdresaVlasnika).setCaption("адреса");
-		tabela.addColumn(Sistem::getSajtVlasnika).setCaption("сајт");
-		tabela.addColumn(Sistem::getTelVlasnika).setCaption("телефон");
 		tabela.addColumn(Sistem::getAdresaServeraMape).setCaption("сервер мапе");
 		tabela.addColumn(Sistem::getApi).setCaption("апи");
 		tabela.addColumn(Sistem::getEmailKorisnik).setCaption("е-поште налог");
