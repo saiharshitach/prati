@@ -23,6 +23,7 @@ import rs.cybertrade.prati.view.gorivo.GorivoView;
 import rs.cybertrade.prati.view.grupe.GrupeView;
 import rs.cybertrade.prati.view.korisnici.KorisniciView;
 import rs.cybertrade.prati.view.objekti.ObjektiView;
+import rs.cybertrade.prati.view.organizacije.OrganizacijeView;
 import rs.cybertrade.prati.view.pretplatnici.PretplatniciView;
 import rs.cybertrade.prati.view.proizvodjaci.UredjajiProizvodjaciView;
 import rs.cybertrade.prati.view.sim.SimView;
@@ -30,6 +31,7 @@ import rs.cybertrade.prati.view.simSistemOperateri.SimOperateriView;
 import rs.cybertrade.prati.view.sistem.SistemView;
 import rs.cybertrade.prati.view.uredjaji.UredjajiView;
 import rs.cybertrade.prati.view.uredjajiModeli.UredjajiModeliView;
+import rs.cybertrade.prati.view.zone.ZoneView;
 
 public class PratiMeniKorisnik{
 	
@@ -77,8 +79,10 @@ public class PratiMeniKorisnik{
         		.add(GrupeView.class)
         		.add(KorisniciView.class)
                 .add(ObjektiView.class)
+                .add(OrganizacijeView.class)
                 .add(SimView.class)
                 .add(UredjajiView.class)
+                .add(ZoneView.class)
                 .build())
         //.add(View6.class)
         .addClickable("Одјава", VaadinIcons.SIGN_OUT, clickEvent -> PratiEventBus.post(new KorisnikLoggedOutEvent()), FOOTER)
@@ -102,8 +106,10 @@ public class PratiMeniKorisnik{
 		        		.add(GrupeView.class)
 		        		.add(KorisniciView.class)
 		                .add(ObjektiView.class)
+		                .add(OrganizacijeView.class)
 		                .add(SimView.class)
 		                .add(UredjajiView.class)
+		                .add(ZoneView.class)
 		                .build())
 		        .add(SubmenuBuilder.get("Систем", VaadinIcons.DOCTOR)
 		        		.add(AlarmiView.class)

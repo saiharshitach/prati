@@ -1,22 +1,17 @@
 package rs.cybertrade.prati.view.grupe;
 
 import java.util.ArrayList;
-
 import com.github.appreciated.app.layout.annotations.MenuCaption;
 import com.github.appreciated.app.layout.annotations.MenuIcon;
 import com.github.appreciated.app.layout.annotations.NavigatorViewName;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.SerializablePredicate;
-import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
-
 import pratiBaza.tabele.Grupe;
-import pratiBaza.tabele.Korisnici;
-import pratiBaza.tabele.Uredjaji;
 import rs.cybertrade.prati.Servis;
 import rs.cybertrade.prati.view.OpstiView;
 import rs.cybertrade.prati.view.OpstiViewInterface;
@@ -49,11 +44,13 @@ public class GrupeView extends OpstiView implements OpstiViewInterface{
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
-		tabela.addColumn(grupe -> grupe.getSistemPretplatnici() == null ? "" : grupe.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
-		tabela.addColumn(grupe -> grupe.getOrganizacija() == null ? "" : grupe.getOrganizacija().getNaziv()).setCaption("организација");
+		if(korisnik.isSistem() && korisnik.getSistemPretplatnici() == null) {
+			tabela.addColumn(grupe -> grupe.getSistemPretplatnici() == null ? "" : grupe.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
+		}
 		tabela.addColumn(Grupe::getNaziv).setCaption("назив");
 		tabela.addColumn(Grupe::getOpis).setCaption("опис");
 		tabela.addComponentColumn(grupe -> {CheckBox chb = new CheckBox(); if(grupe.isAktivan()) {chb.setValue(true);} return chb;}).setCaption("активан").setStyleGenerator(uredjaji -> "v-align-right");
+		tabela.addColumn(grupe -> grupe.getOrganizacija() == null ? "" : grupe.getOrganizacija().getNaziv()).setCaption("организација");
 		tabela.addComponentColumn(grupe -> {CheckBox chb = new CheckBox(); if(grupe.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(uredjaji -> "v-align-right");
 		tabela.addColumn(Grupe::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(uredjaji -> "v-align-right");
 		tabela.addColumn(Grupe::getKreirano, new DateRenderer(DANSATFORMAT)).setCaption("креирано").setStyleGenerator(uredjaji -> "v-align-right");
@@ -94,7 +91,7 @@ public class GrupeView extends OpstiView implements OpstiViewInterface{
 	public void updateTable() {
 		filter.clear();
 		pocetno = new ArrayList<Grupe>();
-		lista = Servis.grupeServis.vratiGrupe((Korisnici) VaadinSession.getCurrent().getAttribute(Korisnici.class.getName()));
+		lista = Servis.grupeServis.vratiGrupe(korisnik);
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {

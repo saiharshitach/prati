@@ -8,13 +8,10 @@ import com.github.appreciated.app.layout.annotations.NavigatorViewName;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.SerializablePredicate;
-import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
-
-import pratiBaza.tabele.Korisnici;
 import pratiBaza.tabele.Sim;
 import rs.cybertrade.prati.Servis;
 import rs.cybertrade.prati.view.OpstiViewInterface;
@@ -47,7 +44,9 @@ public class SimView extends OpstiView implements OpstiViewInterface{
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
-		tabela.addColumn(sim -> sim.getSistemPretplatnici() == null ? "" : sim.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
+		if(korisnik.isSistem() && korisnik.getSistemPretplatnici() == null) {
+			tabela.addColumn(sim -> sim.getSistemPretplatnici() == null ? "" : sim.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
+		}
 		tabela.addColumn(Sim::getBroj).setCaption("број");
 		tabela.addColumn(Sim::getIccid).setCaption("иццид");
 		tabela.addColumn(sim -> sim.getSistemOperateri() == null ? "" : sim.getSistemOperateri().getNaziv()).setCaption("оператер");
@@ -57,6 +56,7 @@ public class SimView extends OpstiView implements OpstiViewInterface{
 		tabela.addColumn(sim -> sim.getUredjaji() == null ? "" : sim.getUredjaji().getObjekti() == null ? "" : 
 			sim.getUredjaji().getObjekti().getOznaka()).setCaption("објекат");
 		tabela.addComponentColumn(sim -> {CheckBox chb = new CheckBox(); if(sim.isAktivno()) {chb.setValue(true);} return chb;}).setCaption("активан").setStyleGenerator(sim -> "v-align-right");
+		tabela.addColumn(sim -> sim.getOrganizacija() == null ? "" : sim.getOrganizacija().getNaziv()).setCaption("организација");
 		tabela.addComponentColumn(sim -> {CheckBox chb = new CheckBox(); if(sim.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(sim -> "v-align-right");
 		tabela.addColumn(Sim::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(sim -> "v-align-right");
 		tabela.addColumn(Sim::getKreirano, new DateRenderer(DANSATFORMAT)).setCaption("креирано").setStyleGenerator(sim -> "v-align-right");
@@ -97,7 +97,7 @@ public class SimView extends OpstiView implements OpstiViewInterface{
 	public void updateTable() {
 		filter.clear();
 		pocetno = new ArrayList<Sim>();
-		lista = Servis.simServis.vratiSveSimKartice((Korisnici) VaadinSession.getCurrent().getAttribute(Korisnici.class.getName()));
+		lista = Servis.simServis.vratiSveSimKartice(korisnik);
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {

@@ -1,20 +1,17 @@
 package rs.cybertrade.prati.view.uredjaji;
 
 import java.util.ArrayList;
-
 import com.github.appreciated.app.layout.annotations.MenuCaption;
 import com.github.appreciated.app.layout.annotations.MenuIcon;
 import com.github.appreciated.app.layout.annotations.NavigatorViewName;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.SerializablePredicate;
-import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
 
-import pratiBaza.tabele.Korisnici;
 import pratiBaza.tabele.Uredjaji;
 import rs.cybertrade.prati.Servis;
 import rs.cybertrade.prati.view.OpstiViewInterface;
@@ -48,7 +45,9 @@ public class UredjajiView extends OpstiView implements OpstiViewInterface{
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
-		tabela.addColumn(uredjaji -> uredjaji.getSistemPretplatnici() == null ? "" : uredjaji.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
+		if(korisnik.isSistem() && korisnik.getSistemPretplatnici() == null) {
+			tabela.addColumn(uredjaji -> uredjaji.getSistemPretplatnici() == null ? "" : uredjaji.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
+		}
 		tabela.addColumn(uredjaji -> uredjaji.getObjekti() == null ? "" : uredjaji.getObjekti().getOznaka()).setCaption("објекат");
 		tabela.addColumn(uredjaji -> uredjaji.getSistemUredjajiModeli() == null ? "" : uredjaji.getSistemUredjajiModeli().getSistemUredjajiProizvodjac() == null ? "" : 
 			uredjaji.getSistemUredjajiModeli().getSistemUredjajiProizvodjac().getNaziv()).setCaption("произвођач");
@@ -58,6 +57,7 @@ public class UredjajiView extends OpstiView implements OpstiViewInterface{
 		tabela.addColumn(uredjaji -> uredjaji.getSim() == null ? "" : uredjaji.getSim().getBroj()).setCaption("сим број");
 		tabela.addColumn(uredjaji -> uredjaji.getSim() == null ? "" : uredjaji.getSim().getIccid()).setCaption("сим iccid");
 		tabela.addComponentColumn(uredjaji -> {CheckBox chb = new CheckBox(); if(uredjaji.isAktivno()) {chb.setValue(true); }return chb;}).setCaption("активан").setStyleGenerator(uredjaji -> "v-align-right");
+		tabela.addColumn(uredjaji -> uredjaji.getOrganizacija() == null ? "" : uredjaji.getOrganizacija().getNaziv()).setCaption("организација");
 		tabela.addComponentColumn(uredjaji -> {CheckBox chb = new CheckBox(); if(uredjaji.isIzbrisan()) {chb.setValue(true); }return chb;}).setCaption("избрисан").setStyleGenerator(uredjaji -> "v-align-right");
 		tabela.addColumn(Uredjaji::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(uredjaji -> "v-align-right");
 		tabela.addColumn(Uredjaji::getKreirano, new DateRenderer(DANSATFORMAT)).setCaption("креирано").setStyleGenerator(uredjaji -> "v-align-right");
@@ -97,7 +97,7 @@ public class UredjajiView extends OpstiView implements OpstiViewInterface{
 	public void updateTable() {
 		filter.clear();
 		pocetno = new ArrayList<Uredjaji>();
-		lista = Servis.uredjajServis.nadjiSveUredjaje((Korisnici) VaadinSession.getCurrent().getAttribute(Korisnici.class.getName()));
+		lista = Servis.uredjajServis.nadjiSveUredjaje(korisnik);
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {
@@ -110,10 +110,10 @@ public class UredjajiView extends OpstiView implements OpstiViewInterface{
 			public boolean test(Uredjaji t) {
 				return (t.getKod().toLowerCase().contains(filter.getValue().toLowerCase()) ||
 						(t.getSerijskiBr() == null ? "" : t.getSerijskiBr()).toLowerCase().contains(filter.getValue().toLowerCase()) ||
-						(t.getObjekti().getOznaka() == null ? "" : t.getObjekti().getOznaka()).toLowerCase().contains(filter.getValue().toLowerCase()) ||
-						(t.getSistemPretplatnici().getNaziv() == null ? "" : t.getSistemPretplatnici().getNaziv()).contains(filter.getValue().toLowerCase()) ||
-						(t.getSim().getBroj() == null ? "" : t.getSim().getBroj()).toLowerCase().contains(filter.getValue().toLowerCase()) ||
-						(t.getSistemUredjajiModeli().getNaziv() == null ? "" : t.getSistemUredjajiModeli().getNaziv()).toLowerCase().contains(filter.getValue().toLowerCase()));
+						(t.getObjekti() == null ? "" : t.getObjekti().getOznaka()).toLowerCase().contains(filter.getValue().toLowerCase()) ||
+						(t.getSistemPretplatnici() == null ? "" : t.getSistemPretplatnici().getNaziv()).contains(filter.getValue().toLowerCase()) ||
+						(t.getSim() == null ? "" : t.getSim().getBroj()).toLowerCase().contains(filter.getValue().toLowerCase()) ||
+						(t.getSistemUredjajiModeli() == null ? "" : t.getSistemUredjajiModeli().getNaziv()).toLowerCase().contains(filter.getValue().toLowerCase()));
 			}
 		};
 		filter.addValueChangeListener(e -> {osveziFilter();});

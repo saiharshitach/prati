@@ -3,6 +3,7 @@ package rs.cybertrade.prati.view;
 import java.text.DecimalFormat;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CssLayout;
@@ -13,9 +14,11 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Notification.Type;
+import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.NumberRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 
+import pratiBaza.tabele.Korisnici;
 import rs.cybertrade.prati.Prati;
 
 public abstract class OpstiView extends CssLayout implements View{
@@ -26,6 +29,7 @@ public abstract class OpstiView extends CssLayout implements View{
 	public static final String OBAVEZNAPOLJA = "Сва обавезна поља морају бити попуњена исправно!!!";
 	public static final String PODATAKDODAT = "Податак је већ унет!!!";
 	public static final String PRAZNO = "Нисте ништа изабрали!!!";
+	public static final String DECIMALNI = "###,##0.00";
 	public HorizontalLayout topLayout;
 	public VerticalLayout barGrid;
 	public DateField datum;
@@ -33,12 +37,13 @@ public abstract class OpstiView extends CssLayout implements View{
 	public Button dodaj;
 	public NumberRenderer decimalni;
 	public TextField filter;
-
+	public Korisnici korisnik;
 	
 	public OpstiView() {
 		setSizeFull();
 		addStyleName("crud-view");
-		decimalni  = new NumberRenderer(new DecimalFormat("###,##0.00"));
+		decimalni  = new NumberRenderer(new DecimalFormat(DECIMALNI));
+		korisnik = (Korisnici) VaadinSession.getCurrent().getAttribute(Korisnici.class.getName());
 	}
 	
 	//opšti toolbar

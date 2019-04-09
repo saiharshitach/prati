@@ -1,9 +1,6 @@
 package rs.cybertrade.prati.view.pretplatnici;
 
 import java.util.ArrayList;
-
-import org.hibernate.hql.internal.ast.util.ASTUtil.FilterPredicate;
-
 import com.github.appreciated.app.layout.annotations.MenuCaption;
 import com.github.appreciated.app.layout.annotations.MenuIcon;
 import com.github.appreciated.app.layout.annotations.NavigatorViewName;
@@ -14,7 +11,6 @@ import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
-
 import pratiBaza.tabele.SistemPretplatnici;
 import rs.cybertrade.prati.Servis;
 import rs.cybertrade.prati.view.OpstiViewInterface;

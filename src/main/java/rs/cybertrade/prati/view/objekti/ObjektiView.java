@@ -8,13 +8,10 @@ import com.github.appreciated.app.layout.annotations.NavigatorViewName;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.SerializablePredicate;
-import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
-
-import pratiBaza.tabele.Korisnici;
 import pratiBaza.tabele.Objekti;
 import rs.cybertrade.prati.Servis;
 import rs.cybertrade.prati.view.OpstiViewInterface;
@@ -48,7 +45,9 @@ public class ObjektiView extends OpstiView implements OpstiViewInterface{
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
-		tabela.addColumn(objekti -> objekti.getSistemPretplatnici() == null ? "" : objekti.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
+		if(korisnik.isSistem() && korisnik.getSistemPretplatnici() == null) {
+			tabela.addColumn(objekti -> objekti.getSistemPretplatnici() == null ? "" : objekti.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
+		}
 		tabela.addColumn(Objekti::getOznaka).setCaption("ознака");
 		tabela.addColumn(objekti -> objekti.getUredjaji() == null ? "" : objekti.getUredjaji().getKod()).setCaption("уређај");
 		tabela.addColumn(objekti -> objekti.getUredjaji() == null ? "" : objekti.getUredjaji().getSerijskiBr()).setCaption("уређај сер.бр");
@@ -58,6 +57,7 @@ public class ObjektiView extends OpstiView implements OpstiViewInterface{
 		tabela.addComponentColumn(objekti -> {CheckBox chb = new CheckBox(); if(objekti.getTip()) {chb.setValue(true);} return chb;}).setCaption("возило").setStyleGenerator(objekti -> "v-align-right");
 		tabela.addComponentColumn(objekti -> {CheckBox chb = new CheckBox(); if(objekti.isDetalji()) {chb.setValue(true);} return chb;}).setCaption("детаљи").setStyleGenerator(objekti -> "v-align-right");
 		tabela.addComponentColumn(objekti -> {CheckBox chb = new CheckBox(); if(objekti.isAktivan()) {chb.setValue(true);} return chb;}).setCaption("активан").setStyleGenerator(objekti -> "v-align-right");
+		tabela.addColumn(objekti -> objekti.getOrganizacija() == null ? "" : objekti.getOrganizacija().getNaziv()).setCaption("организација");
 		tabela.addComponentColumn(objekti -> {CheckBox chb = new CheckBox(); if(objekti.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(objekti -> "v-align-right");
 		tabela.addColumn(Objekti::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(objekti -> "v-align-right");
 		tabela.addColumn(Objekti::getKreirano, new DateRenderer(DANSATFORMAT)).setCaption("уписано").setStyleGenerator(objekti -> "v-align-right");
@@ -98,7 +98,7 @@ public class ObjektiView extends OpstiView implements OpstiViewInterface{
 	public void updateTable() {
 		filter.clear();
 		pocetno = new ArrayList<Objekti>();
-		lista = Servis.objekatServis.vratiSveObjekte((Korisnici) VaadinSession.getCurrent().getAttribute(Korisnici.class.getName()));
+		lista = Servis.objekatServis.vratiSveObjekte(korisnik);
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {
