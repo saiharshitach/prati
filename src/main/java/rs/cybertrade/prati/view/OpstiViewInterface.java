@@ -10,7 +10,7 @@ public interface OpstiViewInterface {
 	
 	public Object dajIzabraniRed();
 	
-	public void izmeniPodatak();
+	public void izmeniPodatak(Object podatak);
 	
 	public void ukloniPodatak();
 	

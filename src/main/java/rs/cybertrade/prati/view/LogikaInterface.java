@@ -6,9 +6,9 @@ public interface LogikaInterface {
 	
 	public void otkaziPodatak();
 	
-	public void setFragmentParametar(String korisnikId);
+	public void setFragmentParametar(String objectId);
 	
-	public void enter(String korisnikId);
+	public void enter(String objectId);
 	
 	//za cuvanje korisnika novog ili izmena starog
     public void sacuvajPodatak(Object podatak);

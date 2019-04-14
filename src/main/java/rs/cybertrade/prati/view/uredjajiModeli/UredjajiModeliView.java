@@ -1,14 +1,20 @@
 package rs.cybertrade.prati.view.uredjajiModeli;
 
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import com.github.appreciated.app.layout.annotations.MenuCaption;
 import com.github.appreciated.app.layout.annotations.MenuIcon;
 import com.github.appreciated.app.layout.annotations.NavigatorViewName;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.event.selection.SelectionEvent;
+import com.vaadin.event.selection.SelectionListener;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.SerializablePredicate;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Grid.SelectionMode;
 import pratiBaza.tabele.SistemUredjajiModeli;
 import rs.cybertrade.prati.Servis;
@@ -25,15 +31,50 @@ public class UredjajiModeliView extends OpstiView implements OpstiViewInterface{
 	private ListDataProvider<SistemUredjajiModeli> dataProvider;
 	private SerializablePredicate<SistemUredjajiModeli> filterPredicate;
 	private ArrayList<SistemUredjajiModeli> pocetno, lista;
+	private UredjajiModeliLogika viewLogika;
+	private UredjajiModeliForma forma;
+	private SistemUredjajiModeli izabrani;
+	public static final String VIEW_NAME = "uredjajiModeli";
 
 	public UredjajiModeliView() {
+		viewLogika = new UredjajiModeliLogika(this);
+		forma = new UredjajiModeliForma(viewLogika);
+		forma.removeStyleName("visible");
+		forma.setEnabled(false);
+		
 		topLayout = buildToolbar();
 		buildlayout();
 		buildTable();
+		
+		tabela.addSelectionListener(new SelectionListener<SistemUredjajiModeli>() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void selectionChange(SelectionEvent<SistemUredjajiModeli> event) {
+				if(event.getFirstSelectedItem().isPresent()) {
+					izabrani = event.getFirstSelectedItem().get();
+				}else {
+					izabrani = null;
+				}
+				viewLogika.redIzabran(izabrani);
+			}
+		});
+		
+		dodaj.addClickListener(new ClickListener() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void buttonClick(ClickEvent event) {
+				viewLogika.noviPodatak();
+			}
+		});
+		
 		barGrid.addComponent(topLayout);
 		barGrid.addComponent(tabela);
 		barGrid.setExpandRatio(tabela, 1);
+		
 		addComponent(barGrid);
+		addComponent(forma);
+		
+		viewLogika.init();
 	}
 	
 	@Override
@@ -51,33 +92,52 @@ public class UredjajiModeliView extends OpstiView implements OpstiViewInterface{
 	}
 
 	@Override
+	public void enter(ViewChangeEvent event) {
+		viewLogika.enter(event.getParameters());
+	}
+
+	@Override
 	public void ocistiIzbor() {
-		// TODO Auto-generated method stub
-		
+		tabela.getSelectionModel().deselectAll();
 	}
 
 	@Override
 	public void izaberiRed(Object red) {
-		// TODO Auto-generated method stub
-		
+		tabela.getSelectionModel().select((SistemUredjajiModeli)red);
 	}
 
 	@Override
 	public Object dajIzabraniRed() {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			return tabela.getSelectionModel().getFirstSelectedItem().get();
+		}catch (NoSuchElementException e) {
+			return null;
+		}
 	}
 
 	@Override
-	public void izmeniPodatak() {
-		// TODO Auto-generated method stub
-		
+	public void izmeniPodatak(Object podatak) {
+		SistemUredjajiModeli model = (SistemUredjajiModeli)podatak;
+		if(model != null) {
+			forma.addStyleName("visible");
+			forma.setEnabled(true);
+		}else {
+			forma.removeStyleName("visible");
+			forma.setEnabled(false);
+		}
+		forma.izmeniPodatak(model);
 	}
 
 	@Override
 	public void ukloniPodatak() {
-		// TODO Auto-generated method stub
-		
+		if(izabrani != null) {
+			if(!izabrani.isIzbrisan()) {
+				Servis.sistemUredjajModelServis.izbrisiUredjajModel(izabrani);
+				pokaziPorukuUspesno("модел уређаја " + izabrani.getNaziv() + " je izbrisan!");
+			}else {
+				pokaziPorukuGreska("модел је већ избрисан!");
+			}
+		}
 	}
 
 	@SuppressWarnings("unchecked")

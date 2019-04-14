@@ -81,7 +81,7 @@ public class SimView extends OpstiView implements OpstiViewInterface{
 	}
 
 	@Override
-	public void izmeniPodatak() {
+	public void izmeniPodatak(Object podatak) {
 		// TODO Auto-generated method stub
 		
 	}

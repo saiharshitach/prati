@@ -14,14 +14,12 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Notification.Type;
-import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.NumberRenderer;
 import com.vaadin.ui.themes.ValoTheme;
-
 import pratiBaza.tabele.Korisnici;
 import rs.cybertrade.prati.Prati;
 
-public abstract class OpstiView extends CssLayout implements View{
+public abstract class OpstiView extends CssLayout implements View {
 	private static final long serialVersionUID = 1L;
 	public static final String DANFORMAT = "%1$td/%1$tm/%1$tY";
 	public static final String DANSATFORMAT = "%1$td/%1$tm/%1$tY %1$tH:%1$tM:%1$tS";

@@ -75,7 +75,7 @@ public class OrganizacijeView extends OpstiView implements OpstiViewInterface{
 	}
 
 	@Override
-	public void izmeniPodatak() {
+	public void izmeniPodatak(Object podatak) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -102,16 +102,16 @@ public class OrganizacijeView extends OpstiView implements OpstiViewInterface{
 
 			@Override
 			public boolean test(Organizacije t) {
-				// TODO Auto-generated method stub
-				return false;
+				return (t.getNaziv().toLowerCase().contains(filter.getValue().toLowerCase()));
 			}
 		};
+		filter.addValueChangeListener(e -> {osveziFilter();});
 	}
 
 	@Override
 	public void osveziFilter() {
-		// TODO Auto-generated method stub
-		
+		dataProvider.setFilter(filterPredicate);
+		dataProvider.refreshAll();
 	}
 
 }
