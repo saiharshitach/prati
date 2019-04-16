@@ -1,33 +1,35 @@
-package rs.cybertrade.prati.view.uredjajiModeli;
+package rs.cybertrade.prati.view.pretplatnici;
+
+import com.vaadin.server.Page;
+import com.vaadin.ui.CheckBox;
+
+import pratiBaza.tabele.SistemPretplatnici;
 
 import org.vaadin.dialogs.ConfirmDialog;
 
-import com.vaadin.server.Page;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.CheckBox;
 
-import pratiBaza.tabele.SistemUredjajiModeli;
 import rs.cybertrade.prati.view.OpstaForma;
 import rs.cybertrade.prati.view.OpstaFormaInterface;
 import rs.cybertrade.prati.view.OpstiView;
-import rs.cybertrade.prati.view.komponente.ProizvodjaciCombo;
 import rs.cybertrade.prati.view.komponente.Tekst;
 
-public class UredjajiModeliForma extends OpstaForma implements OpstaFormaInterface{
-	
-	private static final long serialVersionUID = 1L;
-	private UredjajiModeliLogika logika;
-	private ProizvodjaciCombo proizvodjaciCombo;
-	private Tekst naziv, opis;
-	private CheckBox obd, izbrisan;
+public class PretplatniciForma extends OpstaForma implements OpstaFormaInterface{
 
-	public UredjajiModeliForma(UredjajiModeliLogika log) {
+	private static final long serialVersionUID = 1L;
+	private PretplatniciLogika logika;
+	private Tekst naziv, ePosta, api;
+	private CheckBox googleMapa, aktivan, izbrisan;
+
+	public PretplatniciForma(PretplatniciLogika log) {
 		logika = log;
-		proizvodjaciCombo = new ProizvodjaciCombo("произвођач", false);
 		naziv = new Tekst("назив", true);
-		opis = new Tekst("опис", false);
-		obd = new CheckBox("обд");
+		ePosta = new Tekst("е-пошта", false);
+		
+		googleMapa = new CheckBox("гугл мапа");
+		api = new Tekst("апи", false);
+		aktivan = new CheckBox("активан");
 		izbrisan = new CheckBox("избрисан");
 		
 		sacuvaj.addClickListener(new ClickListener() {
@@ -74,10 +76,12 @@ public class UredjajiModeliForma extends OpstaForma implements OpstaFormaInterfa
 			}
 		});
 		
-		layout.addComponent(proizvodjaciCombo);
 		layout.addComponent(naziv);
-		layout.addComponent(opis);
-		layout.addComponent(obd);
+		layout.addComponent(ePosta);
+		
+		layout.addComponent(googleMapa);
+		layout.addComponent(api);
+		layout.addComponent(aktivan);
 		layout.addComponent(izbrisan);
 		
 		layout.addComponentsAndExpand(expander);
@@ -90,13 +94,13 @@ public class UredjajiModeliForma extends OpstaForma implements OpstaFormaInterfa
 	
 	@Override
 	public void izmeniPodatak(Object podatak) {
-		SistemUredjajiModeli model;
+		SistemPretplatnici pretplatnik;
 		ocistiPodatak();
 		if(podatak == null) {
-			model = new SistemUredjajiModeli();
+			pretplatnik = new SistemPretplatnici();
 		}else {
-			model = (SistemUredjajiModeli)podatak;
-			postaviPodatak(model);
+			pretplatnik = (SistemPretplatnici)podatak;
+			postaviPodatak(pretplatnik);
 		}
 		String scrollScript = "window.document.getElementById('" + getId() + "').scrollTop = 0;";
 		Page.getCurrent().getJavaScript().execute(scrollScript);
@@ -104,69 +108,75 @@ public class UredjajiModeliForma extends OpstaForma implements OpstaFormaInterfa
 
 	@Override
 	public Object sacuvajPodatak(Object podatak) {
-		SistemUredjajiModeli model;
+		SistemPretplatnici pretplatnik;
 		if(podatak == null) {
-			model = new SistemUredjajiModeli();
+			pretplatnik = new SistemPretplatnici();
 		}else {
-			model = (SistemUredjajiModeli)podatak;
+			pretplatnik = (SistemPretplatnici)podatak;
 		}
-		model.setSistemUredjajiProizvodjac(proizvodjaciCombo.getValue());
-		model.setNaziv(naziv.getValue());
-		model.setOpis(opis.getValue());
-		model.setObd(obd.getValue());
-		model.setIzbrisan(izbrisan.getValue());
-		return model;
+		pretplatnik.setNaziv(naziv.getValue());
+		pretplatnik.setEmail(ePosta.getValue());
+		
+		pretplatnik.setgMapa(googleMapa.getValue());
+		pretplatnik.setApiKey(api.getValue());
+		pretplatnik.setAktivan(aktivan.getValue());
+		pretplatnik.setIzbrisan(izbrisan.getValue());
+		return pretplatnik;
 	}
 
 	@Override
 	public void ocistiPodatak() {
-		proizvodjaciCombo.clear();
 		naziv.clear();
-		opis.clear();
-		obd.setValue(false);
+		ePosta.clear();
+		
+		googleMapa.setValue(true);
+		api.clear();
+		aktivan.setValue(true);
 		izbrisan.setValue(false);
 	}
 
 	@Override
 	public void postaviPodatak(Object podatak) {
-		SistemUredjajiModeli model = (SistemUredjajiModeli)podatak;
-		if(model.getId() != null) {
+		SistemPretplatnici pretplatnik = (SistemPretplatnici)podatak;
+		if(pretplatnik.getId() != null) {
 			try {
-				proizvodjaciCombo.setValue(model.getSistemUredjajiProizvodjac());
-			}catch (Exception e) {
-				proizvodjaciCombo.setValue(null);
-			}
-			try {
-				naziv.setValue(model.getNaziv());
+				naziv.setValue(pretplatnik.getNaziv());
 			}catch (Exception e) {
 				naziv.setValue("");
 			}
 			try {
-				opis.setValue(model.getOpis());
+				ePosta.setValue(pretplatnik.getEmail());
 			}catch (Exception e) {
-				opis.setValue("");
+				ePosta.setValue("");
+			}
+			
+			try {
+				googleMapa.setValue(pretplatnik.isgMapa());
+			}catch (Exception e) {
+				googleMapa.setValue(false);
 			}
 			try {
-				obd.setValue(model.isObd());
+				api.setValue(pretplatnik.getApiKey());
 			}catch (Exception e) {
-				obd.setValue(false);
+				api.setValue("");
 			}
 			try {
-				izbrisan.setValue(model.isIzbrisan());
+				aktivan.setValue(pretplatnik.isAktivan());
+			}catch (Exception e) {
+				aktivan.setValue(true);
+			}
+			try {
+				izbrisan.setValue(pretplatnik.isIzbrisan());
 			}catch (Exception e) {
 				izbrisan.setValue(false);
 			}
-		}else {
-			ocistiPodatak();
 		}
+		
 	}
 
 	@Override
 	public boolean proveraPodataka() {
 		boolean sveIma = true;
-		if(proizvodjaciCombo.getValue() == null) {
-			sveIma = false;
-		}
 		if(naziv == null || naziv.isEmpty() || naziv.getValue() == "") {
 			sveIma = false;
 		}

@@ -1,18 +1,18 @@
-package rs.cybertrade.prati.view.uredjajiModeli;
+package rs.cybertrade.prati.view.pretplatnici;
 
 import com.vaadin.server.Page;
 
-import pratiBaza.tabele.SistemUredjajiModeli;
+import pratiBaza.tabele.SistemPretplatnici;
 import rs.cybertrade.prati.Prati;
 import rs.cybertrade.prati.Servis;
 import rs.cybertrade.prati.view.LogikaInterface;
 
-public class UredjajiModeliLogika implements LogikaInterface{
+public class PretplatniciLogika implements LogikaInterface{
+
+	public PretplatniciView view;
 	
-	public UredjajiModeliView view;
-	
-	public UredjajiModeliLogika(UredjajiModeliView modeliView) {
-		view = modeliView;
+	public PretplatniciLogika(PretplatniciView pretplatniciView) {
+		view = pretplatniciView;
 	}
 	
 	@Override
@@ -37,7 +37,7 @@ public class UredjajiModeliLogika implements LogikaInterface{
 			fragmentParametar = objectId;
 		}
 		Page page = Prati.getCurrent().getPage();
-		page.setUriFragment("!" + UredjajiModeliView.VIEW_NAME + "/" + fragmentParametar, false);
+		page.setUriFragment("!" + PretplatniciView.VIEW_NAME + "/" + fragmentParametar, false);
 	}
 
 	@Override
@@ -49,46 +49,46 @@ public class UredjajiModeliLogika implements LogikaInterface{
 		}else {
 			try {
 				int id = Integer.parseInt(objectId);
-				SistemUredjajiModeli model = Servis.sistemUredjajModelServis.nadjiModelPoId(id);
-				view.izaberiRed(model);
-			}catch (NumberFormatException e) {
-
+				SistemPretplatnici pretplatnik = Servis.sistemPretplatnikServis.nadjiPretplatnikaPoId(id);
+				view.izaberiRed(pretplatnik);
+			}catch (Exception e) {
+				
 			}
 		}
 	}
 
 	@Override
 	public void sacuvajPodatak(Object podatak) {
-		SistemUredjajiModeli model = (SistemUredjajiModeli)podatak;
+		SistemPretplatnici pretplatnik = (SistemPretplatnici)podatak;
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
 		setFragmentParametar("");
-		if(model.getId() != null) {
-			Servis.sistemUredjajModelServis.izmeniUredjajModel(model);
-			view.pokaziPorukuUspesno("модел измењен");
+		if(pretplatnik.getId() != null) {
+			Servis.sistemPretplatnikServis.izmeniPretplatnika(pretplatnik);
+			view.pokaziPorukuUspesno("претплатник измењен");
 		}else {
-			Servis.sistemUredjajModelServis.unesiUredjajModel(model);
-			view.pokaziPorukuUspesno("модел сачуван");
+			Servis.sistemPretplatnikServis.unesiPretplatnika(pretplatnik);
+			view.pokaziPorukuUspesno("претплатник сачуван");
 		}
 		view.updateTable();
 	}
 
 	@Override
 	public void izmeniPodatak(Object podatak) {
-		SistemUredjajiModeli model = (SistemUredjajiModeli)podatak;
-		if(model == null) {
+		SistemPretplatnici pretplatnik = (SistemPretplatnici)podatak;
+		if(pretplatnik == null) {
 			setFragmentParametar("");
 		}else {
-			setFragmentParametar(model.getId() + "");
+			setFragmentParametar(pretplatnik.getId() + "");
 		}
-		view.izmeniPodatak(model);
+		view.izmeniPodatak(pretplatnik);
 	}
 
 	@Override
 	public void noviPodatak() {
 		view.ocistiIzbor();
 		setFragmentParametar("new");
-		view.izmeniPodatak(new SistemUredjajiModeli());
+		view.izmeniPodatak(new SistemPretplatnici());
 	}
 
 	@Override
@@ -101,7 +101,7 @@ public class UredjajiModeliLogika implements LogikaInterface{
 
 	@Override
 	public void redIzabran(Object podatak) {
-		view.izmeniPodatak((SistemUredjajiModeli)podatak);
+		view.izmeniPodatak((SistemPretplatnici)podatak);
 	}
 
 }

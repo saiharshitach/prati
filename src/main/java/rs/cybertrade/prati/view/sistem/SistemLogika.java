@@ -1,18 +1,18 @@
-package rs.cybertrade.prati.view.uredjajiModeli;
+package rs.cybertrade.prati.view.sistem;
 
 import com.vaadin.server.Page;
 
-import pratiBaza.tabele.SistemUredjajiModeli;
+import pratiBaza.tabele.Sistem;
 import rs.cybertrade.prati.Prati;
 import rs.cybertrade.prati.Servis;
 import rs.cybertrade.prati.view.LogikaInterface;
 
-public class UredjajiModeliLogika implements LogikaInterface{
+public class SistemLogika implements LogikaInterface{
+
+	public SistemView view;
 	
-	public UredjajiModeliView view;
-	
-	public UredjajiModeliLogika(UredjajiModeliView modeliView) {
-		view = modeliView;
+	public SistemLogika(SistemView sistemView) {
+		view = sistemView;
 	}
 	
 	@Override
@@ -37,7 +37,7 @@ public class UredjajiModeliLogika implements LogikaInterface{
 			fragmentParametar = objectId;
 		}
 		Page page = Prati.getCurrent().getPage();
-		page.setUriFragment("!" + UredjajiModeliView.VIEW_NAME + "/" + fragmentParametar, false);
+		page.setUriFragment("!" + SistemView.VIEW_NAME + "/" + fragmentParametar, false);
 	}
 
 	@Override
@@ -49,8 +49,8 @@ public class UredjajiModeliLogika implements LogikaInterface{
 		}else {
 			try {
 				int id = Integer.parseInt(objectId);
-				SistemUredjajiModeli model = Servis.sistemUredjajModelServis.nadjiModelPoId(id);
-				view.izaberiRed(model);
+				Sistem sistem = Servis.sistemServis.nadjiSistemPoId(id);
+				view.izaberiRed(sistem);
 			}catch (NumberFormatException e) {
 
 			}
@@ -59,36 +59,36 @@ public class UredjajiModeliLogika implements LogikaInterface{
 
 	@Override
 	public void sacuvajPodatak(Object podatak) {
-		SistemUredjajiModeli model = (SistemUredjajiModeli)podatak;
+		Sistem sistem = (Sistem)podatak;
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
 		setFragmentParametar("");
-		if(model.getId() != null) {
-			Servis.sistemUredjajModelServis.izmeniUredjajModel(model);
-			view.pokaziPorukuUspesno("модел измењен");
+		if(sistem.getId() != null) {
+			Servis.sistemServis.azurirajSistem(sistem);
+			view.pokaziPorukuUspesno("систем подаци измењени");
 		}else {
-			Servis.sistemUredjajModelServis.unesiUredjajModel(model);
-			view.pokaziPorukuUspesno("модел сачуван");
+			Servis.sistemServis.unesiSistem(sistem);
+			view.pokaziPorukuUspesno("систем подаци сачувани");
 		}
 		view.updateTable();
 	}
 
 	@Override
 	public void izmeniPodatak(Object podatak) {
-		SistemUredjajiModeli model = (SistemUredjajiModeli)podatak;
-		if(model == null) {
+		Sistem sistem = (Sistem)podatak;
+		if(sistem == null) {
 			setFragmentParametar("");
 		}else {
-			setFragmentParametar(model.getId() + "");
+			setFragmentParametar(sistem.getId() + "");
 		}
-		view.izmeniPodatak(model);
+		view.izmeniPodatak(sistem);
 	}
 
 	@Override
 	public void noviPodatak() {
 		view.ocistiIzbor();
 		setFragmentParametar("new");
-		view.izmeniPodatak(new SistemUredjajiModeli());
+		view.izmeniPodatak(new Sistem());
 	}
 
 	@Override
@@ -101,7 +101,7 @@ public class UredjajiModeliLogika implements LogikaInterface{
 
 	@Override
 	public void redIzabran(Object podatak) {
-		view.izmeniPodatak((SistemUredjajiModeli)podatak);
+		view.izmeniPodatak((Sistem)podatak);
 	}
 
 }

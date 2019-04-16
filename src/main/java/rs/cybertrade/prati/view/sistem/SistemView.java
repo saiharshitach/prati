@@ -1,15 +1,21 @@
 package rs.cybertrade.prati.view.sistem;
 
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 import com.github.appreciated.app.layout.annotations.MenuCaption;
 import com.github.appreciated.app.layout.annotations.MenuIcon;
 import com.github.appreciated.app.layout.annotations.NavigatorViewName;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.event.selection.SelectionEvent;
+import com.vaadin.event.selection.SelectionListener;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.SerializablePredicate;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Grid.SelectionMode;
 
 import pratiBaza.tabele.Sistem;
@@ -23,19 +29,52 @@ import rs.cybertrade.prati.view.OpstiView;
 public class SistemView extends OpstiView implements OpstiViewInterface{
 
 	private static final long serialVersionUID = 1L;
+	public static final String VIEW_NAME = "sistem";
 	private Grid<Sistem> tabela;
 	private ListDataProvider<Sistem> dataProvider;
 	private SerializablePredicate<Sistem> filterPredicate;
 	private ArrayList<Sistem> lista;
+	private SistemLogika viewLogika;
+	private SistemForma forma;
+	private Sistem izabrani;
 	
 	public SistemView() {
+		viewLogika = new SistemLogika(this);
+		forma = new SistemForma(viewLogika);
+		forma.removeStyleName("visible");
+		forma.setEnabled(false);
+		
 		topLayout = buildToolbar();
 		buildlayout();
 		buildTable();
+		tabela.addSelectionListener(new SelectionListener<Sistem>() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void selectionChange(SelectionEvent<Sistem> event) {
+				if(event.getFirstSelectedItem().isPresent()) {
+					izabrani = event.getFirstSelectedItem().get();
+				}else {
+					izabrani = null;
+				}
+				viewLogika.redIzabran(izabrani);
+			}
+		});
+		dodaj.addClickListener(new ClickListener() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void buttonClick(ClickEvent event) {
+				viewLogika.noviPodatak();
+			}
+		});
+		
 		barGrid.addComponent(topLayout);
 		barGrid.addComponent(tabela);
 		barGrid.setExpandRatio(tabela, 1);
+		
 		addComponent(barGrid);
+		addComponent(forma);
+		
+		viewLogika.init();
 	}
 
 	@Override
@@ -61,33 +100,50 @@ public class SistemView extends OpstiView implements OpstiViewInterface{
 	}
 
 	@Override
+	public void enter(ViewChangeEvent event) {
+		viewLogika.enter(event.getParameters());
+	}
+	
+	@Override
 	public void ocistiIzbor() {
-		// TODO Auto-generated method stub
-		
+		tabela.getSelectionModel().deselectAll();
 	}
 
 	@Override
 	public void izaberiRed(Object red) {
-		// TODO Auto-generated method stub
-		
+		tabela.getSelectionModel().select((Sistem)red);
 	}
 
 	@Override
 	public Object dajIzabraniRed() {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			return tabela.getSelectionModel().getFirstSelectedItem().get();
+		}catch (NoSuchElementException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public void izmeniPodatak(Object podatak) {
-		// TODO Auto-generated method stub
-		
+		Sistem sistem = (Sistem)podatak;
+		if(sistem != null) {
+			forma.addStyleName("visible");
+			forma.setEnabled(true);
+		}else {
+			forma.removeStyleName("visible");
+			forma.setEnabled(false);
+		}
+		forma.izmeniPodatak(sistem);
 	}
 
 	@Override
 	public void ukloniPodatak() {
-		// TODO Auto-generated method stub
-		
+		if(izabrani != null) {
+			Servis.sistemServis.izbrisiSistem(izabrani);
+			pokaziPorukuUspesno("системски подаци избрисани, унесите нове!");
+		}else {
+			pokaziPorukuGreska("системски подаци избрисани!");
+		}
 	}
 
 	@SuppressWarnings("unchecked")

@@ -27,6 +27,7 @@ import rs.cybertrade.prati.view.OpstiViewInterface;
 public class UredjajiModeliView extends OpstiView implements OpstiViewInterface{
 	
 	private static final long serialVersionUID = 1L;
+	public static final String VIEW_NAME = "uredjajiModeli";
 	private Grid<SistemUredjajiModeli> tabela;
 	private ListDataProvider<SistemUredjajiModeli> dataProvider;
 	private SerializablePredicate<SistemUredjajiModeli> filterPredicate;
@@ -34,7 +35,6 @@ public class UredjajiModeliView extends OpstiView implements OpstiViewInterface{
 	private UredjajiModeliLogika viewLogika;
 	private UredjajiModeliForma forma;
 	private SistemUredjajiModeli izabrani;
-	public static final String VIEW_NAME = "uredjajiModeli";
 
 	public UredjajiModeliView() {
 		viewLogika = new UredjajiModeliLogika(this);

@@ -1,10 +1,7 @@
 package rs.cybertrade.prati.view.komponente;
 
-import java.util.ArrayList;
 import java.util.List;
-
 import com.vaadin.ui.ComboBox;
-
 import pratiBaza.tabele.SistemUredjajiProizvodjac;
 import rs.cybertrade.prati.Servis;
 
