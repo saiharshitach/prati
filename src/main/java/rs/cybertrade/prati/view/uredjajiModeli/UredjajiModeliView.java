@@ -27,7 +27,7 @@ import rs.cybertrade.prati.view.OpstiViewInterface;
 public class UredjajiModeliView extends OpstiView implements OpstiViewInterface{
 	
 	private static final long serialVersionUID = 1L;
-	public static final String VIEW_NAME = "uredjajiModeli";
+	public final String VIEW_NAME = "uredjajiModeli";
 	private Grid<SistemUredjajiModeli> tabela;
 	private ListDataProvider<SistemUredjajiModeli> dataProvider;
 	private SerializablePredicate<SistemUredjajiModeli> filterPredicate;
@@ -133,7 +133,7 @@ public class UredjajiModeliView extends OpstiView implements OpstiViewInterface{
 		if(izabrani != null) {
 			if(!izabrani.isIzbrisan()) {
 				Servis.sistemUredjajModelServis.izbrisiUredjajModel(izabrani);
-				pokaziPorukuUspesno("модел уређаја " + izabrani.getNaziv() + " je izbrisan!");
+				pokaziPorukuUspesno("модел уређаја " + izabrani.getNaziv() + " је избрисан!");
 			}else {
 				pokaziPorukuGreska("модел је већ избрисан!");
 			}

@@ -1,18 +1,18 @@
-package rs.cybertrade.prati.view.uredjajiModeli;
+package rs.cybertrade.prati.view.gorivo;
 
 import com.vaadin.server.Page;
 
-import pratiBaza.tabele.SistemUredjajiModeli;
+import pratiBaza.tabele.SistemGoriva;
 import rs.cybertrade.prati.Prati;
 import rs.cybertrade.prati.Servis;
 import rs.cybertrade.prati.view.LogikaInterface;
 
-public class UredjajiModeliLogika implements LogikaInterface{
+public class GorivoLogika implements LogikaInterface{
+
+	public GorivoView view;
 	
-	public UredjajiModeliView view;
-	
-	public UredjajiModeliLogika(UredjajiModeliView modeliView) {
-		view = modeliView;
+	public GorivoLogika(GorivoView gorivoView) {
+		view = gorivoView;
 	}
 	
 	@Override
@@ -49,8 +49,8 @@ public class UredjajiModeliLogika implements LogikaInterface{
 		}else {
 			try {
 				int id = Integer.parseInt(objectId);
-				SistemUredjajiModeli model = Servis.sistemUredjajModelServis.nadjiModelPoId(id);
-				view.izaberiRed(model);
+				SistemGoriva gorivo = Servis.sistemGorivoServis.nadjiGorivoPoId(id);
+				view.izaberiRed(gorivo);
 			}catch (NumberFormatException e) {
 
 			}
@@ -59,36 +59,36 @@ public class UredjajiModeliLogika implements LogikaInterface{
 
 	@Override
 	public void sacuvajPodatak(Object podatak) {
-		SistemUredjajiModeli model = (SistemUredjajiModeli)podatak;
+		SistemGoriva gorivo = (SistemGoriva)podatak;
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
 		setFragmentParametar("");
-		if(model.getId() != null) {
-			Servis.sistemUredjajModelServis.izmeniUredjajModel(model);
-			view.pokaziPorukuUspesno("модел измењен");
+		if(gorivo.getId() != null) {
+			Servis.sistemGorivoServis.azurirajGorivo(gorivo);
+			view.pokaziPorukuUspesno("врста горива измењена");
 		}else {
-			Servis.sistemUredjajModelServis.unesiUredjajModel(model);
-			view.pokaziPorukuUspesno("модел сачуван");
+			Servis.sistemGorivoServis.unesiGorivo(gorivo);
+			view.pokaziPorukuUspesno("врста горива сачувана");
 		}
 		view.updateTable();
 	}
 
 	@Override
 	public void izmeniPodatak(Object podatak) {
-		SistemUredjajiModeli model = (SistemUredjajiModeli)podatak;
-		if(model == null) {
+		SistemGoriva gorivo = (SistemGoriva)podatak;
+		if(gorivo == null) {
 			setFragmentParametar("");
 		}else {
-			setFragmentParametar(model.getId() + "");
+			setFragmentParametar(gorivo.getId() + "");
 		}
-		view.izmeniPodatak(model);
+		view.izmeniPodatak(gorivo);
 	}
 
 	@Override
 	public void noviPodatak() {
 		view.ocistiIzbor();
 		setFragmentParametar("new");
-		view.izmeniPodatak(new SistemUredjajiModeli());
+		view.izmeniPodatak(new SistemGoriva());
 	}
 
 	@Override
@@ -101,7 +101,7 @@ public class UredjajiModeliLogika implements LogikaInterface{
 
 	@Override
 	public void redIzabran(Object podatak) {
-		view.izmeniPodatak((SistemUredjajiModeli)podatak);
+		view.izmeniPodatak((SistemGoriva)podatak);
 	}
 
 }

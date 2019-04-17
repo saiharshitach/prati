@@ -1,18 +1,18 @@
-package rs.cybertrade.prati.view.uredjajiModeli;
+package rs.cybertrade.prati.view.simSistemOperateri;
 
 import com.vaadin.server.Page;
 
-import pratiBaza.tabele.SistemUredjajiModeli;
+import pratiBaza.tabele.SistemOperateri;
 import rs.cybertrade.prati.Prati;
 import rs.cybertrade.prati.Servis;
 import rs.cybertrade.prati.view.LogikaInterface;
 
-public class UredjajiModeliLogika implements LogikaInterface{
+public class SimOperateriLogika implements LogikaInterface{
+
+	public SimOperateriView view;
 	
-	public UredjajiModeliView view;
-	
-	public UredjajiModeliLogika(UredjajiModeliView modeliView) {
-		view = modeliView;
+	public SimOperateriLogika(SimOperateriView operaterView) {
+		view = operaterView;
 	}
 	
 	@Override
@@ -49,8 +49,8 @@ public class UredjajiModeliLogika implements LogikaInterface{
 		}else {
 			try {
 				int id = Integer.parseInt(objectId);
-				SistemUredjajiModeli model = Servis.sistemUredjajModelServis.nadjiModelPoId(id);
-				view.izaberiRed(model);
+				SistemOperateri operater = Servis.sistemOperaterServis.nadjiOperateraPoId(id);
+				view.izaberiRed(operater);
 			}catch (NumberFormatException e) {
 
 			}
@@ -59,36 +59,36 @@ public class UredjajiModeliLogika implements LogikaInterface{
 
 	@Override
 	public void sacuvajPodatak(Object podatak) {
-		SistemUredjajiModeli model = (SistemUredjajiModeli)podatak;
+		SistemOperateri operater = (SistemOperateri)podatak;
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
 		setFragmentParametar("");
-		if(model.getId() != null) {
-			Servis.sistemUredjajModelServis.izmeniUredjajModel(model);
-			view.pokaziPorukuUspesno("модел измењен");
+		if(operater.getId() != null) {
+			Servis.sistemOperaterServis.azurirajOperatera(operater);
+			view.pokaziPorukuUspesno("оператер измењен");
 		}else {
-			Servis.sistemUredjajModelServis.unesiUredjajModel(model);
-			view.pokaziPorukuUspesno("модел сачуван");
+			Servis.sistemOperaterServis.unesiOperatera(operater);
+			view.pokaziPorukuUspesno("оператер сачуван");
 		}
 		view.updateTable();
 	}
 
 	@Override
 	public void izmeniPodatak(Object podatak) {
-		SistemUredjajiModeli model = (SistemUredjajiModeli)podatak;
-		if(model == null) {
+		SistemOperateri operater = (SistemOperateri)podatak;
+		if(operater == null) {
 			setFragmentParametar("");
 		}else {
-			setFragmentParametar(model.getId() + "");
+			setFragmentParametar(operater.getId() + "");
 		}
-		view.izmeniPodatak(model);
+		view.izmeniPodatak(operater);
 	}
 
 	@Override
 	public void noviPodatak() {
 		view.ocistiIzbor();
 		setFragmentParametar("new");
-		view.izmeniPodatak(new SistemUredjajiModeli());
+		view.izmeniPodatak(new SistemOperateri());
 	}
 
 	@Override
@@ -101,7 +101,7 @@ public class UredjajiModeliLogika implements LogikaInterface{
 
 	@Override
 	public void redIzabran(Object podatak) {
-		view.izmeniPodatak((SistemUredjajiModeli)podatak);
+		view.izmeniPodatak((SistemOperateri)podatak);
 	}
 
 }

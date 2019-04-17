@@ -132,7 +132,7 @@ public class UredjajiProizvodjaciView extends OpstiView implements OpstiViewInte
 		if(izabrani != null) {
 			if(!izabrani.isIzbrisan()) {
 				Servis.sistemUredjajProizvodjacServis.izbrisiSistemUredjajProizvodjaca(izabrani);
-				pokaziPorukuUspesno("произвођач уређаја " + izabrani.getNaziv() + " je izbrisan!");
+				pokaziPorukuUspesno("произвођач уређаја " + izabrani.getNaziv() + " је избрисан!");
 			}else {
 				pokaziPorukuGreska("произвођач је већ избрисан!");
 			}

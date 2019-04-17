@@ -1,8 +1,6 @@
 package rs.cybertrade.prati.view.komponente;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
 import com.vaadin.ui.DateField;
 
 public class Datum extends DateField{
@@ -16,7 +14,7 @@ public class Datum extends DateField{
 		setWidth("100%");
 		setDateStyle(LocalDate.now(), null);
 		setDateFormat("dd-MM-yyyy");
-		Date dat = new Date();
-		setRangeEnd(dat.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+		//Date dat = new Date();
+		//setRangeEnd(dat.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
 	}
 }

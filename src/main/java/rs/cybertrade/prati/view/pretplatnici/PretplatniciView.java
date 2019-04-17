@@ -137,7 +137,7 @@ public class PretplatniciView extends OpstiView implements OpstiViewInterface{
 		if(izabrani != null) {
 			if(!izabrani.isIzbrisan()) {
 				Servis.sistemPretplatnikServis.izbrisiPretplatnika(izabrani);
-				pokaziPorukuUspesno("претплатник " + izabrani.getNaziv() + " je izbrisan!");
+				pokaziPorukuUspesno("претплатник " + izabrani.getNaziv() + " је избрисан");
 			}else {
 				pokaziPorukuGreska("претплатник је већ избрисан!");
 			}

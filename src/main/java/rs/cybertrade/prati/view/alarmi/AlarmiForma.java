@@ -1,31 +1,33 @@
-package rs.cybertrade.prati.view.uredjajiModeli;
+package rs.cybertrade.prati.view.alarmi;
 
 import org.vaadin.dialogs.ConfirmDialog;
 import com.vaadin.server.Page;
+import com.vaadin.ui.CheckBox;
+import pratiBaza.tabele.SistemAlarmi;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.CheckBox;
-import pratiBaza.tabele.SistemUredjajiModeli;
 import rs.cybertrade.prati.view.OpstaForma;
 import rs.cybertrade.prati.view.OpstaFormaInterface;
 import rs.cybertrade.prati.view.OpstiView;
-import rs.cybertrade.prati.view.komponente.ProizvodjaciCombo;
 import rs.cybertrade.prati.view.komponente.Tekst;
 
-public class UredjajiModeliForma extends OpstaForma implements OpstaFormaInterface{
-	
-	private static final long serialVersionUID = 1L;
-	private UredjajiModeliLogika logika;
-	private ProizvodjaciCombo proizvodjaciCombo;
-	private Tekst naziv, opis;
-	private CheckBox obd, izbrisan;
+public class AlarmiForma extends OpstaForma implements OpstaFormaInterface{
 
-	public UredjajiModeliForma(UredjajiModeliLogika log) {
+	private static final long serialVersionUID = 1L;
+	private AlarmiLogika logika;
+	private Tekst sifra, naziv, opis;
+	private CheckBox adresa, alarmiranje, prikaz, pregled, aktivan, izbrisan;
+	
+	public AlarmiForma(AlarmiLogika log) {
 		logika = log;
-		proizvodjaciCombo = new ProizvodjaciCombo("произвођач", false);
+		sifra = new Tekst("шифра", true);
 		naziv = new Tekst("назив", true);
 		opis = new Tekst("опис", false);
-		obd = new CheckBox("обд");
+		adresa = new CheckBox("адреса");
+		alarmiranje = new CheckBox("алармирање");
+		prikaz = new CheckBox("приказ");
+		pregled = new CheckBox("преглед");
+		aktivan = new CheckBox("активан");
 		izbrisan = new CheckBox("избрисан");
 		
 		sacuvaj.addClickListener(new ClickListener() {
@@ -72,10 +74,14 @@ public class UredjajiModeliForma extends OpstaForma implements OpstaFormaInterfa
 			}
 		});
 		
-		layout.addComponent(proizvodjaciCombo);
+		layout.addComponent(sifra);
 		layout.addComponent(naziv);
 		layout.addComponent(opis);
-		layout.addComponent(obd);
+		layout.addComponent(adresa);
+		layout.addComponent(alarmiranje);
+		layout.addComponent(prikaz);
+		layout.addComponent(pregled);
+		layout.addComponent(aktivan);
 		layout.addComponent(izbrisan);
 		
 		layout.addComponentsAndExpand(expander);
@@ -85,16 +91,16 @@ public class UredjajiModeliForma extends OpstaForma implements OpstaFormaInterfa
 		
 		addComponent(layout);
 	}
-	
+
 	@Override
 	public void izmeniPodatak(Object podatak) {
-		SistemUredjajiModeli model;
+		SistemAlarmi alarm;
 		ocistiPodatak();
 		if(podatak == null) {
-			model = new SistemUredjajiModeli();
+			alarm = new SistemAlarmi();
 		}else {
-			model = (SistemUredjajiModeli)podatak;
-			postaviPodatak(model);
+			alarm = (SistemAlarmi)podatak;
+			postaviPodatak(alarm);
 		}
 		String scrollScript = "window.document.getElementById('" + getId() + "').scrollTop = 0;";
 		Page.getCurrent().getJavaScript().execute(scrollScript);
@@ -102,67 +108,96 @@ public class UredjajiModeliForma extends OpstaForma implements OpstaFormaInterfa
 
 	@Override
 	public Object sacuvajPodatak(Object podatak) {
-		SistemUredjajiModeli model;
+		SistemAlarmi alarm;
 		if(podatak == null) {
-			model = new SistemUredjajiModeli();
+			alarm = new SistemAlarmi();
 		}else {
-			model = (SistemUredjajiModeli)podatak;
+			alarm = (SistemAlarmi)podatak;
 		}
-		model.setSistemUredjajiProizvodjac(proizvodjaciCombo.getValue());
-		model.setNaziv(naziv.getValue());
-		model.setOpis(opis.getValue());
-		model.setObd(obd.getValue());
-		model.setIzbrisan(izbrisan.getValue());
-		return model;
+		alarm.setSifra(sifra.getValue());
+		alarm.setNaziv(naziv.getValue());
+		alarm.setOpis(opis.getValue());
+		alarm.setAdresa(adresa.getValue());
+		alarm.setAlarmiranje(alarmiranje.getValue());
+		alarm.setPrikaz(prikaz.getValue());
+		alarm.setPregled(pregled.getValue());
+		alarm.setAktivan(aktivan.getValue());
+		alarm.setIzbrisan(izbrisan.getValue());
+		return alarm;
 	}
 
 	@Override
 	public void ocistiPodatak() {
-		proizvodjaciCombo.clear();
+		sifra.clear();
 		naziv.clear();
 		opis.clear();
-		obd.setValue(false);
+		adresa.setValue(false);
+		alarmiranje.setValue(false);
+		prikaz.setValue(true);
+		pregled.setValue(false);
+		aktivan.setValue(true);
 		izbrisan.setValue(false);
 	}
 
 	@Override
 	public void postaviPodatak(Object podatak) {
-		SistemUredjajiModeli model = (SistemUredjajiModeli)podatak;
-		if(model.getId() != null) {
+		SistemAlarmi alarm = (SistemAlarmi)podatak;
+		if(alarm.getId() != null) {
 			try {
-				proizvodjaciCombo.setValue(model.getSistemUredjajiProizvodjac());
+				sifra.setValue(alarm.getSifra());
 			}catch (Exception e) {
-				proizvodjaciCombo.setValue(null);
+				sifra.setValue("");
 			}
 			try {
-				naziv.setValue(model.getNaziv());
+				naziv.setValue(alarm.getNaziv());
 			}catch (Exception e) {
 				naziv.setValue("");
 			}
 			try {
-				opis.setValue(model.getOpis());
+				opis.setValue(alarm.getOpis());
 			}catch (Exception e) {
 				opis.setValue("");
 			}
 			try {
-				obd.setValue(model.isObd());
+				adresa.setValue(alarm.isAdresa());
 			}catch (Exception e) {
-				obd.setValue(false);
+				adresa.setValue(false);
 			}
 			try {
-				izbrisan.setValue(model.isIzbrisan());
+				alarmiranje.setValue(alarm.isAlarmiranje());
+			}catch (Exception e) {
+				alarmiranje.setValue(false);
+			}
+			try {
+				prikaz.setValue(alarm.isPrikaz());
+			}catch (Exception e) {
+				prikaz.setValue(false);
+			}
+			try {
+				pregled.setValue(alarm.isPregled());
+			}catch (Exception e) {
+				pregled.setValue(false);
+			}
+			try {
+				aktivan.setValue(alarm.isAktivan());
+			}catch (Exception e) {
+				aktivan.setValue(false);
+			}
+			try {
+				izbrisan.setValue(alarm.isIzbrisan());
 			}catch (Exception e) {
 				izbrisan.setValue(false);
 			}
 		}else {
 			ocistiPodatak();
 		}
+		
 	}
 
 	@Override
 	public boolean proveraPodataka() {
 		boolean sveIma = true;
-		if(proizvodjaciCombo.getValue() == null) {
+		if(sifra.getValue() == null || sifra.isEmpty() || sifra.getValue() == "") {
 			sveIma = false;
 		}
 		if(naziv.getValue() == null || naziv.isEmpty() || naziv.getValue() == "") {

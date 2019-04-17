@@ -2,17 +2,14 @@ package rs.cybertrade.prati.view.pretplatnici;
 
 import com.vaadin.server.Page;
 import com.vaadin.ui.CheckBox;
-
 import pratiBaza.tabele.SistemPretplatnici;
-
 import org.vaadin.dialogs.ConfirmDialog;
-
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-
 import rs.cybertrade.prati.view.OpstaForma;
 import rs.cybertrade.prati.view.OpstaFormaInterface;
 import rs.cybertrade.prati.view.OpstiView;
+import rs.cybertrade.prati.view.komponente.Datum;
 import rs.cybertrade.prati.view.komponente.Tekst;
 
 public class PretplatniciForma extends OpstaForma implements OpstaFormaInterface{
@@ -21,12 +18,13 @@ public class PretplatniciForma extends OpstaForma implements OpstaFormaInterface
 	private PretplatniciLogika logika;
 	private Tekst naziv, ePosta, api;
 	private CheckBox googleMapa, aktivan, izbrisan;
+	private Datum aktivanDo;
 
 	public PretplatniciForma(PretplatniciLogika log) {
 		logika = log;
 		naziv = new Tekst("назив", true);
 		ePosta = new Tekst("е-пошта", false);
-		
+		aktivanDo = new Datum("активан до", false);
 		googleMapa = new CheckBox("гугл мапа");
 		api = new Tekst("апи", false);
 		aktivan = new CheckBox("активан");
@@ -78,7 +76,7 @@ public class PretplatniciForma extends OpstaForma implements OpstaFormaInterface
 		
 		layout.addComponent(naziv);
 		layout.addComponent(ePosta);
-		
+		layout.addComponent(aktivanDo);
 		layout.addComponent(googleMapa);
 		layout.addComponent(api);
 		layout.addComponent(aktivan);
@@ -116,6 +114,11 @@ public class PretplatniciForma extends OpstaForma implements OpstaFormaInterface
 		}
 		pretplatnik.setNaziv(naziv.getValue());
 		pretplatnik.setEmail(ePosta.getValue());
+		try {
+			pretplatnik.setAktivanDo(dateDatum(aktivanDo.getValue()));
+		}catch (Exception e) {
+			pretplatnik.setAktivanDo(null);
+		}
 		
 		pretplatnik.setgMapa(googleMapa.getValue());
 		pretplatnik.setApiKey(api.getValue());
@@ -128,7 +131,7 @@ public class PretplatniciForma extends OpstaForma implements OpstaFormaInterface
 	public void ocistiPodatak() {
 		naziv.clear();
 		ePosta.clear();
-		
+		aktivanDo.clear();
 		googleMapa.setValue(true);
 		api.clear();
 		aktivan.setValue(true);
@@ -149,7 +152,11 @@ public class PretplatniciForma extends OpstaForma implements OpstaFormaInterface
 			}catch (Exception e) {
 				ePosta.setValue("");
 			}
-			
+			try {
+				aktivanDo.setValue(localDatum(pretplatnik.getAktivanDo()));
+			}catch (Exception e) {
+				aktivanDo.setValue(null);
+			}
 			try {
 				googleMapa.setValue(pretplatnik.isgMapa());
 			}catch (Exception e) {

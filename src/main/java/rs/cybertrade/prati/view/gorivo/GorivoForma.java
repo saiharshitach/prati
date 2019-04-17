@@ -1,31 +1,29 @@
-package rs.cybertrade.prati.view.uredjajiModeli;
+package rs.cybertrade.prati.view.gorivo;
 
 import org.vaadin.dialogs.ConfirmDialog;
+
 import com.vaadin.server.Page;
+import com.vaadin.ui.CheckBox;
+
+import pratiBaza.tabele.SistemGoriva;
+
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.CheckBox;
-import pratiBaza.tabele.SistemUredjajiModeli;
 import rs.cybertrade.prati.view.OpstaForma;
 import rs.cybertrade.prati.view.OpstaFormaInterface;
 import rs.cybertrade.prati.view.OpstiView;
-import rs.cybertrade.prati.view.komponente.ProizvodjaciCombo;
 import rs.cybertrade.prati.view.komponente.Tekst;
 
-public class UredjajiModeliForma extends OpstaForma implements OpstaFormaInterface{
+public class GorivoForma extends OpstaForma implements OpstaFormaInterface{
 	
 	private static final long serialVersionUID = 1L;
-	private UredjajiModeliLogika logika;
-	private ProizvodjaciCombo proizvodjaciCombo;
-	private Tekst naziv, opis;
-	private CheckBox obd, izbrisan;
+	private GorivoLogika logika;
+	private Tekst naziv;
+	private CheckBox izbrisan;
 
-	public UredjajiModeliForma(UredjajiModeliLogika log) {
+	public GorivoForma(GorivoLogika log) {
 		logika = log;
-		proizvodjaciCombo = new ProizvodjaciCombo("произвођач", false);
 		naziv = new Tekst("назив", true);
-		opis = new Tekst("опис", false);
-		obd = new CheckBox("обд");
 		izbrisan = new CheckBox("избрисан");
 		
 		sacuvaj.addClickListener(new ClickListener() {
@@ -72,10 +70,7 @@ public class UredjajiModeliForma extends OpstaForma implements OpstaFormaInterfa
 			}
 		});
 		
-		layout.addComponent(proizvodjaciCombo);
 		layout.addComponent(naziv);
-		layout.addComponent(opis);
-		layout.addComponent(obd);
 		layout.addComponent(izbrisan);
 		
 		layout.addComponentsAndExpand(expander);
@@ -88,13 +83,13 @@ public class UredjajiModeliForma extends OpstaForma implements OpstaFormaInterfa
 	
 	@Override
 	public void izmeniPodatak(Object podatak) {
-		SistemUredjajiModeli model;
+		SistemGoriva gorivo;
 		ocistiPodatak();
 		if(podatak == null) {
-			model = new SistemUredjajiModeli();
+			gorivo = new SistemGoriva();
 		}else {
-			model = (SistemUredjajiModeli)podatak;
-			postaviPodatak(model);
+			gorivo = (SistemGoriva)podatak;
+			postaviPodatak(gorivo);
 		}
 		String scrollScript = "window.document.getElementById('" + getId() + "').scrollTop = 0;";
 		Page.getCurrent().getJavaScript().execute(scrollScript);
@@ -102,55 +97,34 @@ public class UredjajiModeliForma extends OpstaForma implements OpstaFormaInterfa
 
 	@Override
 	public Object sacuvajPodatak(Object podatak) {
-		SistemUredjajiModeli model;
+		SistemGoriva gorivo;
 		if(podatak == null) {
-			model = new SistemUredjajiModeli();
+			gorivo = new SistemGoriva();
 		}else {
-			model = (SistemUredjajiModeli)podatak;
+			gorivo = (SistemGoriva)podatak;
 		}
-		model.setSistemUredjajiProizvodjac(proizvodjaciCombo.getValue());
-		model.setNaziv(naziv.getValue());
-		model.setOpis(opis.getValue());
-		model.setObd(obd.getValue());
-		model.setIzbrisan(izbrisan.getValue());
-		return model;
+		gorivo.setNaziv(naziv.getValue());
+		gorivo.setIzbrisan(izbrisan.getValue());
+		return gorivo;
 	}
 
 	@Override
 	public void ocistiPodatak() {
-		proizvodjaciCombo.clear();
 		naziv.clear();
-		opis.clear();
-		obd.setValue(false);
 		izbrisan.setValue(false);
 	}
 
 	@Override
 	public void postaviPodatak(Object podatak) {
-		SistemUredjajiModeli model = (SistemUredjajiModeli)podatak;
-		if(model.getId() != null) {
+		SistemGoriva gorivo = (SistemGoriva)podatak;
+		if(gorivo.getId() != null) {
 			try {
-				proizvodjaciCombo.setValue(model.getSistemUredjajiProizvodjac());
-			}catch (Exception e) {
-				proizvodjaciCombo.setValue(null);
-			}
-			try {
-				naziv.setValue(model.getNaziv());
+				naziv.setValue(gorivo.getNaziv());
 			}catch (Exception e) {
 				naziv.setValue("");
 			}
 			try {
-				opis.setValue(model.getOpis());
-			}catch (Exception e) {
-				opis.setValue("");
-			}
-			try {
-				obd.setValue(model.isObd());
-			}catch (Exception e) {
-				obd.setValue(false);
-			}
-			try {
-				izbrisan.setValue(model.isIzbrisan());
+				izbrisan.setValue(gorivo.isIzbrisan());
 			}catch (Exception e) {
 				izbrisan.setValue(false);
 			}
@@ -162,10 +136,7 @@ public class UredjajiModeliForma extends OpstaForma implements OpstaFormaInterfa
 	@Override
 	public boolean proveraPodataka() {
 		boolean sveIma = true;
-		if(proizvodjaciCombo.getValue() == null) {
-			sveIma = false;
-		}
-		if(naziv.getValue() == null || naziv.isEmpty() || naziv.getValue() == "") {
+		if(naziv == null || naziv.isEmpty() || naziv.getValue() == "") {
 			sveIma = false;
 		}
 		return sveIma;
