@@ -2,7 +2,6 @@ package rs.cybertrade.prati.view.pretplatnici;
 
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
-
 import com.github.appreciated.app.layout.annotations.MenuCaption;
 import com.github.appreciated.app.layout.annotations.MenuIcon;
 import com.github.appreciated.app.layout.annotations.NavigatorViewName;
@@ -29,7 +28,7 @@ import rs.cybertrade.prati.view.OpstiView;
 public class PretplatniciView extends OpstiView implements OpstiViewInterface{
 
 	private static final long serialVersionUID = 1L;
-	public static final String VIEW_NAME = "pretplatnici";
+	public final String VIEW_NAME = "pretplatnici";
 	private Grid<SistemPretplatnici> tabela;
 	private ListDataProvider<SistemPretplatnici> dataProvider;
 	private SerializablePredicate<SistemPretplatnici> filterPredicate;
@@ -47,6 +46,7 @@ public class PretplatniciView extends OpstiView implements OpstiViewInterface{
 		topLayout = buildToolbar();
 		buildlayout();
 		buildTable();
+		
 		tabela.addSelectionListener(new SelectionListener<SistemPretplatnici>() {
 			private static final long serialVersionUID = 1L;
 			@Override
@@ -59,6 +59,7 @@ public class PretplatniciView extends OpstiView implements OpstiViewInterface{
 				viewLogika.redIzabran(izabrani);
 			}
 		});
+		
 		dodaj.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
 			@Override

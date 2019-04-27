@@ -1,34 +1,49 @@
-package rs.cybertrade.prati.view.pretplatnici;
+package rs.cybertrade.prati.view.grupe;
 
+import org.vaadin.dialogs.ConfirmDialog;
+
+import com.vaadin.data.HasValue.ValueChangeEvent;
+import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.server.Page;
 import com.vaadin.ui.CheckBox;
-import pratiBaza.tabele.SistemPretplatnici;
-import org.vaadin.dialogs.ConfirmDialog;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+
+import pratiBaza.tabele.Grupe;
+import pratiBaza.tabele.SistemPretplatnici;
+import rs.cybertrade.prati.Servis;
 import rs.cybertrade.prati.view.OpstaForma;
 import rs.cybertrade.prati.view.OpstaFormaInterface;
 import rs.cybertrade.prati.view.OpstiView;
-import rs.cybertrade.prati.view.komponente.Datum;
+import rs.cybertrade.prati.view.komponente.OrganizacijeCombo;
+import rs.cybertrade.prati.view.komponente.PretplatniciCombo;
 import rs.cybertrade.prati.view.komponente.Tekst;
 
-public class PretplatniciForma extends OpstaForma implements OpstaFormaInterface{
+public class GrupeForma extends OpstaForma implements OpstaFormaInterface{
 
 	private static final long serialVersionUID = 1L;
-	private PretplatniciLogika logika;
-	private Tekst naziv, ePosta, api;
-	private CheckBox googleMapa, aktivan, izbrisan;
-	private Datum aktivanDo;
+	private GrupeLogika logika;
+	private PretplatniciCombo pretplatnici;
+	private OrganizacijeCombo organizacije;
+	private Tekst naziv, opis;
+	private CheckBox aktivan, izbrisan;
 
-	public PretplatniciForma(PretplatniciLogika log) {
+	public GrupeForma(GrupeLogika log) {
 		logika = log;
-		naziv = new Tekst("назив", true);
-		ePosta = new Tekst("е-пошта", false);
-		aktivanDo = new Datum("активан до", false);
-		googleMapa = new CheckBox("гугл мапа");
-		api = new Tekst("апи", false);
+		pretplatnici = new PretplatniciCombo("претплатник", true, true);
+		naziv = new Tekst("опис", true);
+		opis = new Tekst("опис", false);
 		aktivan = new CheckBox("активан");
+		organizacije = new OrganizacijeCombo(pretplatnici.getValue(), "организација", true, true);
 		izbrisan = new CheckBox("избрисан");
+		
+		pretplatnici.addValueChangeListener(new ValueChangeListener<SistemPretplatnici>() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void valueChange(ValueChangeEvent<SistemPretplatnici> event) {
+				organizacije.setItems(Servis.organizacijaServis.nadjiSveOrganizacije(pretplatnici.getValue(), true));
+			}
+		});
 		
 		sacuvaj.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
@@ -74,14 +89,15 @@ public class PretplatniciForma extends OpstaForma implements OpstaFormaInterface
 			}
 		});
 		
+		if(logika.view.korisnik.isSistem() || logika.view.korisnik.getSistemPretplatnici() == null) {
+			layout.addComponent(pretplatnici);
+		}
 		layout.addComponent(naziv);
-		layout.addComponent(ePosta);
-		layout.addComponent(aktivanDo);
-		layout.addComponent(googleMapa);
-		layout.addComponent(api);
+		layout.addComponent(opis);
 		layout.addComponent(aktivan);
-		layout.addComponent(izbrisan);
-		
+		if(logika.view.isAdmin())  {
+			layout.addComponent(izbrisan);
+		}
 		layout.addComponentsAndExpand(expander);
 		layout.addComponent(sacuvaj);
 		layout.addComponent(otkazi);
@@ -92,13 +108,13 @@ public class PretplatniciForma extends OpstaForma implements OpstaFormaInterface
 	
 	@Override
 	public void izmeniPodatak(Object podatak) {
-		SistemPretplatnici pretplatnik;
+		Grupe grupa;
 		ocistiPodatak();
 		if(podatak == null) {
-			pretplatnik = new SistemPretplatnici();
+			grupa = new Grupe();
 		}else {
-			pretplatnik = (SistemPretplatnici)podatak;
-			postaviPodatak(pretplatnik);
+			grupa = (Grupe)podatak;
+			postaviPodatak(grupa);
 		}
 		String scrollScript = "window.document.getElementById('" + getId() + "').scrollTop = 0;";
 		Page.getCurrent().getJavaScript().execute(scrollScript);
@@ -106,67 +122,66 @@ public class PretplatniciForma extends OpstaForma implements OpstaFormaInterface
 
 	@Override
 	public Object sacuvajPodatak(Object podatak) {
-		SistemPretplatnici pretplatnik;
+		Grupe grupa;
 		if(podatak == null) {
-			pretplatnik = new SistemPretplatnici();
+			grupa = new Grupe();
 		}else {
-			pretplatnik = (SistemPretplatnici)podatak;
+			grupa = (Grupe)podatak;
 		}
-		pretplatnik.setNaziv(naziv.getValue());
-		pretplatnik.setEmail(ePosta.getValue());
-		try {
-			pretplatnik.setAktivanDo(dateDatum(aktivanDo.getValue()));
-		}catch (Exception e) {
-			pretplatnik.setAktivanDo(null);
-		}
-		pretplatnik.setgMapa(googleMapa.getValue());
-		pretplatnik.setApiKey(api.getValue());
-		pretplatnik.setAktivan(aktivan.getValue());
-		pretplatnik.setIzbrisan(izbrisan.getValue());
-		return pretplatnik;
+		grupa.setSistemPretplatnici(pretplatnici.getValue());
+		grupa.setNaziv(naziv.getValue());
+		grupa.setOpis(opis.getValue());
+		grupa.setAktivan(aktivan.getValue());
+		grupa.setOrganizacija(organizacije.getValue());
+		grupa.setIzbrisan(izbrisan.getValue());
+		return grupa;
 	}
 
 	@Override
 	public void ocistiPodatak() {
+		if(logika.view.korisnik.getSistemPretplatnici() != null) {
+			pretplatnici.setValue(logika.view.korisnik.getSistemPretplatnici());
+		}else {
+			pretplatnici.clear();
+		}
 		naziv.clear();
-		ePosta.clear();
-		aktivanDo.clear();
-		googleMapa.setValue(true);
-		api.clear();
+		opis.clear();
 		aktivan.setValue(true);
+		if(logika.view.korisnik.getOrganizacija() != null) {
+			organizacije.setValue(logika.view.korisnik.getOrganizacija());
+		}else {
+			organizacije.clear();
+		}
 		izbrisan.setValue(false);
 	}
 
 	@Override
 	public void postaviPodatak(Object podatak) {
-		SistemPretplatnici pretplatnik = (SistemPretplatnici)podatak;
-		if(pretplatnik.getId() != null) {
-			naziv.setValue(pretplatnik.getNaziv());
+		Grupe grupa = (Grupe)podatak;
+		if(grupa.getId() != null) {
+			pretplatnici.setValue(grupa.getSistemPretplatnici());
 			try {
-				ePosta.setValue(pretplatnik.getEmail());
+				naziv.setValue(grupa.getNaziv());
 			}catch (Exception e) {
-				ePosta.setValue("");
+				naziv.setValue("");
 			}
-			if(pretplatnik.getAktivanDo() != null) {
-				aktivanDo.setValue(localDatum(pretplatnik.getAktivanDo()));
-			}else {
-				aktivanDo.setValue(null);
-			}
-			googleMapa.setValue(pretplatnik.isgMapa());
 			try {
-				api.setValue(pretplatnik.getApiKey());
+				opis.setValue(grupa.getOpis());
 			}catch (Exception e) {
-				api.setValue("");
+				opis.setValue("");
 			}
-			
-			aktivan.setValue(pretplatnik.isAktivan());
-			izbrisan.setValue(pretplatnik.isIzbrisan());
+			aktivan.setValue(grupa.isAktivan());
+			organizacije.setValue(grupa.getOrganizacija());
+			izbrisan.setValue(grupa.isIzbrisan());
 		}
 	}
 
 	@Override
 	public boolean proveraPodataka() {
 		boolean sveIma = true;
+		if(pretplatnici.getValue() == null) {
+			sveIma = false;
+		}
 		if(naziv.isEmpty() || naziv.getValue() == "") {
 			sveIma = false;
 		}

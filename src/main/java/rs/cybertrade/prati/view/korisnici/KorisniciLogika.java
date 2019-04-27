@@ -1,18 +1,18 @@
-package rs.cybertrade.prati.view.pretplatnici;
+package rs.cybertrade.prati.view.korisnici;
 
 import com.vaadin.server.Page;
 
-import pratiBaza.tabele.SistemPretplatnici;
+import pratiBaza.tabele.Korisnici;
 import rs.cybertrade.prati.Prati;
 import rs.cybertrade.prati.Servis;
 import rs.cybertrade.prati.view.LogikaInterface;
 
-public class PretplatniciLogika implements LogikaInterface{
+public class KorisniciLogika implements LogikaInterface{
 
-	public PretplatniciView view;
+	public KorisniciView view;
 	
-	public PretplatniciLogika(PretplatniciView pretplatniciView) {
-		view = pretplatniciView;
+	public KorisniciLogika(KorisniciView korisniciView) {
+		view = korisniciView;
 	}
 	
 	@Override
@@ -49,46 +49,51 @@ public class PretplatniciLogika implements LogikaInterface{
 		}else {
 			try {
 				int id = Integer.parseInt(objectId);
-				SistemPretplatnici pretplatnik = Servis.sistemPretplatnikServis.nadjiPretplatnikaPoId(id);
-				view.izaberiRed(pretplatnik);
+				Korisnici korisnik = Servis.korisnikServis.nadjiKorisnikaPoId(id);
+				view.izaberiRed(korisnik);
 			}catch (Exception e) {
 				
 			}
 		}
+		
 	}
 
 	@Override
 	public void sacuvajPodatak(Object podatak) {
-		SistemPretplatnici pretplatnik = (SistemPretplatnici)podatak;
+		Korisnici korisnik = (Korisnici)podatak;
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
 		setFragmentParametar("");
-		if(pretplatnik.getId() != null) {
-			Servis.sistemPretplatnikServis.izmeniPretplatnika(pretplatnik);
-			view.pokaziPorukuUspesno("претплатник измењен");
+		if(korisnik.getId() != null) {
+			Servis.korisnikServis.azurirajKorisnika(korisnik);
+			view.pokaziPorukuUspesno("корисник измењен");
 		}else {
-			Servis.sistemPretplatnikServis.unesiPretplatnika(pretplatnik);
-			view.pokaziPorukuUspesno("претплатник сачуван");
+			try {
+				Servis.korisnikServis.unesiKorisnika(korisnik);
+				view.pokaziPorukuUspesno("корисник сачуван");
+			}catch (Exception e) {
+				view.pokaziPorukuGreska("корисник са унетом адресом е-поште већ постоји!");
+			}
 		}
 		view.updateTable();
 	}
 
 	@Override
 	public void izmeniPodatak(Object podatak) {
-		SistemPretplatnici pretplatnik = (SistemPretplatnici)podatak;
-		if(pretplatnik == null) {
+		Korisnici korisnik = (Korisnici)podatak;
+		if(korisnik == null) {
 			setFragmentParametar("");
 		}else {
-			setFragmentParametar(pretplatnik.getId() + "");
+			setFragmentParametar(korisnik.getId() + "");
 		}
-		view.izmeniPodatak(pretplatnik);
+		view.izmeniPodatak(korisnik);
 	}
 
 	@Override
 	public void noviPodatak() {
 		view.ocistiIzbor();
 		setFragmentParametar("new");
-		view.izmeniPodatak(new SistemPretplatnici());
+		view.izmeniPodatak(new Korisnici());
 	}
 
 	@Override
@@ -101,7 +106,7 @@ public class PretplatniciLogika implements LogikaInterface{
 
 	@Override
 	public void redIzabran(Object podatak) {
-		view.izmeniPodatak((SistemPretplatnici)podatak);
+		view.izmeniPodatak((Korisnici)podatak);
 	}
 
 }

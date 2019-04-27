@@ -1,5 +1,6 @@
 package rs.cybertrade.prati;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import com.github.appreciated.app.layout.behaviour.AppLayoutComponent;
 import com.google.common.eventbus.Subscribe;
@@ -10,6 +11,11 @@ import com.vaadin.annotations.Title;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.annotations.Viewport;
 import com.vaadin.server.Page;
+import com.vaadin.server.ServiceException;
+import com.vaadin.server.SessionDestroyEvent;
+import com.vaadin.server.SessionDestroyListener;
+import com.vaadin.server.SessionInitEvent;
+import com.vaadin.server.SessionInitListener;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinSession;
@@ -69,10 +75,33 @@ public class Prati extends UI implements BroadcastListener{
 	@Subscribe
 	public void korisnikLoginRequested(final KorisnikLoginRequestedEvent event) {
 		Korisnici korisnik = Servis.korisnikServis.nadjiKorisnikaPoKorisnickom(event.getKorisnicko(), event.getLozinka());
-		if(korisnik != null) {
+		boolean prijavi = true;
+		if(korisnik == null) {
+			prijavi = false;
+		} else if(korisnik.isIzbrisan()) {
+			prijavi = false;
+		} else if(!korisnik.isAktivan()) {
+			prijavi = false;
+		} else if(!korisnik.isKorisnik()) {
+			prijavi = false;
+		} else if(korisnik.getSistemPretplatnici() != null) {
+			if(korisnik.getSistemPretplatnici().isIzbrisan()) {
+				prijavi = false;
+			}else if(!korisnik.getSistemPretplatnici().isAktivan()) {
+				prijavi = false;
+			}
+		} else if(korisnik.getOrganizacija() != null) {
+			if(korisnik.getOrganizacija().isIzbrisan()) {
+				prijavi = false;
+			}else if(!korisnik.getOrganizacija().isAktivan()) {
+				prijavi = false;
+			}
+		}
+		
+		if(prijavi) {
 			VaadinSession.getCurrent().setAttribute(Korisnici.class.getName(), korisnik);
 		}else {
-			showNotification(new Notification("Пријава није успела, покушајте поново!", Notification.Type.HUMANIZED_MESSAGE));
+			showNotification(new Notification("Пријава није успела, покушајте поново или контактирајте администратора!", Notification.Type.HUMANIZED_MESSAGE));
 		}
 		updateContent();
 	}
@@ -99,15 +128,32 @@ public class Prati extends UI implements BroadcastListener{
 	public static Prati getCurrent() {
 		return (Prati)UI.getCurrent();
 	}
-	
+	//da li je sirina browser-a veća od 768
 	public Boolean sirina(){
 		return (getPage().getBrowserWindowWidth() >= 768);
 	}
 	
     @WebServlet(urlPatterns = "/*", name = "PratiServlet", asyncSupported = true)
     @VaadinServletConfiguration(ui = Prati.class, productionMode = true)
-    public static class PratiServlet extends VaadinServlet {
+    public static class PratiServlet extends VaadinServlet implements SessionInitListener, SessionDestroyListener{
 		private static final long serialVersionUID = 1L;
+
+		@Override
+	    protected void servletInitialized() throws ServletException {
+	        super.servletInitialized();
+	        getService().addSessionInitListener(this);
+	        getService().addSessionDestroyListener(this);
+	    }
+		
+		@Override
+		public void sessionInit(SessionInitEvent event) throws ServiceException {
+			//System.out.println("sesija počela...");
+		}
+
+		@Override
+		public void sessionDestroy(SessionDestroyEvent event) {
+			//System.out.println("sesija kraj...");
+		}
     }
     
     @Override
