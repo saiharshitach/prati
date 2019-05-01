@@ -1,7 +1,10 @@
 package rs.cybertrade.prati.view.korisnici;
 
+import java.util.ArrayList;
+import java.util.Set;
 import com.vaadin.server.Page;
-
+import pratiBaza.tabele.Grupe;
+import pratiBaza.tabele.GrupeKorisnici;
 import pratiBaza.tabele.Korisnici;
 import rs.cybertrade.prati.Prati;
 import rs.cybertrade.prati.Servis;
@@ -10,6 +13,7 @@ import rs.cybertrade.prati.view.LogikaInterface;
 public class KorisniciLogika implements LogikaInterface{
 
 	public KorisniciView view;
+	public Set<Grupe> grupe;
 	
 	public KorisniciLogika(KorisniciView korisniciView) {
 		view = korisniciView;
@@ -55,7 +59,6 @@ public class KorisniciLogika implements LogikaInterface{
 				
 			}
 		}
-		
 	}
 
 	@Override
@@ -66,10 +69,12 @@ public class KorisniciLogika implements LogikaInterface{
 		setFragmentParametar("");
 		if(korisnik.getId() != null) {
 			Servis.korisnikServis.azurirajKorisnika(korisnik);
+			sacuvajGrupeKorisnik(korisnik);
 			view.pokaziPorukuUspesno("корисник измењен");
 		}else {
 			try {
 				Servis.korisnikServis.unesiKorisnika(korisnik);
+				sacuvajGrupeKorisnik(korisnik);
 				view.pokaziPorukuUspesno("корисник сачуван");
 			}catch (Exception e) {
 				view.pokaziPorukuGreska("корисник са унетом адресом е-поште већ постоји!");
@@ -108,5 +113,20 @@ public class KorisniciLogika implements LogikaInterface{
 	public void redIzabran(Object podatak) {
 		view.izmeniPodatak((Korisnici)podatak);
 	}
+	
+	private void sacuvajGrupeKorisnik(Korisnici korisnik) {
+		ArrayList<GrupeKorisnici> grupeKorisnik = Servis.grupeKorisnikServis.vratiSveGrupePoKorisniku(korisnik);
+		for(GrupeKorisnici grKorisnik: grupeKorisnik) {
+			Servis.grupeKorisnikServis.izbrisiGrupaZaposleni(grKorisnik);
+			}
+		for(Grupe grupa : grupe) {
+			GrupeKorisnici grKorisnik = new GrupeKorisnici();
+			grKorisnik.setSistemPretplatnici(korisnik.getSistemPretplatnici());
+			grKorisnik.setOrganizacija(korisnik.getOrganizacija());
+			grKorisnik.setKorisnici(korisnik);
+			grKorisnik.setGrupe(grupa);
+			Servis.grupeKorisnikServis.unesiGrupaZaposleni(grKorisnik);
+			}
+		}
 
 }

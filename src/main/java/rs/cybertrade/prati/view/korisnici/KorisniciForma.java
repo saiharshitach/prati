@@ -1,11 +1,20 @@
 package rs.cybertrade.prati.view.korisnici;
 
+import java.util.ArrayList;
+
 import org.vaadin.dialogs.ConfirmDialog;
 import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.server.Page;
+import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Grid;
+import com.vaadin.ui.Grid.SelectionMode;
+
+import pratiBaza.tabele.Grupe;
+import pratiBaza.tabele.GrupeKorisnici;
 import pratiBaza.tabele.Korisnici;
+import pratiBaza.tabele.Organizacije;
 import pratiBaza.tabele.SistemPretplatnici;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -24,6 +33,8 @@ public class KorisniciForma extends OpstaForma implements OpstaFormaInterface{
 	private KorisniciLogika logika;
 	private PretplatniciCombo pretplatnici;
 	private OrganizacijeCombo organizacije;
+	private Grid<Grupe> grupeTabela;
+	private ArrayList<Grupe> lista;
 	private Tekst ime, prezime, ePosta, lozinka, telefon, mobilni, iDugme;
 	private CheckBox aktivan, korisnikCB, vozac, administrator, sistem, izbrisan;
 	private Datum aktivanDo;
@@ -44,15 +55,33 @@ public class KorisniciForma extends OpstaForma implements OpstaFormaInterface{
 		mobilni = new Tekst("мобилни", false);
 		iDugme = new Tekst("и-дугме", false);
 		sistem = new CheckBox("систем");
+		organizacije = new OrganizacijeCombo(pretplatnici.getValue(), "организација", true, true);
+		grupeTabela = new Grid<Grupe>();
+		grupeTabela.setCaption("групе");
+		grupeTabela.setWidth("100%");
+		grupeTabela.setHeightByRows(3.0);
+		grupeTabela.setHeightMode(HeightMode.ROW);
+		grupeTabela.setSelectionMode(SelectionMode.MULTI);
+		grupeTabela.addColumn(grupe -> grupe.getNaziv()).setExpandRatio(1).setCaption("назив");
+		grupeTabela.addColumn(Grupe::getOpis).setCaption("опис");
+		
 		pretplatnici.addValueChangeListener(new ValueChangeListener<SistemPretplatnici>() {
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void valueChange(ValueChangeEvent<SistemPretplatnici> event) {
 				organizacije.setItems(Servis.organizacijaServis.nadjiSveOrganizacije(pretplatnici.getValue(), true));
+				popuniTabeluGrupe();
 			}
 		});
 		
-		organizacije = new OrganizacijeCombo(pretplatnici.getValue(), "организација", true, true);
+		organizacije.addValueChangeListener(new ValueChangeListener<Organizacije>() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void valueChange(ValueChangeEvent<Organizacije> event) {
+				popuniTabeluGrupe();
+			}
+		});
+		
 		izbrisan = new CheckBox("избрисан");
 		
 		sacuvaj.addClickListener(new ClickListener() {
@@ -65,6 +94,7 @@ public class KorisniciForma extends OpstaForma implements OpstaFormaInterface{
 						@Override
 						public void onClose(ConfirmDialog dialog) {
 							if(dialog.isConfirmed()) {
+								logika.grupe = grupeTabela.getSelectedItems();
 								logika.sacuvajPodatak(sacuvajPodatak(logika.view.dajIzabraniRed()));
 							}
 						}
@@ -102,6 +132,7 @@ public class KorisniciForma extends OpstaForma implements OpstaFormaInterface{
 		if(logika.view.korisnik.isSistem() && logika.view.korisnik.getSistemPretplatnici() == null) {
 			layout.addComponent(pretplatnici);
 		}
+		
 		layout.addComponent(ime);
 		layout.addComponent(prezime);
 		layout.addComponent(ePosta);
@@ -121,6 +152,7 @@ public class KorisniciForma extends OpstaForma implements OpstaFormaInterface{
 			layout.addComponent(sistem);
 			layout.addComponent(izbrisan);
 		}
+		layout.addComponent(grupeTabela);
 		layout.addComponentsAndExpand(expander);
 		layout.addComponent(sacuvaj);
 		layout.addComponent(otkazi);
@@ -200,6 +232,8 @@ public class KorisniciForma extends OpstaForma implements OpstaFormaInterface{
 		}
 		sistem.setValue(false);
 		izbrisan.setValue(false);
+		grupeTabela.deselectAll();
+		popuniTabeluGrupe();
 	}
 
 	@Override
@@ -254,7 +288,21 @@ public class KorisniciForma extends OpstaForma implements OpstaFormaInterface{
 			organizacije.setValue(korisnik.getOrganizacija());
 			sistem.setValue(korisnik.isSistem());
 			izbrisan.setValue(korisnik.isIzbrisan());
+			ArrayList<GrupeKorisnici> grupeKorisnik = Servis.grupeKorisnikServis.vratiSveGrupePoKorisniku(korisnik);
+			for(GrupeKorisnici grKorisnik: grupeKorisnik) {
+				for(Grupe grupa: lista) {
+					if(grKorisnik.getGrupe().getId().equals(grupa.getId())) {
+						grupeTabela.getSelectionModel().select(grupa);
+					}
+				}
+			}
 		}
+	}
+	
+	private void popuniTabeluGrupe() {
+		lista = new ArrayList<Grupe>();
+		lista = Servis.grupeServis.vratiGrupeAktivne(pretplatnici.getValue(), organizacije.getValue());
+		grupeTabela.setItems(lista);
 	}
 
 	@Override

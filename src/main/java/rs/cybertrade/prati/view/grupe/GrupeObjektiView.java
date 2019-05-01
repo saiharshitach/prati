@@ -1,6 +1,7 @@
 package rs.cybertrade.prati.view.grupe;
 
 import java.util.ArrayList;
+import org.vaadin.dialogs.ConfirmDialog;
 import com.github.appreciated.app.layout.annotations.MenuCaption;
 import com.github.appreciated.app.layout.annotations.MenuIcon;
 import com.github.appreciated.app.layout.annotations.NavigatorViewName;
@@ -11,7 +12,9 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.SerializablePredicate;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Grid.SelectionMode;
+import com.vaadin.ui.Button.ClickListener;
 import pratiBaza.tabele.Grupe;
 import pratiBaza.tabele.GrupeObjekti;
 import pratiBaza.tabele.Objekti;
@@ -29,9 +32,11 @@ public class GrupeObjektiView extends OpstiView implements OpstiViewInterface{
 	private ListDataProvider<Objekti> dataProvider;
 	private SerializablePredicate<Objekti> filterPredicate;
 	private ArrayList<Objekti> pocetno, lista;
+	private GrupeObjektiView view;
 
 	public GrupeObjektiView() {
-
+		view = this;
+		
 		buildlayout();
 		buildTable();
 		
@@ -43,6 +48,30 @@ public class GrupeObjektiView extends OpstiView implements OpstiViewInterface{
 			@Override
 			public void valueChange(ValueChangeEvent<Grupe> event) {
 				updateTable();
+			}
+		});
+		
+		potvrdi.addClickListener(new ClickListener() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void buttonClick(ClickEvent event) {
+				ConfirmDialog.show(view.getUI(), "Провера", "Сачувај унете податке?", "да", "не", new ConfirmDialog.Listener() {
+					private static final long serialVersionUID = 1L;
+					@Override
+					public void onClose(ConfirmDialog dialog) {
+						if(dialog.isConfirmed()) {
+							Servis.grupeObjekatServis.izbrisiSveGrupaObjekti(grupeCombo.getValue());
+							for(Objekti objekat: tabela.getSelectedItems()) {
+								GrupeObjekti grupaObjekat = new GrupeObjekti();
+								grupaObjekat.setSistemPretplatnici(pretplatniciCombo.getValue());
+								grupaObjekat.setOrganizacija(organizacijeCombo.getValue());
+								grupaObjekat.setGrupe(grupeCombo.getValue());
+								grupaObjekat.setObjekti(objekat);
+								Servis.grupeObjekatServis.unesiGrupaObjekat(grupaObjekat);
+							}
+						}
+					}
+				});
 			}
 		});
 		

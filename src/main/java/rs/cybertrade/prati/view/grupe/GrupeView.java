@@ -2,7 +2,6 @@ package rs.cybertrade.prati.view.grupe;
 
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
-
 import com.github.appreciated.app.layout.annotations.MenuCaption;
 import com.github.appreciated.app.layout.annotations.MenuIcon;
 import com.github.appreciated.app.layout.annotations.NavigatorViewName;
@@ -141,6 +140,7 @@ public class GrupeView extends OpstiView implements OpstiViewInterface{
 	public void ukloniPodatak() {
 		if(izabrani != null) {
 			if(!izabrani.isIzbrisan()) {
+				Servis.grupeObjekatServis.izbrisiSveGrupaObjekti(izabrani);//brišem sve kombinacije grupaObjekat po izabranoj grupi
 				Servis.grupeServis.izbrisiGrupu(izabrani);
 				pokaziPorukuUspesno("група " + izabrani.getNaziv() + " је избрисана");
 			}else {

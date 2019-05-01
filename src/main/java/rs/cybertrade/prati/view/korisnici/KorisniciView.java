@@ -17,6 +17,8 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
+
+import pratiBaza.tabele.GrupeKorisnici;
 import pratiBaza.tabele.Korisnici;
 import rs.cybertrade.prati.Servis;
 import rs.cybertrade.prati.view.OpstiView;
@@ -34,7 +36,7 @@ public class KorisniciView extends OpstiView implements OpstiViewInterface{
 	private SerializablePredicate<Korisnici> filterPredicate;
 	private ArrayList<Korisnici> pocetno, lista;
 	private KorisniciLogika viewLogika;
-	private KorisniciForma forma;
+	public KorisniciForma forma;
 	private Korisnici izabrani;
 
 	public KorisniciView() {
@@ -150,6 +152,10 @@ public class KorisniciView extends OpstiView implements OpstiViewInterface{
 	public void ukloniPodatak() {
 		if(izabrani != null) {
 			if(!izabrani.isIzbrisan()) {
+				ArrayList<GrupeKorisnici> grupeKorisnik = Servis.grupeKorisnikServis.vratiSveGrupePoKorisniku(izabrani);
+				for(GrupeKorisnici grKorisnik: grupeKorisnik) {
+					Servis.grupeKorisnikServis.izbrisiGrupaZaposleni(grKorisnik);
+				}
 				Servis.korisnikServis.izbrisiKorisnika(izabrani);
 				pokaziPorukuUspesno("корисник " + izabrani.getIme() + " " + izabrani.getPrezime() + " је избрисан");
 			}else {
