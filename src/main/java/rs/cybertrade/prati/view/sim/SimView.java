@@ -1,15 +1,20 @@
 package rs.cybertrade.prati.view.sim;
 
 import java.util.ArrayList;
-
+import java.util.NoSuchElementException;
 import com.github.appreciated.app.layout.annotations.MenuCaption;
 import com.github.appreciated.app.layout.annotations.MenuIcon;
 import com.github.appreciated.app.layout.annotations.NavigatorViewName;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.event.selection.SelectionEvent;
+import com.vaadin.event.selection.SelectionListener;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.SerializablePredicate;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
 import pratiBaza.tabele.Sim;
@@ -23,19 +28,54 @@ import rs.cybertrade.prati.view.OpstiView;
 public class SimView extends OpstiView implements OpstiViewInterface{
 
 	private static final long serialVersionUID = 1L;
+	public final String VIEW_NAME = "sim";
 	private Grid<Sim> tabela;
 	private ListDataProvider<Sim> dataProvider;
 	private SerializablePredicate<Sim> filterPredicate;
 	private ArrayList<Sim> pocetno, lista;
+	private SimLogika viewLogika;
+	private SimForma forma;
+	private Sim izabrani;
 
 	public SimView() {
+		viewLogika = new SimLogika(this);
+		forma = new SimForma(viewLogika);
+		forma.removeStyleName("visible");
+		forma.setEnabled(false);
+		
 		topLayout = buildToolbar();
 		buildlayout();
 		buildTable();
+		
+		tabela.addSelectionListener(new SelectionListener<Sim>() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void selectionChange(SelectionEvent<Sim> event) {
+				if(event.getFirstSelectedItem().isPresent()) {
+					izabrani = event.getFirstSelectedItem().get();
+				}else {
+					izabrani = null;
+				}
+				viewLogika.redIzabran(izabrani);
+			}
+		});
+		
+		dodaj.addClickListener(new ClickListener() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void buttonClick(ClickEvent event) {
+				viewLogika.noviPodatak();
+			}
+		});
+		
 		barGrid.addComponent(topLayout);
 		barGrid.addComponent(tabela);
 		barGrid.setExpandRatio(tabela, 1);
+		
 		addComponent(barGrid);
+		addComponent(forma);
+		
+		viewLogika.init();
 	}
 	@Override
 	public void buildTable() {
@@ -55,41 +95,61 @@ public class SimView extends OpstiView implements OpstiViewInterface{
 		tabela.addColumn(sim -> sim.getUredjaji() == null ? "" : sim.getUredjaji().getSerijskiBr()).setCaption("уређај");
 		tabela.addColumn(sim -> sim.getUredjaji() == null ? "" : sim.getUredjaji().getObjekti() == null ? "" : 
 			sim.getUredjaji().getObjekti().getOznaka()).setCaption("објекат");
+		tabela.addColumn(Sim::getOpis).setCaption("опис");
 		tabela.addComponentColumn(sim -> {CheckBox chb = new CheckBox(); if(sim.isAktivno()) {chb.setValue(true);} return chb;}).setCaption("активан").setStyleGenerator(sim -> "v-align-right");
 		tabela.addColumn(sim -> sim.getOrganizacija() == null ? "" : sim.getOrganizacija().getNaziv()).setCaption("организација");
 		tabela.addComponentColumn(sim -> {CheckBox chb = new CheckBox(); if(sim.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(sim -> "v-align-right");
 		tabela.addColumn(Sim::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(sim -> "v-align-right");
 		tabela.addColumn(Sim::getKreirano, new DateRenderer(DANSATFORMAT)).setCaption("креирано").setStyleGenerator(sim -> "v-align-right");
 	}
+	
+	@Override
+	public void enter(ViewChangeEvent event) {
+		viewLogika.enter(event.getParameters());
+	}
 
 	@Override
 	public void ocistiIzbor() {
-		// TODO Auto-generated method stub
-		
+		tabela.getSelectionModel().deselectAll();
 	}
 
 	@Override
 	public void izaberiRed(Object red) {
-		// TODO Auto-generated method stub
-		
+		tabela.getSelectionModel().select((Sim)red);
 	}
 
 	@Override
 	public Object dajIzabraniRed() {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			return tabela.getSelectionModel().getFirstSelectedItem().get();
+		}catch (NoSuchElementException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public void izmeniPodatak(Object podatak) {
-		// TODO Auto-generated method stub
-		
+		Sim sim = (Sim)podatak;
+		if( sim != null) {
+			forma.addStyleName("visible");
+			forma.setEnabled(true);
+		}else {
+			forma.removeStyleName("visible");
+			forma.setEnabled(false);
+		}
+		forma.izmeniPodatak(sim);
 	}
 
 	@Override
 	public void ukloniPodatak() {
-		// TODO Auto-generated method stub
-		
+		if(izabrani != null) {
+			if(!izabrani.isIzbrisan()) {
+				Servis.simServis.izbrisiSim(izabrani);
+				pokaziPorukuUspesno("сим картица " + izabrani.getIccid() + " је избрисана");
+			}else {
+				pokaziPorukuGreska("сим картица је већ избрисана!");
+			}
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -97,7 +157,7 @@ public class SimView extends OpstiView implements OpstiViewInterface{
 	public void updateTable() {
 		filter.clear();
 		pocetno = new ArrayList<Sim>();
-		lista = Servis.simServis.vratiSveSimKartice(korisnik);
+		lista = Servis.simServis.vratiSveSimKartice(korisnik, false);
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {
@@ -109,7 +169,8 @@ public class SimView extends OpstiView implements OpstiViewInterface{
 			@Override
 			public boolean test(Sim t) {
 				return (t.getBroj().toLowerCase().contains(filter.getValue().toLowerCase()) ||
-						t.getIccid().toLowerCase().contains(filter.getValue().toLowerCase()));
+						t.getIccid().toLowerCase().contains(filter.getValue().toLowerCase()) ||
+						(t.getUredjaji() == null ? "" : t.getUredjaji().getSerijskiBr()).toLowerCase().contains(filter.getValue().toLowerCase()));
 			}
 		};
 		filter.addValueChangeListener(e -> {osveziFilter();});

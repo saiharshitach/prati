@@ -10,9 +10,9 @@ public class KorisniciCombo extends ComboBox<Korisnici>{
 	
 	private static final long serialVersionUID = 1L;
 
-	public KorisniciCombo(Korisnici korisnik, String naziv, boolean prazno) {
+	public KorisniciCombo(Korisnici korisnik, String naziv, boolean prazno, boolean indicator) {
 		setCaption(naziv);
-		setPlaceholder("изабери корисника...");
+		setPlaceholder("корисници...");
 		setItemCaptionGenerator(Korisnici::toString);
 		setItems(lista(korisnik));
 		setEmptySelectionAllowed(prazno);

@@ -1,18 +1,18 @@
-package rs.cybertrade.prati.view.pretplatnici;
+package rs.cybertrade.prati.view.sim;
 
 import com.vaadin.server.Page;
 
-import pratiBaza.tabele.SistemPretplatnici;
+import pratiBaza.tabele.Sim;
 import rs.cybertrade.prati.Prati;
 import rs.cybertrade.prati.Servis;
 import rs.cybertrade.prati.view.LogikaInterface;
 
-public class PretplatniciLogika implements LogikaInterface{
+public class SimLogika implements LogikaInterface{
 
-	public PretplatniciView view;
+	public SimView view;
 	
-	public PretplatniciLogika(PretplatniciView pretplatniciView) {
-		view = pretplatniciView;
+	public SimLogika(SimView simView) {
+		view = simView;
 	}
 	
 	@Override
@@ -49,46 +49,50 @@ public class PretplatniciLogika implements LogikaInterface{
 		}else {
 			try {
 				int id = Integer.parseInt(objectId);
-				SistemPretplatnici pretplatnik = Servis.sistemPretplatnikServis.nadjiPretplatnikaPoId(id);
-				view.izaberiRed(pretplatnik);
+				Sim sim = Servis.simServis.nadjiSimPoID(id);
+				view.izaberiRed(sim);
 			}catch (Exception e) {
-				
+				// TODO: handle exception
 			}
 		}
 	}
 
 	@Override
 	public void sacuvajPodatak(Object podatak) {
-		SistemPretplatnici pretplatnik = (SistemPretplatnici)podatak;
+		Sim sim = (Sim)podatak;
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
 		setFragmentParametar("");
-		if(pretplatnik.getId() != null) {
-			Servis.sistemPretplatnikServis.izmeniPretplatnika(pretplatnik);
-			view.pokaziPorukuUspesno("претплатник измењен");
+		if(sim.getId() != null) {
+			Servis.simServis.azurirajSim(sim);
+			view.pokaziPorukuUspesno("сим измењена");
 		}else {
-			Servis.sistemPretplatnikServis.unesiPretplatnika(pretplatnik);
-			view.pokaziPorukuUspesno("претплатник сачуван");
+			try {
+				Servis.simServis.unesiSim(sim);
+				view.pokaziPorukuUspesno("сим сачувана");
+			}catch (Exception e) {
+				view.pokaziPorukuGreska("сим са унетим иццид или позивним бројем већ постоји!");
+			}
 		}
 		view.updateTable();
 	}
 
 	@Override
 	public void izmeniPodatak(Object podatak) {
-		SistemPretplatnici pretplatnik = (SistemPretplatnici)podatak;
-		if(pretplatnik == null) {
+		Sim sim = (Sim)podatak;
+		if(sim == null) {
 			setFragmentParametar("");
 		}else {
-			setFragmentParametar(pretplatnik.getId() + "");
+			setFragmentParametar(sim.getId() + "");
 		}
-		view.izmeniPodatak(pretplatnik);
+		view.izmeniPodatak(sim);
 	}
 
 	@Override
 	public void noviPodatak() {
 		view.ocistiIzbor();
 		setFragmentParametar("new");
-		view.izmeniPodatak(new SistemPretplatnici());
+		view.izmeniPodatak(new Sim());
 	}
 
 	@Override
@@ -102,7 +106,7 @@ public class PretplatniciLogika implements LogikaInterface{
 
 	@Override
 	public void redIzabran(Object podatak) {
-		view.izmeniPodatak((SistemPretplatnici)podatak);
+		view.izmeniPodatak((Sim)podatak);
 	}
 
 }

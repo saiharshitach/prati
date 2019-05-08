@@ -12,9 +12,10 @@
 		<maven>3</maven>
 	</prerequisites>
 	<properties>
-		<vaadin.version>8.7.1</vaadin.version>
-		<vaadin.plugin.version>8.7.1</vaadin.plugin.version>
-		<jetty.plugin.version>9.3.9.v20160517</jetty.plugin.version>
+		<vaadin.version>8.8.0</vaadin.version>
+		<vaadin.plugin.version>8.8.0</vaadin.plugin.version>
+		<!-- <jetty.plugin.version>9.3.9.v20160517</jetty.plugin.version> -->
+		<jetty.plugin.version>9.4.13.v20181111</jetty.plugin.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
@@ -140,6 +141,27 @@
            <groupId>org.eclipse.jdt.core.compiler</groupId>
            <artifactId>ecj</artifactId>
            <version>4.6.1</version>
+        </dependency>
+        <!-- ovaj deo ubacujem zbog prelaska na javu 11 -->
+        <dependency>
+           <groupId>javax.xml.bind</groupId>
+           <artifactId>jaxb-api</artifactId>
+           <version>2.2.11</version>
+        </dependency>
+        <dependency>
+           <groupId>com.sun.xml.bind</groupId>
+           <artifactId>jaxb-core</artifactId>
+           <version>2.2.11</version>
+        </dependency>
+        <dependency>
+           <groupId>com.sun.xml.bind</groupId>
+           <artifactId>jaxb-impl</artifactId>
+           <version>2.2.11</version>
+        </dependency>
+        <dependency>
+           <groupId>javax.activation</groupId>
+           <artifactId>activation</artifactId>
+           <version>1.1.1</version>
         </dependency>
 	</dependencies>
 	

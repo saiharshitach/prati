@@ -96,6 +96,7 @@ public class UredjajiModeliLogika implements LogikaInterface{
 		view.ukloniPodatak();
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
+		view.updateTable();
 		setFragmentParametar("");
 	}
 

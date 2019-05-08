@@ -55,6 +55,7 @@ public class KorisniciForma extends OpstaForma implements OpstaFormaInterface{
 		mobilni = new Tekst("мобилни", false);
 		iDugme = new Tekst("и-дугме", false);
 		sistem = new CheckBox("систем");
+		
 		organizacije = new OrganizacijeCombo(pretplatnici.getValue(), "организација", true, true);
 		grupeTabela = new Grid<Grupe>();
 		grupeTabela.setCaption("групе");

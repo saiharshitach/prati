@@ -78,26 +78,34 @@ public class Prati extends UI implements BroadcastListener{
 		boolean prijavi = true;
 		if(korisnik == null) {
 			prijavi = false;
-		} else if(korisnik.isIzbrisan()) {
-			prijavi = false;
-		} else if(!korisnik.isAktivan()) {
-			prijavi = false;
-		} else if(!korisnik.isKorisnik()) {
-			prijavi = false;
-		} else if(korisnik.getSistemPretplatnici() != null) {
-			if(korisnik.getSistemPretplatnici().isIzbrisan()) {
+			}else {
+				if(korisnik.isIzbrisan()) {
+					prijavi = false;
+				}
+			if(!korisnik.isAktivan()) {
 				prijavi = false;
-			}else if(!korisnik.getSistemPretplatnici().isAktivan()) {
+				}
+			if(!korisnik.isKorisnik()) {
 				prijavi = false;
+				}
+			//ubaciti kontrolu za vreme korisnika ako je podešeno
+			if(korisnik.getSistemPretplatnici() != null) {
+				if(korisnik.getSistemPretplatnici().isIzbrisan()) {
+					prijavi = false;
+					}
+				if(!korisnik.getSistemPretplatnici().isAktivan()) {
+					prijavi = false;
+					}
+				}//ubaciti kontrolu za vreme za pretplatnika ako je podešeno
+			if(korisnik.getOrganizacija() != null) {
+				if(korisnik.getOrganizacija().isIzbrisan()) {
+					prijavi = false;
+				}
+				if(!korisnik.getOrganizacija().isAktivan()) {
+					prijavi = false;
+					}
+				}
 			}
-		} else if(korisnik.getOrganizacija() != null) {
-			if(korisnik.getOrganizacija().isIzbrisan()) {
-				prijavi = false;
-			}else if(!korisnik.getOrganizacija().isAktivan()) {
-				prijavi = false;
-			}
-		}
-		
 		if(prijavi) {
 			VaadinSession.getCurrent().setAttribute(Korisnici.class.getName(), korisnik);
 		}else {
