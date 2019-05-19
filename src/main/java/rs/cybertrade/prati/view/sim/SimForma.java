@@ -9,26 +9,26 @@ import com.vaadin.ui.Button.ClickListener;
 import rs.cybertrade.prati.view.OpstaForma;
 import rs.cybertrade.prati.view.OpstaFormaInterface;
 import rs.cybertrade.prati.view.OpstiView;
-import rs.cybertrade.prati.view.komponente.OperateriCombo;
-import rs.cybertrade.prati.view.komponente.OrganizacijeCombo;
-import rs.cybertrade.prati.view.komponente.PretplatniciCombo;
+import rs.cybertrade.prati.view.komponente.ComboOperateri;
+import rs.cybertrade.prati.view.komponente.ComboOrganizacije;
+import rs.cybertrade.prati.view.komponente.ComboPretplatnici;
 import rs.cybertrade.prati.view.komponente.Tekst;
 
 public class SimForma extends OpstaForma implements OpstaFormaInterface{
 
 	private static final long serialVersionUID = 1L;
 	private SimLogika logika;
-	private PretplatniciCombo pretplatnici;
-	private OrganizacijeCombo organizacije;
-	private OperateriCombo operateri;
+	private ComboPretplatnici pretplatnici;
+	private ComboOrganizacije organizacije;
+	private ComboOperateri operateri;
 	private Tekst uredjaj, broj, iccid, opis;
 	private CheckBox aktivan, izbrisan;
 	
 	public SimForma(SimLogika log) {
 		logika = log;
-		pretplatnici = new PretplatniciCombo("претплатник", true, true);
-		organizacije = new OrganizacijeCombo(pretplatnici.getValue(), "организација", true, false);
-		operateri = new OperateriCombo("оператер", true, true);
+		pretplatnici = new ComboPretplatnici("претплатник", true, true);
+		organizacije = new ComboOrganizacije(pretplatnici.getValue(), "организација", true, false);
+		operateri = new ComboOperateri("оператер", true, true);
 		uredjaj = new Tekst("уређај", false);
 		uredjaj.setEnabled(false);
 		broj = new Tekst("сим број", true);
@@ -107,6 +107,7 @@ public class SimForma extends OpstaForma implements OpstaFormaInterface{
 	
 	@Override
 	public void izmeniPodatak(Object podatak) {
+		ocistiPodatak();
 		Sim sim;
 		if(podatak == null) {
 			sim = new Sim();

@@ -9,20 +9,20 @@ import pratiBaza.tabele.SistemUredjajiModeli;
 import rs.cybertrade.prati.view.OpstaForma;
 import rs.cybertrade.prati.view.OpstaFormaInterface;
 import rs.cybertrade.prati.view.OpstiView;
-import rs.cybertrade.prati.view.komponente.ProizvodjaciCombo;
+import rs.cybertrade.prati.view.komponente.ComboProizvodjaci;
 import rs.cybertrade.prati.view.komponente.Tekst;
 
 public class UredjajiModeliForma extends OpstaForma implements OpstaFormaInterface{
 	
 	private static final long serialVersionUID = 1L;
 	private UredjajiModeliLogika logika;
-	private ProizvodjaciCombo proizvodjaciCombo;
+	private ComboProizvodjaci proizvodjaciCombo;
 	private Tekst naziv, opis;
 	private CheckBox obd, izbrisan;
 
 	public UredjajiModeliForma(UredjajiModeliLogika log) {
 		logika = log;
-		proizvodjaciCombo = new ProizvodjaciCombo("произвођач", false);
+		proizvodjaciCombo = new ComboProizvodjaci("произвођач", false);
 		naziv = new Tekst("назив", true);
 		opis = new Tekst("опис", false);
 		obd = new CheckBox("обд");

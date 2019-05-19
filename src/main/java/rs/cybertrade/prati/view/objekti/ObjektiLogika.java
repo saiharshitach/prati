@@ -5,7 +5,7 @@ import com.vaadin.server.Page;
 import pratiBaza.tabele.Objekti;
 import pratiBaza.tabele.Uredjaji;
 import rs.cybertrade.prati.Prati;
-import rs.cybertrade.prati.Servis;
+import rs.cybertrade.prati.server.Servis;
 import rs.cybertrade.prati.view.LogikaInterface;
 
 public class ObjektiLogika implements LogikaInterface{
@@ -66,19 +66,21 @@ public class ObjektiLogika implements LogikaInterface{
 		setFragmentParametar("");
 		if(objekat.getId() != null) {
 			Servis.objekatServis.azurirajObjekte(objekat);
-			Uredjaji uredjajNovi = objekat.getUredjaji();
-			if(uredjajNovi != null) {
-				uredjajNovi.setObjekti(objekat);
-				Servis.uredjajServis.izmeniUredjaj(uredjajNovi);
+			if(objekat.getUredjaji() != null) {
+				Uredjaji uredjaj = objekat.getUredjaji();
+				uredjaj.setObjekti(objekat);
+				uredjaj.setZauzet(true);
+				Servis.uredjajServis.izmeniUredjaj(uredjaj);
 			}
 			view.pokaziPorukuUspesno("објекат измењен");
 		}else {
 			try {
 				Servis.objekatServis.unesiObjekte(objekat);
-				Uredjaji uredjajNovi = objekat.getUredjaji();
-				if(uredjajNovi != null) {
-					uredjajNovi.setObjekti(objekat);
-					Servis.uredjajServis.izmeniUredjaj(uredjajNovi);
+				if(objekat.getUredjaji() != null) {
+					Uredjaji uredjaj = objekat.getUredjaji();
+					uredjaj.setObjekti(objekat);
+					uredjaj.setZauzet(true);
+					Servis.uredjajServis.izmeniUredjaj(uredjaj);
 				}
 				view.pokaziPorukuUspesno("објекат сачуван");
 			}catch (Exception e) {

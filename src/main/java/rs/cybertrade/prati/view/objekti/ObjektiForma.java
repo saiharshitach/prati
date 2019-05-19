@@ -1,35 +1,36 @@
 package rs.cybertrade.prati.view.objekti;
 
 import org.vaadin.dialogs.ConfirmDialog;
+import com.vaadin.data.HasValue.ValueChangeEvent;
+import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.server.Page;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import pratiBaza.tabele.Objekti;
 import pratiBaza.tabele.Uredjaji;
-import rs.cybertrade.prati.Servis;
+import rs.cybertrade.prati.server.Servis;
 import rs.cybertrade.prati.view.OpstaForma;
 import rs.cybertrade.prati.view.OpstaFormaInterface;
 import rs.cybertrade.prati.view.OpstiView;
-import rs.cybertrade.prati.view.komponente.OrganizacijeCombo;
-import rs.cybertrade.prati.view.komponente.PretplatniciCombo;
+import rs.cybertrade.prati.view.komponente.ComboOrganizacije;
+import rs.cybertrade.prati.view.komponente.ComboPretplatnici;
 import rs.cybertrade.prati.view.komponente.Tekst;
-import rs.cybertrade.prati.view.komponente.UredjajiCombo;
+import rs.cybertrade.prati.view.komponente.ComboUredjaji;
 
 public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 
 	private static final long serialVersionUID = 1L;
 	private ObjektiLogika logika;
-	private PretplatniciCombo pretplatnici;
-	private OrganizacijeCombo organizacije;
-	private UredjajiCombo uredjaji;
-	//private SimCombo sim;
+	private ComboPretplatnici pretplatnici;
+	private ComboOrganizacije organizacije;
+	private ComboUredjaji uredjaji;
 	private Tekst oznaka, simBroj, sim;
 	private CheckBox aktivan, vozilo, izbrisan;
 	
 	public ObjektiForma(ObjektiLogika log) {
 		logika = log;
-		pretplatnici = new PretplatniciCombo("претплатник", true, true);
+		pretplatnici = new ComboPretplatnici("претплатник", true, true);
 		oznaka = new Tekst("ознака", true);
 		
 		//sim = new SimCombo(logika.view.korisnik, "сим картица", true, true);
@@ -42,8 +43,20 @@ public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 
 		izbrisan = new CheckBox("избрисан");
 		
-		organizacije = new OrganizacijeCombo(pretplatnici.getValue(), "организација", true, true);
-		uredjaji = new UredjajiCombo(pretplatnici.getValue(), organizacije.getValue(), "уређај", true, true, null);
+		organizacije = new ComboOrganizacije(pretplatnici.getValue(), "организација", true, true);
+		uredjaji = new ComboUredjaji(pretplatnici.getValue(), organizacije.getValue(), "уређај", true, true, null);
+		uredjaji.addValueChangeListener(new ValueChangeListener<Uredjaji>() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void valueChange(ValueChangeEvent<Uredjaji> event) {
+				if(event != null) {
+					if(event.getValue() != null) {
+						sim.setValue(event.getValue().getSim() == null ? "" : event.getValue().getSim().getIccid());
+						simBroj.setValue(event.getValue().getSim() == null ? "" : event.getValue().getSim().getBroj());
+					}
+				}
+			}
+		});
 		
 		sacuvaj.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
@@ -92,7 +105,6 @@ public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 		if(logika.view.isAdmin()) {
 			layout.addComponent(pretplatnici);
 		}
-		
 		layout.addComponent(oznaka);
 		layout.addComponent(uredjaji);
 		layout.addComponent(sim);
@@ -115,8 +127,8 @@ public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 	
 	@Override
 	public void izmeniPodatak(Object podatak) {
-		Objekti objekat;
 		ocistiPodatak();
+		Objekti objekat;
 		if(podatak == null) {
 			objekat = new Objekti();
 		}else {
@@ -137,21 +149,20 @@ public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 			Uredjaji uredjajStari = objekat.getUredjaji();
 			if(uredjajStari != null) {
 				uredjajStari.setObjekti(null);
+				uredjajStari.setZauzet(false);
 				Servis.uredjajServis.izmeniUredjaj(uredjajStari);
 			}
 		}
 		objekat.setSistemPretplatnici(pretplatnici.getValue());
 		objekat.setOznaka(oznaka.getValue());
-		
 		objekat.setUredjaji(uredjaji.getValue());
-		if(uredjaji.getValue() != null) {
-			uredjaji.getValue().setObjekti(objekat);
-		}
-
 		objekat.setTip(vozilo.getValue());
 		objekat.setAktivan(aktivan.getValue());
 		objekat.setOrganizacija(organizacije.getValue());
 		objekat.setIzbrisan(izbrisan.getValue());
+		if(!objekat.isAktivan()) {
+			Servis.grupeObjekatServis.izbrisiSveGrupeObjekatPoObjektu(objekat);
+		}
 		return objekat;
 	}
 
@@ -191,7 +202,7 @@ public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 				uredjaji.setItems(Servis.uredjajServis.nadjiSveAktivneSlobodneUredjajePoPretplatniku(objekat.getSistemPretplatnici(), objekat.getOrganizacija(), uredjaj));
 				uredjaji.setSelectedItem(uredjaj);
 			}catch (Exception e) {
-				// TODO: handle exception
+				uredjaji.setItems(Servis.uredjajServis.nadjiSveAktivneSlobodneUredjajePoPretplatniku(objekat.getSistemPretplatnici(), objekat.getOrganizacija(), null));
 			}
 			try {
 				sim.setValue(objekat.getUredjaji().getSim().getIccid());

@@ -1,5 +1,8 @@
 package rs.cybertrade.prati;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import com.github.appreciated.app.layout.behaviour.AppLayoutComponent;
@@ -10,6 +13,7 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.annotations.Viewport;
+import com.vaadin.event.UIEvents.PollListener;
 import com.vaadin.server.Page;
 import com.vaadin.server.ServiceException;
 import com.vaadin.server.SessionDestroyEvent;
@@ -23,10 +27,12 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import pratiBaza.tabele.Javljanja;
 import pratiBaza.tabele.Korisnici;
+import pratiBaza.tabele.Objekti;
 import rs.cybertrade.prati.Broadcaster.BroadcastListener;
 import rs.cybertrade.prati.meni.PratiEventBus;
 import rs.cybertrade.prati.meni.PratiEvent.KorisnikLoggedOutEvent;
 import rs.cybertrade.prati.meni.PratiEvent.KorisnikLoginRequestedEvent;
+import rs.cybertrade.prati.server.Servis;
 
 @Viewport("user-scalable=no,initial-scale=1.0")
 @Theme("mytheme")
@@ -38,7 +44,10 @@ public class Prati extends UI implements BroadcastListener{
 	private static final long serialVersionUID = 1L;
 	private final PratiEventBus pratiEventBus = new PratiEventBus();
 	private Korisnici korisnik;
-
+	public PollListener osvezavanjeMarkera; 
+	
+	public Map<Long, Objekti> izabraniId = new HashMap<>();
+	public boolean centriranje = false;
 	@Override
     protected void init(VaadinRequest vaadinRequest) {
 		PratiEventBus.register(this);
@@ -138,7 +147,7 @@ public class Prati extends UI implements BroadcastListener{
 	}
 	//da li je sirina browser-a veća od 768
 	public Boolean sirina(){
-		return (getPage().getBrowserWindowWidth() >= 768);
+		return (getPage().getBrowserWindowWidth() >= 700);
 	}
 	
     @WebServlet(urlPatterns = "/*", name = "PratiServlet", asyncSupported = true)

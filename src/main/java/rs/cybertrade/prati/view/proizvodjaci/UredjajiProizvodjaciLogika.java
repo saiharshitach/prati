@@ -3,7 +3,7 @@ package rs.cybertrade.prati.view.proizvodjaci;
 import com.vaadin.server.Page;
 import pratiBaza.tabele.SistemUredjajiProizvodjac;
 import rs.cybertrade.prati.Prati;
-import rs.cybertrade.prati.Servis;
+import rs.cybertrade.prati.server.Servis;
 import rs.cybertrade.prati.view.LogikaInterface;
 
 public class UredjajiProizvodjaciLogika implements LogikaInterface{

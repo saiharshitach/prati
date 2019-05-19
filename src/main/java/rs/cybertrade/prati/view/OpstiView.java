@@ -23,10 +23,11 @@ import pratiBaza.tabele.Korisnici;
 import pratiBaza.tabele.Organizacije;
 import pratiBaza.tabele.SistemPretplatnici;
 import rs.cybertrade.prati.Prati;
-import rs.cybertrade.prati.Servis;
-import rs.cybertrade.prati.view.komponente.GrupeCombo;
-import rs.cybertrade.prati.view.komponente.OrganizacijeCombo;
-import rs.cybertrade.prati.view.komponente.PretplatniciCombo;
+import rs.cybertrade.prati.mape.StaraGMapa;
+import rs.cybertrade.prati.server.Servis;
+import rs.cybertrade.prati.view.komponente.ComboGrupe;
+import rs.cybertrade.prati.view.komponente.ComboOrganizacije;
+import rs.cybertrade.prati.view.komponente.ComboPretplatnici;
 
 public abstract class OpstiView extends CssLayout implements View {
 	private static final long serialVersionUID = 1L;
@@ -45,10 +46,12 @@ public abstract class OpstiView extends CssLayout implements View {
 	public NumberRenderer decimalni;
 	public TextField filter;
 	public Korisnici korisnik;
-	public PretplatniciCombo pretplatniciCombo;
-	public OrganizacijeCombo organizacijeCombo;
-	public GrupeCombo grupeCombo;
+	public ComboPretplatnici pretplatniciCombo;
+	public ComboOrganizacije organizacijeCombo;
+	public ComboGrupe grupeCombo;
 	public CssLayout expander;
+	public CssLayout paneli;
+	public StaraGMapa mapa;
 	
 	public OpstiView() {
 		setSizeFull();
@@ -57,11 +60,12 @@ public abstract class OpstiView extends CssLayout implements View {
 		korisnik = (Korisnici) VaadinSession.getCurrent().getAttribute(Korisnici.class.getName());
 		topLayout = new HorizontalLayout();
 		topLayout.setSpacing(true);
+		topLayout.setMargin(new MarginInfo(false, false, false, false));
 		buildPretraga();
 	}
 	
 	//opšti toolbar
-	public HorizontalLayout buildToolbar() {
+	public void buildToolbar() {
 		postaviSirinu();
         dodaj = new Button();
         dodaj.addStyleName(ValoTheme.BUTTON_PRIMARY);
@@ -71,7 +75,6 @@ public abstract class OpstiView extends CssLayout implements View {
         topLayout.setComponentAlignment(filter, Alignment.MIDDLE_LEFT);
         topLayout.setExpandRatio(filter, 1);
 		topLayout.setStyleName("top-bar");
-        return topLayout;
 	}
 	
 	//toolabar sa grupama
@@ -80,13 +83,11 @@ public abstract class OpstiView extends CssLayout implements View {
 		panelToolBar.setWidth("100%");
 		panelToolBar.addStyleName(ValoTheme.PANEL_BORDERLESS);
 		
-		topLayout.setMargin(new MarginInfo(false, false, false, false));
-		
-        pretplatniciCombo = new PretplatniciCombo(null, true, false);
+        pretplatniciCombo = new ComboPretplatnici(null, true, false);
         pretplatniciCombo.addStyleName("lista-combo");
-        organizacijeCombo = new OrganizacijeCombo(pretplatniciCombo.getValue(), null, true, false);
+        organizacijeCombo = new ComboOrganizacije(pretplatniciCombo.getValue(), null, true, false);
         organizacijeCombo.addStyleName("lista-combo");
-        grupeCombo = new GrupeCombo(pretplatniciCombo.getValue(), organizacijeCombo.getValue(), null, true, false);
+        grupeCombo = new ComboGrupe(pretplatniciCombo.getValue(), organizacijeCombo.getValue(), null, true, false);
         grupeCombo.addStyleName("lista-combo");
         potvrdi = new Button();
         potvrdi.addStyleName(ValoTheme.BUTTON_PRIMARY);
@@ -173,4 +174,5 @@ public abstract class OpstiView extends CssLayout implements View {
 	public boolean isAdmin() {
 		return (korisnik.isSistem() && korisnik.getSistemPretplatnici() == null);
 	}
+	
 }

@@ -11,6 +11,8 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.VerticalLayout;
+
+import rs.cybertrade.prati.Prati;
 import rs.cybertrade.prati.view.komponente.Celobrojni;
 import rs.cybertrade.prati.view.komponente.Decimalni;
 import rs.cybertrade.prati.view.komponente.Tekst;
@@ -22,7 +24,7 @@ public class OpstaForma extends CssLayout{
 	public DecimalFormat decimalFormat;
 	public VerticalLayout layout;
 	public CssLayout expander;
-	public Button sacuvaj, otkazi, izbrisi;
+	public Button sacuvaj, otkazi, izbrisi, dodajLokaciju;
 	public Celobrojni ceo;
 	public Decimalni dec;
 	public Tekst tekst;
@@ -40,6 +42,9 @@ public class OpstaForma extends CssLayout{
 		
 		layout = new VerticalLayout();
 		layout.setHeight("100%");
+		if(!Prati.getCurrent().sirina()) {
+			layout.setWidth("100%");
+		}
 		layout.setSpacing(true);
 		
 		expander = new CssLayout();

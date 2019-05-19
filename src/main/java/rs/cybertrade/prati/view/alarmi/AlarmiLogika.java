@@ -3,7 +3,7 @@ package rs.cybertrade.prati.view.alarmi;
 import com.vaadin.server.Page;
 import pratiBaza.tabele.SistemAlarmi;
 import rs.cybertrade.prati.Prati;
-import rs.cybertrade.prati.Servis;
+import rs.cybertrade.prati.server.Servis;
 import rs.cybertrade.prati.view.LogikaInterface;
 
 public class AlarmiLogika implements LogikaInterface{

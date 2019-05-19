@@ -19,7 +19,7 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
 import pratiBaza.tabele.Organizacije;
-import rs.cybertrade.prati.Servis;
+import rs.cybertrade.prati.server.Servis;
 import rs.cybertrade.prati.view.OpstiView;
 import rs.cybertrade.prati.view.OpstiViewInterface;
 
@@ -44,7 +44,7 @@ public class OrganizacijeView extends OpstiView implements OpstiViewInterface{
 		forma.removeStyleName("visible");
 		forma.setEnabled(false);
 		
-		topLayout = buildToolbar();
+		buildToolbar();
 		buildlayout();
 		buildTable();
 		

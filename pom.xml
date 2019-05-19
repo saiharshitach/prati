@@ -105,16 +105,17 @@
             <artifactId>report-ui</artifactId>
             <version>1.1</version>
         </dependency>
-		<dependency>
-			<groupId>jfree</groupId>
+        <!-- ovde bila verzija jfree 1.0.13 -->
+		<!-- <dependency>
+		<groupId>org.jfree</groupId>
 			<artifactId>jfreechart</artifactId>
-			<version>1.0.13</version>
+			<version>1.0.19</version>
 		</dependency>
 		<dependency>
             <groupId>org.vaadin.addon</groupId>
             <artifactId>jfreechartwrapper</artifactId>
             <version>4.0.0</version>
-        </dependency>
+        </dependency> -->
         <dependency>
             <groupId>com.github.appreciated</groupId>
             <artifactId>app-layout-addon</artifactId>
@@ -163,6 +164,16 @@
            <artifactId>activation</artifactId>
            <version>1.1.1</version>
         </dependency>
+        <dependency>
+            <groupId>fr.dudie</groupId>
+            <artifactId>nominatim-api</artifactId>
+            <version>3.3</version>
+         </dependency>
+         <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20180130</version>
+         </dependency>
 	</dependencies>
 	
 	<build>

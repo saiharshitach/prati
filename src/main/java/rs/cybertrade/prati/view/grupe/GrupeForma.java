@@ -11,30 +11,30 @@ import com.vaadin.ui.Button.ClickListener;
 
 import pratiBaza.tabele.Grupe;
 import pratiBaza.tabele.SistemPretplatnici;
-import rs.cybertrade.prati.Servis;
+import rs.cybertrade.prati.server.Servis;
 import rs.cybertrade.prati.view.OpstaForma;
 import rs.cybertrade.prati.view.OpstaFormaInterface;
 import rs.cybertrade.prati.view.OpstiView;
-import rs.cybertrade.prati.view.komponente.OrganizacijeCombo;
-import rs.cybertrade.prati.view.komponente.PretplatniciCombo;
+import rs.cybertrade.prati.view.komponente.ComboOrganizacije;
+import rs.cybertrade.prati.view.komponente.ComboPretplatnici;
 import rs.cybertrade.prati.view.komponente.Tekst;
 
 public class GrupeForma extends OpstaForma implements OpstaFormaInterface{
 
 	private static final long serialVersionUID = 1L;
 	private GrupeLogika logika;
-	private PretplatniciCombo pretplatnici;
-	private OrganizacijeCombo organizacije;
+	private ComboPretplatnici pretplatnici;
+	private ComboOrganizacije organizacije;
 	private Tekst naziv, opis;
 	private CheckBox aktivan, izbrisan;
 
 	public GrupeForma(GrupeLogika log) {
 		logika = log;
-		pretplatnici = new PretplatniciCombo("претплатник", true, true);
-		naziv = new Tekst("опис", true);
+		pretplatnici = new ComboPretplatnici("претплатник", true, true);
+		naziv = new Tekst("назив", true);
 		opis = new Tekst("опис", false);
 		aktivan = new CheckBox("активан");
-		organizacije = new OrganizacijeCombo(pretplatnici.getValue(), "организација", true, true);
+		organizacije = new ComboOrganizacije(pretplatnici.getValue(), "организација", true, true);
 		izbrisan = new CheckBox("избрисан");
 		
 		pretplatnici.addValueChangeListener(new ValueChangeListener<SistemPretplatnici>() {

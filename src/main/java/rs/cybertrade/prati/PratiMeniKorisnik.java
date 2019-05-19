@@ -14,6 +14,7 @@ import static com.github.appreciated.app.layout.builder.Section.HEADER;
 import static com.github.appreciated.app.layout.builder.Section.FOOTER;
 import com.vaadin.icons.VaadinIcons;
 import rs.cybertrade.prati.meni.PratiEvent.KorisnikLoggedOutEvent;
+import rs.cybertrade.prati.objekatzone.ObjekatZoneView;
 import rs.cybertrade.prati.meni.PratiEventBus;
 import rs.cybertrade.prati.view.IstorijaView;
 import rs.cybertrade.prati.view.PocetnaView;
@@ -81,6 +82,7 @@ public class PratiMeniKorisnik{
         		.add(GrupeObjektiView.class)
         		.add(KorisniciView.class)
                 .add(ObjektiView.class)
+                .add(ObjekatZoneView.class)
                 .add(OrganizacijeView.class)
                 .add(SimView.class)
                 .add(UredjajiView.class)
@@ -109,6 +111,7 @@ public class PratiMeniKorisnik{
 		        		.add(GrupeObjektiView.class)
 		        		.add(KorisniciView.class)
 		                .add(ObjektiView.class)
+		                .add(ObjekatZoneView.class)
 		                .add(OrganizacijeView.class)
 		                .add(SimView.class)
 		                .add(UredjajiView.class)

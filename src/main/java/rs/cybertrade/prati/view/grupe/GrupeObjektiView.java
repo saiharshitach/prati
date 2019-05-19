@@ -18,7 +18,7 @@ import com.vaadin.ui.Button.ClickListener;
 import pratiBaza.tabele.Grupe;
 import pratiBaza.tabele.GrupeObjekti;
 import pratiBaza.tabele.Objekti;
-import rs.cybertrade.prati.Servis;
+import rs.cybertrade.prati.server.Servis;
 import rs.cybertrade.prati.view.OpstiView;
 import rs.cybertrade.prati.view.OpstiViewInterface;
 

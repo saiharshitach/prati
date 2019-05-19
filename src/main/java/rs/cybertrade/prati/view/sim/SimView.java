@@ -18,8 +18,8 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
 import pratiBaza.tabele.Sim;
-import rs.cybertrade.prati.Servis;
 import rs.cybertrade.prati.view.OpstiViewInterface;
+import rs.cybertrade.prati.server.Servis;
 import rs.cybertrade.prati.view.OpstiView;
 
 @NavigatorViewName("sim") // an empty view name will also be the default view
@@ -43,7 +43,7 @@ public class SimView extends OpstiView implements OpstiViewInterface{
 		forma.removeStyleName("visible");
 		forma.setEnabled(false);
 		
-		topLayout = buildToolbar();
+		buildToolbar();
 		buildlayout();
 		buildTable();
 		
@@ -98,7 +98,9 @@ public class SimView extends OpstiView implements OpstiViewInterface{
 		tabela.addColumn(Sim::getOpis).setCaption("опис");
 		tabela.addComponentColumn(sim -> {CheckBox chb = new CheckBox(); if(sim.isAktivno()) {chb.setValue(true);} return chb;}).setCaption("активан").setStyleGenerator(sim -> "v-align-right");
 		tabela.addColumn(sim -> sim.getOrganizacija() == null ? "" : sim.getOrganizacija().getNaziv()).setCaption("организација");
-		tabela.addComponentColumn(sim -> {CheckBox chb = new CheckBox(); if(sim.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(sim -> "v-align-right");
+		if(isAdmin()) {
+			tabela.addComponentColumn(sim -> {CheckBox chb = new CheckBox(); if(sim.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(sim -> "v-align-right");
+		}
 		tabela.addColumn(Sim::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(sim -> "v-align-right");
 		tabela.addColumn(Sim::getKreirano, new DateRenderer(DANSATFORMAT)).setCaption("креирано").setStyleGenerator(sim -> "v-align-right");
 	}

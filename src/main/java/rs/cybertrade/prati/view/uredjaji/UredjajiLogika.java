@@ -2,9 +2,10 @@ package rs.cybertrade.prati.view.uredjaji;
 
 import com.vaadin.server.Page;
 
+import pratiBaza.tabele.Sim;
 import pratiBaza.tabele.Uredjaji;
 import rs.cybertrade.prati.Prati;
-import rs.cybertrade.prati.Servis;
+import rs.cybertrade.prati.server.Servis;
 import rs.cybertrade.prati.view.LogikaInterface;
 
 public class UredjajiLogika implements LogikaInterface{
@@ -65,6 +66,18 @@ public class UredjajiLogika implements LogikaInterface{
 		setFragmentParametar("");
 		if(uredjaj.getId() != null) {
 			Servis.uredjajServis.izmeniUredjaj(uredjaj);
+			if(uredjaj.getSim() != null) {
+				Sim sim = uredjaj.getSim();
+				sim.setUredjaji(uredjaj);
+				sim.setZauzet(true);
+				Servis.simServis.azurirajSim(sim);
+			}
+			if(uredjaj.getSim2() != null) {
+				Sim sim = uredjaj.getSim2();
+				sim.setUredjaji(uredjaj);
+				sim.setZauzet(true);
+				Servis.simServis.azurirajSim(sim);
+			}
 			view.pokaziPorukuUspesno("уређај измењен");
 		}else {
 			try {

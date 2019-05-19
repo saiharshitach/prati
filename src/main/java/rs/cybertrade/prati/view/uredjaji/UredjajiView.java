@@ -19,8 +19,8 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
 import pratiBaza.tabele.Uredjaji;
-import rs.cybertrade.prati.Servis;
 import rs.cybertrade.prati.view.OpstiViewInterface;
+import rs.cybertrade.prati.server.Servis;
 import rs.cybertrade.prati.view.OpstiView;
 
 @NavigatorViewName("uredjaji") // an empty view name will also be the default view
@@ -44,7 +44,7 @@ public class UredjajiView extends OpstiView implements OpstiViewInterface{
 		forma.setEnabled(false);
 		forma.removeStyleName("visible");
 		
-		topLayout = buildToolbar();
+		buildToolbar();
 		buildlayout();
 		buildTable();
 		
@@ -99,7 +99,9 @@ public class UredjajiView extends OpstiView implements OpstiViewInterface{
 		tabela.addColumn(uredjaji -> uredjaji.getObjekti() == null ? "" : uredjaji.getObjekti().getOznaka()).setCaption("објекат");
 		tabela.addComponentColumn(uredjaji -> {CheckBox chb = new CheckBox(); if(uredjaji.isAktivno()) {chb.setValue(true); }return chb;}).setCaption("активан").setStyleGenerator(uredjaji -> "v-align-right");
 		tabela.addColumn(uredjaji -> uredjaji.getOrganizacija() == null ? "" : uredjaji.getOrganizacija().getNaziv()).setCaption("организација");
-		tabela.addComponentColumn(uredjaji -> {CheckBox chb = new CheckBox(); if(uredjaji.isIzbrisan()) {chb.setValue(true); }return chb;}).setCaption("избрисан").setStyleGenerator(uredjaji -> "v-align-right");
+		if(isAdmin()) {
+			tabela.addComponentColumn(uredjaji -> {CheckBox chb = new CheckBox(); if(uredjaji.isIzbrisan()) {chb.setValue(true); }return chb;}).setCaption("избрисан").setStyleGenerator(uredjaji -> "v-align-right");
+		}
 		tabela.addColumn(Uredjaji::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(uredjaji -> "v-align-right");
 		tabela.addColumn(Uredjaji::getKreirano, new DateRenderer(DANSATFORMAT)).setCaption("креирано").setStyleGenerator(uredjaji -> "v-align-right");
 	}

@@ -19,7 +19,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Grid.SelectionMode;
 import pratiBaza.tabele.SistemUredjajiProizvodjac;
-import rs.cybertrade.prati.Servis;
+import rs.cybertrade.prati.server.Servis;
 import rs.cybertrade.prati.view.OpstiView;
 
 @NavigatorViewName("uredjajiProizvodjaci") // an empty view name will also be the default view
@@ -43,7 +43,7 @@ public class UredjajiProizvodjaciView extends OpstiView implements OpstiViewInte
 		forma.removeStyleName("visible");
 		forma.setEnabled(false);
 		
-		topLayout = buildToolbar();
+		buildToolbar();
 		buildlayout();
 		buildTable();
 		tabela.addSelectionListener(new SelectionListener<SistemUredjajiProizvodjac>() {

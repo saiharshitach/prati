@@ -86,7 +86,7 @@
                <value>pratiBaza.tabele.SistemUredjajiProizvodjac</value>
                <value>pratiBaza.tabele.Uredjaji</value>
                <value>pratiBaza.tabele.Zone</value>
-               <value>pratiBaza.tabele.ZoneObjekti</value>
+               <value>pratiBaza.tabele.ObjekatZone</value>
             </list>
         </property>
     <property name="hibernateProperties">
@@ -238,10 +238,10 @@
   <bean id="zonaServis" class="pratiBaza.servisImpl.ZoneServisImpl">
         <property name="zonaDAO" ref="zonaDAO"></property>
   </bean>
-  <bean id="zonaObjekatDAO" class="pratiBaza.daoImpl.ZoneObjektiDAOImpl">
+  <bean id="zonaObjekatDAO" class="pratiBaza.daoImpl.ObjekatZoneDAOImpl">
         <property name="sessionFactory" ref="sessionFactory" />
   </bean>
-  <bean id="zonaObjekatServis" class="pratiBaza.servisImpl.ZoneObjektiServisImpl">
+  <bean id="zonaObjekatServis" class="pratiBaza.servisImpl.ObjekatZoneServisImpl">
         <property name="zonaObjekatDAO" ref="zonaObjekatDAO"></property>
   </bean>
 </beans>

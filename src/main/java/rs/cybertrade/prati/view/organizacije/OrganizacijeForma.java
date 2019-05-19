@@ -12,20 +12,20 @@ import com.vaadin.ui.Button.ClickListener;
 import rs.cybertrade.prati.view.OpstaForma;
 import rs.cybertrade.prati.view.OpstaFormaInterface;
 import rs.cybertrade.prati.view.OpstiView;
-import rs.cybertrade.prati.view.komponente.PretplatniciCombo;
+import rs.cybertrade.prati.view.komponente.ComboPretplatnici;
 import rs.cybertrade.prati.view.komponente.Tekst;
 
 public class OrganizacijeForma extends OpstaForma implements OpstaFormaInterface{
 
 	private static final long serialVersionUID = 1L;
 	private OrganizacijeLogika logika;
-	private PretplatniciCombo pretplatnici;
+	private ComboPretplatnici pretplatnici;
 	private Tekst naziv, opis;
 	private CheckBox aktivan, izbrisan;
 
 	public OrganizacijeForma(OrganizacijeLogika log) {
 		logika = log;
-		pretplatnici = new PretplatniciCombo("претплатници", true, true);
+		pretplatnici = new ComboPretplatnici("претплатници", true, true);
 		naziv = new Tekst("назив", true);
 		opis = new Tekst("опис", false);
 		aktivan = new CheckBox("активан");

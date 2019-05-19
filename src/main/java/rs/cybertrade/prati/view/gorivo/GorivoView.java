@@ -19,8 +19,8 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Grid.SelectionMode;
 
 import pratiBaza.tabele.SistemGoriva;
-import rs.cybertrade.prati.Servis;
 import rs.cybertrade.prati.view.OpstiViewInterface;
+import rs.cybertrade.prati.server.Servis;
 import rs.cybertrade.prati.view.OpstiView;
 
 @NavigatorViewName("gorivo") // an empty view name will also be the default view
@@ -44,7 +44,7 @@ public class GorivoView extends OpstiView implements OpstiViewInterface{
 		forma.removeStyleName("visible");
 		forma.setEnabled(false);
 		
-		topLayout = buildToolbar();
+		buildToolbar();
 		buildlayout();
 		buildTable();
 		

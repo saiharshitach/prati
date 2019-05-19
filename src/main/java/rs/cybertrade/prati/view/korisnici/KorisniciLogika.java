@@ -7,7 +7,7 @@ import pratiBaza.tabele.Grupe;
 import pratiBaza.tabele.GrupeKorisnici;
 import pratiBaza.tabele.Korisnici;
 import rs.cybertrade.prati.Prati;
-import rs.cybertrade.prati.Servis;
+import rs.cybertrade.prati.server.Servis;
 import rs.cybertrade.prati.view.LogikaInterface;
 
 public class KorisniciLogika implements LogikaInterface{

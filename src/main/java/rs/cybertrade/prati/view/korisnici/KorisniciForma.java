@@ -18,21 +18,22 @@ import pratiBaza.tabele.Organizacije;
 import pratiBaza.tabele.SistemPretplatnici;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import rs.cybertrade.prati.Servis;
+
+import rs.cybertrade.prati.server.Servis;
 import rs.cybertrade.prati.view.OpstaForma;
 import rs.cybertrade.prati.view.OpstaFormaInterface;
 import rs.cybertrade.prati.view.OpstiView;
 import rs.cybertrade.prati.view.komponente.Datum;
-import rs.cybertrade.prati.view.komponente.OrganizacijeCombo;
-import rs.cybertrade.prati.view.komponente.PretplatniciCombo;
+import rs.cybertrade.prati.view.komponente.ComboOrganizacije;
+import rs.cybertrade.prati.view.komponente.ComboPretplatnici;
 import rs.cybertrade.prati.view.komponente.Tekst;
 
 public class KorisniciForma extends OpstaForma implements OpstaFormaInterface{
 
 	private static final long serialVersionUID = 1L;
 	private KorisniciLogika logika;
-	private PretplatniciCombo pretplatnici;
-	private OrganizacijeCombo organizacije;
+	private ComboPretplatnici pretplatnici;
+	private ComboOrganizacije organizacije;
 	private Grid<Grupe> grupeTabela;
 	private ArrayList<Grupe> lista;
 	private Tekst ime, prezime, ePosta, lozinka, telefon, mobilni, iDugme;
@@ -41,7 +42,7 @@ public class KorisniciForma extends OpstaForma implements OpstaFormaInterface{
 	
 	public KorisniciForma(KorisniciLogika log) {
 		logika = log;
-		pretplatnici = new PretplatniciCombo("претплатник", true, true);
+		pretplatnici = new ComboPretplatnici("претплатник", true, true);
 		ime = new Tekst("име", true);
 		prezime = new Tekst("презиме", true);
 		ePosta = new Tekst("е-пошта", true);
@@ -56,7 +57,7 @@ public class KorisniciForma extends OpstaForma implements OpstaFormaInterface{
 		iDugme = new Tekst("и-дугме", false);
 		sistem = new CheckBox("систем");
 		
-		organizacije = new OrganizacijeCombo(pretplatnici.getValue(), "организација", true, true);
+		organizacije = new ComboOrganizacije(pretplatnici.getValue(), "организација", true, true);
 		grupeTabela = new Grid<Grupe>();
 		grupeTabela.setCaption("групе");
 		grupeTabela.setWidth("100%");

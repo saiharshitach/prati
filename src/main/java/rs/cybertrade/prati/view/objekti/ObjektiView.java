@@ -18,8 +18,8 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
 import pratiBaza.tabele.Objekti;
-import rs.cybertrade.prati.Servis;
 import rs.cybertrade.prati.view.OpstiViewInterface;
+import rs.cybertrade.prati.server.Servis;
 import rs.cybertrade.prati.view.OpstiView;
 
 @NavigatorViewName("objekti") // an empty view name will also be the default view
@@ -43,7 +43,7 @@ public class ObjektiView extends OpstiView implements OpstiViewInterface{
 		forma.removeStyleName("visible");
 		forma.setEnabled(false);
 		
-		topLayout = buildToolbar();
+		buildToolbar();
 		buildlayout();
 		buildTable();
 		
@@ -85,7 +85,7 @@ public class ObjektiView extends OpstiView implements OpstiViewInterface{
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
-		if(korisnik.isSistem() && korisnik.getSistemPretplatnici() == null) {
+		if(isAdmin()) {
 			tabela.addColumn(objekti -> objekti.getSistemPretplatnici() == null ? "" : objekti.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
 		tabela.addColumn(Objekti::getOznaka).setCaption("ознака");
@@ -98,7 +98,9 @@ public class ObjektiView extends OpstiView implements OpstiViewInterface{
 		//tabela.addComponentColumn(objekti -> {CheckBox chb = new CheckBox(); if(objekti.isDetalji()) {chb.setValue(true);} return chb;}).setCaption("детаљи").setStyleGenerator(objekti -> "v-align-right");
 		tabela.addComponentColumn(objekti -> {CheckBox chb = new CheckBox(); if(objekti.isAktivan()) {chb.setValue(true);} return chb;}).setCaption("активан").setStyleGenerator(objekti -> "v-align-right");
 		tabela.addColumn(objekti -> objekti.getOrganizacija() == null ? "" : objekti.getOrganizacija().getNaziv()).setCaption("организација");
-		tabela.addComponentColumn(objekti -> {CheckBox chb = new CheckBox(); if(objekti.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(objekti -> "v-align-right");
+		if(isAdmin()) {
+			tabela.addComponentColumn(objekti -> {CheckBox chb = new CheckBox(); if(objekti.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(objekti -> "v-align-right");
+		}
 		tabela.addColumn(Objekti::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(objekti -> "v-align-right");
 		tabela.addColumn(Objekti::getKreirano, new DateRenderer(DANSATFORMAT)).setCaption("уписано").setStyleGenerator(objekti -> "v-align-right");
 	}
@@ -144,6 +146,8 @@ public class ObjektiView extends OpstiView implements OpstiViewInterface{
 	public void ukloniPodatak() {
 		if(izabrani != null) {
 			if(!izabrani.isIzbrisan()) {
+				Servis.grupeObjekatServis.izbrisiSveGrupeObjekatPoObjektu(izabrani);
+				Servis.zonaObjekatServis.izbrisiZoneObjektiPoObjektu(izabrani);
 				Servis.objekatServis.izbrisiObjekte(izabrani);
 				pokaziPorukuUspesno("корисник " + izabrani.getOznaka() + " је избрисан");
 			}else {

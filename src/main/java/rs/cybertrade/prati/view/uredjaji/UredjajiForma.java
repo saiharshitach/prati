@@ -1,42 +1,67 @@
 package rs.cybertrade.prati.view.uredjaji;
 
 import org.vaadin.dialogs.ConfirmDialog;
+import com.vaadin.data.HasValue.ValueChangeEvent;
+import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.server.Page;
 import com.vaadin.ui.CheckBox;
+import pratiBaza.tabele.Sim;
+import pratiBaza.tabele.SistemUredjajiModeli;
 import pratiBaza.tabele.Uredjaji;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import rs.cybertrade.prati.server.Servis;
 import rs.cybertrade.prati.view.OpstaForma;
 import rs.cybertrade.prati.view.OpstaFormaInterface;
 import rs.cybertrade.prati.view.OpstiView;
-import rs.cybertrade.prati.view.komponente.OrganizacijeCombo;
-import rs.cybertrade.prati.view.komponente.PretplatniciCombo;
+import rs.cybertrade.prati.view.komponente.ComboOrganizacije;
+import rs.cybertrade.prati.view.komponente.ComboPretplatnici;
+import rs.cybertrade.prati.view.komponente.ComboSim;
 import rs.cybertrade.prati.view.komponente.Tekst;
-import rs.cybertrade.prati.view.komponente.UredjajiModeliCombo;
+import rs.cybertrade.prati.view.komponente.ComboUredjajiModeli;
 
 public class UredjajiForma extends OpstaForma implements OpstaFormaInterface{
 
 	private static final long serialVersionUID = 1L;
 	private UredjajiLogika logika;
-	private PretplatniciCombo pretplatnici;
-	private OrganizacijeCombo organizacije;
-	private UredjajiModeliCombo modeli;
-	private Tekst kod, serBroj, opis, sim, sim2, objekat;
+	private ComboPretplatnici pretplatnici;
+	private ComboOrganizacije organizacije;
+	private ComboUredjajiModeli modeli;
+	private ComboSim sim, sim2;
+	private Tekst kod, serBroj, opis, objekat;
 	private CheckBox aktivan, izbrisan;
 
 	public UredjajiForma(UredjajiLogika log) {
 		logika = log;
-		pretplatnici = new PretplatniciCombo("претплатник", true, true);
-		organizacije = new OrganizacijeCombo(pretplatnici.getValue(), "организација", true, false);
-		modeli = new UredjajiModeliCombo("модели уређаја", true, true);
+		pretplatnici = new ComboPretplatnici("претплатник", true, true);
+		organizacije = new ComboOrganizacije(pretplatnici.getValue(), "организација", true, false);
+		modeli = new ComboUredjajiModeli("модели уређаја", true, true);
 		kod = new Tekst("kod", true);
 		serBroj = new Tekst("серијски број", true);
 		objekat = new Tekst("објекат", false);
 		objekat.setEnabled(false);
-		sim = new Tekst("сим", false);
-		sim.setEnabled(false);
-		sim2 = new Tekst("сим2", false);
-		sim2.setEnabled(false);
+		sim = new ComboSim(pretplatnici.getValue(), organizacije.getValue(), null, "сим", true, false);
+		sim2 = new ComboSim(pretplatnici.getValue(), organizacije.getValue(), null, "сим2", true, false);
+		modeli.addValueChangeListener(new ValueChangeListener<SistemUredjajiModeli>() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void valueChange(ValueChangeEvent<SistemUredjajiModeli> event) {
+				if(event == null) {
+					sim2.setEnabled(false);
+				}else {
+					if(event.getValue() == null) {
+						sim2.setEnabled(false);
+					}else {
+						if(event.getValue().isSim2()) {
+							sim2.setEnabled(true);
+						}else {
+							sim2.setEnabled(false);
+						}
+					}
+				}
+			}
+		});
+		
 		aktivan = new CheckBox("активан");
 		opis = new Tekst("опис", false);
 		izbrisan = new CheckBox("избрисан");
@@ -112,6 +137,7 @@ public class UredjajiForma extends OpstaForma implements OpstaFormaInterface{
 	}
 	@Override
 	public void izmeniPodatak(Object podatak) {
+		ocistiPodatak();
 		Uredjaji uredjaj;
 		if(podatak == null) {
 			uredjaj = new Uredjaji();
@@ -130,12 +156,26 @@ public class UredjajiForma extends OpstaForma implements OpstaFormaInterface{
 			uredjaj = new Uredjaji();
 		}else {
 			uredjaj = (Uredjaji)podatak;
+			Sim sim = uredjaj.getSim();
+			if(sim != null) {
+				sim.setUredjaji(null);
+				sim.setZauzet(false);
+				Servis.simServis.azurirajSim(sim);
+			}
+			Sim sim2 = uredjaj.getSim2();
+			if(sim2 != null) {
+				sim2.setUredjaji(null);
+				sim2.setZauzet(false);
+				Servis.simServis.azurirajSim(sim2);
+			}
 		}
 		uredjaj.setSistemPretplatnici(pretplatnici.getValue());
 		uredjaj.setOrganizacija(organizacije.getValue());
 		uredjaj.setSistemUredjajiModeli(modeli.getValue());
 		uredjaj.setKod(kod.getValue());
 		uredjaj.setSerijskiBr(serBroj.getValue());
+		uredjaj.setSim(sim.getValue());
+		uredjaj.setSim2(sim2.getValue());
 		uredjaj.setOpis(opis.getValue());
 		uredjaj.setAktivno(aktivan.getValue());
 		uredjaj.setIzbrisan(izbrisan.getValue());
@@ -155,6 +195,7 @@ public class UredjajiForma extends OpstaForma implements OpstaFormaInterface{
 		objekat.clear();
 		sim.clear();
 		sim2.clear();
+		sim2.setEnabled(false);
 		opis.clear();
 		aktivan.setValue(true);
 		if(logika.view.korisnik.getOrganizacija() != null) {
@@ -187,14 +228,23 @@ public class UredjajiForma extends OpstaForma implements OpstaFormaInterface{
 				objekat.setValue("");
 			}
 			try {
-				sim.setValue(uredjaj.getSim().getIccid());
+				Sim simKartica = uredjaj.getSim();
+				sim.setItems(Servis.simServis.vratiSveAktivneSimKartice(uredjaj.getSistemPretplatnici(), uredjaj.getOrganizacija(), simKartica));
+				sim.setSelectedItem(simKartica);
 			}catch (Exception e) {
-				sim.setValue("");
+				sim.setItems(Servis.simServis.vratiSveAktivneSimKartice(uredjaj.getSistemPretplatnici(), uredjaj.getOrganizacija(), null));
 			}
 			try {
-				sim2.setValue(uredjaj.getSim2().getIccid());
+				Sim simKartica = uredjaj.getSim2();
+				sim2.setItems(Servis.simServis.vratiSveAktivneSimKartice(uredjaj.getSistemPretplatnici(), uredjaj.getOrganizacija(), simKartica));
+				sim2.setSelectedItem(simKartica);
 			}catch (Exception e) {
-				sim2.setValue("");
+				sim2.setItems(Servis.simServis.vratiSveAktivneSimKartice(uredjaj.getSistemPretplatnici(), uredjaj.getOrganizacija(), null));
+			}
+			if(uredjaj.getSistemUredjajiModeli().isSim2()) {
+				sim2.setEnabled(true);
+			}else {
+				sim2.setEnabled(false);
 			}
 			try {
 				opis.setValue(uredjaj.getOpis());

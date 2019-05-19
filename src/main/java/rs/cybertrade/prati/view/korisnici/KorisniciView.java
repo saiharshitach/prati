@@ -20,7 +20,7 @@ import com.vaadin.ui.renderers.DateRenderer;
 
 import pratiBaza.tabele.GrupeKorisnici;
 import pratiBaza.tabele.Korisnici;
-import rs.cybertrade.prati.Servis;
+import rs.cybertrade.prati.server.Servis;
 import rs.cybertrade.prati.view.OpstiView;
 import rs.cybertrade.prati.view.OpstiViewInterface;
 
@@ -45,7 +45,7 @@ public class KorisniciView extends OpstiView implements OpstiViewInterface{
 		forma.removeStyleName("visible");
 		forma.setEnabled(false);
 		
-		topLayout = buildToolbar();
+		buildToolbar();
 		buildlayout();
 		buildTable();
 		
@@ -93,7 +93,6 @@ public class KorisniciView extends OpstiView implements OpstiViewInterface{
 		tabela.addColumn(Korisnici::getIme).setCaption("име");
 		tabela.addColumn(Korisnici::getPrezime).setCaption("презиме");
 		tabela.addColumn(Korisnici::getEmail).setCaption("е-пошта");
-		tabela.addColumn(Korisnici::getLozinka).setCaption("лозинка");
 		tabela.addComponentColumn(korisnici -> {CheckBox chb = new CheckBox(); if(korisnici.isAktivan()) {chb.setValue(true);} return chb;}).setCaption("активан").setStyleGenerator(korisnici -> "v-align-right");
 		tabela.addColumn(Korisnici::getAktivanDo, new DateRenderer(DANFORMAT)).setCaption("активан до").setStyleGenerator(objekti -> "v-align-right");
 		tabela.addComponentColumn(korisnici -> {CheckBox chb = new CheckBox(); if(korisnici.isKorisnik()) {chb.setValue(true);} return chb;}).setCaption("корисник").setStyleGenerator(korisnici -> "v-align-right");
