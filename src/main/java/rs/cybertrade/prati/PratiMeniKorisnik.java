@@ -25,6 +25,7 @@ import rs.cybertrade.prati.view.grupe.GrupeObjektiView;
 import rs.cybertrade.prati.view.grupe.GrupeView;
 import rs.cybertrade.prati.view.korisnici.KorisniciView;
 import rs.cybertrade.prati.view.objekti.ObjektiView;
+import rs.cybertrade.prati.view.objektidetalji.ObjektiDetaljiView;
 import rs.cybertrade.prati.view.organizacije.OrganizacijeView;
 import rs.cybertrade.prati.view.pretplatnici.PretplatniciView;
 import rs.cybertrade.prati.view.proizvodjaci.UredjajiProizvodjaciView;
@@ -83,6 +84,7 @@ public class PratiMeniKorisnik{
         		.add(KorisniciView.class)
                 .add(ObjektiView.class)
                 .add(ObjekatZoneView.class)
+                .add(ObjektiDetaljiView.class)
                 .add(OrganizacijeView.class)
                 .add(SimView.class)
                 .add(UredjajiView.class)
@@ -112,6 +114,7 @@ public class PratiMeniKorisnik{
 		        		.add(KorisniciView.class)
 		                .add(ObjektiView.class)
 		                .add(ObjekatZoneView.class)
+		                .add(ObjektiDetaljiView.class)
 		                .add(OrganizacijeView.class)
 		                .add(SimView.class)
 		                .add(UredjajiView.class)

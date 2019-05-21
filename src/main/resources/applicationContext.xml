@@ -73,6 +73,7 @@
                <value>pratiBaza.tabele.Obd</value>
                <value>pratiBaza.tabele.Objekti</value>
                <value>pratiBaza.tabele.ObjektiDetalji</value>
+               <value>pratiBaza.tabele.ObjektiPoslednje</value>
                <value>pratiBaza.tabele.Organizacije</value>
                <value>pratiBaza.tabele.Sim</value>
                <value>pratiBaza.tabele.Sistem</value>
@@ -166,7 +167,13 @@
   <bean id="objekatDetaljServis" class="pratiBaza.servisImpl.ObjektiDetaljiServisImpl">
         <property name="objekatDetaljDAO" ref="objekatDetaljDAO"></property>
   </bean>
-    <bean id="organizacijaDAO" class="pratiBaza.daoImpl.OrganizacijeDAOImpl">
+   <bean id="objekatPoslednjeDAO" class="pratiBaza.daoImpl.ObjektiPoslednjeDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="objekatPoslednjeServis" class="pratiBaza.servisImpl.ObjektiPoslednjeServisImpl">
+        <property name="objekatPoslednjeDAO" ref="objekatPoslednjeDAO"></property>
+  </bean>
+  <bean id="organizacijaDAO" class="pratiBaza.daoImpl.OrganizacijeDAOImpl">
         <property name="sessionFactory" ref="sessionFactory" />
   </bean>
   <bean id="organizacijaServis" class="pratiBaza.servisImpl.OrganizacijeServisImpl">

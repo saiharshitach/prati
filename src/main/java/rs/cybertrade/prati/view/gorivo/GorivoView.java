@@ -146,7 +146,7 @@ public class GorivoView extends OpstiView implements OpstiViewInterface{
 	public void updateTable() {
 		filter.clear();
 		pocetno = new ArrayList<SistemGoriva>();
-		lista = Servis.sistemGorivoServis.vratiSvaGoriva();
+		lista = Servis.sistemGorivoServis.vratiSvaGoriva(true);
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {
