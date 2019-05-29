@@ -1,7 +1,6 @@
 package rs.cybertrade.prati.view.korisnici;
 
 import java.util.ArrayList;
-
 import org.vaadin.dialogs.ConfirmDialog;
 import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.HasValue.ValueChangeListener;
@@ -10,7 +9,6 @@ import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
-
 import pratiBaza.tabele.Grupe;
 import pratiBaza.tabele.GrupeKorisnici;
 import pratiBaza.tabele.Korisnici;
@@ -18,7 +16,6 @@ import pratiBaza.tabele.Organizacije;
 import pratiBaza.tabele.SistemPretplatnici;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-
 import rs.cybertrade.prati.server.Servis;
 import rs.cybertrade.prati.view.OpstaForma;
 import rs.cybertrade.prati.view.OpstaFormaInterface;
@@ -27,6 +24,7 @@ import rs.cybertrade.prati.view.komponente.Datum;
 import rs.cybertrade.prati.view.komponente.ComboOrganizacije;
 import rs.cybertrade.prati.view.komponente.ComboPretplatnici;
 import rs.cybertrade.prati.view.komponente.Tekst;
+import rs.cybertrade.prati.view.komponente.TekstLozinka;
 
 public class KorisniciForma extends OpstaForma implements OpstaFormaInterface{
 
@@ -36,7 +34,8 @@ public class KorisniciForma extends OpstaForma implements OpstaFormaInterface{
 	private ComboOrganizacije organizacije;
 	private Grid<Grupe> grupeTabela;
 	private ArrayList<Grupe> lista;
-	private Tekst ime, prezime, ePosta, lozinka, telefon, mobilni, iDugme;
+	private Tekst ime, prezime, ePosta, telefon, mobilni, iDugme;
+	private TekstLozinka lozinka;
 	private CheckBox aktivan, korisnikCB, vozac, administrator, sistem, izbrisan;
 	private Datum aktivanDo;
 	
@@ -46,7 +45,7 @@ public class KorisniciForma extends OpstaForma implements OpstaFormaInterface{
 		ime = new Tekst("име", true);
 		prezime = new Tekst("презиме", true);
 		ePosta = new Tekst("е-пошта", true);
-		lozinka = new Tekst("лозинка", true);
+		lozinka = new TekstLozinka("лозинка", true);
 		aktivan = new CheckBox("активан");
 		aktivanDo = new Datum("активан до", false);
 		korisnikCB = new CheckBox("корисник");
@@ -56,7 +55,6 @@ public class KorisniciForma extends OpstaForma implements OpstaFormaInterface{
 		mobilni = new Tekst("мобилни", false);
 		iDugme = new Tekst("и-дугме", false);
 		sistem = new CheckBox("систем");
-		
 		organizacije = new ComboOrganizacije(pretplatnici.getValue(), "организација", true, true);
 		grupeTabela = new Grid<Grupe>();
 		grupeTabela.setCaption("групе");

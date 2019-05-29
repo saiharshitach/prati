@@ -8,6 +8,8 @@ import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import pratiBaza.tabele.Objekti;
+import pratiBaza.tabele.Organizacije;
+import pratiBaza.tabele.SistemPretplatnici;
 import pratiBaza.tabele.Uredjaji;
 import rs.cybertrade.prati.server.Servis;
 import rs.cybertrade.prati.view.OpstaForma;
@@ -31,6 +33,7 @@ public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 	public ObjektiForma(ObjektiLogika log) {
 		logika = log;
 		pretplatnici = new ComboPretplatnici("претплатник", true, true);
+		organizacije = new ComboOrganizacije(pretplatnici.getValue(), "организација", true, true);
 		oznaka = new Tekst("ознака", true);
 		
 		//sim = new SimCombo(logika.view.korisnik, "сим картица", true, true);
@@ -40,11 +43,28 @@ public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 		simBroj.setEnabled(false);
 		aktivan = new CheckBox("активан");
 		vozilo = new CheckBox("возило");
-
 		izbrisan = new CheckBox("избрисан");
 		
-		organizacije = new ComboOrganizacije(pretplatnici.getValue(), "организација", true, true);
+
 		uredjaji = new ComboUredjaji(pretplatnici.getValue(), organizacije.getValue(), "уређај", true, true, null);
+		
+		pretplatnici.addValueChangeListener(new ValueChangeListener<SistemPretplatnici>() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void valueChange(ValueChangeEvent<SistemPretplatnici> event) {
+				
+			}
+		});
+		
+		organizacije.addValueChangeListener(new ValueChangeListener<Organizacije>() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void valueChange(ValueChangeEvent<Organizacije> event) {
+				
+				
+			}
+		});
+		
 		uredjaji.addValueChangeListener(new ValueChangeListener<Uredjaji>() {
 			private static final long serialVersionUID = 1L;
 			@Override

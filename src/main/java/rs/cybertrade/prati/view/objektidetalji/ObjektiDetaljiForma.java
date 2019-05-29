@@ -8,6 +8,7 @@ import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import pratiBaza.tabele.ObjektiDetalji;
+import pratiBaza.tabele.Organizacije;
 import pratiBaza.tabele.SistemPretplatnici;
 import rs.cybertrade.prati.server.Servis;
 import rs.cybertrade.prati.view.OpstaForma;
@@ -62,6 +63,22 @@ public class ObjektiDetaljiForma extends OpstaForma implements OpstaFormaInterfa
 				if(event != null) {
 					if(event.getValue() != null) {
 						organizacije.setItems(Servis.organizacijaServis.nadjiSveOrganizacije(event.getValue(), true));
+						organizacije.clear();
+						objekti.setItems(Servis.objekatServis.vratiObjektePoPretplatniku(event.getValue(), organizacije.getValue(),true));
+						objekti.clear();
+					}
+				}
+			}
+		});
+		
+		organizacije.addValueChangeListener(new ValueChangeListener<Organizacije>() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void valueChange(ValueChangeEvent<Organizacije> event) {
+				if(event != null) {
+					if(event.getValue() != null) {
+						objekti.setItems(Servis.objekatServis.vratiObjektePoPretplatniku(pretplatnici.getValue(), event.getValue(),true));
+						objekti.clear();
 					}
 				}
 			}
