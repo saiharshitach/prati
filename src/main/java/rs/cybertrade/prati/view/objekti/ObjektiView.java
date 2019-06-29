@@ -44,7 +44,6 @@ public class ObjektiView extends OpstiView implements OpstiViewInterface{
 		forma.setEnabled(false);
 		
 		buildToolbar();
-		buildlayout();
 		buildTable();
 		
 		tabela.addSelectionListener(new SelectionListener<Objekti>() {
@@ -95,6 +94,8 @@ public class ObjektiView extends OpstiView implements OpstiViewInterface{
 			objekti.getUredjaji().getSim().getBroj()).setCaption("сим број");
 		tabela.addColumn(objekti -> objekti.getUredjaji() == null ? "" : objekti.getUredjaji().getSim() == null ? "" : objekti.getUredjaji().getSim().getIccid()).setCaption("сим иццид");
 		tabela.addComponentColumn(objekti -> {CheckBox chb = new CheckBox(); if(objekti.getTip()) {chb.setValue(true);} return chb;}).setCaption("возило").setStyleGenerator(objekti -> "v-align-right");
+		tabela.addColumn(Objekti::getVremeStajanja).setCaption("време стајања");
+		tabela.addColumn(Objekti::getPrekoracenjeBrzine).setCaption("прекорачење брзине");
 		//tabela.addComponentColumn(objekti -> {CheckBox chb = new CheckBox(); if(objekti.isDetalji()) {chb.setValue(true);} return chb;}).setCaption("детаљи").setStyleGenerator(objekti -> "v-align-right");
 		tabela.addComponentColumn(objekti -> {CheckBox chb = new CheckBox(); if(objekti.isAktivan()) {chb.setValue(true);} return chb;}).setCaption("активан").setStyleGenerator(objekti -> "v-align-right");
 		tabela.addColumn(objekti -> objekti.getOrganizacija() == null ? "" : objekti.getOrganizacija().getNaziv()).setCaption("организација");
@@ -173,11 +174,11 @@ public class ObjektiView extends OpstiView implements OpstiViewInterface{
 			@Override
 			public boolean test(Objekti t) {
 				return (t.getOznaka().toLowerCase().contains(filter.getValue().toLowerCase()) ||
-						t.getSistemPretplatnici().getNaziv().contains(filter.getValue().toLowerCase()) ||
+						t.getSistemPretplatnici().getNaziv().toLowerCase().contains(filter.getValue().toLowerCase()) ||
 						(t.getUredjaji() == null ? "" : t.getUredjaji().getKod()).toLowerCase().contains(filter.getValue().toLowerCase()) ||
 						(t.getUredjaji() == null ? "" : t.getUredjaji().getSerijskiBr()).toLowerCase().contains(filter.getValue().toLowerCase()) ||
-						(t.getUredjaji().getSim() == null ? "" : t.getUredjaji().getSim().getBroj()).toLowerCase().contains(filter.getValue().toLowerCase()) ||
-						(t.getUredjaji().getSim() == null ? "" : t.getUredjaji().getSim().getIccid()).toLowerCase().contains(filter.getValue().toLowerCase()));
+						(t.getUredjaji() == null ? "" : (t.getUredjaji().getSim() == null ? "" : t.getUredjaji().getSim().getBroj())).toLowerCase().contains(filter.getValue().toLowerCase()) ||
+						(t.getUredjaji() == null ? "" : (t.getUredjaji().getSim() == null ? "" : t.getUredjaji().getSim().getIccid())).toLowerCase().contains(filter.getValue().toLowerCase()));
 			}
 		};
 		filter.addValueChangeListener(e -> {osveziFilter();});

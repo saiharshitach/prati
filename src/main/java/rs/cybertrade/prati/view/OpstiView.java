@@ -9,6 +9,7 @@ import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.HorizontalLayout;
@@ -23,9 +24,10 @@ import pratiBaza.tabele.Korisnici;
 import pratiBaza.tabele.Organizacije;
 import pratiBaza.tabele.SistemPretplatnici;
 import rs.cybertrade.prati.Prati;
-import rs.cybertrade.prati.mape.StaraGMapa;
+import rs.cybertrade.prati.mape.Gmap;
 import rs.cybertrade.prati.server.Servis;
 import rs.cybertrade.prati.view.komponente.ComboGrupe;
+import rs.cybertrade.prati.view.komponente.ComboIzvestaji;
 import rs.cybertrade.prati.view.komponente.ComboOrganizacije;
 import rs.cybertrade.prati.view.komponente.ComboPretplatnici;
 
@@ -42,22 +44,31 @@ public abstract class OpstiView extends CssLayout implements View {
 	public VerticalLayout barGrid;
 	public DateField datum;
 	public Panel panelToolBar;
-	public Button dodaj, potvrdi;
+	public Button dodaj, potvrdi, lociraj;
 	public NumberRenderer decimalni;
 	public TextField filter;
 	public Korisnici korisnik;
 	public ComboPretplatnici pretplatniciCombo;
 	public ComboOrganizacije organizacijeCombo;
 	public ComboGrupe grupeCombo;
-	public CssLayout expander;
 	public CssLayout paneli;
-	public StaraGMapa mapa;
+	public CheckBox centriraj;
+	public Gmap mapa;
 	
 	public OpstiView() {
 		setSizeFull();
 		addStyleName("crud-view");
+		Prati.getCurrent().pracenjeView = null;
 		decimalni  = new NumberRenderer(new DecimalFormat(DECIMALNI));
+		
 		korisnik = (Korisnici) VaadinSession.getCurrent().getAttribute(Korisnici.class.getName());
+		
+		barGrid = new VerticalLayout();
+		barGrid.setSizeFull();
+		barGrid.setMargin(true);
+		barGrid.setSpacing(true);
+		//barGrid.setStyleName("crud-main-layout"); - ovo mi nije dalo da skrolujem panel toolbar sa komandama!!!
+		
 		topLayout = new HorizontalLayout();
 		topLayout.setSpacing(true);
 		topLayout.setMargin(new MarginInfo(false, false, false, false));
@@ -92,12 +103,10 @@ public abstract class OpstiView extends CssLayout implements View {
         potvrdi = new Button();
         potvrdi.addStyleName(ValoTheme.BUTTON_PRIMARY);
         potvrdi.setIcon(VaadinIcons.CHECK);
-        expander = new CssLayout();
-		expander.addStyleName("expander");
 		
         topLayout.addComponent(filter);
         topLayout.setComponentAlignment(filter, Alignment.MIDDLE_LEFT);
-        topLayout.addComponent(expander);
+        
         pretplatniciCombo.addValueChangeListener(new ValueChangeListener<SistemPretplatnici>() {
 			private static final long serialVersionUID = 1L;
 			@Override
@@ -132,15 +141,6 @@ public abstract class OpstiView extends CssLayout implements View {
         topLayout.setExpandRatio(filter, 1);
 		panelToolBar.setContent(topLayout);
         return panelToolBar;
-	}
-	
-	//osnovni vertikalni layout
-	public void buildlayout() {
-		barGrid = new VerticalLayout();
-		barGrid.setSizeFull();
-		barGrid.setMargin(true);
-		barGrid.setSpacing(true);
-		//barGrid.setStyleName("crud-main-layout"); - ovo mi nije dalo da skrolujem panel toolbar sa komandama!!!
 	}
 	
 	//generisanje TextField za pretragu

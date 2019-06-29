@@ -6,7 +6,7 @@ import com.github.appreciated.app.layout.annotations.NavigatorViewName;
 import com.vaadin.icons.VaadinIcons;
 
 @NavigatorViewName("") // an empty view name will also be the default view
-@MenuCaption("Почетна")
+@MenuCaption("Преглед")
 @MenuIcon(VaadinIcons.HOME)
 public class PocetnaView extends OpstiView{
 	

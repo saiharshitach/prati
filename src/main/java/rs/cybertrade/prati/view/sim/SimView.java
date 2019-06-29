@@ -44,7 +44,6 @@ public class SimView extends OpstiView implements OpstiViewInterface{
 		forma.setEnabled(false);
 		
 		buildToolbar();
-		buildlayout();
 		buildTable();
 		
 		tabela.addSelectionListener(new SelectionListener<Sim>() {

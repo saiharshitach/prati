@@ -29,6 +29,7 @@ import pratiBaza.servis.SistemUredjajiProizvodjaciServis;
 import pratiBaza.servis.UredjajiServis;
 import pratiBaza.servis.ObjekatZoneServis;
 import pratiBaza.servis.ZoneServis;
+import rs.cybertrade.prati.server.NominatimReverseGeocodingJAPI;
 import rs.cybertrade.prati.ApplicationContextProvider;
 
 @WebListener
@@ -61,6 +62,11 @@ public class Servis implements ServletContextListener{
 	public static String apiGoogle;
 	public static GeoApiContext gContext;
 	public static NominatimClient nClient;
+	public static NominatimReverseGeocodingJAPI nominatim;
+	private RuptelaServer ruptela;
+	private NeonServer neon;
+	private GenekoServer geneko;
+	private NyitechServer nyitech;
 	
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
@@ -91,6 +97,27 @@ public class Servis implements ServletContextListener{
 		apiGoogle = sistemServis.vratiSistem().getApi();
 		gContext = new GeoApiContext().setApiKey(apiGoogle);
 		nClient = new NominatimClient(sistemServis.vratiSistem().getEmailVlasnika(), sistemServis.vratiSistem().getNominatimAdresa());
+		nominatim = new NominatimReverseGeocodingJAPI(sistemServis.vratiSistem().getNominatimAdresa());
+		
+		try {
+			neon = new NeonServer(9000, 120);
+			nyitech = new NyitechServer(9010, 20);
+			geneko = new GenekoServer(9030, 20);
+			ruptela = new RuptelaServer(9040, 50);
+			
+			Thread neonServer = new Thread(neon);
+			Thread nyitechServer = new Thread(nyitech);
+			Thread genekoServer = new Thread(geneko);
+			Thread ruptelaServer = new Thread(ruptela);
+			
+			neonServer.start();
+			nyitechServer.start();
+			genekoServer.start();
+			ruptelaServer.start();
+		} catch (Throwable e) {
+			System.out.println("error starting servers " + e.getMessage());
+			return;
+		}
 	}
 
 	@Override

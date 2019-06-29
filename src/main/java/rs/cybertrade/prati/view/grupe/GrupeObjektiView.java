@@ -37,7 +37,6 @@ public class GrupeObjektiView extends OpstiView implements OpstiViewInterface{
 	public GrupeObjektiView() {
 		view = this;
 		
-		buildlayout();
 		buildTable();
 		
 		barGrid.addComponent(buildToolbarGrupe());

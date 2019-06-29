@@ -45,8 +45,8 @@ public class SistemView extends OpstiView implements OpstiViewInterface{
 		forma.setEnabled(false);
 		
 		buildToolbar();
-		buildlayout();
 		buildTable();
+		
 		tabela.addSelectionListener(new SelectionListener<Sistem>() {
 			private static final long serialVersionUID = 1L;
 			@Override

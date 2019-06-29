@@ -1,4 +1,4 @@
-package rs.cybertrade.prati.objekatzone;
+package rs.cybertrade.prati.view.objekatzone;
 
 import org.vaadin.dialogs.ConfirmDialog;
 

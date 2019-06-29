@@ -14,7 +14,7 @@ import static com.github.appreciated.app.layout.builder.Section.HEADER;
 import static com.github.appreciated.app.layout.builder.Section.FOOTER;
 import com.vaadin.icons.VaadinIcons;
 import rs.cybertrade.prati.meni.PratiEvent.KorisnikLoggedOutEvent;
-import rs.cybertrade.prati.objekatzone.ObjekatZoneView;
+import rs.cybertrade.prati.izvestaji.IzvestajiView;
 import rs.cybertrade.prati.meni.PratiEventBus;
 import rs.cybertrade.prati.view.IstorijaView;
 import rs.cybertrade.prati.view.PocetnaView;
@@ -24,6 +24,7 @@ import rs.cybertrade.prati.view.gorivo.GorivoView;
 import rs.cybertrade.prati.view.grupe.GrupeObjektiView;
 import rs.cybertrade.prati.view.grupe.GrupeView;
 import rs.cybertrade.prati.view.korisnici.KorisniciView;
+import rs.cybertrade.prati.view.objekatzone.ObjekatZoneView;
 import rs.cybertrade.prati.view.objekti.ObjektiView;
 import rs.cybertrade.prati.view.objektidetalji.ObjektiDetaljiView;
 import rs.cybertrade.prati.view.organizacije.OrganizacijeView;
@@ -32,6 +33,7 @@ import rs.cybertrade.prati.view.proizvodjaci.UredjajiProizvodjaciView;
 import rs.cybertrade.prati.view.sim.SimView;
 import rs.cybertrade.prati.view.simSistemOperateri.SimOperateriView;
 import rs.cybertrade.prati.view.sistem.SistemView;
+import rs.cybertrade.prati.view.sistemSesije.SistemSesijeView;
 import rs.cybertrade.prati.view.uredjaji.UredjajiView;
 import rs.cybertrade.prati.view.uredjajiModeli.UredjajiModeliView;
 import rs.cybertrade.prati.view.zone.ZoneView;
@@ -47,37 +49,32 @@ public class PratiMeniKorisnik{
 	}
 	
 	public AppLayoutComponent vratiMeniKorisnik(String korisnik) {
-		return AppLayout.getDefaultBuilder(Behaviour.LEFT_RESPONSIVE_OVERLAY_NO_APP_BAR)
-        .withTitle("Праћење")
+		return AppLayout.getDefaultBuilder(Behaviour.LEFT_RESPONSIVE_HYBRID_OVERLAY_NO_APP_BAR)
+        .withTitle("праћење")
         .addToAppBar(new AppBarNotificationButton(notifications))
         .withNavigationElementInfoProducer(new DefaultNavigationElementInfoProducer())
-        .withDesign(AppLayoutDesign.MATERIAL)
-        .add(new MenuHeader("Version 1.0.3", null), HEADER)
+        .withDesign(AppLayoutDesign.DEFAULT)
+        .add(new MenuHeader(korisnik, null), HEADER)//.add(new MenuHeader("Version 1.0.3", new ThemeResource("logo.png")), HEADER)
         .add(badge, PocetnaView.class)
         .add(PracenjeView.class)
-        .add(SubmenuBuilder.get("Извештаји", VaadinIcons.BAR_CHART)
-                .add(IstorijaView.class)
-                .build())
-        /*.add(SubmenuBuilder.get("Подаци", VaadinIcons.COG)
-                .add(ObjektiView.class)
-                .build())**/
+        .add(IstorijaView.class)
+        .add(IzvestajiView.class)
         .addClickable("Одјава", VaadinIcons.SIGN_OUT, clickEvent -> PratiEventBus.post(new KorisnikLoggedOutEvent()), FOOTER)
         //.add(View6.class)
         .build();
 	}
 	
 	public AppLayoutComponent vratiMeniAdministrator(String korisnik) {
-		return AppLayout.getDefaultBuilder(Behaviour.LEFT_RESPONSIVE_OVERLAY_NO_APP_BAR)
-        .withTitle("Праћење")
+		return AppLayout.getDefaultBuilder(Behaviour.LEFT_RESPONSIVE_HYBRID_OVERLAY_NO_APP_BAR)
+        .withTitle("праћење")
         .addToAppBar(new AppBarNotificationButton(notifications))
         .withNavigationElementInfoProducer(new DefaultNavigationElementInfoProducer())
-        .withDesign(AppLayoutDesign.MATERIAL)
+        .withDesign(AppLayoutDesign.DEFAULT)
         .add(new MenuHeader(korisnik, null), HEADER)//.add(new MenuHeader("Version 1.0.3", new ThemeResource("logo.png")), HEADER)
         .add(badge, PocetnaView.class)
         .add(PracenjeView.class)
-        .add(SubmenuBuilder.get("Извештаји", VaadinIcons.BAR_CHART)
-                .add(IstorijaView.class)
-                .build())
+        .add(IstorijaView.class)
+        .add(IzvestajiView.class)
         .add(SubmenuBuilder.get("Подаци", VaadinIcons.COG)
         		.add(GrupeView.class)
         		.add(GrupeObjektiView.class)
@@ -87,6 +84,7 @@ public class PratiMeniKorisnik{
                 .add(ObjektiDetaljiView.class)
                 .add(OrganizacijeView.class)
                 .add(SimView.class)
+                .add(SistemSesijeView.class)
                 .add(UredjajiView.class)
                 .add(ZoneView.class)
                 .build())
@@ -97,17 +95,16 @@ public class PratiMeniKorisnik{
 	}
 	
 	public AppLayoutComponent vratiMeniSistem(String korisnik) {
-		return AppLayout.getDefaultBuilder(Behaviour.LEFT_RESPONSIVE_OVERLAY_NO_APP_BAR)
-		        .withTitle("Праћење")
+		return AppLayout.getDefaultBuilder(Behaviour.LEFT_RESPONSIVE_HYBRID_OVERLAY_NO_APP_BAR)
+		        .withTitle("праћење")
 		        .addToAppBar(new AppBarNotificationButton(notifications))
 		        .withNavigationElementInfoProducer(new DefaultNavigationElementInfoProducer())
-		        .withDesign(AppLayoutDesign.MATERIAL)
+		        .withDesign(AppLayoutDesign.DEFAULT)
 		        .add(new MenuHeader(korisnik, null), HEADER)//.add(new MenuHeader("Version 1.0.3", new ThemeResource("logo.png")), HEADER)
 		        .add(badge, PocetnaView.class)
 		        .add(PracenjeView.class)
-		        .add(SubmenuBuilder.get("Извештаји", VaadinIcons.BAR_CHART)
-		                .add(IstorijaView.class)
-		                .build())
+		        .add(IstorijaView.class)
+		        .add(IzvestajiView.class)
 		        .add(SubmenuBuilder.get("Подаци", VaadinIcons.COG)
 		        		.add(GrupeView.class)
 		        		.add(GrupeObjektiView.class)
@@ -117,6 +114,7 @@ public class PratiMeniKorisnik{
 		                .add(ObjektiDetaljiView.class)
 		                .add(OrganizacijeView.class)
 		                .add(SimView.class)
+		                .add(SistemSesijeView.class)
 		                .add(UredjajiView.class)
 		                .add(ZoneView.class)
 		                .build())

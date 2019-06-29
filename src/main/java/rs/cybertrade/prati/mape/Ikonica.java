@@ -2,7 +2,10 @@ package rs.cybertrade.prati.mape;
 
 import java.io.Serializable;
 import java.util.HashMap;
+
+import pratiBaza.tabele.Javljanja;
 import pratiBaza.tabele.JavljanjaPoslednja;
+import pratiBaza.tabele.SistemAlarmi;
 
 public class Ikonica implements Serializable{
 
@@ -11,7 +14,7 @@ public class Ikonica implements Serializable{
 	private final String c = "";
 	//private final String pokret = c + "VAADIN/Play.png";
 	private final String pause = c + "VAADIN/markoIkonice/pauza.png";//"VAADIN/Pause.png";
-	private final String sleep = c + "VAADIN/Sleep.png";
+	//private final String sleep = c + "VAADIN/Sleep.png";
 	private final String stop = c + "VAADIN/markoIkonice/stop.png";//"VAADIN/Stop.png";
 	private final String alarm = c + "VAADIN/Alarm48.png";
 	private final String putanja = c + "VAADIN/markoIkonice/";
@@ -24,16 +27,35 @@ public class Ikonica implements Serializable{
 	public String icon(JavljanjaPoslednja javljanjaPoslednja){
 		String ikonica = "";
 		Float ugao = javljanjaPoslednja.getPravac();
-		if(Integer.parseInt(javljanjaPoslednja.getSistemAlarmi().getSifra()) == 1071){
+		SistemAlarmi alarmi = javljanjaPoslednja.getSistemAlarmi();
+		if(javljanjaPoslednja.getSistemAlarmi() != null && Integer.parseInt(alarmi.getSifra()) == 1071){
 			ikonica = alarm;
 		}else if(javljanjaPoslednja.isKontakt() && javljanjaPoslednja.getBrzina()> 5.00){
 			ikonica = putanja + ikonice.get(Math.round(ugao/5));
 		}else if(javljanjaPoslednja.isKontakt() && javljanjaPoslednja.getBrzina()<= 5.00){
 			ikonica = pause;
-		}else if(!javljanjaPoslednja.isKontakt() && !(Integer.parseInt(javljanjaPoslednja.getSistemAlarmi().getSifra()) == 3002)){
+		}else if(alarmi != null && !javljanjaPoslednja.isKontakt() && !(Integer.parseInt(alarmi.getSifra()) == 3002)){
 			ikonica = stop;
-		}else if(Integer.parseInt(javljanjaPoslednja.getSistemAlarmi().getSifra()) == 3002){
-			ikonica = sleep;
+		}else if(alarmi != null && Integer.parseInt(javljanjaPoslednja.getSistemAlarmi().getSifra()) == 3002){
+			ikonica = stop;//bio sleep
+		}
+		return ikonica;
+	}
+	
+	public String icon(Javljanja javljanjaPoslednja){
+		String ikonica = "";
+		Float ugao = javljanjaPoslednja.getPravac();
+		SistemAlarmi alarmi = javljanjaPoslednja.getSistemAlarmi();
+		if(javljanjaPoslednja.getSistemAlarmi() != null && Integer.parseInt(alarmi.getSifra()) == 1071){
+			ikonica = alarm;
+		}else if(javljanjaPoslednja.isKontakt() && javljanjaPoslednja.getBrzina()> 5.00){
+			ikonica = putanja + ikonice.get(Math.round(ugao/5));
+		}else if(javljanjaPoslednja.isKontakt() && javljanjaPoslednja.getBrzina()<= 5.00){
+			ikonica = pause;
+		}else if(alarmi != null && !javljanjaPoslednja.isKontakt() && !(Integer.parseInt(alarmi.getSifra()) == 3002)){
+			ikonica = stop;
+		}else if(alarmi != null && Integer.parseInt(javljanjaPoslednja.getSistemAlarmi().getSifra()) == 3002){
+			ikonica = stop;//bio sleep
 		}
 		return ikonica;
 	}

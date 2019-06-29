@@ -19,10 +19,8 @@ import com.vaadin.tapio.googlemaps.client.overlays.GoogleMapMarker;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
+import pratiBaza.tabele.Javljanja;
 import pratiBaza.tabele.JavljanjaPoslednja;
-import pratiBaza.tabele.Obd;
-import pratiBaza.tabele.Objekti;
-import pratiBaza.tabele.ObjektiDetalji;
 import rs.cybertrade.prati.Prati;
 import rs.cybertrade.prati.server.Servis;
 
@@ -34,36 +32,22 @@ public class Gmap extends GoogleMap{
 	private LatLon pozicijaM;
 	private LatLng pozicija;
 	private String podaciMarker;
-	private ArrayList<Double> lat;
-    private ArrayList<Double> lon;
-    private ArrayList<JavljanjaPoslednja> javljanjaLista;
-    private ArrayList<Objekti> objekti;
-    private Objekti objekat;
-    private JavljanjaPoslednja javljanjePoslednje;
-    private String oznaka = "";
-    private String datum_vreme;
-    private String[] datum;
-    private String brzina;
-    private ObjektiDetalji objekatDetalji = null;
-    private Obd obd = null;
-    private GMarker marker;
+	public ArrayList<Double> lat;
+    public ArrayList<Double> lon;
     private GMarker kliknutiMarker;
     private String[] datumMarker;
-    private Ikonica ikonica = new Ikonica();
+    public Ikonica ikonica;
     private String apiKey;
-    private String caption;
     private GoogleMapMarker klikMarker;
     
 	public Gmap(String apKey, String clientId, String language) {
 		super(apKey, clientId, language);
 		setSizeFull();
-		
+		ikonica = new Ikonica();
 		apiKey = apKey;
 		lat = new ArrayList<Double>();
 		lon = new ArrayList<Double>();
-		objekti = new ArrayList<Objekti>();
-		javljanjePoslednje = new JavljanjaPoslednja();
-		
+
 		/*addMarkerClickListener(new MarkerClickListener() {
 			private static final long serialVersionUID = 1L;
 			@Override
@@ -83,59 +67,45 @@ public class Gmap extends GoogleMap{
 	}
 	
 	public void dodavanjeMarkera() {
-		this.clearMarkers();
+		clearMarkers();
 		lat.clear();
 		lon.clear();
-		objekti = new ArrayList<Objekti>(Prati.getCurrent().izabraniId.values());
-		if(!objekti.isEmpty()){
-			javljanjaLista = Servis.javljanjePoslednjeServis.vratiListuJavljanjaPoslednjih(objekti);
-			for(JavljanjaPoslednja javljanje: javljanjaLista){
-				javljanjePoslednje = javljanje;
-			    if(javljanjePoslednje != null){
-			    	objekat = javljanje.getObjekti();
-					objekatDetalji = Servis.objekatDetaljiServis.nadjiObjekatDetaljePoObjektu(objekat);
-					obd = Servis.obdServis.nadjiObdPoslednji(objekat);
-					oznaka = objekat.getOznaka();
-					datum_vreme = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(javljanjePoslednje.getDatumVreme());
-					datum = datum_vreme.split(" ");
-					brzina = "брзина: " + javljanjePoslednje.getBrzina() + "км/ч";
-					caption = String.join("\n", oznaka + " ", brzina/*datum_vremejavljanjePoslednje.getDatum_vreme()**/ + " ", datum[1] + " ", datum[0]);//
-					marker = new GMarker(caption, new LatLon(javljanjePoslednje.getLat(), javljanjePoslednje.getLon()), false, ikonica.icon(javljanjePoslednje));
-					if(objekat.getTip()){
-						if(obd!=null){
-							marker.setUkupnokm(obd.getUkupnoKm());
-							marker.setUkupnoGorivo(obd.getUkupnoGorivo());
-							}
-						}
-					marker.setOznaka(oznaka);
-					if(objekatDetalji != null){
-						marker.setRegistracija(objekatDetalji.getRegistracija());
-						marker.setModel(objekatDetalji.getModel());
-						}
-					marker.setDatum_vreme(datum_vreme);
-					marker.setBrzina(String.valueOf(javljanjePoslednje.getBrzina()));
-					lat.add(javljanjePoslednje.getLat());
-					lon.add(javljanjePoslednje.getLon());
-					marker.setAnimationEnabled(false);
-					this.addMarker(marker);
-					}
-			    }
-			}
+		if(!Prati.getCurrent().objekti.isEmpty()){
+			for(JavljanjaPoslednja javljanje: Prati.getCurrent().poslednjaJavljanja.getSelectedItems()){
+			    if(javljanje != null){
+					GoogleMapMarker gMarker = new GoogleMapMarker(podesiCaption(javljanje), new LatLon(javljanje.getLat(), javljanje.getLon()), false);
+					gMarker.setAnimationEnabled(false);
+					gMarker.setIconUrl(ikonica.icon(javljanje));
+					lat.add(javljanje.getLat());
+					lon.add(javljanje.getLon());
+					markAsDirty();
+					addMarker(gMarker);
+				}
+			 }
 		}
+		centriraj();
+	}
+	
+	public void ukloniMarkere() {
+		clearMarkers();
+		centriraj();
+	}
 	
     public ArrayList<Double> getLat(){
     	return lat;
-    	}
+    }
     
     public ArrayList<Double> getLon(){
     	return lon;
-    	}
+    }
     
     public void osvezavanja(){
     	dodavanjeMarkera();
-    	centriraj();
+    	if(Prati.getCurrent().centriranje) {
+    		centriraj();
+    	}
     	Gmap mapa = this; 
-		Prati.getCurrent().setPollInterval(10000);
+		Prati.getCurrent().setPollInterval(5000);
 		Prati.getCurrent().osvezavanjeMarkera = new PollListener() {
 			private static final long serialVersionUID = 1L;
 			@Override
@@ -148,9 +118,9 @@ public class Gmap extends GoogleMap{
 				if(Prati.getCurrent().centriranje)
 					centriraj();
 				}
-			};
+		};
 		Prati.getCurrent().addPollListener(Prati.getCurrent().osvezavanjeMarkera);
-		}
+	}
     
     public void centriraj(){
     	if(!lat.isEmpty() && !lon.isEmpty()){
@@ -160,11 +130,11 @@ public class Gmap extends GoogleMap{
     			this.fitToBounds(new LatLon(Collections.max(lat), Collections.max(lon)), new LatLon(Collections.min(lat),Collections.min(lon)));
     		}else{
     			dodajPraznuMapu();
-    			}
-    		}else{
-    			dodajPraznuMapu();
-    			}
+    		}
+    	}else{
+    		dodajPraznuMapu();
     	}
+    }
     
     /*prazna mapa**/
     public void dodajPraznuMapu(){
@@ -211,6 +181,24 @@ public class Gmap extends GoogleMap{
 			}
 	}
 	
+	public String podesiCaption(JavljanjaPoslednja javljanjePoslednje) {
+		String datumVreme = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(javljanjePoslednje.getDatumVreme());
+		String[] datum = datumVreme.split(" ");
+		String brzina = "брзина: " + javljanjePoslednje.getBrzina() + "км/ч";
+		String oznaka = javljanjePoslednje.getObjekti().getOznaka();
+		//setCaption(String.join("\n", oznaka + " ", brzina + " ", datum[1] + " ", datum[0]));
+		return String.join("\n", oznaka + " ", brzina + " ", datum[1] + " ", datum[0]);
+	}
+	
+	public String  podesiCaption(Javljanja javljanjePoslednje) {
+		String datumVreme = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(javljanjePoslednje.getDatumVreme());
+		String[] datum = datumVreme.split(" ");
+		String brzina = "брзина: " + javljanjePoslednje.getBrzina() + "км/ч";
+		String oznaka = javljanjePoslednje.getObjekti().getOznaka();
+		//setCaption(String.join("\n", oznaka + " ", brzina + " ", datum[1] + " ", datum[0]));
+		return String.join("\n", oznaka + " ", brzina + " ", datum[1] + " ", datum[0]);
+	}
+	
 	public void prikaziMarkerPodatke(GoogleMapMarker clickedMarker){
 		try{
 			kliknutiMarker = (GMarker) clickedMarker;
@@ -227,7 +215,7 @@ public class Gmap extends GoogleMap{
 		    if(kliknutiMarker.getModel() != null){
 		    	infoSadrzaj.addComponent(new Label(kliknutiMarker.getModel()));
 		    	}
-		    datumMarker = kliknutiMarker.getDatum_vreme().split(" ");
+		    datumMarker = kliknutiMarker.getDatumVreme().split(" ");
 		    infoSadrzaj.addComponent(new Label("брзина: " + kliknutiMarker.getBrzina() + "км/ч"));
 		    if(kliknutiMarker.getUkupnokm() != null && kliknutiMarker.getUkupnokm() != 0){
 		    	infoSadrzaj.addComponent(new Label("км: " + kliknutiMarker.getUkupnokm().toString()));

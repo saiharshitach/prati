@@ -43,7 +43,6 @@ public class SimOperateriView extends OpstiView implements OpstiViewInterface{
 		forma.setEnabled(false);
 		
 		buildToolbar();
-		buildlayout();
 		buildTable();
 		
 		tabela.addSelectionListener(new SelectionListener<SistemOperateri>() {

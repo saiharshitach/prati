@@ -45,7 +45,6 @@ public class UredjajiView extends OpstiView implements OpstiViewInterface{
 		forma.removeStyleName("visible");
 		
 		buildToolbar();
-		buildlayout();
 		buildTable();
 		
 		tabela.addSelectionListener(new SelectionListener<Uredjaji>() {

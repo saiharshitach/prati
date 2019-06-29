@@ -15,6 +15,7 @@ import rs.cybertrade.prati.server.Servis;
 import rs.cybertrade.prati.view.OpstaForma;
 import rs.cybertrade.prati.view.OpstaFormaInterface;
 import rs.cybertrade.prati.view.OpstiView;
+import rs.cybertrade.prati.view.komponente.Celobrojni;
 import rs.cybertrade.prati.view.komponente.ComboOrganizacije;
 import rs.cybertrade.prati.view.komponente.ComboPretplatnici;
 import rs.cybertrade.prati.view.komponente.Tekst;
@@ -29,6 +30,7 @@ public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 	private ComboUredjaji uredjaji;
 	private Tekst oznaka, simBroj, sim;
 	private CheckBox aktivan, vozilo, izbrisan;
+	private Celobrojni vremeStajanja, prekoracenjeBrzine;
 	
 	public ObjektiForma(ObjektiLogika log) {
 		logika = log;
@@ -43,6 +45,8 @@ public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 		simBroj.setEnabled(false);
 		aktivan = new CheckBox("активан");
 		vozilo = new CheckBox("возило");
+		vremeStajanja = new Celobrojni("време стајања у мин", false);
+		prekoracenjeBrzine = new Celobrojni("прекорачење брзине км/ч", false);
 		izbrisan = new CheckBox("избрисан");
 		
 
@@ -130,6 +134,8 @@ public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 		layout.addComponent(sim);
 		layout.addComponent(simBroj);
 		layout.addComponent(vozilo);
+		layout.addComponent(vremeStajanja);
+		layout.addComponent(prekoracenjeBrzine);
 		layout.addComponent(aktivan);
 		if(logika.view.isAdmin() || logika.view.korisnik.getOrganizacija() == null) {
 			layout.addComponent(organizacije);
@@ -178,6 +184,8 @@ public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 		objekat.setUredjaji(uredjaji.getValue());
 		objekat.setTip(vozilo.getValue());
 		objekat.setAktivan(aktivan.getValue());
+		objekat.setVremeStajanja(Integer.parseInt(vremeStajanja.getValue()));
+		objekat.setPrekoracenjeBrzine(Integer.parseInt(prekoracenjeBrzine.getValue()));
 		objekat.setOrganizacija(organizacije.getValue());
 		objekat.setIzbrisan(izbrisan.getValue());
 		if(!objekat.isAktivan()) {
@@ -198,6 +206,8 @@ public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 		sim.clear();
 		simBroj.clear();
 		vozilo.setValue(true);
+		vremeStajanja.setValue("0");
+		prekoracenjeBrzine.setValue("0");
 		aktivan.setValue(true);
 		if(logika.view.korisnik.getOrganizacija() != null) {
 			organizacije.setValue(logika.view.korisnik.getOrganizacija());
@@ -232,6 +242,16 @@ public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 				simBroj.setValue("");
 			}
 			vozilo.setValue(objekat.getTip());
+			try {
+				vremeStajanja.setValue(String.valueOf(objekat.getVremeStajanja()));
+			}catch (Exception e) {
+				vremeStajanja.setValue("0");
+			}
+			try {
+				prekoracenjeBrzine.setValue(String.valueOf(objekat.getPrekoracenjeBrzine()));
+			}catch (Exception e) {
+				prekoracenjeBrzine.setValue("0");
+			}
 			aktivan.setValue(objekat.isAktivan());
 			organizacije.setValue(objekat.getOrganizacija());
 			izbrisan.setValue(objekat.isIzbrisan());

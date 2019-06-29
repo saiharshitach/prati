@@ -133,8 +133,8 @@ public class ObjektiDetaljiForma extends OpstaForma implements OpstaFormaInterfa
 		}
 		layout.addComponent(objekti);
 		layout.addComponent(registracija);
-		layout.addComponent(model);
 		layout.addComponent(marka);
+		layout.addComponent(model);
 		layout.addComponent(tip);
 		layout.addComponent(godina);
 		layout.addComponent(gorivo);

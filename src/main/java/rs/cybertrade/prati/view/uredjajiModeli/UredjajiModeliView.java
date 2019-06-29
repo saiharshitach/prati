@@ -43,7 +43,6 @@ public class UredjajiModeliView extends OpstiView implements OpstiViewInterface{
 		forma.setEnabled(false);
 		
 		buildToolbar();
-		buildlayout();
 		buildTable();
 		
 		tabela.addSelectionListener(new SelectionListener<SistemUredjajiModeli>() {

@@ -17,6 +17,7 @@ import com.vaadin.tapio.googlemaps.client.events.MapClickListener;
 import com.vaadin.tapio.googlemaps.client.overlays.GoogleMapMarker;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -25,6 +26,7 @@ import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.NumberRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 import pratiBaza.tabele.Zone;
+import rs.cybertrade.prati.mape.Gmap;
 import rs.cybertrade.prati.server.Servis;
 import rs.cybertrade.prati.view.OpstiPanelView;
 import rs.cybertrade.prati.view.OpstiViewInterface;
@@ -44,13 +46,16 @@ public class ZoneView extends OpstiPanelView implements OpstiViewInterface{
 	private ZoneForma forma;
 	private Zone izabrani;
 	private GoogleMapMarker klikMarker;
+	private CssLayout css;
 	
 	public ZoneView() {
 		viewLogika = new ZoneLogika(this);
 		forma = new ZoneForma(viewLogika);
 		forma.removeStyleName("visible");
 		forma.setEnabled(false);
-		
+		css = new CssLayout();
+		css.setSizeFull();
+		css.addStyleName("crud-view");
 		buildToolbar();
 		buildTable();
 		
@@ -76,16 +81,17 @@ public class ZoneView extends OpstiPanelView implements OpstiViewInterface{
 		});
 		
 		String slot = "dupli-panel-slot";
-		Component content = buildContent(buildGMapa(false), createContentWraper(tabela, slot, true));
+		mapa = new Gmap(Servis.apiGoogle, null, "serbian");
+		mapa.centriraj();
+		Component content = buildContent(createContentWraper(mapa, slot, true), createContentWraper(tabela, slot, true));
 		
 		root.addComponent(topLayout);
 		root.addComponent(content);
 		root.setExpandRatio(content, 1);
 		
-		noseci.addComponent(root);
-		//noseci.setExpandRatio(root, 1);
-		noseci.addComponent(forma);
-
+		css.addComponent(root);
+		css.addComponent(forma);
+		
 		mapa.addMapClickListener(new MapClickListener() {
 			private static final long serialVersionUID = 1L;
 			@Override
@@ -97,7 +103,7 @@ public class ZoneView extends OpstiPanelView implements OpstiViewInterface{
 				}
 			});
 		
-        setContent(noseci);
+        setContent(css);
         
 		viewLogika.init();
 	}

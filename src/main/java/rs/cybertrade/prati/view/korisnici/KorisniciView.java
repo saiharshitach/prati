@@ -46,7 +46,6 @@ public class KorisniciView extends OpstiView implements OpstiViewInterface{
 		forma.setEnabled(false);
 		
 		buildToolbar();
-		buildlayout();
 		buildTable();
 		
 		tabela.addSelectionListener(new SelectionListener<Korisnici>() {
@@ -151,7 +150,7 @@ public class KorisniciView extends OpstiView implements OpstiViewInterface{
 	public void ukloniPodatak() {
 		if(izabrani != null) {
 			if(!izabrani.isIzbrisan()) {
-				ArrayList<GrupeKorisnici> grupeKorisnik = Servis.grupeKorisnikServis.vratiSveGrupePoKorisniku(izabrani);
+				ArrayList<GrupeKorisnici> grupeKorisnik = Servis.grupeKorisnikServis.vratiSveGrupeKorisnikPoKorisniku(izabrani);
 				for(GrupeKorisnici grKorisnik: grupeKorisnik) {
 					Servis.grupeKorisnikServis.izbrisiGrupaZaposleni(grKorisnik);
 				}
@@ -179,7 +178,7 @@ public class KorisniciView extends OpstiView implements OpstiViewInterface{
 			private static final long serialVersionUID = 1L;
 			@Override
 			public boolean test(Korisnici t) {
-				return ((t.getIme().toLowerCase() == null ? "" : t.getIme()).contains(filter.getValue().toLowerCase()) ||
+				return ((t.getIme() == null ? "" : t.getIme().toLowerCase()).contains(filter.getValue().toLowerCase()) ||
 						(t.getPrezime() == null ? "" : t.getPrezime()).toLowerCase().contains(filter.getValue().toLowerCase()) ||
 						(t.getEmail() == null ? "" : t.getEmail()).toLowerCase().contains(filter.getValue().toLowerCase()) ||
 						(t.getIbutton() == null ? "" : t.getIbutton()).toLowerCase().contains(filter.getValue().toLowerCase()));

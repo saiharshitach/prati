@@ -1,4 +1,4 @@
-package rs.cybertrade.prati.objekatzone;
+package rs.cybertrade.prati.view.objekatzone;
 
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
@@ -44,7 +44,6 @@ public class ObjekatZoneView extends OpstiView implements OpstiViewInterface{
 		forma.setEnabled(false);
 		
 		buildToolbar();
-		buildlayout();
 		buildTable();
 		
 		tabela.addSelectionListener(new SelectionListener<ObjekatZone>() {

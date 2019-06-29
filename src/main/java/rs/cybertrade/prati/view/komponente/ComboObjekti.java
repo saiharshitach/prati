@@ -1,9 +1,11 @@
 package rs.cybertrade.prati.view.komponente;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.vaadin.ui.ComboBox;
 
+import pratiBaza.tabele.Grupe;
 import pratiBaza.tabele.Korisnici;
 import pratiBaza.tabele.Objekti;
 import rs.cybertrade.prati.server.Servis;
@@ -18,11 +20,17 @@ public class ComboObjekti extends ComboBox<Objekti>{
 		setItemCaptionGenerator(Objekti::getOznaka);
 		setItems(lista(korisnik));
 		setEmptySelectionAllowed(prazno);
-		setRequiredIndicatorVisible(true);
+		setRequiredIndicatorVisible(indicator);
 		setWidth("100%");
 	}
 	
-	private List<Objekti> lista(Korisnici korisnik){
-		return Servis.objekatServis.vratiSveObjekte(korisnik, true);
+	public List<Objekti> lista(Korisnici korisnik){
+		if(korisnik.isAdmin()) {
+			return Servis.objekatServis.vratiSveObjekte(korisnik, true);
+		}else {
+			ArrayList<Grupe> grupe = Servis.grupeKorisnikServis.vratiSveGrupePoKorisniku(korisnik);
+			return Servis.grupeObjekatServis.nadjiSveObjektePoGrupama(grupe);
+		}
+		
 	}
 }

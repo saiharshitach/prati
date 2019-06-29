@@ -67,7 +67,6 @@ public class PrijavaView extends VerticalLayout{
 		
 		prijava.addClickListener(new ClickListener(){
 			private static final long serialVersionUID = 1L;
-
 			@Override
 			public void buttonClick(ClickEvent event) {
 				if(!(korisnickoIme.getValue() == null) && !(lozinka.getValue() == null ))

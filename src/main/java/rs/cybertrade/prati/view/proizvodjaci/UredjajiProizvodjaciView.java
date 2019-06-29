@@ -44,8 +44,8 @@ public class UredjajiProizvodjaciView extends OpstiView implements OpstiViewInte
 		forma.setEnabled(false);
 		
 		buildToolbar();
-		buildlayout();
 		buildTable();
+		
 		tabela.addSelectionListener(new SelectionListener<SistemUredjajiProizvodjac>() {
 			private static final long serialVersionUID = 1L;
 			@Override

@@ -288,7 +288,7 @@ public class KorisniciForma extends OpstaForma implements OpstaFormaInterface{
 			organizacije.setValue(korisnik.getOrganizacija());
 			sistem.setValue(korisnik.isSistem());
 			izbrisan.setValue(korisnik.isIzbrisan());
-			ArrayList<GrupeKorisnici> grupeKorisnik = Servis.grupeKorisnikServis.vratiSveGrupePoKorisniku(korisnik);
+			ArrayList<GrupeKorisnici> grupeKorisnik = Servis.grupeKorisnikServis.vratiSveGrupeKorisnikPoKorisniku(korisnik);
 			for(GrupeKorisnici grKorisnik: grupeKorisnik) {
 				for(Grupe grupa: lista) {
 					if(grKorisnik.getGrupe().getId().equals(grupa.getId())) {
