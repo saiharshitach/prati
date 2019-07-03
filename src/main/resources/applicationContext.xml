@@ -19,7 +19,7 @@
   <context:component-scan base-package="pratiBaza.*" />
   <import resource="classpath*:baza.xml" /> <!-- /jpgzCrud/src/main/resources/ -->
   
-    <bean id="applicationContextProvider" class="rs.cybertrade.prati.ApplicationContextProvider"/>
+    <bean id="applicationContextProvider" class="rs.atekom.prati.ApplicationContextProvider"/>
     
     <!-- <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> -->
        <!-- <property name="driverClassName" value="com.mysql.jdbc.Driver" />    -->
@@ -89,6 +89,8 @@
                <value>pratiBaza.tabele.Zone</value>
                <value>pratiBaza.tabele.ObjekatZone</value>
                <value>pratiBaza.pomocne.IzvestajTip</value>
+               <value>pratiBaza.pomocne.Mail</value>
+               <value>pratiBaza.pomocne.Obracuni</value>
             </list>
         </property>
     <property name="hibernateProperties">
