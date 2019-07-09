@@ -95,7 +95,7 @@ public class GrupeForma extends OpstaForma implements OpstaFormaInterface{
 		layout.addComponent(naziv);
 		layout.addComponent(opis);
 		layout.addComponent(aktivan);
-		if(logika.view.isAdmin() && logika.view.korisnik.getOrganizacija() == null) {
+		if(logika.view.korisnik.isAdmin() && logika.view.korisnik.getOrganizacija() == null) {
 			layout.addComponent(organizacije);
 		}
 		if(logika.view.isAdmin())  {

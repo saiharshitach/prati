@@ -6,6 +6,9 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -13,6 +16,7 @@ import javax.xml.bind.DatatypeConverter;
 import pratiBaza.tabele.AlarmiKorisnik;
 import pratiBaza.tabele.Javljanja;
 import pratiBaza.tabele.Obd;
+import pratiBaza.tabele.ObjekatZone;
 import pratiBaza.tabele.Objekti;
 import pratiBaza.tabele.Uredjaji;
 import pratiBaza.tabele.Zone;
@@ -27,22 +31,27 @@ public class RuptelaThread implements Runnable{
     private boolean isStopped = false;
     private boolean prekoracenje = false;
     private byte[] data;
-    private Objekti objekat;
-    private Uredjaji uredjaj;
     private byte[] odg = {(byte)0x00, (byte)0x02, (byte)0x64, (byte)0x01, (byte)0x13, (byte)0xbc};
     private int offset;
-    private RuptelaProtokol zapis;
-    private Obd obd, obdStop;
-    private Javljanja javljanje, javljanjePoslednje, javljanjeStop;
     private RuptelaServer server;
-    private ArrayList<Zone> zone;
+    private ArrayList<ObjekatZone> objekatZone;
     private ArrayList<AlarmiKorisnik> alarmiKorisnici;
+	private String testDate;
+	private DateFormat formatter;
+	private Date date;
     
     public RuptelaThread(LinkedBlockingQueue<Socket> queue, RuptelaServer serverRuptela) {
     	socketQueue = queue;
 		server = serverRuptela;
 		data = new byte[1024];
-		zapis = new RuptelaProtokol();
+		testDate = "01/07/2019 00:00:00";
+		formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		try {
+			date = formatter.parse(testDate);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
     
 	@Override
@@ -51,6 +60,11 @@ public class RuptelaThread implements Runnable{
 			socket = socketQueue.take();
 			input = socket.getInputStream();
 			out = socket.getOutputStream();
+			JavljanjeObd javljanjeObd = null;
+		    Obd obd = null, obdStop = null;
+		    Javljanja javljanje = null, javljanjePoslednje = null, javljanjeStop = null;
+		    Objekti objekat = null;
+		    Uredjaji uredjaj = null;
 			int br = 0;
 			String ulaz = "";
 			boolean zaustavljeno = false;
@@ -78,14 +92,16 @@ public class RuptelaThread implements Runnable{
 						objekat = Servis.objekatServis.nadjiObjekatPoUredjaju(uredjaj);						
 						
 						if(objekat != null) {
-							javljanjePoslednje = Servis.javljanjeServis.nadjiPoslednjeJavljanjePoObjektu(objekat);
-							zone = Servis.zonaObjekatServis.nadjiZonePoObjektu(objekat);
+							objekatZone = Servis.zonaObjekatServis.nadjiZoneObjektePoObjektu(objekat);
 							alarmiKorisnici = Servis.alarmKorisnikServis.nadjiSveAlarmeKorisnikePoObjektu(objekat);
+							javljanjePoslednje = Servis.javljanjeServis.nadjiPoslednjeJavljanjePoObjektu(objekat);
 							
-							long vreme  = pocetak.getTime() - javljanjePoslednje.getDatumVreme().getTime();
 							boolean vremeStarijeOdStajanja = false;
-							if(objekat.getVremeStajanja() > 0 && (vreme/1000 > objekat.getVremeStajanja())) {
-								vremeStarijeOdStajanja = true;
+							if(javljanjePoslednje != null) {
+								long vreme  = pocetak.getTime() - javljanjePoslednje.getDatumVreme().getTime();
+								if(objekat.getVremeStajanja() > 0 && (vreme/1000 > objekat.getVremeStajanja())) {
+									vremeStarijeOdStajanja = true;
+								}
 							}
 							
 							if(javljanjePoslednje != null && javljanjePoslednje.getBrzina() < 6 && 
@@ -117,9 +133,12 @@ public class RuptelaThread implements Runnable{
 	            		int brZapisa = 0;
 		            	offset += 2;
 		            	int ukZapisa = Integer.parseInt(ulaz.substring(offset - 2, offset),  16);
+		            	
 		            	while(brZapisa < ukZapisa) {
-		            		javljanje = zapis.vratiJavljanje(this, objekat, ulaz, komanda);
-		            		if(javljanje != null) {
+		            		javljanjeObd = server.zapis.vratiJavljanje(this, objekat, ulaz, komanda);
+		            		javljanje = javljanjeObd.getJavljanje();
+		            		obd = javljanjeObd.getObd();
+		            		if(javljanje != null  && javljanje.getBrzina() < 200 && javljanje.getDatumVreme().after(date)) {
 		            			if(javljanje.getBrzina() > 5) {
 		            				javljanjeStop = null;
 			            			obdStop = null;
@@ -150,21 +169,23 @@ public class RuptelaThread implements Runnable{
 	            					}
 	            				
 	            				//alarm prekoračenje brzine
-	            				if(javljanje.getBrzina() > objekat.getPrekoracenjeBrzine() && !prekoracenje) {
-	            					prekoracenje = true;
-	            					if(javljanje.getSistemAlarmi().getSifra().equals("0")) {
-	            						javljanje.setSistemAlarmi(server.prekoracenjeBrzine);
-	            					}else {
-	            						Servis.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
-	            						javljanje.setSistemAlarmi(server.prekoracenjeBrzine);
-	            					}
-            						if(javljanje.getEventData().equals("0")) {
-            							javljanje.setEventData(javljanje.getBrzina() + "км/ч");
-            						}else {
-            							javljanje.setEventData(javljanje.getBrzina() + "км/ч, " + javljanje.getEventData());
-            						}
-	            				}else {
-	            					prekoracenje = false;
+	            				if(objekat.getPrekoracenjeBrzine() != 0) {
+		            				if(javljanje.getBrzina() > objekat.getPrekoracenjeBrzine() && !prekoracenje) {
+		            					prekoracenje = true;
+		            					if(javljanje.getSistemAlarmi().getSifra().equals("0")) {
+		            						javljanje.setSistemAlarmi(server.prekoracenjeBrzine);
+		            					}else {
+		            						Servis.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
+		            						javljanje.setSistemAlarmi(server.prekoracenjeBrzine);
+		            					}
+	            						if(javljanje.getEventData().equals("0")) {
+	            							javljanje.setEventData(javljanje.getBrzina() + "км/ч");
+	            						}else {
+	            							javljanje.setEventData(javljanje.getBrzina() + "км/ч, " + javljanje.getEventData());
+	            						}
+		            				}else {
+		            					prekoracenje = false;
+		            				}
 	            				}
 	            				
 			            		//alarm gorivo
@@ -193,40 +214,47 @@ public class RuptelaThread implements Runnable{
 			            			}
 			            		
 			            		//alarm zona
-			            		if(zone != null && zone.size() > 0) {
+			            		if(objekatZone != null && objekatZone.size() > 0) {
 			            			Zone zonaPoslednja = null;
 			            			if(Servis.javljanjePoslednjeServis.nadjiJavljanjaPoslednjaPoObjektu(objekat) != null) {
 			            				zonaPoslednja = Servis.javljanjePoslednjeServis.nadjiJavljanjaPoslednjaPoObjektu(objekat).getZona();
 			            			}
 		            				//ulazak
 		            				if(zonaPoslednja == null) {
-		            					for(Zone zona : zone) {
-			            					if(Servis.obracun.rastojanjeKoordinate(javljanje, zona.getLat(), zona.getLon()) <= zona.getPrecnik()) {
-			            						javljanje.setZona(zona);
-			            						if(javljanje.getSistemAlarmi().getSifra().equals("0")) {
-			            							javljanje.setSistemAlarmi(server.ulazak);
-			            							javljanje.setEventData(zona.getNaziv());
-			            							break;
-			            						}else {
-			            							Servis.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
-			            							javljanje.setSistemAlarmi(server.ulazak);
-			            							javljanje.setEventData(zona.getNaziv());
-			            							break;
-			            						}
-			            					}
+		            					for(ObjekatZone objekatZona : objekatZone) {
+		            						if(objekatZona.isAktivan() && objekatZona.isIzlaz()) {
+				            					if(Servis.obracun.rastojanjeKoordinate(javljanje, objekatZona.getZone().getLat(), objekatZona.getZone().getLon()) <= objekatZona.getZone().getPrecnik()) {
+				            						javljanje.setZona(objekatZona.getZone());
+				            						if(javljanje.getSistemAlarmi().getSifra().equals("0")) {
+				            							javljanje.setSistemAlarmi(server.ulazak);
+				            							javljanje.setEventData(objekatZona.getZone().getNaziv());
+				            							break;
+				            						}else {
+				            							Servis.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
+				            							javljanje.setSistemAlarmi(server.ulazak);
+				            							javljanje.setEventData(objekatZona.getZone().getNaziv());
+				            							break;
+				            						}
+				            					}
+		            						}
 		            					}
 		            				}else {
 		            					//izlazak
-		            					if(Servis.obracun.rastojanjeKoordinate(javljanje, zonaPoslednja.getLat(), zonaPoslednja.getLon()) > zonaPoslednja.getPrecnik()) {
-		            						javljanje.setZona(null);
-		            						if(javljanje.getSistemAlarmi().getSifra().equals("0")) {
-		            							javljanje.setSistemAlarmi(server.izlazak);
-		            							javljanje.setEventData(zonaPoslednja.getNaziv());
-		            						}else {
-		            							Servis.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
-		            							javljanje.setSistemAlarmi(server.izlazak);
-		            							javljanje.setEventData(zonaPoslednja.getNaziv());
-		            						}
+		            					ObjekatZone objZona = Servis.zonaObjekatServis.nadjiObjekatZonuPoZoniObjektu(objekat, zonaPoslednja);
+		            					if(objZona != null && objZona.isAktivan() && objZona.isIzlaz()) {
+			            					if(Servis.obracun.rastojanjeKoordinate(javljanje, zonaPoslednja.getLat(), zonaPoslednja.getLon()) > zonaPoslednja.getPrecnik()) {
+			            						if(javljanje.getSistemAlarmi().getSifra().equals("0")) {
+			            							javljanje.setSistemAlarmi(server.izlazak);
+			            							javljanje.setEventData(zonaPoslednja.getNaziv());
+			            						}else {
+			            							Servis.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
+			            							javljanje.setSistemAlarmi(server.izlazak);
+			            							javljanje.setEventData(zonaPoslednja.getNaziv());
+			            						}
+			            						javljanje.setZona(null);
+			            					}else {
+			            						javljanje.setZona(zonaPoslednja);
+			            					}
 		            					}else {
 		            						javljanje.setZona(zonaPoslednja);
 		            					}
@@ -274,22 +302,6 @@ public class RuptelaThread implements Runnable{
 	
 	public int getOffset() {
 		return this.offset;
-	}
-	
-	public Javljanja getJavljanje() {
-		return javljanje;
-	}
-
-	public void setJavljanje(Javljanja javljanje) {
-		this.javljanje = javljanje;
-	}
-
-	public Obd getObd() {
-		return obd;
-	}
-
-	public void setObd(Obd obd) {
-		this.obd = obd;
 	}
 
 	public synchronized boolean isStopped(){

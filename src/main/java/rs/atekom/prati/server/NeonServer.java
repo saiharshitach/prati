@@ -11,6 +11,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 
+import pratiBaza.tabele.SistemAlarmi;
+
 public class NeonServer implements Runnable{
 
 	private final int listeningPort;
@@ -21,6 +23,7 @@ public class NeonServer implements Runnable{
 	private int poolSize;
 	private int rb = 1;
 	public NeonProtokol protokol;
+	public SistemAlarmi prekoracenjeBrzine, stajanje, istakanje, izlazak, ulazak;
 	
 	public NeonServer(int port, int poolSizeS) {
 		clientSockets = new ArrayList<Socket>();
@@ -28,6 +31,11 @@ public class NeonServer implements Runnable{
 		poolSize = poolSizeS;
 		pool = Executors.newFixedThreadPool(poolSize);
 		protokol = new NeonProtokol();
+		prekoracenjeBrzine = Servis.sistemAlarmServis.nadjiAlarmPoSifri("6013");
+		stajanje = Servis.sistemAlarmServis.nadjiAlarmPoSifri("1095");
+		istakanje = Servis.sistemAlarmServis.nadjiAlarmPoSifri("1111");
+		izlazak = Servis.sistemAlarmServis.nadjiAlarmPoSifri("1100");
+		ulazak = Servis.sistemAlarmServis.nadjiAlarmPoSifri("1101");
 	}
 	
 	@Override

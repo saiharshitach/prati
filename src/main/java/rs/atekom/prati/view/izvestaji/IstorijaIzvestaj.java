@@ -1,10 +1,9 @@
-package rs.atekom.prati.izvestaji;
+package rs.atekom.prati.view.izvestaji;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.servlet.annotation.WebServlet;
 import org.vaadin.reports.PrintPreviewReport;
 import com.ibm.icu.text.SimpleDateFormat;
 import com.vaadin.server.SerializableSupplier;
@@ -15,7 +14,6 @@ import ar.com.fdvs.dj.domain.builders.StyleBuilder;
 import ar.com.fdvs.dj.domain.constants.Font;
 import ar.com.fdvs.dj.domain.constants.HorizontalAlign;
 import ar.com.fdvs.dj.domain.constants.Page;
-import net.sf.jasperreports.j2ee.servlets.ImageServlet;
 import pratiBaza.tabele.Javljanja;
 import pratiBaza.tabele.Obd;
 import pratiBaza.tabele.Objekti;
@@ -23,14 +21,11 @@ import rs.atekom.prati.server.Servis;
 
 public class IstorijaIzvestaj extends PrintPreviewReport<Javljanja>{
 
-	@WebServlet("/izvestaj-istorija")
-    public static class ReportsImageServlet extends ImageServlet {
-		private static final long serialVersionUID = 1L;
-	}
 	private static final long serialVersionUID = 1L;
 	private static final String DATUMVREME = "dd/MM/yyyy HH:mm:ss";
 
 	public IstorijaIzvestaj(Objekti objekat, Timestamp datumVremeOd, Timestamp datumVremeDo) {
+		//setImageServletPathPattern("izvestaj-istorija?image={0}");
 		setSizeUndefined();
 		String strVremeOd = "од: ";
 		String strVremeDo = "до: ";
@@ -109,7 +104,6 @@ public class IstorijaIzvestaj extends PrintPreviewReport<Javljanja>{
 		.setDefaultEncoding(Font.PDF_ENCODING_Identity_H_Unicode_with_horizontal_writing)
 		.setTitle("Преглед историје кретања")
 		//.setGrandTotalLegend("ukupno")
-		//.setDefaultEncoding(Font.PDF_ENCODING_CP1251_Cyrillic)
 		//.addGlobalFooterVariable("osnova", DJCalculation.SUM, headerStyle);
 		//.setUseFullPageWidth(true)
 		.addAutoText("Преглед података за објекат: " + objekat.getOznaka() + "    " + strVremeOd + "    " + strVremeDo, AutoText.POSITION_HEADER, AutoText.ALIGMENT_LEFT, 450, headerStyle)

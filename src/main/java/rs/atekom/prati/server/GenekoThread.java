@@ -4,12 +4,15 @@ import java.io.InputStream;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
+import pratiBaza.tabele.AlarmiKorisnik;
 import pratiBaza.tabele.Javljanja;
 import pratiBaza.tabele.JavljanjaPoslednja;
+import pratiBaza.tabele.ObjekatZone;
 import pratiBaza.tabele.Objekti;
 import pratiBaza.tabele.Uredjaji;
-import rs.atekom.prati.Broadcaster;
+import pratiBaza.tabele.Zone;
 
 public class GenekoThread implements Runnable{
 
@@ -18,6 +21,8 @@ public class GenekoThread implements Runnable{
 	private GenekoServer server;
 	private InputStream input;
 	private boolean isStopped = false;
+	private ArrayList<ObjekatZone> objekatZone;
+	private ArrayList<AlarmiKorisnik> alarmiKorisnici;
 	
 	public GenekoThread(LinkedBlockingQueue<Socket> queue, GenekoServer serverGeneko) {
 		socketQueue = queue;
@@ -29,19 +34,20 @@ public class GenekoThread implements Runnable{
 		try {
 			socket = socketQueue.take();
 			input = socket.getInputStream();
-			int br = 0;
+			boolean prekoracenje = false;
+			Uredjaji uredjaj = null;
+			Objekti objekat = null;
+			String kodUredjaja = null;
 			Javljanja javljanje = null; 
+			Javljanja stop = null;
+			int br = 0;
 			byte[] data = new byte[8192];
 			String [] da;
 			String [] niz;
 			int vreme = 0;
-			Javljanja stop = null;
 			String inputLine = "";
-			Uredjaji uredjaj = null;
-			Objekti objekat = null;
-			String kodUredjaja = null;
 			boolean zaustavljeno = false;
-			int prolaz = 0;
+			
 			while(!isStopped() && !socket.isClosed()){
 				socket.setSoTimeout(720000);
 				br = input.read(data, 0, data.length);
@@ -56,7 +62,7 @@ public class GenekoThread implements Runnable{
 				for(int i = 0; i < niz.length; i++){
 					if(niz[i].startsWith("<fox>")) {
 						da = niz[i].split("\"");
-	                	while(prolaz < 1){
+	                	if(uredjaj == null){
 		                	kodUredjaja = da[1];
 		                	if(kodUredjaja != null){
 		                		uredjaj = Servis.uredjajServis.nadjiUredjajPoKodu(kodUredjaja);
@@ -64,6 +70,8 @@ public class GenekoThread implements Runnable{
 			                		objekat = Servis.objekatServis.nadjiObjekatPoUredjaju(uredjaj);
 			                		if(objekat != null){
 			                			vreme = objekat.getVremeStajanja();
+			                			objekatZone = Servis.zonaObjekatServis.nadjiZoneObjektePoObjektu(objekat);
+										alarmiKorisnici = Servis.alarmKorisnikServis.nadjiSveAlarmeKorisnikePoObjektu(objekat);
 				                		}else{
 				                			System.out.println("objekat null... prvi put" + da[1]);
 				                			//break;
@@ -72,12 +80,15 @@ public class GenekoThread implements Runnable{
 		                	}else{
 		                		uredjaj = null;
 		                	}
-		                	prolaz++;
 		                	break;
 	                	}
 		                if(objekat != null){
 		                	javljanje = server.protokol.genekoObrada(da[3], objekat, zaustavljeno, vreme, stop);
-		                	if(javljanje != null){
+		                	
+		                	if(javljanje != null  && javljanje.getBrzina() < 200){
+		                        JavljanjaPoslednja poslednje = Servis.javljanjePoslednjeServis.nadjiJavljanjaPoslednjaPoObjektu(javljanje.getObjekti());
+								upisObracun(javljanje, poslednje);
+								
 		                        if(javljanje.getSistemAlarmi().getSifra().equals("1095")){
 		                        	zaustavljeno = true;
 		                        }
@@ -88,8 +99,94 @@ public class GenekoThread implements Runnable{
 		                        		stop = javljanje;
 		                        	}
 		                        }
-		                        JavljanjaPoslednja poslednje = Servis.javljanjePoslednjeServis.nadjiJavljanjaPoslednjaPoObjektu(javljanje.getObjekti());
-								upisObracun(javljanje, poslednje);
+
+		            			//alarm stajanje
+	            				if(stop != null) {
+	            					long vremeRazlika = javljanje.getDatumVreme().getTime() - stop.getDatumVreme().getTime();
+	            					if(!zaustavljeno) {
+	            						if(objekat.getVremeStajanja() != 0 && vremeRazlika / 1000 > objekat.getVremeStajanja() * 60) {
+	            							if(javljanje.getSistemAlarmi().getSifra().equals("0")) {
+	            								javljanje.setSistemAlarmi(server.stajanje);
+	            								zaustavljeno = true;
+	            								}else {
+	            									Servis.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
+	            									javljanje.setSistemAlarmi(server.stajanje);
+	            									zaustavljeno = true;
+	            								}
+	            							}
+	            						}
+	            					}
+		        				
+	            				//alarm prekoračenje brzine
+	            				if(objekat.getPrekoracenjeBrzine() != 0) {
+		            				if(javljanje.getBrzina() > objekat.getPrekoracenjeBrzine() && !prekoracenje) {
+		            					prekoracenje = true;
+		            					if(javljanje.getSistemAlarmi().getSifra().equals("0")) {
+		            						javljanje.setSistemAlarmi(server.prekoracenjeBrzine);
+		            					}else {
+		            						Servis.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
+		            						javljanje.setSistemAlarmi(server.prekoracenjeBrzine);
+		            					}
+	            						if(javljanje.getEventData().equals("0")) {
+	            							javljanje.setEventData(javljanje.getBrzina() + "км/ч");
+	            						}else {
+	            							javljanje.setEventData(javljanje.getBrzina() + "км/ч, " + javljanje.getEventData());
+	            						}
+		            				}else {
+		            					prekoracenje = false;
+		            				}
+	            				}
+
+	            				
+			            		//alarm zona
+			            		if(objekatZone != null && objekatZone.size() > 0) {
+			            			Zone zonaPoslednja = null;
+			            			if(Servis.javljanjePoslednjeServis.nadjiJavljanjaPoslednjaPoObjektu(objekat) != null) {
+			            				zonaPoslednja = Servis.javljanjePoslednjeServis.nadjiJavljanjaPoslednjaPoObjektu(objekat).getZona();
+			            			}
+		            				//ulazak
+		            				if(zonaPoslednja == null) {
+		            					for(ObjekatZone objekatZona : objekatZone) {
+		            						if(objekatZona.isAktivan() && objekatZona.isIzlaz()) {
+				            					if(Servis.obracun.rastojanjeKoordinate(javljanje, objekatZona.getZone().getLat(), objekatZona.getZone().getLon()) <= objekatZona.getZone().getPrecnik()) {
+				            						javljanje.setZona(objekatZona.getZone());
+				            						if(javljanje.getSistemAlarmi().getSifra().equals("0")) {
+				            							javljanje.setSistemAlarmi(server.ulazak);
+				            							javljanje.setEventData(objekatZona.getZone().getNaziv());
+				            							break;
+				            						}else {
+				            							Servis.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
+				            							javljanje.setSistemAlarmi(server.ulazak);
+				            							javljanje.setEventData(objekatZona.getZone().getNaziv());
+				            							break;
+				            						}
+				            					}
+		            						}
+		            					}
+		            				}else {
+		            					//izlazak
+		            					ObjekatZone objZona = Servis.zonaObjekatServis.nadjiObjekatZonuPoZoniObjektu(objekat, zonaPoslednja);
+		            					if(objZona != null && objZona.isAktivan() && objZona.isIzlaz()) {
+			            					if(Servis.obracun.rastojanjeKoordinate(javljanje, zonaPoslednja.getLat(), zonaPoslednja.getLon()) > zonaPoslednja.getPrecnik()) {
+			            						if(javljanje.getSistemAlarmi().getSifra().equals("0")) {
+			            							javljanje.setSistemAlarmi(server.izlazak);
+			            							javljanje.setEventData(zonaPoslednja.getNaziv());
+			            						}else {
+			            							Servis.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
+			            							javljanje.setSistemAlarmi(server.izlazak);
+			            							javljanje.setEventData(zonaPoslednja.getNaziv());
+			            						}
+			            						javljanje.setZona(null);
+			            					}else {
+			            						javljanje.setZona(zonaPoslednja);
+			            					}
+		            					}else {
+		            						javljanje.setZona(zonaPoslednja);
+		            					}
+		            				}
+			            		}
+
+	            				Servis.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
 		                        }
 		                	}else {
 		                		System.out.println("objekat null... " + niz[i]);
@@ -118,9 +215,16 @@ public class GenekoThread implements Runnable{
 		}
 	
 	private void upisObracun(Javljanja javljanje, JavljanjaPoslednja javljanjePoslednje) {
-		javljanje.setVirtualOdo(javljanjePoslednje.getVirtualOdo() + (float)Servis.obracun.rastojanje(javljanje, javljanjePoslednje));
-	    Servis.javljanjeServis.unesiJavljanja(javljanje);
-	    Broadcaster.broadcast(javljanje);
+		if(javljanjePoslednje != null) {
+			if(javljanje.getDatumVreme().after(javljanjePoslednje.getDatumVreme())) {
+				javljanje.setVirtualOdo(javljanjePoslednje.getVirtualOdo() + (float)Servis.obracun.rastojanje(javljanje, javljanjePoslednje));
+			}else {
+				javljanje.setVirtualOdo(javljanjePoslednje.getVirtualOdo());
+			}
+		}else {
+			javljanje.setVirtualOdo(0.0f);
+		}
+
 	}
 	
 	public synchronized boolean isStopped(){

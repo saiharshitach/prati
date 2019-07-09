@@ -1,14 +1,18 @@
 package rs.atekom.prati.view.zone;
 
 import org.vaadin.dialogs.ConfirmDialog;
+
+import com.google.maps.GeoApiContext;
+import com.google.maps.GeocodingApi;
+import com.google.maps.model.GeocodingResult;
 import com.vaadin.server.Page;
 import com.vaadin.tapio.googlemaps.client.LatLon;
 import com.vaadin.tapio.googlemaps.client.overlays.GoogleMapMarker;
 import com.vaadin.ui.CheckBox;
 import pratiBaza.tabele.Zone;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-
 import rs.atekom.prati.mape.Gmap;
 import rs.atekom.prati.server.Servis;
 import rs.atekom.prati.view.OpstaForma;
@@ -27,15 +31,21 @@ public class ZoneForma extends OpstaForma implements OpstaFormaInterface{
 	private ZoneLogika logika;
 	private ComboPretplatnici pretplatnici;
 	private ComboOrganizacije organizacije;
-	private Tekst naziv, opis;
+	private Tekst adresa, naziv, opis;
 	private DecimalniPozicija lon, lat;
 	private Celobrojni poluprecnik;
 	private CheckBox aktivan, izbrisan;
+	private Button nadjiLokaciju;
+	private int brojPokusaja;
 
 	public ZoneForma(ZoneLogika log) {
 		logika = log;
+		brojPokusaja = 0;
 		pretplatnici = new ComboPretplatnici("претплатник", true, true);
 		organizacije = new ComboOrganizacije(pretplatnici.getValue(), "организација", true, false);
+		adresa = new Tekst("адреса", false);
+		nadjiLokaciju = new Button("нађи локацију");
+		nadjiLokaciju.addStyleName("primary");
 		naziv = new Tekst("назив", true);
 		lon = new DecimalniPozicija("гео. дужина", true);
 		lat = new DecimalniPozicija("гео. ширина", true);
@@ -43,6 +53,14 @@ public class ZoneForma extends OpstaForma implements OpstaFormaInterface{
 		opis = new Tekst("опис", false);
 		aktivan = new CheckBox("активан");
 		izbrisan = new CheckBox("избрисан");
+		
+		nadjiLokaciju.addClickListener(new ClickListener() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void buttonClick(ClickEvent event) {
+				nadjiLokaciju(adresa.getValue());
+			}
+		});
 		
 		sacuvaj.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
@@ -56,6 +74,7 @@ public class ZoneForma extends OpstaForma implements OpstaFormaInterface{
 							if(dialog.isConfirmed()) {
 								logika.sacuvajPodatak(sacuvajPodatak(logika.view.dajIzabraniRed()));
 								logika.view.mapa.clearMarkers();
+								brojPokusaja = 0;
 							}
 						}
 					});
@@ -94,13 +113,15 @@ public class ZoneForma extends OpstaForma implements OpstaFormaInterface{
 		if(logika.view.isAdmin()) {
 			layout.addComponent(pretplatnici);
 		}
+		layout.addComponent(adresa);
+		layout.addComponent(nadjiLokaciju);
 		layout.addComponent(naziv);
 		layout.addComponent(lon);
 		layout.addComponent(lat);
 		layout.addComponent(poluprecnik);
 		layout.addComponent(opis);
 		layout.addComponent(aktivan);
-		if(logika.view.isAdmin() && logika.view.korisnik.getOrganizacija() == null) {
+		if(logika.view.korisnik.isAdmin() && logika.view.korisnik.getOrganizacija() == null) {
 			layout.addComponent(organizacije);
 		}
 		if(logika.view.isAdmin())  {
@@ -251,6 +272,37 @@ public class ZoneForma extends OpstaForma implements OpstaFormaInterface{
 	public void postaviLokaciju(LatLon position) {
 		lon.setValue(String.valueOf(position.getLon()));
 		lat.setValue(String.valueOf(position.getLat()));
+	}
+	
+	private void nadjiLokaciju(String adresa) {
+		if(brojPokusaja < 6) {
+			GeoApiContext geoApiContext = new GeoApiContext().setApiKey(Servis.apiGoogle);
+		    if (adresa != null && geoApiContext != null) {
+		        GeocodingResult[] results;
+				try {
+					results = GeocodingApi.geocode(geoApiContext, adresa).await();
+			        GeocodingResult result = results[0];
+			        double latitude = result.geometry.location.lat;
+			        double longitude = result.geometry.location.lng;
+			        lat.setValue(String.valueOf(latitude));
+			        lon.setValue(String.valueOf(longitude));
+			        logika.view.mapa.clearMarkers();
+					logika.view.mapa.setCenter(new LatLon(latitude, longitude));
+					logika.view.mapa.setZoom(12);
+					//GoogleMapCircle circle = new GoogleMapCircle(new LatLon(60.448118, 22.253738), 2000);
+					logika.view.mapa.addMarker(new GoogleMapMarker(" " , new LatLon(latitude, longitude), false));
+				} catch (Exception e) {
+					logika.view.pokaziPorukuGreska("неисправни подаци - или адреса или приступ мапи!");
+					e.printStackTrace();
+				}
+				brojPokusaja++;
+				}else {
+		        	logika.view.pokaziPorukuGreska("неисправни подаци - или адреса или приступ мапи!");
+		        	}
+		}else {
+			logika.view.pokaziPorukuGreska("искористили сте максимални број покушаја тражења локације! за наставак изађите из прозора");
+		}
+
 	}
 	
 	/*public void postaviZonu(LatLon pozicija, int precnik) {

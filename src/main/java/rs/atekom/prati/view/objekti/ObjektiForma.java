@@ -46,9 +46,8 @@ public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 		aktivan = new CheckBox("активан");
 		vozilo = new CheckBox("возило");
 		vremeStajanja = new Celobrojni("време стајања у мин", false);
-		prekoracenjeBrzine = new Celobrojni("прекорачење брзине км/ч", false);
+		prekoracenjeBrzine = new Celobrojni("прекорачење брзине км/ч - мин 80", false);
 		izbrisan = new CheckBox("избрисан");
-		
 
 		uredjaji = new ComboUredjaji(pretplatnici.getValue(), organizacije.getValue(), "уређај", true, true, null);
 		
@@ -137,7 +136,7 @@ public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 		layout.addComponent(vremeStajanja);
 		layout.addComponent(prekoracenjeBrzine);
 		layout.addComponent(aktivan);
-		if(logika.view.isAdmin() && logika.view.korisnik.getOrganizacija() == null) {
+		if(logika.view.korisnik.isAdmin() && logika.view.korisnik.getOrganizacija() == null) {
 			layout.addComponent(organizacije);
 		}
 		if(logika.view.isAdmin())  {
@@ -207,7 +206,7 @@ public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 		simBroj.clear();
 		vozilo.setValue(true);
 		vremeStajanja.setValue("0");
-		prekoracenjeBrzine.setValue("0");
+		prekoracenjeBrzine.setValue("80");
 		aktivan.setValue(true);
 		if(logika.view.korisnik.getOrganizacija() != null) {
 			organizacije.setValue(logika.view.korisnik.getOrganizacija());
@@ -266,6 +265,10 @@ public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 			sveIma = false;
 		}
 		if(oznaka.isEmpty() || oznaka.getValue() == "") {
+			sveIma = false;
+		}
+		int brz = Integer.parseInt(prekoracenjeBrzine.getValue());
+		if(brz != 0 && brz < 80) {
 			sveIma = false;
 		}
 		return sveIma;

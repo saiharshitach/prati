@@ -1,6 +1,8 @@
 package rs.atekom.prati.view.korisnici;
 
 import java.util.ArrayList;
+import java.util.regex.Pattern;
+
 import org.vaadin.dialogs.ConfirmDialog;
 import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.HasValue.ValueChangeListener;
@@ -147,7 +149,7 @@ public class KorisniciForma extends OpstaForma implements OpstaFormaInterface{
 		layout.addComponent(telefon);
 		layout.addComponent(mobilni);
 		layout.addComponent(iDugme);
-		if(logika.view.isAdmin() && logika.view.korisnik.getOrganizacija() == null) {
+		if(logika.view.korisnik.isAdmin() && logika.view.korisnik.getOrganizacija() == null) {
 			layout.addComponent(organizacije);
 		}
 		if(logika.view.isAdmin())  {
@@ -321,11 +323,24 @@ public class KorisniciForma extends OpstaForma implements OpstaFormaInterface{
 		}
 		if(ePosta.isEmpty() || ePosta.getValue() == "") {
 			sveIma = false;
+		}else {
+			sveIma = isEmail(ePosta.getValue());
 		}
 		if(lozinka.isEmpty() || lozinka.getValue() == "") {
 			sveIma = false;
 		}
 		return sveIma;
+	}
+	
+	private boolean isEmail(String email) {
+		 String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+ 
+                 "[a-zA-Z0-9_+&*-]+)*@" + 
+                 "(?:[a-zA-Z0-9-]+\\.)+[a-z" + 
+                 "A-Z]{2,7}$"; 
+		 Pattern pat = Pattern.compile(emailRegex); 
+		 if (email == null) 
+			 return false; 
+		 return pat.matcher(email).matches();
 	}
 
 }

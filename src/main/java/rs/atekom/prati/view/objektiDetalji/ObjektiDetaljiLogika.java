@@ -67,7 +67,7 @@ public class ObjektiDetaljiLogika implements LogikaInterface{
 			view.pokaziPorukuUspesno("детаљи објекта измењени");
 		}else {
 			try {
-				if(Servis.objekatDetaljiServis.nadjiObjekatDetaljePoObjektu(objekatDetalj.getObjekti())  == null) {
+				if(Servis.objekatDetaljiServis.nadjiObjekatDetaljePoObjektu(objekatDetalj.getObjekti()) == null) {
 					Servis.objekatDetaljiServis.unesiObjektiDetalji(objekatDetalj);
 					view.pokaziPorukuUspesno("детаљи објекта сачувани");
 				}else {

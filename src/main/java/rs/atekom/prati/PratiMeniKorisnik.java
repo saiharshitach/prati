@@ -14,22 +14,23 @@ import static com.github.appreciated.app.layout.builder.Section.HEADER;
 import static com.github.appreciated.app.layout.builder.Section.FOOTER;
 import com.vaadin.icons.VaadinIcons;
 
-import rs.atekom.prati.izvestaji.IzvestajiView;
 import rs.atekom.prati.meni.PratiEventBus;
 import rs.atekom.prati.meni.PratiEvent.KorisnikLoggedOutEvent;
 import rs.atekom.prati.view.IstorijaView;
-import rs.atekom.prati.view.PocetnaView;
 import rs.atekom.prati.view.PracenjeView;
 import rs.atekom.prati.view.alarmi.AlarmiView;
 import rs.atekom.prati.view.alarmiKorisnik.AlarmKorisnikView;
 import rs.atekom.prati.view.gorivo.GorivoView;
 import rs.atekom.prati.view.grupe.GrupeObjektiView;
 import rs.atekom.prati.view.grupe.GrupeView;
+import rs.atekom.prati.view.izvestaji.IzvestajiView;
+import rs.atekom.prati.view.izvestaji.nivoGoriva.NivoGorivaView;
 import rs.atekom.prati.view.korisnici.KorisniciView;
 import rs.atekom.prati.view.objekatZone.ObjekatZoneView;
 import rs.atekom.prati.view.objekti.ObjektiView;
 import rs.atekom.prati.view.objektiDetalji.ObjektiDetaljiView;
 import rs.atekom.prati.view.organizacije.OrganizacijeView;
+import rs.atekom.prati.view.pocetna.PocetnaView;
 import rs.atekom.prati.view.pretplatnici.PretplatniciView;
 import rs.atekom.prati.view.proizvodjaci.UredjajiProizvodjaciView;
 import rs.atekom.prati.view.sim.SimView;
@@ -44,14 +45,16 @@ public class PratiMeniKorisnik{
 	
 	private static DefaultNotificationHolder notifications;
 	private static DefaultBadgeHolder badge;
+	private static final Behaviour izgled = Behaviour.LEFT_RESPONSIVE_HYBRID_OVERLAY_NO_APP_BAR;
 	
 	public PratiMeniKorisnik() {
 		badge = new DefaultBadgeHolder();
 		notifications = new DefaultNotificationHolder();
 	}
 	
+	//korisnik
 	public AppLayoutComponent vratiMeniKorisnik(String korisnik) {
-		return AppLayout.getDefaultBuilder(Behaviour.LEFT_RESPONSIVE_HYBRID_OVERLAY_NO_APP_BAR)
+		return AppLayout.getDefaultBuilder(izgled)
         .withTitle("праћење")
         .addToAppBar(new AppBarNotificationButton(notifications))
         .withNavigationElementInfoProducer(new DefaultNavigationElementInfoProducer())
@@ -62,13 +65,17 @@ public class PratiMeniKorisnik{
         .add(IstorijaView.class)
         .add(IzvestajiView.class)
         .add(AlarmKorisnikView.class)
+        //.add(SubmenuBuilder.get("Извештаји", VaadinIcons.BAR_CHART)
+        		//.add(NivoGorivaView.class)
+        		//.build())
         .addClickable("Одјава", VaadinIcons.SIGN_OUT, clickEvent -> PratiEventBus.post(new KorisnikLoggedOutEvent()), FOOTER)
         //.add(View6.class)
         .build();
 	}
 	
+	//administrator
 	public AppLayoutComponent vratiMeniAdministrator(String korisnik) {
-		return AppLayout.getDefaultBuilder(Behaviour.LEFT_RESPONSIVE_HYBRID_OVERLAY_NO_APP_BAR)
+		return AppLayout.getDefaultBuilder(izgled)
         .withTitle("праћење")
         .addToAppBar(new AppBarNotificationButton(notifications))
         .withNavigationElementInfoProducer(new DefaultNavigationElementInfoProducer())
@@ -79,6 +86,9 @@ public class PratiMeniKorisnik{
         .add(IstorijaView.class)
         .add(IzvestajiView.class)
         .add(AlarmKorisnikView.class)
+        //.add(SubmenuBuilder.get("Извештаји", VaadinIcons.BAR_CHART)
+        		//.add(NivoGorivaView.class)
+        		//.build())
         .add(SubmenuBuilder.get("Подаци", VaadinIcons.COG)
         		.add(GrupeView.class)
         		.add(GrupeObjektiView.class)
@@ -98,8 +108,9 @@ public class PratiMeniKorisnik{
 	
 	}
 	
+	//sistem
 	public AppLayoutComponent vratiMeniSistem(String korisnik) {
-		return AppLayout.getDefaultBuilder(Behaviour.LEFT_RESPONSIVE_HYBRID_OVERLAY_NO_APP_BAR)
+		return AppLayout.getDefaultBuilder(izgled)
 		        .withTitle("праћење")
 		        .addToAppBar(new AppBarNotificationButton(notifications))
 		        .withNavigationElementInfoProducer(new DefaultNavigationElementInfoProducer())
@@ -110,6 +121,9 @@ public class PratiMeniKorisnik{
 		        .add(IstorijaView.class)
 		        .add(IzvestajiView.class)
 		        .add(AlarmKorisnikView.class)
+		        //.add(SubmenuBuilder.get("Извештаји", VaadinIcons.BAR_CHART)
+		        		//.add(NivoGorivaView.class)
+		        		//.build())
 		        .add(SubmenuBuilder.get("Подаци", VaadinIcons.COG)
 		        		.add(GrupeView.class)
 		        		.add(GrupeObjektiView.class)

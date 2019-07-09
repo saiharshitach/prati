@@ -61,13 +61,13 @@ public abstract class OpstiPanelView extends Panel implements View, Serializable
 	public ComboPretplatnici pretplatniciCombo;
 	public ComboOrganizacije organizacijeCombo;
 	public ComboGrupe grupeCombo;
-	public CheckBox centriraj, prikaziMarkere;
+	public CheckBox centriraj, prikaziMarkere, sortiraj;
 	public DatumVreme vremeOd, vremeDo;
 	public ComboObjekti objektiCombo;
 
 	public OpstiPanelView() {
-		addStyleName(ValoTheme.PANEL_BORDERLESS);
         setSizeFull();
+		addStyleName(ValoTheme.PANEL_BORDERLESS);
         setWidth("100%");
         Prati.getCurrent().pracenjeView = null;
         root = new VerticalLayout();
@@ -153,6 +153,8 @@ public abstract class OpstiPanelView extends Panel implements View, Serializable
         lociraj.setDescription("прикажи објекте на мапи");
         centriraj = new CheckBox();
         centriraj.setDescription("центрирај мапу према објектима");
+        sortiraj = new CheckBox();
+        sortiraj.setDescription("сортирај аутоматски према времену податке у табели?");
 
         topLayout.setSizeUndefined();
         topLayout.addComponent(filter);
@@ -169,8 +171,9 @@ public abstract class OpstiPanelView extends Panel implements View, Serializable
         	organizacijeCombo.setValue(korisnik.getOrganizacija());
         }
         topLayout.addComponent(grupeCombo);
-        topLayout.addComponent(lociraj);
         topLayout.addComponent(centriraj);
+        topLayout.addComponent(lociraj);
+        topLayout.addComponent(sortiraj);
         topLayout.setExpandRatio(filter, 1);
 		panelToolBar.setContent(topLayout);
 		return panelToolBar;
@@ -182,10 +185,10 @@ public abstract class OpstiPanelView extends Panel implements View, Serializable
 		panelObjDatumVreme.setWidth("100%");
 		panelObjDatumVreme.addStyleName(ValoTheme.PANEL_BORDERLESS);
 
-        topLayout.setSizeUndefined();
-        
         vremeOd = new DatumVreme(false, "", 0, 0, 0);
         vremeDo = new DatumVreme(false, "", 0, 0, 1);
+        topLayout.setSizeUndefined();
+        
         objektiCombo = new ComboObjekti(korisnik, null, true, false);
         prikaziMarkere = new CheckBox();
         prikaziMarkere.setDescription("прикажи маркере");
@@ -219,7 +222,7 @@ public abstract class OpstiPanelView extends Panel implements View, Serializable
 		panelToolBar = new Panel();
 		panelToolBar.setWidth("100%");
 		panelToolBar.addStyleName(ValoTheme.PANEL_BORDERLESS);
-		
+        
 		panelToolBar.setContent(topLayout);
 		return panelToolBar;
 	}
@@ -283,7 +286,13 @@ public abstract class OpstiPanelView extends Panel implements View, Serializable
 		card.addStyleName(ValoTheme.LAYOUT_CARD);
 		
 		HorizontalLayout toolbar = new HorizontalLayout();
-		toolbar.addStyleName("dupli-panel-toolbar");
+		
+		if(slotStyle.equals("dupli-panel-slot")) {
+			toolbar.addStyleName("dupli-panel-toolbar");
+		}else {
+			toolbar.addStyleName("dashboard-panel-toolbar");
+		}
+		
 		toolbar.setWidth("100%");
 
 		Label caption = new Label();

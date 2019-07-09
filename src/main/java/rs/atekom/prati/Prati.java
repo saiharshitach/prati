@@ -1,8 +1,10 @@
 package rs.atekom.prati;
 
+import java.io.File;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,7 +21,9 @@ import com.vaadin.data.provider.GridSortOrder;
 import com.vaadin.data.provider.Query;
 import com.vaadin.event.UIEvents.PollListener;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.server.FileResource;
 import com.vaadin.server.Page;
+import com.vaadin.server.Resource;
 import com.vaadin.server.ServiceException;
 import com.vaadin.server.SessionDestroyEvent;
 import com.vaadin.server.SessionDestroyListener;
@@ -30,13 +34,18 @@ import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinServletRequest;
 import com.vaadin.server.VaadinSession;
+import com.vaadin.shared.Position;
+import com.vaadin.ui.Audio;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Grid.SelectionMode;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.HtmlRenderer;
 import com.vaadin.ui.themes.ValoTheme;
+
+import pratiBaza.tabele.AlarmiKorisnik;
 import pratiBaza.tabele.Grupe;
 import pratiBaza.tabele.Javljanja;
 import pratiBaza.tabele.JavljanjaPoslednja;
@@ -50,6 +59,7 @@ import rs.atekom.prati.meni.PratiEventBus;
 import rs.atekom.prati.meni.PratiEvent.KorisnikLoggedOutEvent;
 import rs.atekom.prati.meni.PratiEvent.KorisnikLoginRequestedEvent;
 import rs.atekom.prati.server.Servis;
+import rs.atekom.prati.view.GreskaView;
 import rs.atekom.prati.view.PracenjeView;
 
 @Viewport("user-scalable=no,initial-scale=1.0")
@@ -64,16 +74,21 @@ public class Prati extends UI implements BroadcastListener{
 	private Korisnici korisnik;
 	public PollListener osvezavanjeMarkera; 
 	public static final String DANSATFORMAT = "%1$td/%1$tm/%1$tY %1$tH:%1$tM:%1$tS";
-	
+	private Notification obavestenje;
+    public static String basepath;
+    public Resource zvuk;
+    private static Audio upozorenje = new Audio();
 	public SistemPretplatnici pretplatnik;
 	public Organizacije organizacija;
 	public Grupe grupa;
 	public ArrayList<Objekti> objekti = new ArrayList<Objekti>();
 	public ArrayList<Objekti> sviObjekti = new ArrayList<Objekti>();
+	public ArrayList<AlarmiKorisnik> alarmiKorisnika = new ArrayList<AlarmiKorisnik>();
 	public Grid<JavljanjaPoslednja> poslednjaJavljanja;
 	public Grid<Javljanja> javljanjaAlarmi;
 	private ArrayList<Javljanja> javljanjaAlarmiNiz;
 	public boolean centriranje = true;
+	public boolean sortiranje = false;
 	public PracenjeView pracenjeView;
 	public static SistemSesije sesija;
 	private static String ip;
@@ -94,7 +109,6 @@ public class Prati extends UI implements BroadcastListener{
 		poslednjaJavljanja.addColumn(javljanjaPoslednja -> javljanjaPoslednja.getObjekti().getOznaka()).setCaption("објект");
 		poslednjaJavljanja.addColumn(JavljanjaPoslednja::getBrzina).setCaption("брзина").setStyleGenerator(javljanjaPoslednja -> "v-align-right");
 		poslednjaJavljanja.addColumn(JavljanjaPoslednja::getDatumVreme, new DateRenderer(DANSATFORMAT)).setId("datumVreme").setCaption("датум/време").setStyleGenerator(javljanjaPoslednja -> "v-align-right");
-		poslednjaJavljanja.setSortOrder(GridSortOrder.desc(poslednjaJavljanja.getColumn("datumVreme")));
 		
 		javljanjaAlarmiNiz = new ArrayList<Javljanja>();
 		javljanjaAlarmi = new Grid<Javljanja>();
@@ -131,6 +145,7 @@ public class Prati extends UI implements BroadcastListener{
 		    setContent(meni);
 			removeStyleName("loginview");
 			getNavigator().navigateTo("pracenje");
+			getNavigator().setErrorView(GreskaView.class);
 
 		}else {
 			setContent(new PrijavaView());
@@ -223,7 +238,6 @@ public class Prati extends UI implements BroadcastListener{
     @VaadinServletConfiguration(ui = Prati.class, productionMode = true)
     public static class PratiServlet extends VaadinServlet implements SessionInitListener, SessionDestroyListener{
 		private static final long serialVersionUID = 1L;
-
 		@Override
 	    protected void servletInitialized() throws ServletException {
 	        super.servletInitialized();
@@ -236,6 +250,7 @@ public class Prati extends UI implements BroadcastListener{
 			//System.out.println("sesija počela...");
 			sesija = new SistemSesije();
 			//ip = VaadinService.getCurrentRequest().getHeader("x-forwarded-for");
+			//ip = getClientIp(request);
 			ip = getClientIp(request);
 			sesija.setIpAdresa(ip);
 			//sesija.setIpAdresa(Prati.getCurrent().getSession().getBrowser().getAddress());
@@ -251,18 +266,69 @@ public class Prati extends UI implements BroadcastListener{
     }
     
 	private static String getClientIp(HttpServletRequest request) {
-
         String remoteAddr = "";
-
         if (request != null) {
             remoteAddr = request.getHeader("X-FORWARDED-FOR");
             if (remoteAddr == null || "".equals(remoteAddr)) {
                 remoteAddr = request.getRemoteAddr();
             }
         }
-
         return remoteAddr;
     }
+	
+	public static String getClientIpAddress(HttpServletRequest request) {
+		String xForwardedForHeader = "";
+	    if(request != null) {
+		    xForwardedForHeader = request.getHeader("X-Forwarded-For");
+		    if (xForwardedForHeader == null) {
+		        return request.getRemoteAddr();
+		    } else {
+		        // As of https://en.wikipedia.org/wiki/X-Forwarded-For
+		        // The general format of the field is: X-Forwarded-For: client, proxy1, proxy2 ...
+		        // we only want the client
+		        //return new StringTokenizer(xForwardedForHeader, ",").nextToken().trim();
+		    }
+	    }
+	    return new StringTokenizer(xForwardedForHeader, ",").nextToken().trim();
+	}
+	
+	public static String getClientIpAddr(HttpServletRequest request) {  
+	    String ip = request.getHeader("X-Forwarded-For");  
+	    if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {  
+	        ip = request.getHeader("Proxy-Client-IP");  
+	    }  
+	    if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {  
+	        ip = request.getHeader("WL-Proxy-Client-IP");  
+	    }  
+	    if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {  
+	        ip = request.getHeader("HTTP_X_FORWARDED_FOR");  
+	    }  
+	    if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {  
+	        ip = request.getHeader("HTTP_X_FORWARDED");  
+	    }  
+	    if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {  
+	        ip = request.getHeader("HTTP_X_CLUSTER_CLIENT_IP");  
+	    }  
+	    if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {  
+	        ip = request.getHeader("HTTP_CLIENT_IP");  
+	    }  
+	    if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {  
+	        ip = request.getHeader("HTTP_FORWARDED_FOR");  
+	    }  
+	    if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {  
+	        ip = request.getHeader("HTTP_FORWARDED");  
+	    }  
+	    if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {  
+	        ip = request.getHeader("HTTP_VIA");  
+	    }  
+	    if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {  
+	        ip = request.getHeader("REMOTE_ADDR");  
+	    }  
+	    if (ip == null || ip.length() == 0 || ip.equalsIgnoreCase("unknown")) {  
+	        ip = request.getRemoteAddr();  
+	    }  
+	    return ip;  
+	}
     
     @Override
     public void detach() {
@@ -292,7 +358,7 @@ public class Prati extends UI implements BroadcastListener{
 						}
 						if(pracenjeView != null) {
 							for(JavljanjaPoslednja javljanje : poslednjaJavljanja.getDataProvider().fetch(new Query<>()).collect(Collectors.toList())) {
-								if(message.getObjekti().getId().equals(javljanje.getObjekti().getId())) {
+								if(javljanje.getDatumVreme().before(message.getDatumVreme()) && message.getObjekti().getId().equals(javljanje.getObjekti().getId())) {
 									javljanje.setDatumVreme(message.getDatumVreme());
 									javljanje.setBrzina(message.getBrzina());
 									javljanje.setKontakt(message.isKontakt());
@@ -300,9 +366,23 @@ public class Prati extends UI implements BroadcastListener{
 									javljanje.setLon(message.getLon());
 									javljanje.setPravac(message.getPravac());
 									poslednjaJavljanja.getDataProvider().refreshAll();
+									if(sortiranje)
+										poslednjaJavljanja.setSortOrder(GridSortOrder.desc(poslednjaJavljanja.getColumn("datumVreme")));
 									break;
 								}
 							}
+							if(alarmiKorisnika != null && !alarmiKorisnika.isEmpty()) {
+								for(AlarmiKorisnik alarmKorisnik : alarmiKorisnika) {
+									if(message.getSistemAlarmi().getId().equals(alarmKorisnik.getSistemAlarm().getId()) && 
+											message.getObjekti().getId().equals(alarmKorisnik.getObjekti().getId())) {
+										pokaziObavestenje(message);
+										break;
+									}
+								}
+							}
+						}
+						if(message.getSistemAlarmi().isAlarmiranje()) {
+							pokreniAlarm(message);
 						}
 					}
 				}
@@ -331,5 +411,22 @@ public class Prati extends UI implements BroadcastListener{
 		ikonicaBoja =  "<div class=\"v-icon\" style=\"font-family: " + VaadinIcons.CIRCLE.getFontFamily() + ";color:" + boja + ";vertical-align:middle" + "\">&#x" 
 					+ Integer.toHexString(VaadinIcons.CIRCLE.getCodepoint()) + ";</div>";
 		return ikonicaBoja;
+	}
+	
+	private void pokreniAlarm(Javljanja poruka){
+		pokaziObavestenje(poruka);
+		//Pracenje.getCurrent().upozorenje.play();
+        zvuk = new FileResource(new File(basepath + "sirena.mp3"));
+        upozorenje.setSource(zvuk);
+        upozorenje.play();
+	}
+	
+	private void pokaziObavestenje(Javljanja poruka) {
+		String zaIspis = poruka.getObjekti().getOznaka() + " " + poruka.getDatumVreme();
+		zaIspis = "Објекат " + poruka.getObjekti().getOznaka() + " је активирао " + poruka.getSistemAlarmi().getNaziv() + " " + poruka.getEventData() + "!";
+        obavestenje = new Notification(zaIspis, Type.ERROR_MESSAGE);
+        obavestenje.setDelayMsec(20000);
+        obavestenje.setPosition(Position.TOP_RIGHT);
+        obavestenje.show(Prati.getCurrent().getPage());
 	}
 }

@@ -10,10 +10,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.LinkedBlockingQueue;
 import javax.xml.bind.DatatypeConverter;
+import pratiBaza.tabele.AlarmiKorisnik;
 import pratiBaza.tabele.Javljanja;
 import pratiBaza.tabele.JavljanjaPoslednja;
 import pratiBaza.tabele.Obd;
-import rs.atekom.prati.Broadcaster;
+import pratiBaza.tabele.ObjekatZone;
+import pratiBaza.tabele.Objekti;
+import pratiBaza.tabele.Zone;
 
 public class NyitechThread implements Runnable{
 
@@ -26,6 +29,11 @@ public class NyitechThread implements Runnable{
 	private NyiTechProtokol protokol;
 	private NyiTechPar<Javljanja, Obd> par;
 	private byte[] data;
+	private ArrayList<AlarmiKorisnik> alarmiKorisnici;
+	private boolean prekoracenje = false;
+	private Javljanja stop = null;
+	private boolean zaustavljeno = false;
+	private ArrayList<ObjekatZone> objekatZone;
 	
 	public NyitechThread(LinkedBlockingQueue<Socket> queue, NyitechServer serverNyitech) {
     	socketQueue = queue;
@@ -102,7 +110,7 @@ public class NyitechThread implements Runnable{
 						uredjaj = convertHexToString(poruke.get(i).substring(8, 32));
 						par = protokol.nyiTechObrada(/*this.context,**/uredjaj, eventCode, eventData);
 						if(par != null){
-							if(par.javljanje != null){
+							if(par.javljanje != null && par.javljanje.getBrzina() < 200){
 								JavljanjaPoslednja poslednje = Servis.javljanjePoslednjeServis.nadjiJavljanjaPoslednjaPoObjektu(par.javljanje.getObjekti());
 								upisObracun(par.javljanje, poslednje);
 								}
@@ -117,9 +125,10 @@ public class NyitechThread implements Runnable{
 						uredjaj = convertHexToString(poruke.get(i).substring(8, 32));
 						par = protokol.nyiTechObrada(uredjaj, eventCode, eventData);
 						if(par != null){
-							if(par.javljanje != null){
+							if(par.javljanje != null && par.javljanje.getBrzina() < 200){
 								JavljanjaPoslednja poslednje = Servis.javljanjePoslednjeServis.nadjiJavljanjaPoslednjaPoObjektu(par.javljanje.getObjekti());
 								upisObracun(par.javljanje, poslednje);
+								
 								}
 							if(par.obd != null)
 								Servis.obdServis.unesiObd(par.obd);
@@ -143,9 +152,10 @@ public class NyitechThread implements Runnable{
 						uredjaj = convertHexToString(poruke.get(i).substring(8, 32));
 						par = protokol.nyiTechObrada(uredjaj, eventCode, eventData);
 						if(par != null){
-							if(par.javljanje != null){
+							if(par.javljanje != null && par.javljanje.getBrzina() < 200){
 								JavljanjaPoslednja poslednje = Servis.javljanjePoslednjeServis.nadjiJavljanjaPoslednjaPoObjektu(par.javljanje.getObjekti());
 								upisObracun(par.javljanje, poslednje);
+								
 								//ukoliko je alarm kontkt aktiviran šaljem komandu za proveru DTC grešaka
 								if(par.javljanje.getSistemAlarmi().getSifra().equals("1092")){
 									priprema = "4040" + "1700" + poruke.get(i).substring(8, 32) + "0940" + "010101";
@@ -165,7 +175,7 @@ public class NyitechThread implements Runnable{
 						uredjaj = convertHexToString(poruke.get(i).substring(8, 32));
 						par = protokol.nyiTechObrada(uredjaj, eventCode, eventData);
 						if(par != null){
-							if(par.javljanje != null){
+							if(par.javljanje != null && par.javljanje.getBrzina() < 200){
 								JavljanjaPoslednja poslednje = Servis.javljanjePoslednjeServis.nadjiJavljanjaPoslednjaPoObjektu(par.javljanje.getObjekti());
 								upisObracun(par.javljanje, poslednje);
 								}
@@ -214,9 +224,105 @@ public class NyitechThread implements Runnable{
 	}
 	
 	private void upisObracun(Javljanja javljanje, JavljanjaPoslednja javljanjePoslednje) {
-		javljanje.setVirtualOdo(javljanjePoslednje.getVirtualOdo() + (float)Servis.obracun.rastojanje(javljanje, javljanjePoslednje));
-	    Servis.javljanjeServis.unesiJavljanja(javljanje);
-	    Broadcaster.broadcast(javljanje);
+		Objekti objekat = javljanje.getObjekti();
+		if(objekat != null) {
+			if(javljanjePoslednje != null) {
+				if(javljanje.getDatumVreme().after(javljanjePoslednje.getDatumVreme())) {
+					javljanje.setVirtualOdo(javljanjePoslednje.getVirtualOdo() + (float)Servis.obracun.rastojanje(javljanje, javljanjePoslednje));
+				}else {
+					javljanje.setVirtualOdo(javljanjePoslednje.getVirtualOdo());
+				}
+			}else {
+				javljanje.setVirtualOdo(0.0f);
+			}
+			objekatZone = Servis.zonaObjekatServis.nadjiZoneObjektePoObjektu(objekat);
+			alarmiKorisnici = Servis.alarmKorisnikServis.nadjiSveAlarmeKorisnikePoObjektu(objekat);
+			//alarm stajanje
+			if(stop != null) {
+				long vremeRazlika = javljanje.getDatumVreme().getTime() - stop.getDatumVreme().getTime();
+				if(!zaustavljeno) {
+					if(objekat.getVremeStajanja() != 0 && vremeRazlika / 1000 > objekat.getVremeStajanja() * 60) {
+						if(javljanje.getSistemAlarmi().getSifra().equals("0")) {
+							javljanje.setSistemAlarmi(server.stajanje);
+							zaustavljeno = true;
+							}else {
+								Servis.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
+								javljanje.setSistemAlarmi(server.stajanje);
+								zaustavljeno = true;
+							}
+						}
+					}
+				}
+			
+			//alarm prekoračenje brzine
+			if(objekat.getPrekoracenjeBrzine() > 50) {
+				if(javljanje.getBrzina() > objekat.getPrekoracenjeBrzine() && !prekoracenje) {
+					prekoracenje = true;
+					if(javljanje.getSistemAlarmi().getSifra().equals("0")) {
+						javljanje.setSistemAlarmi(server.prekoracenjeBrzine);
+					}else {
+						Servis.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
+						javljanje.setSistemAlarmi(server.prekoracenjeBrzine);
+					}
+					if(javljanje.getEventData().equals("0")) {
+						javljanje.setEventData(javljanje.getBrzina() + "км/ч");
+					}else {
+						javljanje.setEventData(javljanje.getBrzina() + "км/ч, " + javljanje.getEventData());
+					}
+				}else {
+					prekoracenje = false;
+				}
+			}
+			
+    		//alarm zona
+    		if(objekatZone != null && objekatZone.size() > 0) {
+    			Zone zonaPoslednja = null;
+    			if(Servis.javljanjePoslednjeServis.nadjiJavljanjaPoslednjaPoObjektu(objekat) != null) {
+    				zonaPoslednja = Servis.javljanjePoslednjeServis.nadjiJavljanjaPoslednjaPoObjektu(objekat).getZona();
+    			}
+				//ulazak
+				if(zonaPoslednja == null) {
+					for(ObjekatZone objekatZona : objekatZone) {
+						if(objekatZona.isAktivan() && objekatZona.isIzlaz()) {
+        					if(Servis.obracun.rastojanjeKoordinate(javljanje, objekatZona.getZone().getLat(), objekatZona.getZone().getLon()) <= objekatZona.getZone().getPrecnik()) {
+        						javljanje.setZona(objekatZona.getZone());
+        						if(javljanje.getSistemAlarmi().getSifra().equals("0")) {
+        							javljanje.setSistemAlarmi(server.ulazak);
+        							javljanje.setEventData(objekatZona.getZone().getNaziv());
+        							break;
+        						}else {
+        							Servis.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
+        							javljanje.setSistemAlarmi(server.ulazak);
+        							javljanje.setEventData(objekatZona.getZone().getNaziv());
+        							break;
+        						}
+        					}
+						}
+					}
+				}else {
+					//izlazak
+					ObjekatZone objZona = Servis.zonaObjekatServis.nadjiObjekatZonuPoZoniObjektu(objekat, zonaPoslednja);
+					if(objZona != null && objZona.isAktivan() && objZona.isIzlaz()) {
+    					if(Servis.obracun.rastojanjeKoordinate(javljanje, zonaPoslednja.getLat(), zonaPoslednja.getLon()) > zonaPoslednja.getPrecnik()) {
+    						if(javljanje.getSistemAlarmi().getSifra().equals("0")) {
+    							javljanje.setSistemAlarmi(server.izlazak);
+    							javljanje.setEventData(zonaPoslednja.getNaziv());
+    						}else {
+    							Servis.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
+    							javljanje.setSistemAlarmi(server.izlazak);
+    							javljanje.setEventData(zonaPoslednja.getNaziv());
+    						}
+    						javljanje.setZona(null);
+    					}else {
+    						javljanje.setZona(zonaPoslednja);
+    					}
+					}else {
+						javljanje.setZona(zonaPoslednja);
+					}
+				}
+    		}
+			Servis.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
+		}
 	}
     
     final int[] crc_table = {
@@ -236,6 +342,7 @@ public class NyitechThread implements Runnable{
     		0x3601,0xA104,0x4402,0xD307,0x6A03,0xFD06,0xD007,0x4702,0xFE06,0x6903,0x8C05,0x1B00,0xA204,0x3501,0x6803,0xFF06,0x4602,0xD107,
     		0x3401,0xA304,0x1A00,0x8D05
     		};
+    
     final int start_crc = 0xFFFF;
     
     public int crc(String niz){//unsigned short crc16(unsigned short crc,unsigned char *buffer, unsigned int size)

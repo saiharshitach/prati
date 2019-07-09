@@ -13,8 +13,10 @@ public class ComboIzvestaji extends ComboBox<IzvestajTip>{
 		setCaption(null);
 		setPlaceholder("извештаји...");
 		setItemCaptionGenerator(IzvestajTip::getNaziv);
+		setEmptySelectionAllowed(false);
 		setItems(lista());
-		setEmptySelectionAllowed(true);
+		//IzvestajTip prvi = new IzvestajTip(1, "пређени пут");
+		//setValue(prvi);
 		setWidth("100%");
 	}
 	
@@ -22,6 +24,8 @@ public class ComboIzvestaji extends ComboBox<IzvestajTip>{
 		ArrayList<IzvestajTip> izvestaji = new ArrayList<IzvestajTip>();
 		izvestaji.add(new IzvestajTip(1, "пређени пут"));
 		izvestaji.add(new IzvestajTip(2, "зоне"));
+		izvestaji.add(new IzvestajTip(3, "радно време ГПС"));
+		izvestaji.add(new IzvestajTip(4, "гориво"));
 		return izvestaji;
 	}
 

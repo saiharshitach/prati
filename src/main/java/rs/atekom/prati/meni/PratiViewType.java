@@ -3,7 +3,7 @@ package rs.atekom.prati.meni;
 import com.vaadin.navigator.View;
 import com.vaadin.server.Resource;
 
-import rs.atekom.prati.view.PocetnaView;
+import rs.atekom.prati.view.pocetna.PocetnaView;
 
 import com.vaadin.icons.VaadinIcons;
 

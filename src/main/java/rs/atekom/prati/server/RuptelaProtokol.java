@@ -19,9 +19,9 @@ public class RuptelaProtokol {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public Javljanja vratiJavljanje(RuptelaThread thread, Objekti objekat, String poruka, int komanda) {
-		 sada = new Date();
-		 javljanje = new Javljanja();
+	public JavljanjeObd vratiJavljanje(RuptelaThread thread, Objekti objekat, String poruka, int komanda) {
+		sada = new Date();
+		javljanje = new Javljanja();
 		 javljanje.setObjekti(objekat);
 		 javljanje.setValid(true);
 		 javljanje.setVirtualOdo(0.0f);
@@ -132,12 +132,10 @@ public class RuptelaProtokol {
 		 javljanje.setIzmenjeno(new Timestamp(sada.getTime()));
 		 if(obd.getNivoGoriva() == 0.0f && obd.getProsecnaPotrosnja() == 0.0f && obd.getRpm() == 0 && obd.getTemperatura() == 0 
 				 && obd.getUkupnoGorivo() == 0.0f && obd.getUkupnoKm() == 0){
-			 thread.setObd(null);
-		 }else {
-			 thread.setObd(obd);
+			 obd = null;
 		 }
 		 
-		return javljanje;
+		return new JavljanjeObd(javljanje, obd);
 	}
 	
 	private void upisi1bajt(int id, String vrednost) {

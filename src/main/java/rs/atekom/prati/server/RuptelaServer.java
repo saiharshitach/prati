@@ -23,12 +23,14 @@ public class RuptelaServer implements Runnable{
 	private int poolSize;
 	private int rb = 1;
 	public SistemAlarmi prekoracenjeBrzine, stajanje, istakanje, izlazak, ulazak;
+	public RuptelaProtokol zapis;
 	
 	public RuptelaServer(int port, int poolSizeS) {
 		clientSockets = new ArrayList<Socket>();
 		listeningPort = port;
 		poolSize = poolSizeS;
 		pool = Executors.newFixedThreadPool(poolSize);
+		zapis = new RuptelaProtokol();
 		prekoracenjeBrzine = Servis.sistemAlarmServis.nadjiAlarmPoSifri("6013");
 		stajanje = Servis.sistemAlarmServis.nadjiAlarmPoSifri("1095");
 		istakanje = Servis.sistemAlarmServis.nadjiAlarmPoSifri("1111");

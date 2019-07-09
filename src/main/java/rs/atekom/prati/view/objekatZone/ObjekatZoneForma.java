@@ -86,7 +86,7 @@ public class ObjekatZoneForma extends OpstaForma implements OpstaFormaInterface{
 		layout.addComponent(ulaz);
 		layout.addComponent(izlaz);
 		layout.addComponent(aktivan);
-		if(logika.view.isAdmin() && logika.view.korisnik.getOrganizacija() == null) {
+		if(logika.view.korisnik.isAdmin() && logika.view.korisnik.getOrganizacija() == null) {
 			layout.addComponent(organizacije);
 		}
 		if(logika.view.isAdmin())  {

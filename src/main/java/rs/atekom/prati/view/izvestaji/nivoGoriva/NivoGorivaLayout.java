@@ -1,7 +1,6 @@
-package rs.atekom.prati.izvestaji;
+package rs.atekom.prati.view.izvestaji.nivoGoriva;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Date;
 import com.ibm.icu.text.SimpleDateFormat;
 import com.vaadin.shared.ui.MarginInfo;
@@ -10,16 +9,14 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import pratiBaza.tabele.Objekti;
-import pratiBaza.tabele.SistemAlarmi;
 
-
-public class ZoneLayout extends VerticalLayout{
+public class NivoGorivaLayout extends VerticalLayout{
 
 	private static final long serialVersionUID = 1L;
 	private HorizontalLayout hLayout;
 	private static final String DATUMVREME = "dd/MM/yyyy HH:mm:ss";
 	
-	public ZoneLayout(ArrayList<Objekti> objekti, Timestamp datumVremeOd, Timestamp datumVremeDo, ArrayList<SistemAlarmi> alarmi) {
+	public NivoGorivaLayout(Objekti objekat, Timestamp datumVremeOd, Timestamp datumVremeDo) {
 		setSizeFull();
 		setMargin(new MarginInfo(false, false, true, false));
 		SimpleDateFormat datumVreme = new SimpleDateFormat(DATUMVREME);
@@ -36,8 +33,8 @@ public class ZoneLayout extends VerticalLayout{
 		//hLayout.addComponent(xls);
 		Panel panel = new Panel();
 		panel.setHeight("100%");
-		ZoneIzvestaj izvestaj = new ZoneIzvestaj(objekti, datumVremeOd, datumVremeDo, alarmi);
-		izvestaj.downloadPdfOnClick(pdf, "zone_" + datumVreme.format(new Date()) + ".pdf", izvestaj.vratiSeriju(objekti, datumVremeOd, datumVremeDo, alarmi));
+		NivoGorivaIzvestaj izvestaj = new NivoGorivaIzvestaj(objekat, datumVremeOd, datumVremeDo);
+		izvestaj.downloadPdfOnClick(pdf, "nivo_gorivo_" + datumVreme.format(new Date()) + ".pdf", izvestaj.vratiSeriju(objekat, datumVremeOd, datumVremeDo));
 		//izvestaj.downloadDocxOnClick(doc, "predjeni_put_"" + datumVreme.format(new Date()) + ".doc", izvestaj.vratiSeriju(objekat, datumVremeOd, datumVremeDo));
 		//izvestaj.downloadXlsOnClick(xls, "predjeni_put_"" + datumVreme.format(new Date()) + ".xlsx", izvestaj.vratiSeriju(objekat, datumVremeOd, datumVremeDo));
 		panel.setContent(izvestaj);

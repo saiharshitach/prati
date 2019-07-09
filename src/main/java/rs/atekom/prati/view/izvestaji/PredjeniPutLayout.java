@@ -1,16 +1,14 @@
-package rs.atekom.prati.izvestaji;
+package rs.atekom.prati.view.izvestaji;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
-
 import com.ibm.icu.text.SimpleDateFormat;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
-
 import pratiBaza.tabele.Objekti;
 
 public class PredjeniPutLayout extends VerticalLayout{

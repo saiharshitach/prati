@@ -15,14 +15,12 @@ import com.vaadin.tapio.googlemaps.client.overlays.GoogleMapPolyline;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
-
 import pratiBaza.tabele.Grupe;
 import pratiBaza.tabele.Javljanja;
 import pratiBaza.tabele.Objekti;
-import rs.atekom.prati.izvestaji.IstorijaLayout;
 import rs.atekom.prati.mape.Gmap;
 import rs.atekom.prati.server.Servis;
-
+import rs.atekom.prati.view.izvestaji.IstorijaLayout;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.themes.ValoTheme;
@@ -32,6 +30,10 @@ import com.vaadin.ui.themes.ValoTheme;
 @MenuIcon(VaadinIcons.LINES)
 public class IstorijaView extends OpstiPanelView{
 
+	/*@WebServlet("/izvestaj-istorija")
+    public static class ReportsImageServlet extends ImageServlet {
+		private static final long serialVersionUID = 1L;
+	}**/
 	private static final long serialVersionUID = 1L;
 	private Panel podaci;
 	private GoogleMapPolyline linija;

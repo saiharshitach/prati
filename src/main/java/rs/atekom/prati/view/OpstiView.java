@@ -27,7 +27,6 @@ import rs.atekom.prati.Prati;
 import rs.atekom.prati.mape.Gmap;
 import rs.atekom.prati.server.Servis;
 import rs.atekom.prati.view.komponente.ComboGrupe;
-import rs.atekom.prati.view.komponente.ComboIzvestaji;
 import rs.atekom.prati.view.komponente.ComboOrganizacije;
 import rs.atekom.prati.view.komponente.ComboPretplatnici;
 

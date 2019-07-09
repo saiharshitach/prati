@@ -27,11 +27,11 @@ public class Izvrsavanje {
 		Servis.javljanjeServis.unesiJavljanja(javljanje);
         Broadcaster.broadcast(javljanje);
         for(AlarmiKorisnik alarmKorisnik : alarmiKorisnici) {
-        	if(alarmKorisnik.getSistemAlarmi().getId().equals(javljanje.getSistemAlarmi().getId())) {
-        		String zaglavlje = "Обавештење - праћење возила";
+        	if(alarmKorisnik.getSistemAlarmi().getId().equals(javljanje.getSistemAlarmi().getId()) && alarmKorisnik.isEmail()) {
+        		String zaglavlje = "Праћење возила - " + javljanje.getObjekti().getOznaka() + " - " + javljanje.getSistemAlarmi().getNaziv();
         		String poruka = String.join("\n"
         		         , "Поштовани,"
-        		         , "Објекат " + javljanje.getObjekti().getOznaka() + " је активирао аларм " + javljanje.getSistemAlarmi().getNaziv() + " - " + javljanje.getSistemAlarmi().getOpis()
+        		         , "Објекат " + javljanje.getObjekti().getOznaka() + " је активирао аларм " + javljanje.getSistemAlarmi().getNaziv()
         		         , "у " + datumVreme.format(javljanje.getDatumVreme()) + " " + javljanje.getEventData()
         		         , " "
         		         , "Порука је аутоматски генерисана, немојте одговарати."

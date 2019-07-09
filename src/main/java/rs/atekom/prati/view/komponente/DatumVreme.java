@@ -16,16 +16,16 @@ public class DatumVreme extends DateTimeField{
 		setTextFieldEnabled(false);
 		if(caption) {
 			setCaption(captionText);
-			Date datum = new Date();
-			Calendar cal = Calendar.getInstance();
-			cal.set(Calendar.DATE, LocalDate.now().getDayOfMonth() + dan);
-			cal.set(Calendar.HOUR_OF_DAY, sat);
-	        cal.set(Calendar.MINUTE, minut);
-	        datum = cal.getTime();
-	        setValue(datum.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-	        setDateFormat("dd-MM HH:mm");
-		    setResolution(DateTimeResolution.MINUTE);
-		    setLocale(new Locale("sr", "RS"));
 		}
+		Date datum = new Date();
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.DATE, LocalDate.now().getDayOfMonth() + dan);
+		cal.set(Calendar.HOUR_OF_DAY, sat);
+        cal.set(Calendar.MINUTE, minut);
+        datum = cal.getTime();
+        setValue(datum.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+        setDateFormat("dd-MM HH:mm");
+	    setResolution(DateTimeResolution.MINUTE);
+	    setLocale(new Locale("sr", "RS"));
 	}
 }

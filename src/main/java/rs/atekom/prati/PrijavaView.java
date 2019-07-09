@@ -48,7 +48,7 @@ public class PrijavaView extends VerticalLayout{
 		polja.addStyleName("fields");
 		
 		final TextField korisnickoIme = new TextField("Корисничко име");
-		korisnickoIme.setMaxLength(30);
+		korisnickoIme.setMaxLength(50);
 		korisnickoIme.setIcon(VaadinIcons.USER);
 		korisnickoIme.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
 		korisnickoIme.focus();

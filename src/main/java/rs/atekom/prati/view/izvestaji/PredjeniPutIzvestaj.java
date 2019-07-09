@@ -1,16 +1,12 @@
-package rs.atekom.prati.izvestaji;
+package rs.atekom.prati.view.izvestaji;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import javax.servlet.annotation.WebServlet;
 import org.vaadin.reports.PrintPreviewReport;
-
 import com.ibm.icu.text.SimpleDateFormat;
 import com.vaadin.server.SerializableSupplier;
-
 import ar.com.fdvs.dj.domain.AutoText;
 import ar.com.fdvs.dj.domain.Style;
 import ar.com.fdvs.dj.domain.builders.ColumnBuilder;
@@ -18,7 +14,6 @@ import ar.com.fdvs.dj.domain.builders.StyleBuilder;
 import ar.com.fdvs.dj.domain.constants.Font;
 import ar.com.fdvs.dj.domain.constants.HorizontalAlign;
 import ar.com.fdvs.dj.domain.constants.Page;
-import net.sf.jasperreports.j2ee.servlets.ImageServlet;
 import pratiBaza.pomocne.PredjeniPut;
 import pratiBaza.tabele.Javljanja;
 import pratiBaza.tabele.Obd;
@@ -26,18 +21,13 @@ import pratiBaza.tabele.Objekti;
 import rs.atekom.prati.server.Servis;
 
 public class PredjeniPutIzvestaj extends PrintPreviewReport<PredjeniPut>{
-	
-	@WebServlet("/izvestaj-predjeniPut")
-    public static class ReportsImageServlet extends ImageServlet {
-		private static final long serialVersionUID = 1L;
-	}
+
 	private static final long serialVersionUID = 1L;
 	private String decimalFormat = "###,###,###.##";
 	private static final String DATUMVREME = "dd/MM/yyyy HH:mm:ss";
 
 	public PredjeniPutIzvestaj(ArrayList<Objekti> objekti, Timestamp datumVremeOd, Timestamp datumVremeDo) {
 		setSizeUndefined();
-		
 		SimpleDateFormat datumVreme = new SimpleDateFormat(DATUMVREME);
 		SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 		Style headerStyle = new StyleBuilder(true).setFont(Font.ARIAL_MEDIUM).build();
@@ -122,7 +112,9 @@ public class PredjeniPutIzvestaj extends PrintPreviewReport<PredjeniPut>{
 				if(obdLista != null && !obdLista.isEmpty()) {
 					predjeniPut.setUkupnoKm(obdLista.get(1).getUkupnoKm() - obdLista.get(0).getUkupnoKm());
 					predjeniPut.setUkupnoGorivo(obdLista.get(1).getUkupnoGorivo() - obdLista.get(0).getUkupnoGorivo());
-					predjeniPut.setProsPotGps(predjeniPut.getUkupnoGorivo()/(predjeniPut.getVirtualOdo()/100));
+					if(predjeniPut.getVirtualOdo() != 0.0f) {
+						predjeniPut.setProsPotGps(predjeniPut.getUkupnoGorivo()/(predjeniPut.getVirtualOdo()/100));
+					}
 					if(predjeniPut.getUkupnoKm() != 0.0f) {
 						predjeniPut.setProsPotr(predjeniPut.getUkupnoGorivo()/(predjeniPut.getUkupnoKm()/100));
 					}

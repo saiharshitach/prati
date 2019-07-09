@@ -29,7 +29,7 @@ public class AlarmKorisnikForma extends OpstaForma implements OpstaFormaInterfac
 	private ComboKorisnici korisnici;
 	private ComboObjekti objekti;
 	private ComboAlarmi alarmi;
-	private CheckBox aktivan;
+	private CheckBox email, obavestenje, aktivan;
 	
 
 	public AlarmKorisnikForma(AlarmKorisnikLogika log) {
@@ -39,6 +39,8 @@ public class AlarmKorisnikForma extends OpstaForma implements OpstaFormaInterfac
 		korisnici = new ComboKorisnici(logika.view.korisnik, "корисник", true, true);
 		objekti = new ComboObjekti(logika.view.korisnik, "објекти", true, true);
 		alarmi = new ComboAlarmi("аларми", true, true, true, true);
+		email = new CheckBox("е-пошта");
+		obavestenje = new CheckBox("обавештење");
 		aktivan = new CheckBox("активан");
 		
 		pretplatnici.addValueChangeListener(new ValueChangeListener<SistemPretplatnici>() {
@@ -54,8 +56,7 @@ public class AlarmKorisnikForma extends OpstaForma implements OpstaFormaInterfac
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void valueChange(ValueChangeEvent<Organizacije> event) {
-				// TODO Auto-generated method stub
-				
+				korisnici.setItems(Servis.korisnikServis.nadjiKorisnikePoOrganizaciji(pretplatnici.getValue(), event.getValue()));
 			}
 		});
 		
@@ -106,13 +107,15 @@ public class AlarmKorisnikForma extends OpstaForma implements OpstaFormaInterfac
 		if(logika.view.korisnik.isSistem() && logika.view.korisnik.getSistemPretplatnici() == null) {
 			layout.addComponent(pretplatnici);
 		}
-		if(logika.view.isAdmin() && logika.view.korisnik.getOrganizacija() == null) {
+		if(logika.view.korisnik.isAdmin() && logika.view.korisnik.getOrganizacija() == null) {
 			layout.addComponent(organizacije);
 		}
 		if(logika.view.korisnik.isAdmin()) {
 			layout.addComponent(korisnici);
 		}
 		layout.addComponent(objekti);
+		layout.addComponent(email);
+		layout.addComponent(obavestenje);
 		layout.addComponent(alarmi);
 		layout.addComponent(aktivan);
 		layout.addComponentsAndExpand(expander);
@@ -150,6 +153,8 @@ public class AlarmKorisnikForma extends OpstaForma implements OpstaFormaInterfac
 		alarmKorisnik.setKorisnik(korisnici.getValue());
 		alarmKorisnik.setObjekti(objekti.getValue());
 		alarmKorisnik.setSistemAlarmi(alarmi.getValue());
+		alarmKorisnik.setEmail(email.getValue());
+		alarmKorisnik.setObavestenje(obavestenje.getValue());
 		alarmKorisnik.setAktivan(aktivan.getValue());
 		return alarmKorisnik;
 	}
@@ -173,6 +178,8 @@ public class AlarmKorisnikForma extends OpstaForma implements OpstaFormaInterfac
 		}
 		objekti.clear();
 		alarmi.clear();
+		email.setValue(false);
+		obavestenje.setValue(false);
 		aktivan.setValue(true);
 	}
 
@@ -184,6 +191,8 @@ public class AlarmKorisnikForma extends OpstaForma implements OpstaFormaInterfac
 			organizacije.setValue(alarmKorisnik.getOrganizacija());
 			korisnici.setValue(alarmKorisnik.getKorisnik());
 			objekti.setValue(alarmKorisnik.getObjekti());
+			email.setValue(alarmKorisnik.isEmail());
+			obavestenje.setValue(alarmKorisnik.isObavestenje());
 			alarmi.setValue(alarmKorisnik.getSistemAlarmi());
 			aktivan.setValue(alarmKorisnik.isAktivan());
 		}

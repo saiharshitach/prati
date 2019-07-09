@@ -91,6 +91,7 @@
                <value>pratiBaza.pomocne.IzvestajTip</value>
                <value>pratiBaza.pomocne.Mail</value>
                <value>pratiBaza.pomocne.Obracuni</value>
+               <value>pratiBaza.pomocne.RadnoVremePutGPS</value>
             </list>
         </property>
     <property name="hibernateProperties">
@@ -181,6 +182,12 @@
   </bean>
   <bean id="organizacijaServis" class="pratiBaza.servisImpl.OrganizacijeServisImpl">
         <property name="organizacijaDAO" ref="organizacijaDAO"></property>
+  </bean>
+   <bean id="proceduraDAO" class="pratiBaza.daoImpl.ProcedureDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="proceduraServis" class="pratiBaza.servisImpl.ProcedureServisImpl">
+        <property name="proceduraDAO" ref="proceduraDAO"></property>
   </bean>
     <bean id="simDAO" class="pratiBaza.daoImpl.SimDAOImpl">
         <property name="sessionFactory" ref="sessionFactory" />

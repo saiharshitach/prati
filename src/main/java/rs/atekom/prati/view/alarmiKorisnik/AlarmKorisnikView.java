@@ -93,6 +93,8 @@ public class AlarmKorisnikView extends OpstiView implements OpstiViewInterface{
 		tabela.addColumn(alarmiKorisnik -> alarmiKorisnik.getKorisnik().toString()).setCaption("корисник");
 		tabela.addColumn(alarmiKorisnik -> alarmiKorisnik.getObjekti().getOznaka()).setCaption("објекат");
 		tabela.addColumn(alarmiKorisnik -> alarmiKorisnik.getSistemAlarmi().getNaziv()).setCaption("аларм");
+		tabela.addComponentColumn(alarmiKorisnik -> {CheckBox chb = new CheckBox(); if(alarmiKorisnik.isEmail()) {chb.setValue(true);} return chb;}).setCaption("е-пошта").setStyleGenerator(alarmiKorisnik -> "v-align-right");
+		tabela.addComponentColumn(alarmiKorisnik -> {CheckBox chb = new CheckBox(); if(alarmiKorisnik.isObavestenje()) {chb.setValue(true);} return chb;}).setCaption("обавештење").setStyleGenerator(alarmiKorisnik -> "v-align-right");
 		tabela.addComponentColumn(alarmiKorisnik -> {CheckBox chb = new CheckBox(); if(alarmiKorisnik.isAktivan()) {chb.setValue(true);} return chb;}).setCaption("активан").setStyleGenerator(alarmiKorisnik -> "v-align-right");
 		tabela.addColumn(AlarmiKorisnik::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(objekti -> "v-align-right");
 		tabela.addColumn(AlarmiKorisnik::getKreirano, new DateRenderer(DANSATFORMAT)).setCaption("креирано").setStyleGenerator(objekti -> "v-align-right");
@@ -151,7 +153,7 @@ public class AlarmKorisnikView extends OpstiView implements OpstiViewInterface{
 	public void updateTable() {
 		filter.clear();
 		pocetno = new ArrayList<AlarmiKorisnik>();
-		lista = Servis.alarmKorisnikServis.nadjiSveAlarmePoKorisniku(korisnik, false);
+		lista = Servis.alarmKorisnikServis.nadjiSveAlarmePoKorisniku(korisnik, false, false, false);
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {

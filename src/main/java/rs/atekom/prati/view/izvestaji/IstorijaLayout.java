@@ -1,4 +1,4 @@
-package rs.atekom.prati.izvestaji;
+package rs.atekom.prati.view.izvestaji;
 
 import java.sql.Timestamp;
 import java.util.Date;

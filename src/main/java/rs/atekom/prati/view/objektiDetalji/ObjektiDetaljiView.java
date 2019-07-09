@@ -153,7 +153,7 @@ public class ObjektiDetaljiView extends OpstiView implements OpstiViewInterface{
 				Servis.objekatDetaljiServis.izbrisiObjektiDetalji(izabrani);
 				pokaziPorukuUspesno("детаљи објекта су избрисани");
 			}else {
-				pokaziPorukuGreska("детаљи објекта је већ избрисани!");
+				pokaziPorukuGreska("детаљи објекта су већ избрисани!");
 			}
 		}
 	}

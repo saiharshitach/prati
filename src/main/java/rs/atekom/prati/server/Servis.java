@@ -20,6 +20,7 @@ import pratiBaza.servis.ObdServis;
 import pratiBaza.servis.ObjektiDetaljiServis;
 import pratiBaza.servis.ObjektiServis;
 import pratiBaza.servis.OrganizacijeServis;
+import pratiBaza.servis.ProcedureServis;
 import pratiBaza.servis.SimServis;
 import pratiBaza.servis.SistemAlarmiServis;
 import pratiBaza.servis.SistemGorivoServis;
@@ -51,6 +52,7 @@ public class Servis implements ServletContextListener{
 	public static ObjektiDetaljiServis objekatDetaljiServis;
 	public static ObjektiServis objekatServis;
 	public static OrganizacijeServis organizacijaServis;
+	public static ProcedureServis proceduraServis;
 	public static SimServis simServis;
 	public static SistemAlarmiServis sistemAlarmServis;
 	public static SistemGorivoServis sistemGorivoServis;
@@ -89,6 +91,7 @@ public class Servis implements ServletContextListener{
 		objekatDetaljiServis = ApplicationContextProvider.getApplicationContext().getBean("objekatDetaljServis", ObjektiDetaljiServis.class);
 		objekatServis =ApplicationContextProvider.getApplicationContext().getBean("objekatServis", ObjektiServis.class);
 		organizacijaServis = ApplicationContextProvider.getApplicationContext().getBean("organizacijaServis", OrganizacijeServis.class);
+		proceduraServis = ApplicationContextProvider.getApplicationContext().getBean("proceduraServis", ProcedureServis.class);
 		simServis = ApplicationContextProvider.getApplicationContext().getBean("simServis", SimServis.class);
 		sistemAlarmServis = ApplicationContextProvider.getApplicationContext().getBean("sistemAlarmServis", SistemAlarmiServis.class);
 		sistemGorivoServis = ApplicationContextProvider.getApplicationContext().getBean("sistemGorivoServis", SistemGorivoServis.class);
