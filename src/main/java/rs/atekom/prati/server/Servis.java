@@ -113,7 +113,7 @@ public class Servis implements ServletContextListener{
 		izvrsavanje = new Izvrsavanje();
 		
 		try {
-			neon = new NeonServer(9000, 120);
+			neon = new NeonServer(9000, 200);
 			nyitech = new NyitechServer(9010, 20);
 			geneko = new GenekoServer(9030, 20);
 			ruptela = new RuptelaServer(9040, 50);

@@ -66,22 +66,34 @@ public class UredjajiLogika implements LogikaInterface{
 		setFragmentParametar("");
 		if(uredjaj.getId() != null) {
 			Servis.uredjajServis.izmeniUredjaj(uredjaj);
-			if(uredjaj.getSim() != null) {
-				Sim sim = uredjaj.getSim();
+			Sim sim = uredjaj.getSim();
+			if(sim != null) {
 				sim.setUredjaji(uredjaj);
 				sim.setZauzet(true);
 				Servis.simServis.azurirajSim(sim);
 			}
+			Sim sim2 = uredjaj.getSim2();
 			if(uredjaj.getSim2() != null) {
-				Sim sim = uredjaj.getSim2();
-				sim.setUredjaji(uredjaj);
-				sim.setZauzet(true);
-				Servis.simServis.azurirajSim(sim);
+				sim2.setUredjaji(uredjaj);
+				sim2.setZauzet(true);
+				Servis.simServis.azurirajSim(sim2);
 			}
 			view.pokaziPorukuUspesno("уређај измењен");
 		}else {
 			try {
 				Servis.uredjajServis.unesiUredjaj(uredjaj);
+				Sim sim = uredjaj.getSim();
+				if(sim != null) {
+					sim.setUredjaji(uredjaj);
+					sim.setZauzet(true);
+					Servis.simServis.azurirajSim(sim);
+				}
+				Sim sim2 = uredjaj.getSim2();
+				if(uredjaj.getSim2() != null) {
+					sim2.setUredjaji(uredjaj);
+					sim2.setZauzet(true);
+					Servis.simServis.azurirajSim(sim2);
+				}
 				view.pokaziPorukuUspesno("уређај сачуван");
 			}catch (Exception e) {
 				view.pokaziPorukuGreska("уређај са унетим кодом већ постоји!");

@@ -206,7 +206,7 @@ public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 		simBroj.clear();
 		vozilo.setValue(true);
 		vremeStajanja.setValue("0");
-		prekoracenjeBrzine.setValue("80");
+		prekoracenjeBrzine.setValue("90");
 		aktivan.setValue(true);
 		if(logika.view.korisnik.getOrganizacija() != null) {
 			organizacije.setValue(logika.view.korisnik.getOrganizacija());

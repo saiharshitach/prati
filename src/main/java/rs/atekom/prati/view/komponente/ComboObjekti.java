@@ -18,7 +18,9 @@ public class ComboObjekti extends ComboBox<Objekti>{
 		setCaption(naziv);
 		setPlaceholder("објекти...");
 		setItemCaptionGenerator(Objekti::getOznaka);
-		setItems(lista(korisnik));
+		if(korisnik != null) {
+			setItems(lista(korisnik));
+		}
 		setEmptySelectionAllowed(prazno);
 		setRequiredIndicatorVisible(indicator);
 		setWidth("100%");
@@ -31,6 +33,5 @@ public class ComboObjekti extends ComboBox<Objekti>{
 			ArrayList<Grupe> grupe = Servis.grupeKorisnikServis.vratiSveGrupePoKorisniku(korisnik);
 			return Servis.grupeObjekatServis.nadjiSveObjektePoGrupama(grupe);
 		}
-		
 	}
 }

@@ -60,6 +60,7 @@ public class PracenjeView extends OpstiPanelView{
 				Prati.getCurrent().centriranje = event.getValue();
 			}
 		});
+		
 		sortiraj.setValue(Prati.getCurrent().sortiranje);
 		sortiraj.addValueChangeListener(new ValueChangeListener<Boolean>() {
 			private static final long serialVersionUID = 1L;
@@ -81,6 +82,20 @@ public class PracenjeView extends OpstiPanelView{
 				}
 			}
 		}
+		
+		Prati.getCurrent().poslednjaJavljanja.addItemClickListener(listener -> {
+			if(listener.getMouseEventDetails().isDoubleClick()) {
+				JavljanjaPoslednja klik = listener.getItem();
+				if(klik != null && sadrziObjekat(Prati.getCurrent().objekti, klik.getObjekti().getId())) {
+					centriraj.setValue(false);
+					mapa.setCenter(new LatLon(klik.getLat(), klik.getLon()));
+					mapa.setZoom(14);
+					Prati.getCurrent().pokaziObavestenje("центрирање мапе је искључено");
+				}else {
+					pokaziPorukuGreska("морате изабрати објекат који је већ приказан на мапи");
+				}
+			}
+		});
 		
 		grupeCombo.addValueChangeListener(new ValueChangeListener<Grupe>() {
 			private static final long serialVersionUID = 1L;
@@ -123,7 +138,7 @@ public class PracenjeView extends OpstiPanelView{
 		root.addComponent(content);
 		root.setExpandRatio(content, 1);
 		Prati.getCurrent().pracenjeView = this;
-		Prati.getCurrent().alarmiKorisnika = Servis.alarmKorisnikServis.nadjiSveAlarmePoKorisniku(korisnik, true, false, true);
+		Prati.getCurrent().alarmiKorisnika = Servis.alarmKorisnikServis.vratiAlarmePoKorisniku(korisnik, true, false, true);
 		setContent(root);
 	}
 	
@@ -248,4 +263,8 @@ public class PracenjeView extends OpstiPanelView{
 				}
 			}
 		}
+	
+	private boolean sadrziObjekat(ArrayList<Objekti> list, Long id) {
+		return list.stream().filter(j -> j.getId().equals(id)).findFirst().isPresent();
+	}
 }

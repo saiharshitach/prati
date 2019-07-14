@@ -1,4 +1,4 @@
-package rs.atekom.prati.view.izvestaji;
+package rs.atekom.prati.view.istorija;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;

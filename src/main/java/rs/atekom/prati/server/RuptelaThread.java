@@ -15,6 +15,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import javax.xml.bind.DatatypeConverter;
 import pratiBaza.tabele.AlarmiKorisnik;
 import pratiBaza.tabele.Javljanja;
+import pratiBaza.tabele.JavljanjaPoslednja;
 import pratiBaza.tabele.Obd;
 import pratiBaza.tabele.ObjekatZone;
 import pratiBaza.tabele.Objekti;
@@ -61,8 +62,8 @@ public class RuptelaThread implements Runnable{
 			input = socket.getInputStream();
 			out = socket.getOutputStream();
 			JavljanjeObd javljanjeObd = null;
-		    Obd obd = null, obdStop = null;
-		    Javljanja javljanje = null, javljanjePoslednje = null, javljanjeStop = null;
+		    Obd /*obd = null, **/obdStop = null;
+		    Javljanja /*javljanje = null, **/javljanjePoslednje = null, javljanjeStop = null;
 		    Objekti objekat = null;
 		    Uredjaji uredjaj = null;
 			int br = 0;
@@ -70,7 +71,7 @@ public class RuptelaThread implements Runnable{
 			boolean zaustavljeno = false;
 			boolean gorivo = false;
 			Long imei = null;
-			int brojIspodNivoa = 0;//kolil puta je nivop goriva manji za više od 1%
+			int brojIspodNivoa = 0;//koliko puta je nivo goriva manji za više od 1%
 			Date pocetak = new Date();
 			
 			while(!isStopped && !socket.isClosed()) {
@@ -125,6 +126,7 @@ public class RuptelaThread implements Runnable{
 	            offset += 16;//offset = 20
 	        	//ako je komanda 01
 	            int komanda = Integer.parseInt(ulaz.substring(offset, offset + 2), 16);
+	            
 	            //System.out.println(imei + " komanda je: " + komanda);
 	            if(komanda == 1 || komanda == 68) {
 	            	//da dobijem broj zapisa
@@ -133,135 +135,63 @@ public class RuptelaThread implements Runnable{
 	            		int brZapisa = 0;
 		            	offset += 2;
 		            	int ukZapisa = Integer.parseInt(ulaz.substring(offset - 2, offset),  16);
-		            	
+		            	//System.out.println("zapisa: " + ukZapisa);
 		            	while(brZapisa < ukZapisa) {
-		            		javljanjeObd = server.zapis.vratiJavljanje(this, objekat, ulaz, komanda);
-		            		javljanje = javljanjeObd.getJavljanje();
-		            		obd = javljanjeObd.getObd();
-		            		if(javljanje != null  && javljanje.getBrzina() < 200 && javljanje.getDatumVreme().after(date)) {
-		            			if(javljanje.getBrzina() > 5) {
-		            				javljanjeStop = null;
-			            			obdStop = null;
-			            			zaustavljeno = false;
-			            			gorivo = false;
-			            			brojIspodNivoa = 0;
-			            			}else {
-			            				if(javljanjeStop == null) {
-			            					javljanjeStop = javljanje;
-			            					obdStop = obd;
-			            					}
-			            				}
-		            			//alarm stajanje
-	            				if(javljanjeStop != null) {
-	            					long vreme = javljanje.getDatumVreme().getTime() - javljanjeStop.getDatumVreme().getTime();
-	            					if(!zaustavljeno) {
-	            						if(objekat.getVremeStajanja() != 0 && vreme / 1000 > objekat.getVremeStajanja() * 60) {
-	            							if(javljanje.getSistemAlarmi().getSifra().equals("0")) {
-	            								javljanje.setSistemAlarmi(server.stajanje);
-	            								zaustavljeno = true;
-	            								}else {
-	            									Servis.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
-	            									javljanje.setSistemAlarmi(server.stajanje);
-	            									zaustavljeno = true;
-	            								}
-	            							}
+		            		if(komanda == 1) {
+		            			javljanjeObd = server.zapis.vratiJavljanje(offset, objekat, ulaz);
+		            			obradaJavljanja(javljanjeObd, javljanjePoslednje, objekat, javljanjeStop, obdStop, zaustavljeno, gorivo, brojIspodNivoa);
+		            			
+		            		}else {
+		            			int prvi = Integer.parseInt(ulaz.substring(offset + 10, offset + 11));
+		            			int drugi = Integer.parseInt(ulaz.substring(offset + 11, offset + 12));
+		            			//System.out.println("prvi: " + prvi);
+		            			//System.out.println("drugi: " + drugi);
+		            			if(drugi == 0) {
+		            				javljanjeObd = server.zapis.vratiExtended(offset, objekat, ulaz);
+		            			}else {
+		            				Obd javObd = Servis.obdServis.nadjiObdPoslednji(objekat);
+		            				if(javljanjeObd != null && javObd != null && javljanjeObd.getObd() != null) {
+	            						if(javObd.getAkumulator() != 0.0f) {
+	            							javljanjeObd.getObd().setAkumulator(javObd.getAkumulator());
 	            						}
-	            					}
-	            				
-	            				//alarm prekoračenje brzine
-	            				if(objekat.getPrekoracenjeBrzine() != 0) {
-		            				if(javljanje.getBrzina() > objekat.getPrekoracenjeBrzine() && !prekoracenje) {
-		            					prekoracenje = true;
-		            					if(javljanje.getSistemAlarmi().getSifra().equals("0")) {
-		            						javljanje.setSistemAlarmi(server.prekoracenjeBrzine);
-		            					}else {
-		            						Servis.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
-		            						javljanje.setSistemAlarmi(server.prekoracenjeBrzine);
-		            					}
-	            						if(javljanje.getEventData().equals("0")) {
-	            							javljanje.setEventData(javljanje.getBrzina() + "км/ч");
-	            						}else {
-	            							javljanje.setEventData(javljanje.getBrzina() + "км/ч, " + javljanje.getEventData());
+	            						if(javObd.getGas() != 0.0f) {
+	            							javljanjeObd.getObd().setGas(javObd.getGas());
 	            						}
-		            				}else {
-		            					prekoracenje = false;
+	            						if(javObd.getGreske() != "") {
+	            							javljanjeObd.getObd().setGreske(javObd.getGreske());
+	            						}
+	            						if(javObd.getNivoGoriva() != 0.0f) {
+	            							javljanjeObd.getObd().setNivoGoriva(javObd.getNivoGoriva());
+	            						}
+	            						if(javObd.getOpterecenje() != 0.0f) {
+	            							javljanjeObd.getObd().setOpterecenje(javObd.getOpterecenje());
+	            						}
+	            						if(javObd.getProsecnaPotrosnja() != 0.0f) {
+	            							javljanjeObd.getObd().setProsecnaPotrosnja(javObd.getProsecnaPotrosnja());
+	            						}
+	            						if(javObd.getRpm() != 0) {
+	            							javljanjeObd.getObd().setRpm(javObd.getRpm());
+	            						}
+	            						if(javObd.getTripGorivo() != 0.0f) {
+	            							javljanjeObd.getObd().setTripGorivo(javObd.getTripGorivo());
+	            						}
+	            						if(javObd.getTripKm() != 0.0f) {
+	            							javljanjeObd.getObd().setTripKm(javObd.getTripKm());
+	            						}
+	            						if(javObd.getUkupnoVreme() != 0.0f) {
+	            							javljanjeObd.getObd().setUkupnoVreme(javObd.getUkupnoVreme());
+	            						}
+	            						if(javObd.getUkupnoGorivo() != 0.0f) {
+	            							javljanjeObd.getObd().setUkupnoGorivo(javObd.getUkupnoGorivo());
+	            						}
+	            						if(javObd.getUkupnoKm() != 0.0f) {
+	            							javljanjeObd.getObd().setUkupnoKm(javObd.getUkupnoKm());
+	            						}
 		            				}
-	            				}
-	            				
-			            		//alarm gorivo
-			            		if(obd != null) {
-			            			if(obdStop != null) {
-			            				if(!gorivo) {
-			            					if(obd.getNivoGoriva() - obdStop.getNivoGoriva() > 1 && brojIspodNivoa > 10) {
-			            						if(javljanje.getSistemAlarmi().getSifra().equals("0")) {
-			            							javljanje.setSistemAlarmi(server.istakanje);
-			            							gorivo = true;
-			            							}else {
-			            								Servis.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
-			            								javljanje.setSistemAlarmi(server.istakanje);
-			            								gorivo = true;
-			            							}
-			            						}else {
-				            						if(obdStop.getNivoGoriva() - obd.getNivoGoriva() > 1) {
-				            							brojIspodNivoa++;
-				            							}
-				            						}
-			            					}else {
-				            					brojIspodNivoa = 0;
-				            					}
-			            				}
-			            			Servis.obdServis.unesiObd(obd);
-			            			}
-			            		
-			            		//alarm zona
-			            		if(objekatZone != null && objekatZone.size() > 0) {
-			            			Zone zonaPoslednja = null;
-			            			if(Servis.javljanjePoslednjeServis.nadjiJavljanjaPoslednjaPoObjektu(objekat) != null) {
-			            				zonaPoslednja = Servis.javljanjePoslednjeServis.nadjiJavljanjaPoslednjaPoObjektu(objekat).getZona();
-			            			}
-		            				//ulazak
-		            				if(zonaPoslednja == null) {
-		            					for(ObjekatZone objekatZona : objekatZone) {
-		            						if(objekatZona.isAktivan() && objekatZona.isIzlaz()) {
-				            					if(Servis.obracun.rastojanjeKoordinate(javljanje, objekatZona.getZone().getLat(), objekatZona.getZone().getLon()) <= objekatZona.getZone().getPrecnik()) {
-				            						javljanje.setZona(objekatZona.getZone());
-				            						if(javljanje.getSistemAlarmi().getSifra().equals("0")) {
-				            							javljanje.setSistemAlarmi(server.ulazak);
-				            							javljanje.setEventData(objekatZona.getZone().getNaziv());
-				            							break;
-				            						}else {
-				            							Servis.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
-				            							javljanje.setSistemAlarmi(server.ulazak);
-				            							javljanje.setEventData(objekatZona.getZone().getNaziv());
-				            							break;
-				            						}
-				            					}
-		            						}
-		            					}
-		            				}else {
-		            					//izlazak
-		            					ObjekatZone objZona = Servis.zonaObjekatServis.nadjiObjekatZonuPoZoniObjektu(objekat, zonaPoslednja);
-		            					if(objZona != null && objZona.isAktivan() && objZona.isIzlaz()) {
-			            					if(Servis.obracun.rastojanjeKoordinate(javljanje, zonaPoslednja.getLat(), zonaPoslednja.getLon()) > zonaPoslednja.getPrecnik()) {
-			            						if(javljanje.getSistemAlarmi().getSifra().equals("0")) {
-			            							javljanje.setSistemAlarmi(server.izlazak);
-			            							javljanje.setEventData(zonaPoslednja.getNaziv());
-			            						}else {
-			            							Servis.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
-			            							javljanje.setSistemAlarmi(server.izlazak);
-			            							javljanje.setEventData(zonaPoslednja.getNaziv());
-			            						}
-			            						javljanje.setZona(null);
-			            					}else {
-			            						javljanje.setZona(zonaPoslednja);
-			            					}
-		            					}else {
-		            						javljanje.setZona(zonaPoslednja);
-		            					}
-		            				}
-			            		}
-			            		Servis.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
-			            		}
+		            			}
+	            				obradaJavljanja(javljanjeObd, javljanjePoslednje, objekat, javljanjeStop, obdStop, zaustavljeno, gorivo, brojIspodNivoa);
+		            		}
+            			
 		            		brZapisa++;
 		            		}
 			            out.write(odg);
@@ -295,15 +225,150 @@ public class RuptelaThread implements Runnable{
 			}
 		}
 	}
-	
-	public void setOffset(int offset) {
-		this.offset = offset;
-	}
-	
-	public int getOffset() {
-		return this.offset;
-	}
 
+	private void obradaJavljanja(JavljanjeObd javljanjeObd, Javljanja javljanjePoslednje, Objekti objekat, Javljanja javljanjeStop, Obd obdStop, boolean zaustavljeno,
+			boolean gorivo, int brojIspodNivoa) {
+		Javljanja javljanje = javljanjeObd.getJavljanje();
+		Obd obd = javljanjeObd.getObd();
+		
+		if(javljanje != null  && javljanje.getBrzina() < 200 && javljanje.getDatumVreme().after(date)) {
+			JavljanjaPoslednja poslednje = Servis.javljanjePoslednjeServis.nadjiJavljanjaPoslednjaPoObjektu(objekat);
+			//obracun km
+			if(javljanjePoslednje != null) {
+				if(javljanje.getDatumVreme().after(javljanjePoslednje.getDatumVreme())) {
+					javljanje.setVirtualOdo(poslednje.getVirtualOdo() + (float)Servis.obracun.rastojanje(javljanje, poslednje));
+				}else {
+					javljanje.setVirtualOdo(poslednje.getVirtualOdo());
+				}
+			}else {
+				javljanje.setVirtualOdo(0.0f);
+			}
+			//
+			if(javljanje.getBrzina() > 5) {
+				javljanjeStop = null;
+    			obdStop = null;
+    			zaustavljeno = false;
+    			gorivo = false;
+    			brojIspodNivoa = 0;
+    			}else {
+    				if(javljanjeStop == null) {
+    					javljanjeStop = javljanje;
+    					obdStop = obd;
+    					}
+    				}
+			//alarm stajanje
+			if(javljanjeStop != null) {
+				long vreme = javljanje.getDatumVreme().getTime() - javljanjeStop.getDatumVreme().getTime();
+				if(!zaustavljeno) {
+					if(objekat.getVremeStajanja() != 0 && vreme / 1000 > objekat.getVremeStajanja() * 60) {
+						if(javljanje.getSistemAlarmi().getSifra().equals("0")) {
+							javljanje.setSistemAlarmi(server.stajanje);
+							zaustavljeno = true;
+							}else {
+								Servis.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
+								javljanje.setSistemAlarmi(server.stajanje);
+								zaustavljeno = true;
+							}
+						}
+					}
+				}
+			
+			//alarm prekoračenje brzine
+			if(objekat.getPrekoracenjeBrzine() != 0) {
+				if(javljanje.getBrzina() > objekat.getPrekoracenjeBrzine() && !prekoracenje) {
+					prekoracenje = true;
+					if(javljanje.getSistemAlarmi().getSifra().equals("0")) {
+						javljanje.setSistemAlarmi(server.prekoracenjeBrzine);
+					}else {
+						Servis.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
+						javljanje.setSistemAlarmi(server.prekoracenjeBrzine);
+					}
+					if(javljanje.getEventData().equals("0")) {
+						javljanje.setEventData(javljanje.getBrzina() + "км/ч");
+					}else {
+						javljanje.setEventData(javljanje.getBrzina() + "км/ч, " + javljanje.getEventData());
+					}
+				}else {
+					prekoracenje = false;
+				}
+			}
+			
+    		//alarm gorivo
+    		if(obd != null) {
+    			if(obdStop != null) {
+    				if(!gorivo) {
+    					if(obd.getNivoGoriva() - obdStop.getNivoGoriva() > 1 && brojIspodNivoa > 10) {
+    						if(javljanje.getSistemAlarmi().getSifra().equals("0")) {
+    							javljanje.setSistemAlarmi(server.istakanje);
+    							gorivo = true;
+    							}else {
+    								Servis.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
+    								javljanje.setSistemAlarmi(server.istakanje);
+    								gorivo = true;
+    							}
+    						}else {
+        						if(obdStop.getNivoGoriva() - obd.getNivoGoriva() > 1) {
+        							brojIspodNivoa++;
+        							}
+        						}
+    					}else {
+        					brojIspodNivoa = 0;
+        					}
+    				}
+    			Servis.obdServis.unesiObd(obd);
+    			}
+    		
+    		//alarm zona
+    		if(objekatZone != null && objekatZone.size() > 0) {
+    			Zone zonaPoslednja = null;
+    			if(Servis.javljanjePoslednjeServis.nadjiJavljanjaPoslednjaPoObjektu(objekat) != null) {
+    				zonaPoslednja = Servis.javljanjePoslednjeServis.nadjiJavljanjaPoslednjaPoObjektu(objekat).getZona();
+    			}
+				//ulazak
+				if(zonaPoslednja == null) {
+					for(ObjekatZone objekatZona : objekatZone) {
+						if(objekatZona.isAktivan() && objekatZona.isIzlaz()) {
+        					if(Servis.obracun.rastojanjeKoordinate(javljanje, objekatZona.getZone().getLat(), objekatZona.getZone().getLon()) <= objekatZona.getZone().getPrecnik()) {
+        						javljanje.setZona(objekatZona.getZone());
+        						if(javljanje.getSistemAlarmi().getSifra().equals("0")) {
+        							javljanje.setSistemAlarmi(server.ulazak);
+        							javljanje.setEventData(objekatZona.getZone().getNaziv());
+        							break;
+        						}else {
+        							Servis.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
+        							javljanje.setSistemAlarmi(server.ulazak);
+        							javljanje.setEventData(objekatZona.getZone().getNaziv());
+        							break;
+        						}
+        					}
+						}
+					}
+				}else {
+					//izlazak
+					ObjekatZone objZona = Servis.zonaObjekatServis.nadjiObjekatZonuPoZoniObjektu(objekat, zonaPoslednja);
+					if(objZona != null && objZona.isAktivan() && objZona.isIzlaz()) {
+    					if(Servis.obracun.rastojanjeKoordinate(javljanje, zonaPoslednja.getLat(), zonaPoslednja.getLon()) > zonaPoslednja.getPrecnik()) {
+    						if(javljanje.getSistemAlarmi().getSifra().equals("0")) {
+    							javljanje.setSistemAlarmi(server.izlazak);
+    							javljanje.setEventData(zonaPoslednja.getNaziv());
+    						}else {
+    							Servis.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
+    							javljanje.setSistemAlarmi(server.izlazak);
+    							javljanje.setEventData(zonaPoslednja.getNaziv());
+    						}
+    						javljanje.setZona(null);
+    					}else {
+    						javljanje.setZona(zonaPoslednja);
+    					}
+					}else {
+						javljanje.setZona(zonaPoslednja);
+					}
+				}
+    		}
+    		Servis.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
+    		}
+	}
+	
 	public synchronized boolean isStopped(){
 		return this.isStopped;
 	}

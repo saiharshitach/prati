@@ -74,7 +74,6 @@ public class Prati extends UI implements BroadcastListener{
 	private Korisnici korisnik;
 	public PollListener osvezavanjeMarkera; 
 	public static final String DANSATFORMAT = "%1$td/%1$tm/%1$tY %1$tH:%1$tM:%1$tS";
-	private Notification obavestenje;
     public static String basepath;
     public Resource zvuk;
     private static Audio upozorenje = new Audio();
@@ -98,7 +97,7 @@ public class Prati extends UI implements BroadcastListener{
     protected void init(VaadinRequest vaadinRequest) {
 		PratiEventBus.register(this);
 		addStyleName("v-font");
-
+		
 		poslednjaJavljanja = new Grid<JavljanjaPoslednja>();
 		poslednjaJavljanja.setSizeFull();
 		poslednjaJavljanja.addStyleName(ValoTheme.TABLE_BORDERLESS);
@@ -123,6 +122,7 @@ public class Prati extends UI implements BroadcastListener{
 		javljanjaAlarmi.addColumn(Javljanja::getEventData).setCaption("опис");
 		
 		updateContent();
+		basepath = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath() + "/WEB-INF/sound/";
 		Broadcaster.register(this);
     }
 	
@@ -365,7 +365,7 @@ public class Prati extends UI implements BroadcastListener{
 									javljanje.setLat(message.getLat());
 									javljanje.setLon(message.getLon());
 									javljanje.setPravac(message.getPravac());
-									poslednjaJavljanja.getDataProvider().refreshAll();
+									poslednjaJavljanja.getDataProvider().refreshItem(javljanje);
 									if(sortiranje)
 										poslednjaJavljanja.setSortOrder(GridSortOrder.desc(poslednjaJavljanja.getColumn("datumVreme")));
 									break;
@@ -414,19 +414,30 @@ public class Prati extends UI implements BroadcastListener{
 	}
 	
 	private void pokreniAlarm(Javljanja poruka){
-		pokaziObavestenje(poruka);
+		String tekst = poruka.getObjekti().getOznaka() + " - " + poruka.getSistemAlarmi().getNaziv() + " - " + poruka.getEventData();
+		pokaziUpozorenje(tekst);
+	}
+	
+	private void pokaziObavestenje(Javljanja poruka) {
+		String tekst = poruka.getObjekti().getOznaka() + " - " + poruka.getSistemAlarmi().getNaziv() + " - " + poruka.getEventData() + "!";
+        pokaziObavestenje(tekst);
+	}
+	
+	public void pokaziObavestenje(String tekst) {
+		Notification obavestenje = new Notification(tekst, Type.WARNING_MESSAGE);
+        obavestenje.setDelayMsec(10000);
+        obavestenje.setPosition(Position.TOP_LEFT);
+        obavestenje.show(Prati.getCurrent().getPage());
+	}
+	
+	public void pokaziUpozorenje(String tekst) {
+		Notification obavestenje = new Notification(tekst, Type.ERROR_MESSAGE);
+        obavestenje.setDelayMsec(10000);
+        obavestenje.setPosition(Position.TOP_RIGHT);
+        obavestenje.show(Prati.getCurrent().getPage());
 		//Pracenje.getCurrent().upozorenje.play();
         zvuk = new FileResource(new File(basepath + "sirena.mp3"));
         upozorenje.setSource(zvuk);
         upozorenje.play();
-	}
-	
-	private void pokaziObavestenje(Javljanja poruka) {
-		String zaIspis = poruka.getObjekti().getOznaka() + " " + poruka.getDatumVreme();
-		zaIspis = "Објекат " + poruka.getObjekti().getOznaka() + " је активирао " + poruka.getSistemAlarmi().getNaziv() + " " + poruka.getEventData() + "!";
-        obavestenje = new Notification(zaIspis, Type.ERROR_MESSAGE);
-        obavestenje.setDelayMsec(20000);
-        obavestenje.setPosition(Position.TOP_RIGHT);
-        obavestenje.show(Prati.getCurrent().getPage());
 	}
 }

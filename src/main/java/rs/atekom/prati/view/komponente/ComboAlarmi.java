@@ -11,17 +11,17 @@ public class ComboAlarmi extends ComboBox<SistemAlarmi>{
 
 	private static final long serialVersionUID = 1L;
 
-	public ComboAlarmi(String naziv, boolean prazno, boolean aktivan, boolean email, boolean indicator) {
+	public ComboAlarmi(String naziv, boolean prazno, boolean aktivan, boolean email, boolean pregled, boolean indicator) {
 		setCaption(naziv);
 		setPlaceholder("аларми...");
 		setItemCaptionGenerator(SistemAlarmi::getNaziv);
-		setItems(lista(aktivan, email));
+		setItems(lista(aktivan, email, pregled));
 		setEmptySelectionAllowed(prazno);
 		setRequiredIndicatorVisible(indicator);
 		setWidth("100%");
 	}
 	
-	private List<SistemAlarmi> lista(boolean aktivan, boolean email){
-		return Servis.sistemAlarmServis.vratiAlarmePoZahtevu(aktivan, email);
+	private List<SistemAlarmi> lista(boolean aktivan, boolean email, boolean pregled){
+		return Servis.sistemAlarmServis.vratiAlarmePoZahtevu(aktivan, email, pregled);
 	}
 }

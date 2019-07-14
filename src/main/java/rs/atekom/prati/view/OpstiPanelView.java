@@ -32,6 +32,7 @@ import pratiBaza.tabele.SistemPretplatnici;
 import rs.atekom.prati.Prati;
 import rs.atekom.prati.mape.Gmap;
 import rs.atekom.prati.server.Servis;
+import rs.atekom.prati.view.komponente.ComboAlarmi;
 import rs.atekom.prati.view.komponente.ComboGrupe;
 import rs.atekom.prati.view.komponente.ComboObjekti;
 import rs.atekom.prati.view.komponente.ComboOrganizacije;
@@ -64,6 +65,7 @@ public abstract class OpstiPanelView extends Panel implements View, Serializable
 	public CheckBox centriraj, prikaziMarkere, sortiraj;
 	public DatumVreme vremeOd, vremeDo;
 	public ComboObjekti objektiCombo;
+	public ComboAlarmi alarmiCombo;
 
 	public OpstiPanelView() {
         setSizeFull();
@@ -189,7 +191,9 @@ public abstract class OpstiPanelView extends Panel implements View, Serializable
         vremeDo = new DatumVreme(false, "", 0, 0, 1);
         topLayout.setSizeUndefined();
         
-        objektiCombo = new ComboObjekti(korisnik, null, true, false);
+        objektiCombo = new ComboObjekti(null, null, true, false);
+        alarmiCombo = new ComboAlarmi(null, true, true, false, true, false);
+        
         prikaziMarkere = new CheckBox();
         prikaziMarkere.setDescription("прикажи маркере");
         prikazi = new Button();
@@ -211,6 +215,7 @@ public abstract class OpstiPanelView extends Panel implements View, Serializable
         topLayout.addComponent(objektiCombo);
         topLayout.addComponent(vremeOd);
         topLayout.addComponent(vremeDo);
+        topLayout.addComponent(alarmiCombo);
         topLayout.addComponent(prikaziMarkere);
         topLayout.addComponent(prikazi);
         

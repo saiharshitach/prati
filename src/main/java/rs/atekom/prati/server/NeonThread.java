@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,6 +31,7 @@ public class NeonThread implements Runnable{
 	private String testDate;
 	private DateFormat formatter;
 	private Date date;
+	String inputLine ;
 	
 	public NeonThread(LinkedBlockingQueue<Socket> queue, NeonServer serverNeon) {
     	socketQueue = queue;
@@ -37,6 +39,7 @@ public class NeonThread implements Runnable{
     	data = new byte[1024];
 		testDate = "01/07/2019 00:00:00";
 		formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		inputLine = "test...";
 		try {
 			date = formatter.parse(testDate);
 		} catch (ParseException e) {
@@ -73,7 +76,7 @@ public class NeonThread implements Runnable{
 				
 		    	inputLine = new String(data, 0, br);
 		    	
-		    	//System.out.println("poruka " + inputLine);
+		    	System.out.println("poruka " + inputLine);
 		    	niz = inputLine.split(">");
 		    	for(int i = 0; i < niz.length; i++){
 					if(niz[i].startsWith("<oris")) {
@@ -102,6 +105,7 @@ public class NeonThread implements Runnable{
 							javljanje = server.protokol.neonObrada(da, inputLine, objekat, zaustavljeno, vreme, stop);
 		        			if(javljanje != null && javljanje.getBrzina() < 200 && javljanje.getDatumVreme().after(date)){
 		        				Javljanja javljanjePoslednje = Servis.javljanjeServis.nadjiPoslednjeJavljanjePoObjektu(objekat);
+		        				//obracun km
 		        				if(javljanjePoslednje != null) {
 		        					if(javljanje.getDatumVreme().after(javljanjePoslednje.getDatumVreme())) {
 		        						javljanje.setVirtualOdo(javljanjePoslednje.getVirtualOdo() + (float)Servis.obracun.rastojanje(javljanje, javljanjePoslednje));
@@ -111,7 +115,7 @@ public class NeonThread implements Runnable{
 		        				}else {
 		        					javljanje.setVirtualOdo(0.0f);
 		        				}
-		        				
+		        				//
 		        				if(javljanje.getSistemAlarmi().getSifra().equals("1095")){
 		        					zaustavljeno = true;
 		        					}
@@ -160,15 +164,15 @@ public class NeonThread implements Runnable{
 		            				}
 	            				}
 
-	            				
 			            		//alarm zona
 			            		if(objekatZone != null && objekatZone.size() > 0) {
 			            			Zone zonaPoslednja = null;
-			            			if(Servis.javljanjePoslednjeServis.nadjiJavljanjaPoslednjaPoObjektu(objekat) != null) {
-			            				zonaPoslednja = Servis.javljanjePoslednjeServis.nadjiJavljanjaPoslednjaPoObjektu(objekat).getZona();
+			            			Javljanja poslednje = Servis.javljanjeServis.vratiJavljanjePoslednjeObjektaDo(objekat, new Timestamp(javljanje.getDatumVreme().getTime()));
+			            			if(poslednje != null) {
+			            				zonaPoslednja = poslednje.getZona();
 			            			}
 		            				//ulazak
-		            				if(zonaPoslednja == null) {
+		            				if(zonaPoslednja == null && javljanje.getDatumVreme().after(poslednje.getDatumVreme())) {
 		            					for(ObjekatZone objekatZona : objekatZone) {
 		            						if(objekatZona.isAktivan() && objekatZona.isUlaz()) {
 				            					if(Servis.obracun.rastojanjeKoordinate(javljanje, objekatZona.getZone().getLat(), objekatZona.getZone().getLon()) <= objekatZona.getZone().getPrecnik()) {
@@ -189,7 +193,7 @@ public class NeonThread implements Runnable{
 		            				}else {
 		            					//izlazak
 		            					ObjekatZone objZona = Servis.zonaObjekatServis.nadjiObjekatZonuPoZoniObjektu(objekat, zonaPoslednja);
-		            					if(objZona != null && objZona.isAktivan() && objZona.isIzlaz()) {
+		            					if(javljanje.getDatumVreme().after(poslednje.getDatumVreme()) && objZona != null && objZona.isAktivan() && objZona.isIzlaz()) {
 			            					if(Servis.obracun.rastojanjeKoordinate(javljanje, zonaPoslednja.getLat(), zonaPoslednja.getLon()) > zonaPoslednja.getPrecnik()) {
 			            						if(javljanje.getSistemAlarmi().getSifra().equals("0")) {
 			            							javljanje.setSistemAlarmi(server.izlazak);
@@ -238,15 +242,11 @@ public class NeonThread implements Runnable{
 				System.out.println("neon thread soket greška " + e.getMessage());
 				stop();
 			} catch (Throwable e) {
-				System.out.println("neon thread throwable greška " + e.getMessage());
+				System.out.println("neon thread throwable greška " + e.getMessage() + " " + inputLine);
 				stop();
 			}
 		}
 	
-	private void upisObracun(Javljanja javljanje) {
-
-	}
-
 	public synchronized boolean isStopped(){
 		return this.isStopped;
 	}

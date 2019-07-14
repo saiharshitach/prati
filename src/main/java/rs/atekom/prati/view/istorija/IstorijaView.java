@@ -1,4 +1,4 @@
-package rs.atekom.prati.view;
+package rs.atekom.prati.view.istorija;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -18,9 +18,11 @@ import com.vaadin.ui.Panel;
 import pratiBaza.tabele.Grupe;
 import pratiBaza.tabele.Javljanja;
 import pratiBaza.tabele.Objekti;
+import pratiBaza.tabele.SistemAlarmi;
 import rs.atekom.prati.mape.Gmap;
 import rs.atekom.prati.server.Servis;
-import rs.atekom.prati.view.izvestaji.IstorijaLayout;
+import rs.atekom.prati.view.OpstiPanelView;
+
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.themes.ValoTheme;
@@ -58,10 +60,7 @@ public class IstorijaView extends OpstiPanelView{
 				objektiCombo.clear();
 				if(event.getValue() != null) {
 					objektiCombo.setItems(Servis.grupeObjekatServis.nadjiSveObjektePoGrupi(event.getValue()));
-					if(preuzimanje != null) {
-						topLayout.removeComponent(preuzimanje);
-						preuzimanje = null;
-					}
+					ukloniPreuzimanje();
 				}else {
 					objektiCombo.setItems(Servis.objekatServis.vratiSveObjekte(korisnik, true));
 				}
@@ -72,10 +71,15 @@ public class IstorijaView extends OpstiPanelView{
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void valueChange(ValueChangeEvent<Objekti> event) {
-				if(preuzimanje != null) {
-					topLayout.removeComponent(preuzimanje);
-					preuzimanje = null;
-				}
+				ukloniPreuzimanje();
+			}
+		});
+		
+		alarmiCombo.addValueChangeListener(new ValueChangeListener<SistemAlarmi>() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void valueChange(ValueChangeEvent<SistemAlarmi> event) {
+				ukloniPreuzimanje();
 			}
 		});
 		
@@ -85,7 +89,7 @@ public class IstorijaView extends OpstiPanelView{
 			public void buttonClick(ClickEvent event) {
 				if(vremeOd.getValue() != null && vremeDo.getValue() != null && 
 						((Timestamp.valueOf(vremeDo.getValue()).getTime() - Timestamp.valueOf(vremeOd.getValue()).getTime())/1000 < 8*86400)) {
-					prikaziIstoriju(objektiCombo.getValue(), Timestamp.valueOf(vremeOd.getValue()), Timestamp.valueOf(vremeDo.getValue()));
+					prikaziIstoriju(objektiCombo.getValue(), Timestamp.valueOf(vremeOd.getValue()), Timestamp.valueOf(vremeDo.getValue()), alarmiCombo.getValue());
 				}else {
 					pokaziPorukuGreska("морате одабрати време у оба поља и период може бити највише 7 данa!");
 				}
@@ -98,23 +102,21 @@ public class IstorijaView extends OpstiPanelView{
 		setContent(root);
 	}
 	
-	private void prikaziIstoriju(Objekti objekat, Timestamp datumVremeOd, Timestamp datumVremeDo) {	
+	private void prikaziIstoriju(Objekti objekat, Timestamp datumVremeOd, Timestamp datumVremeDo, SistemAlarmi alarm) {	
 		mapa.removeAllComponents();
 		mapa.clearMarkers();
 		podaci.setContent(null);
 		
-		if(preuzimanje != null) {
-			topLayout.removeComponent(preuzimanje);
-			preuzimanje = null;
-		}
+		ukloniPreuzimanje();
+		
 		if(linija != null) {
 			mapa.removePolyline(linija);
 		}
 		
 		if(objekat != null) {
 			if(!datumVremeOd.after(datumVremeDo) && !datumVremeOd.equals(datumVremeDo)) {
-				if((datumVremeDo.getTime() - datumVremeOd.getTime())/1000 > 86400 && prikaziMarkere.getValue()) {
-					pokaziPorukuGreska("За приказ маркера на мапи време не може бити дуже од 24 часа!");
+				if((datumVremeDo.getTime() - datumVremeOd.getTime())/1000 > 86400 && prikaziMarkere.getValue() && alarm == null) {
+					pokaziPorukuGreska("За приказ свих маркера на мапи време не може бити дуже од 24 часа!");
 				}else {
 					ArrayList<LatLon> tacke = new ArrayList<LatLon>();
 					ArrayList<Double> lat = new ArrayList<Double>();
@@ -127,10 +129,20 @@ public class IstorijaView extends OpstiPanelView{
 								tacke.add(new LatLon(javljanje.getLat(), javljanje.getLon()));
 								lat.add(javljanje.getLat());
 								lon.add(javljanje.getLon());
-								GoogleMapMarker marker = new GoogleMapMarker(mapa.podesiCaption(javljanje),  new LatLon(javljanje.getLat(), javljanje.getLon()), false);
-								marker.setAnimationEnabled(false);
-								marker.setIconUrl(mapa.ikonica.icon(javljanje));
-								mapa.addMarker(marker);
+								if(alarm == null) {
+									GoogleMapMarker marker = new GoogleMapMarker(mapa.podesiCaption(javljanje),  new LatLon(javljanje.getLat(), javljanje.getLon()), false);
+									marker.setAnimationEnabled(false);
+									marker.setIconUrl(mapa.ikonica.icon(javljanje));
+									mapa.addMarker(marker);
+								}else {
+									if(javljanje.getSistemAlarmi().getId().equals(alarm.getId())) {
+										GoogleMapMarker marker = new GoogleMapMarker(mapa.podesiCaption(javljanje),  new LatLon(javljanje.getLat(), javljanje.getLon()), false);
+										marker.setAnimationEnabled(false);
+										marker.setIconUrl(mapa.ikonica.icon(javljanje));
+										mapa.addMarker(marker);
+									}
+								}
+								
 							}
 						}else {
 							for(Javljanja javljanje : javljanja) {
@@ -163,6 +175,13 @@ public class IstorijaView extends OpstiPanelView{
 					}
 			}else {
 				pokaziPorukuGreska("Морате изабрати објекат!");
+		}
+	}
+	
+	private void ukloniPreuzimanje() {
+		if(preuzimanje != null) {
+			topLayout.removeComponent(preuzimanje);
+			preuzimanje = null;
 		}
 	}
 

@@ -16,13 +16,13 @@ import com.vaadin.icons.VaadinIcons;
 
 import rs.atekom.prati.meni.PratiEventBus;
 import rs.atekom.prati.meni.PratiEvent.KorisnikLoggedOutEvent;
-import rs.atekom.prati.view.IstorijaView;
 import rs.atekom.prati.view.PracenjeView;
 import rs.atekom.prati.view.alarmi.AlarmiView;
 import rs.atekom.prati.view.alarmiKorisnik.AlarmKorisnikView;
 import rs.atekom.prati.view.gorivo.GorivoView;
 import rs.atekom.prati.view.grupe.GrupeObjektiView;
 import rs.atekom.prati.view.grupe.GrupeView;
+import rs.atekom.prati.view.istorija.IstorijaView;
 import rs.atekom.prati.view.izvestaji.IzvestajiView;
 import rs.atekom.prati.view.izvestaji.nivoGoriva.NivoGorivaView;
 import rs.atekom.prati.view.korisnici.KorisniciView;

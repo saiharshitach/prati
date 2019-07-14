@@ -38,7 +38,7 @@ public class AlarmKorisnikForma extends OpstaForma implements OpstaFormaInterfac
 		organizacije = new ComboOrganizacije(pretplatnici.getValue(), "организација", true, true);
 		korisnici = new ComboKorisnici(logika.view.korisnik, "корисник", true, true);
 		objekti = new ComboObjekti(logika.view.korisnik, "објекти", true, true);
-		alarmi = new ComboAlarmi("аларми", true, true, true, true);
+		alarmi = new ComboAlarmi("аларми", true, true, true, false, true);
 		email = new CheckBox("е-пошта");
 		obavestenje = new CheckBox("обавештење");
 		aktivan = new CheckBox("активан");
