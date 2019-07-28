@@ -5,11 +5,17 @@ import java.util.Date;
 import pratiBaza.tabele.Javljanja;
 import pratiBaza.tabele.Obd;
 import pratiBaza.tabele.Objekti;
+import pratiBaza.tabele.SistemAlarmi;
 
 public class RuptelaProtokol {
 	
+	private SistemAlarmi redovno, sos, aktiviran, deaktiviran;
+	
 	public RuptelaProtokol() {
-		// TODO Auto-generated constructor stub
+		redovno = Servis.sistemAlarmServis.nadjiAlarmPoSifri("0");
+		sos = Servis.sistemAlarmServis.nadjiAlarmPoSifri("6022");
+		aktiviran = Servis.sistemAlarmServis.nadjiAlarmPoSifri("1092");
+		deaktiviran = Servis.sistemAlarmServis.nadjiAlarmPoSifri("1091");
 	}
 	
 	public JavljanjeObd vratiJavljanje(int offset, Objekti objekat, String poruka) {
@@ -69,7 +75,7 @@ public class RuptelaProtokol {
 		int eventId = Integer.parseInt(poruka.substring(offset, offset + 2), 16);
 		offset += 2;
 		 
-		javljanje.setSistemAlarmi(Servis.sistemAlarmServis.nadjiAlarmPoSifri("0"));
+		javljanje.setSistemAlarmi(redovno);
 		javljanje.setEventData("0");
 		javljanje.setIbutton("0");
 		//očitavanje vrednosti od 1 bajta
@@ -126,7 +132,7 @@ public class RuptelaProtokol {
 	
 	
 	public JavljanjeObd vratiExtended(int offset, Objekti objekat, String poruka) {
-		System.out.println("obj id: " + objekat.getOznaka());
+		//System.out.println("obj id: " + objekat.getOznaka());
 		Date sada = new Date();
 		Javljanja javljanje = new Javljanja();
 		javljanje.setObjekti(objekat);
@@ -183,7 +189,7 @@ public class RuptelaProtokol {
 		//proveriti eventID
 		int eventId = Integer.parseInt(poruka.substring(offset, offset + 4), 16);
 		offset += 4;
-		javljanje.setSistemAlarmi(Servis.sistemAlarmServis.nadjiAlarmPoSifri("0"));
+		javljanje.setSistemAlarmi(redovno);
 		javljanje.setEventData("0");
 		javljanje.setIbutton("0");
 		//očitavanje vrednosti od 1 bajta
@@ -251,19 +257,19 @@ public class RuptelaProtokol {
 			break;
 			//SOS
 		case 4: if(rezultat == 1) {
-			javljanje.setSistemAlarmi(Servis.sistemAlarmServis.nadjiAlarmPoSifri("6022"));
+			javljanje.setSistemAlarmi(sos);
 			}
 		    break;
 		  //stanje kontakta 
 		case 5: if(rezultat == 1) {    
 			javljanje.setKontakt(true);
 			if(eventId == 5) {
-				javljanje.setSistemAlarmi(Servis.sistemAlarmServis.nadjiAlarmPoSifri("1092"));
+				javljanje.setSistemAlarmi(aktiviran);
 				}
 			}else {
 				javljanje.setKontakt(false);
 				if(eventId == 5) {
-					javljanje.setSistemAlarmi(Servis.sistemAlarmServis.nadjiAlarmPoSifri("1091"));
+					javljanje.setSistemAlarmi(deaktiviran);
 					}
 				}
 		    //System.out.println(" kontakt " + javljanje.isKontakt() + " event id " + eventId);
@@ -285,12 +291,12 @@ public class RuptelaProtokol {
 		case 251: if(rezultat == 1) {    //stanje kontakta - virtual ignition
 			javljanje.setKontakt(true);
 			if(eventId == 5) {
-				javljanje.setSistemAlarmi(Servis.sistemAlarmServis.nadjiAlarmPoSifri("1092"));
+				javljanje.setSistemAlarmi(aktiviran);
 			}
 		}else {
 			javljanje.setKontakt(false);
 			if(eventId == 5) {
-				javljanje.setSistemAlarmi(Servis.sistemAlarmServis.nadjiAlarmPoSifri("1091"));
+				javljanje.setSistemAlarmi(deaktiviran);
 			}
 		}
 		    break;

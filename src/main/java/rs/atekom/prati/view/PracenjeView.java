@@ -58,6 +58,7 @@ public class PracenjeView extends OpstiPanelView{
 			@Override
 			public void valueChange(ValueChangeEvent<Boolean> event) {
 				Prati.getCurrent().centriranje = event.getValue();
+				//mapa.pollListener.remove();
 			}
 		});
 		
@@ -87,10 +88,12 @@ public class PracenjeView extends OpstiPanelView{
 			if(listener.getMouseEventDetails().isDoubleClick()) {
 				JavljanjaPoslednja klik = listener.getItem();
 				if(klik != null && sadrziObjekat(Prati.getCurrent().objekti, klik.getObjekti().getId())) {
-					centriraj.setValue(false);
 					mapa.setCenter(new LatLon(klik.getLat(), klik.getLon()));
 					mapa.setZoom(14);
-					Prati.getCurrent().pokaziObavestenje("центрирање мапе је искључено");
+					if(centriraj.getValue()) {
+						centriraj.setValue(false);
+						Prati.getCurrent().pokaziObavestenje("центрирање мапе је искључено");
+					}
 				}else {
 					pokaziPorukuGreska("морате изабрати објекат који је већ приказан на мапи");
 				}
@@ -104,6 +107,7 @@ public class PracenjeView extends OpstiPanelView{
 				if(event.getValue() != null) {
 					Prati.getCurrent().poslednjaJavljanja.setItems(Servis.javljanjePoslednjeServis.vratiListuJavljanjaPoslednjih(Servis.grupeObjekatServis.nadjiSveObjektePoGrupi(event.getValue())));
 				}else {
+					Prati.getCurrent().poslednjaJavljanja.setItems(new ArrayList<JavljanjaPoslednja>());
 					//updateTable();
 				}
 				Prati.getCurrent().objekti.clear();
@@ -122,6 +126,7 @@ public class PracenjeView extends OpstiPanelView{
 					Prati.getCurrent().objekti.add(javljanje.getObjekti());
 				}
 				mapa.dodavanjeMarkera();
+				mapa.centriraj();
 				Prati.getCurrent().pretplatnik = pretplatniciCombo.getValue();
 				Prati.getCurrent().organizacija = organizacijeCombo.getValue();
 				Prati.getCurrent().grupa = grupeCombo.getValue();
@@ -129,11 +134,21 @@ public class PracenjeView extends OpstiPanelView{
 		});
 		
 		String slot = "dupli-panel-slot";
-		mapa = new Gmap(Servis.apiGoogle, null, "serbian");
-		mapa.centriraj();
+		String apKey = "";
+		String apiPretplatnik = korisnik.getSistemPretplatnici() == null ? "": korisnik.getSistemPretplatnici().getApiKey();
+		
+		if(!apiPretplatnik.isEmpty() && !apiPretplatnik.equals("") && apiPretplatnik != null) {
+			 apKey = apiPretplatnik;
+		}else {
+			apKey = Servis.apiGoogle;
+		}
+		
+		mapa = new Gmap(apKey, null, "serbian");
+		
+		Component content = buildContent(createContentWraper(mapa, slot, true), createContentWraper(buildTable(true), slot, true));
+
 		mapa.dodavanjeMarkera();
 		mapa.osvezavanja();
-		Component content = buildContent(createContentWraper(mapa, slot, true), createContentWraper(buildTable(true), slot, true));
 		
 		root.addComponent(content);
 		root.setExpandRatio(content, 1);

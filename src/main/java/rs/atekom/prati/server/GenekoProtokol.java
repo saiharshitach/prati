@@ -4,29 +4,25 @@ import java.sql.Timestamp;
 import java.util.Date;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import com.google.maps.GeocodingApi;
-import com.google.maps.model.GeocodingResult;
-import com.google.maps.model.LatLng;
 import pratiBaza.tabele.Javljanja;
 import pratiBaza.tabele.Objekti;
 import pratiBaza.tabele.SistemAlarmi;
 
-
 public class GenekoProtokol {
-
-	public GenekoProtokol() {
-		
+	
+	private OpstiServer server;
+	
+	public GenekoProtokol(OpstiServer srv) {
+		server = srv;
 	}
 	
-	public Javljanja genekoObrada(String podaci, Objekti objekat, boolean zaustavljeno, int vreme, Javljanja stop) {
+	public Javljanja genekoObrada(String podaci, Objekti objekat) {
 
 		Javljanja  javljanje = null;
 		Date sada;
 		Timestamp upis;
 		SistemAlarmi alarm;
-		LatLng pozicija;
-		String adresa = "";
-		String alarm_id = "0";
+		String alarmId = "0";
 		Boolean valid;
 		Timestamp datumVreme = new Timestamp(parseDateTime("010170", "000000").getTime());;
 		Double longitude = 0.00;
@@ -48,9 +44,9 @@ public class GenekoProtokol {
 			}
 			if(valid || !da[6].equals("0000.0000")){
 				if(da[0].equals("1071")){
-					alarm_id = "6022";
+					alarmId = "6022";
 					}else{
-						alarm_id = da[0];
+						alarmId = da[0];
 						}
 				try{
 					datumVreme = new Timestamp(parseDateTime(da[2], da[3]).getTime());
@@ -90,54 +86,13 @@ public class GenekoProtokol {
 				}
 				sada = new Date();
 				upis = new Timestamp(sada.getTime());
-
-				alarm = Servis.sistemAlarmServis.nadjiAlarmPoSifri(String.valueOf(alarm_id));
-				if(alarm == null || alarm_id.equals("0")){
-					alarm = Servis.sistemAlarmServis.nadjiAlarmPoSifri(String.valueOf(0));
+				alarm = Servis.sistemAlarmServis.nadjiAlarmPoSifri(alarmId);
+				
+				if(alarm == null || alarmId.equals("0")){
+					alarm = server.redovno;
 					}
-				if(!(stop == null) && !zaustavljeno && vreme != 0){
-					if((datumVreme.getTime() - stop.getDatumVreme().getTime())/1000 > vreme * 60){
-						alarm = Servis.sistemAlarmServis.nadjiAlarmPoSifri("1095");
-					}
-				}
+				
 				if(objekat != null){
-					if(!alarm.getSifra().equals("0") && (latitude != 0.00 && longitude != 0.00)){
-						if(alarm.isAdresa()){
-							try {
-								Address adressa = Servis.nominatim.getAdress(latitude, longitude);
-								if(adressa != null){
-									if(!adressa.getHouseNumber().equals(""))
-										adresa = adressa.getHouseNumber() + ", ";
-									if(!adressa.getRoad().equals(""))
-										adresa = adresa + adressa.getRoad() + ", ";
-									if(!adressa.getSuburb().equals(""))
-										adresa = adresa + adressa.getSuburb() + ", ";
-									if(!adressa.getCity().equals(""))
-										adresa = adresa + adressa.getCity() + " ";
-									if(!adressa.getPostcode().equals(""))
-										adresa = adresa + adressa.getPostcode();
-									if(!adressa.getCounty().equals(""))
-										adresa = adresa + ", " + adressa.getCounty() + ", ";
-									if(!adressa.getCountry().equals(""))
-										adresa = adresa + adressa.getCountry();
-									}else{
-										pozicija = new LatLng(latitude, longitude);
-										GeocodingResult[] adresaTrazena= GeocodingApi.reverseGeocode(Servis.gContext, pozicija).await();
-										adresa = adresaTrazena[0].formattedAddress;
-										}
-								if(eventData.equals("0")){
-									eventData = adresa;
-									}else{
-										eventData = eventData + " " + adresa;
-										if(eventData.length() > 250){
-											eventData = adresa;
-											} 
-										}
-								} catch (Exception e) {
-									System.out.println("Problem sa adresama openstreet mape... ");	
-									}
-							}
-						}
 					if(brzina < 200 && ispravnoVreme){
 						javljanje = new Javljanja();
 						javljanje.setValid(valid);

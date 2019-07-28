@@ -1,4 +1,4 @@
-package rs.atekom.prati.server;
+package rs.atekom.prati.server.staro;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -12,9 +12,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import pratiBaza.tabele.SistemAlarmi;
+import rs.atekom.prati.server.GenekoProtokol;
+import rs.atekom.prati.server.Servis;
 
-
-public class GenekoServer implements Runnable{
+public class StariGenekoServer implements Runnable{
 
 	private final int listeningPort;
 	private ServerSocket serverSocket;
@@ -23,19 +24,21 @@ public class GenekoServer implements Runnable{
 	private boolean isStopped = false;
 	private int poolSize;
 	private int rb = 1;
-	public GenekoProtokol protokol;
-	public SistemAlarmi prekoracenjeBrzine, stajanje, istakanje, izlazak, ulazak;
+	public SistemAlarmi prekoracenjeBrzine, stajanje, istakanje, izlazak, ulazak, redovno;
+	public GenekoProtokol gProtokol;
 	
-	public GenekoServer(int port, int poolSizeS) {
+	public StariGenekoServer(int port, int poolSizeS) {
 		clientSockets = new ArrayList<Socket>();
 		listeningPort = port;
 		poolSize = poolSizeS;
 		pool = Executors.newFixedThreadPool(poolSize);
-		protokol = new GenekoProtokol();
+		prekoracenjeBrzine = Servis.sistemAlarmServis.nadjiAlarmPoSifri("6013");
 		stajanje = Servis.sistemAlarmServis.nadjiAlarmPoSifri("1095");
 		istakanje = Servis.sistemAlarmServis.nadjiAlarmPoSifri("1111");
 		izlazak = Servis.sistemAlarmServis.nadjiAlarmPoSifri("1100");
 		ulazak = Servis.sistemAlarmServis.nadjiAlarmPoSifri("1101");
+		redovno = Servis.sistemAlarmServis.nadjiAlarmPoSifri(String.valueOf(0));
+		//gProtokol = new GenekoProtokol(this);
 	}
 	
 	@Override
@@ -48,18 +51,20 @@ public class GenekoServer implements Runnable{
 	        	   Socket soket = null;
 	        	   try {
 	        		   if(clientSockets.size() >= (poolSize - 2)){
-	        			   clientSockets.get(0).getInputStream().close();
-	        			   clientSockets.get(0).close();
+	        			   if(!clientSockets.get(0).isClosed()) {
+		        			   clientSockets.get(0).getInputStream().close();
+		        			   clientSockets.get(0).close();
+		        			   }
 	        			   removeClientSocket(clientSockets.get(0));
 	        			   System.out.println("server geneko izbačen soket - " + clientSockets.size());
 	        			   }
 	        		   soket = serverSocket.accept();
-       			   clientSockets.add(soket);
-       			   pool.submit(new GenekoThread(queue, this));
-       			   queue.put(soket); 
-       			   if(rb == 1 || rb % 1000 == 0)
-       				   System.out.println("GENEKO " + rb + " STARTOVAN" + " od " + ((ThreadPoolExecutor) pool).getActiveCount() + " " + getVreme());
-       			   rb++;
+	        		   clientSockets.add(soket);
+	        		   //pool.submit(new GenekoThread(queue, this));
+	        		   queue.put(soket); 
+	        		   if(rb == 1 || rb % 1000 == 0)
+	        			   System.out.println("GENEKO " + rb + " STARTOVAN" + " od " + ((ThreadPoolExecutor) pool).getActiveCount() + " " + getVreme());
+	        		   rb++;
 	        		   } catch (Throwable e){
 	        			   if (isStopped()) {
 	        				   System.out.println("server geneko is stopped");

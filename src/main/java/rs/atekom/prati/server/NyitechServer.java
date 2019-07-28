@@ -12,6 +12,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import pratiBaza.tabele.SistemAlarmi;
+import rs.atekom.prati.view.komponente.Izvrsavanje;
 
 public class NyitechServer implements Runnable{
 
@@ -23,6 +24,7 @@ public class NyitechServer implements Runnable{
 	private int rb = 1;
 	private int poolSize;
 	public SistemAlarmi prekoracenjeBrzine, stajanje, istakanje, izlazak, ulazak;
+	public Izvrsavanje izvrsavanje;
 	
 	public NyitechServer(int port, int poolSizeS) {
 		clientSockets = new ArrayList<Socket>();
@@ -34,6 +36,7 @@ public class NyitechServer implements Runnable{
 		istakanje = Servis.sistemAlarmServis.nadjiAlarmPoSifri("1111");
 		izlazak = Servis.sistemAlarmServis.nadjiAlarmPoSifri("1100");
 		ulazak = Servis.sistemAlarmServis.nadjiAlarmPoSifri("1101");
+		izvrsavanje = new Izvrsavanje();
 	}
 	
 	@Override

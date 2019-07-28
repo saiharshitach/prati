@@ -13,7 +13,6 @@ import com.github.appreciated.app.layout.builder.entities.DefaultNotificationHol
 import static com.github.appreciated.app.layout.builder.Section.HEADER;
 import static com.github.appreciated.app.layout.builder.Section.FOOTER;
 import com.vaadin.icons.VaadinIcons;
-
 import rs.atekom.prati.meni.PratiEventBus;
 import rs.atekom.prati.meni.PratiEvent.KorisnikLoggedOutEvent;
 import rs.atekom.prati.view.PracenjeView;
@@ -24,7 +23,6 @@ import rs.atekom.prati.view.grupe.GrupeObjektiView;
 import rs.atekom.prati.view.grupe.GrupeView;
 import rs.atekom.prati.view.istorija.IstorijaView;
 import rs.atekom.prati.view.izvestaji.IzvestajiView;
-import rs.atekom.prati.view.izvestaji.nivoGoriva.NivoGorivaView;
 import rs.atekom.prati.view.korisnici.KorisniciView;
 import rs.atekom.prati.view.objekatZone.ObjekatZoneView;
 import rs.atekom.prati.view.objekti.ObjektiView;
@@ -33,6 +31,7 @@ import rs.atekom.prati.view.organizacije.OrganizacijeView;
 import rs.atekom.prati.view.pocetna.PocetnaView;
 import rs.atekom.prati.view.pretplatnici.PretplatniciView;
 import rs.atekom.prati.view.proizvodjaci.UredjajiProizvodjaciView;
+import rs.atekom.prati.view.ruta.RutaView;
 import rs.atekom.prati.view.sim.SimView;
 import rs.atekom.prati.view.simSistemOperateri.SimOperateriView;
 import rs.atekom.prati.view.sistem.SistemView;
@@ -92,15 +91,16 @@ public class PratiMeniKorisnik{
         .add(SubmenuBuilder.get("Подаци", VaadinIcons.COG)
         		.add(GrupeView.class)
         		.add(GrupeObjektiView.class)
+                .add(ZoneView.class)
         		.add(KorisniciView.class)
                 .add(ObjektiView.class)
                 .add(ObjekatZoneView.class)
                 .add(ObjektiDetaljiView.class)
                 .add(OrganizacijeView.class)
+                .add(RutaView.class)
                 .add(SimView.class)
                 .add(SistemSesijeView.class)
                 .add(UredjajiView.class)
-                .add(ZoneView.class)
                 .build())
         //.add(View6.class)
         .addClickable("Одјава", VaadinIcons.SIGN_OUT, clickEvent -> PratiEventBus.post(new KorisnikLoggedOutEvent()), FOOTER)
@@ -127,15 +127,16 @@ public class PratiMeniKorisnik{
 		        .add(SubmenuBuilder.get("Подаци", VaadinIcons.COG)
 		        		.add(GrupeView.class)
 		        		.add(GrupeObjektiView.class)
+		                .add(ZoneView.class)
 		        		.add(KorisniciView.class)
 		                .add(ObjektiView.class)
 		                .add(ObjekatZoneView.class)
 		                .add(ObjektiDetaljiView.class)
 		                .add(OrganizacijeView.class)
+		                .add(RutaView.class)
 		                .add(SimView.class)
 		                .add(SistemSesijeView.class)
 		                .add(UredjajiView.class)
-		                .add(ZoneView.class)
 		                .build())
 		        .add(SubmenuBuilder.get("Систем", VaadinIcons.DOCTOR)
 		        		.add(AlarmiView.class)

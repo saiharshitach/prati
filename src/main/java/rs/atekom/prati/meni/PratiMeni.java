@@ -18,7 +18,6 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.MenuBar.Command;
 import com.vaadin.ui.MenuBar.MenuItem;
-import com.vaadin.ui.Tree;
 import com.vaadin.ui.themes.ValoTheme;
 import pratiBaza.tabele.Korisnici;
 import rs.atekom.prati.meni.PratiEvent.KorisnikLoggedOutEvent;

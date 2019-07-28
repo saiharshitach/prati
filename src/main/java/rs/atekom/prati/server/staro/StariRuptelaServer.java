@@ -1,4 +1,4 @@
-package rs.atekom.prati.server;
+package rs.atekom.prati.server.staro;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -12,8 +12,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import pratiBaza.tabele.SistemAlarmi;
+import rs.atekom.prati.server.RuptelaProtokol;
+import rs.atekom.prati.server.Servis;
 
-public class RuptelaServer implements Runnable{
+public class StariRuptelaServer implements Runnable{
 
 	private final int listeningPort;
 	private ServerSocket serverSocket;
@@ -25,7 +27,7 @@ public class RuptelaServer implements Runnable{
 	public SistemAlarmi prekoracenjeBrzine, stajanje, istakanje, izlazak, ulazak;
 	public RuptelaProtokol zapis;
 	
-	public RuptelaServer(int port, int poolSizeS) {
+	public StariRuptelaServer(int port, int poolSizeS) {
 		clientSockets = new ArrayList<Socket>();
 		listeningPort = port;
 		poolSize = poolSizeS;
@@ -55,7 +57,7 @@ public class RuptelaServer implements Runnable{
 	    				 }
 	    			 soket = serverSocket.accept();
 	    			 clientSockets.add(soket);
-	    			 pool.submit(new RuptelaThread(queue, this));
+	    			 //pool.submit(new RuptelaThread(queue, this));
 	    			 queue.put(soket);
 	    			 if(rb == 1 || rb % 1000 == 0) {
 	    				 System.out.println("RUPTELA " + rb + " STARTOVAN" + " od " + ((ThreadPoolExecutor) pool).getActiveCount() + " " + getVreme());

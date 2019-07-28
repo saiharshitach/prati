@@ -7,23 +7,24 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import com.google.maps.GeocodingApi;
-import com.google.maps.model.GeocodingResult;
-import com.google.maps.model.LatLng;
 import pratiBaza.tabele.Javljanja;
 import pratiBaza.tabele.Obd;
+import pratiBaza.tabele.Objekti;
 import pratiBaza.tabele.SistemAlarmi;
 
 
 public class NyiTechProtokol {
 	
+	private SistemAlarmi redovno;
+	
 	public NyiTechProtokol() {
-		
+		redovno = Servis.sistemAlarmServis.nadjiAlarmPoSifri(String.valueOf(0));
 	}
 	
 	public NyiTechPar<Javljanja, Obd> nyiTechObrada( String uredjaj, String eventCode, String ulaz){
 		NyiTechPar<Javljanja, Obd> par = null;
 		Javljanja javljanje = null;
+		Objekti objekat = null;
 		Obd obd = null;
 		String uredjajId = "";
 		boolean obdData = false;
@@ -53,8 +54,6 @@ public class NyiTechProtokol {
 		float naponAkumulatora = 0.00f;
 		boolean kontakt = false;
 		SistemAlarmi alarm = null;
-		LatLng pozicija;
-		String adresa = "";
 		uredjajId = uredjaj;
 		String eventData = "0";
 		String alarm_id = "0";
@@ -425,10 +424,11 @@ public class NyiTechProtokol {
 			 if((alarm = Servis.sistemAlarmServis.nadjiAlarmPoSifri(String.valueOf(alarm_id))) == null){
 				 alarm = Servis.sistemAlarmServis.nadjiAlarmPoSifri(String.valueOf(0));
 				 }
-			 if(Servis.objekatServis.nadjiObjekatPoUredjaju(Servis.uredjajServis.nadjiUredjajPoKodu(uredjajId)) != null){
+			 objekat = Servis.objekatServis.nadjiObjekatPoUredjaju(Servis.uredjajServis.nadjiUredjajPoKodu(uredjajId));
+			 if(objekat != null){
 				 if(obdData){
 					 obd = new Obd();
-					 obd.setObjekti(Servis.objekatServis.nadjiObjekatPoUredjaju(Servis.uredjajServis.nadjiUredjajPoKodu(uredjajId)));
+					 obd.setObjekti(objekat);
 					 obd.setDatumVreme(datumVreme);
 					 obd.setRpm(rpm);
 					 obd.setTemperatura(temp);
@@ -449,45 +449,8 @@ public class NyiTechProtokol {
 						 }
 				 alarm = Servis.sistemAlarmServis.nadjiAlarmPoSifri(String.valueOf(alarm_id));
 				 if(alarm == null || alarm_id.equals("0")){
-						alarm = Servis.sistemAlarmServis.nadjiAlarmPoSifri(String.valueOf(0));
+						alarm = redovno;
 						}
-				 if(!alarm_id.equals("0") && (latitude != 0.00 && longitude != 0.00)){
-					 if(alarm.isAdresa()){
-							try {
-								Address adressa = Servis.nominatim.getAdress(latitude, longitude);
-								if(adressa != null){
-									if(!adressa.getHouseNumber().equals(""))
-										adresa = adressa.getHouseNumber() + ", ";
-									if(!adressa.getRoad().equals(""))
-										adresa = adresa + adressa.getRoad() + ", ";
-									if(!adressa.getSuburb().equals(""))
-										adresa = adresa + adressa.getSuburb() + ", ";
-									if(!adressa.getCity().equals(""))
-										adresa = adresa + adressa.getCity() + " ";
-									if(!adressa.getPostcode().equals(""))
-										adresa = adresa + adressa.getPostcode();
-									if(!adressa.getCounty().equals(""))
-										adresa = adresa + ", " + adressa.getCounty() + ", ";
-									if(!adressa.getCountry().equals(""))
-										adresa = adresa + adressa.getCountry();
-									}else{
-										pozicija = new LatLng(latitude, longitude);
-										GeocodingResult[] adresaTrazena= GeocodingApi.reverseGeocode(Servis.gContext, pozicija).await();
-										adresa = adresaTrazena[0].formattedAddress;
-										}
-								if(eventData.equals("0")){
-									eventData = adresa;
-									}else{
-										eventData = eventData + " " + adresa;
-										if(eventData.length() > 250){
-											eventData = adresa;
-											} 
-										}
-								} catch (Exception e) {
-									System.out.println("Problem sa adresama openstreet mape... ");	
-									}
-							}
-				}
 				 if(brzina < 200){
 					 javljanje = new Javljanja();
 					 javljanje.setValid(valid);

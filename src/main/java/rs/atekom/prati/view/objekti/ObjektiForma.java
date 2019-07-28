@@ -64,7 +64,6 @@ public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 			@Override
 			public void valueChange(ValueChangeEvent<Organizacije> event) {
 				
-				
 			}
 		});
 		

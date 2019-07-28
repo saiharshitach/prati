@@ -6,7 +6,6 @@ import javax.servlet.annotation.WebListener;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import com.google.maps.GeoApiContext;
-
 import pratiBaza.pomocne.Mail;
 import pratiBaza.pomocne.Obracuni;
 import pratiBaza.servis.AlarmiKorisnikServis;
@@ -35,7 +34,6 @@ import pratiBaza.servis.ObjekatZoneServis;
 import pratiBaza.servis.ZoneServis;
 import rs.atekom.prati.ApplicationContextProvider;
 import rs.atekom.prati.server.NominatimReverseGeocodingJAPI;
-import rs.atekom.prati.view.komponente.Izvrsavanje;
 
 @WebListener
 public class Servis implements ServletContextListener{
@@ -71,11 +69,11 @@ public class Servis implements ServletContextListener{
 	public static NominatimReverseGeocodingJAPI nominatim;
 	public static Obracuni obracun;
 	public static Mail posta;
-	public static Izvrsavanje izvrsavanje;
-	private RuptelaServer ruptela;
-	private NeonServer neon;
-	private GenekoServer geneko;
+	private OpstiServer ruptela;
+	private OpstiServer neon;
+	private OpstiServer geneko;
 	private NyitechServer nyitech;
+	private Thread neonServer, nyitechServer, genekoServer, ruptelaServer;
 	
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
@@ -110,18 +108,17 @@ public class Servis implements ServletContextListener{
 		nominatim = new NominatimReverseGeocodingJAPI(sistemServis.vratiSistem().getNominatimAdresa());
 		obracun = new Obracuni();
 		posta = new Mail();
-		izvrsavanje = new Izvrsavanje();
 		
 		try {
-			neon = new NeonServer(9000, 200);
-			nyitech = new NyitechServer(9010, 20);
-			geneko = new GenekoServer(9030, 20);
-			ruptela = new RuptelaServer(9040, 50);
+			neon = new OpstiServer(9000, 300);
+			nyitech = new NyitechServer(9010, 10);
+			geneko = new OpstiServer(9030, 20);
+			ruptela = new OpstiServer(9040, 30);
 			
-			Thread neonServer = new Thread(neon);
-			Thread nyitechServer = new Thread(nyitech);
-			Thread genekoServer = new Thread(geneko);
-			Thread ruptelaServer = new Thread(ruptela);
+			neonServer = new Thread(neon);
+			nyitechServer = new Thread(nyitech);
+			genekoServer = new Thread(geneko);
+			ruptelaServer = new Thread(ruptela);
 			
 			neonServer.start();
 			nyitechServer.start();
@@ -136,6 +133,18 @@ public class Servis implements ServletContextListener{
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
 		context = null;
+		if(neonServer != null) {
+			neon.stop();
+			}
+		if(nyitechServer != null) {
+			nyitech.stop();
+			}
+		if(genekoServer != null) {
+			geneko.stop();
+			}
+		if(ruptelaServer != null) {
+			ruptela.stop();
+			}
 	}
 
 }

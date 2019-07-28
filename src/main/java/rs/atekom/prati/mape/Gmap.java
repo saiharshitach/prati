@@ -11,6 +11,7 @@ import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.event.UIEvents.PollEvent;
 import com.vaadin.event.UIEvents.PollListener;
+import com.vaadin.shared.Registration;
 import com.vaadin.tapio.googlemaps.GoogleMap;
 import com.vaadin.tapio.googlemaps.client.LatLon;
 import com.vaadin.tapio.googlemaps.client.events.MarkerClickListener;
@@ -39,6 +40,8 @@ public class Gmap extends GoogleMap{
     public Ikonica ikonica;
     private String apiKey;
     private GoogleMapMarker klikMarker;
+    private MarkerClickListener markerListener;
+    public Registration pollListener;//za uklanjanje listenera
     
 	public Gmap(String apKey, String clientId, String language) {
 		super(apKey, clientId, language);
@@ -47,23 +50,17 @@ public class Gmap extends GoogleMap{
 		apiKey = apKey;
 		lat = new ArrayList<Double>();
 		lon = new ArrayList<Double>();
-
-		/*addMarkerClickListener(new MarkerClickListener() {
+		
+		markerListener = new MarkerClickListener() {
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void markerClicked(GoogleMapMarker clickedMarker) {
-				prikaziMarkerPoziciju(clickedMarker);
+				prikaziGMarkerPodatke(clickedMarker);
 			}
-		});
+		};
 		
-		addMarkerClickListener(new MarkerClickListener() {
-			private static final long serialVersionUID = 1L;
-			@Override
-			public void markerClicked(GoogleMapMarker clickedMarker) {
-				prikaziMarkerPodatke(clickedMarker);
-			}
-		});**/
-		
+		addMarkerClickListener(markerListener);
+		centriraj();
 	}
 	
 	public void dodavanjeMarkera() {
@@ -78,68 +75,43 @@ public class Gmap extends GoogleMap{
 					gMarker.setIconUrl(ikonica.icon(javljanje));
 					lat.add(javljanje.getLat());
 					lon.add(javljanje.getLon());
-					markAsDirty();
 					addMarker(gMarker);
 				}
 			 }
 		}
-		centriraj();
+		if(Prati.getCurrent().centriranje)
+			centriraj();
 	}
 	
 	public void ukloniMarkere() {
 		clearMarkers();
 		centriraj();
 	}
-	
-    public ArrayList<Double> getLat(){
-    	return lat;
-    }
-    
-    public ArrayList<Double> getLon(){
-    	return lon;
-    }
     
     public void osvezavanja(){
-    	dodavanjeMarkera();
-    	centriraj();
-    	Gmap mapa = this; 
-		Prati.getCurrent().setPollInterval(5000);
+		Prati.getCurrent().setPollInterval(10000);
 		Prati.getCurrent().osvezavanjeMarkera = new PollListener() {
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void poll(PollEvent event) {
 				dodavanjeMarkera();
-				if(!(window == null)){
-					if(mapa.isInfoWindowOpen(window))
-						mapa.closeInfoWindow(window);
-					}
-				centriraj();
 				}
 		};
-		Prati.getCurrent().addPollListener(Prati.getCurrent().osvezavanjeMarkera);
+		pollListener = Prati.getCurrent().addPollListener(Prati.getCurrent().osvezavanjeMarkera);
 	}
     
     public void centriraj(){
-    	if(Prati.getCurrent().centriranje) {
-        	if(!lat.isEmpty() && !lon.isEmpty()){
-        		if(lat.size() == 1){
-        			this.setCenter(new LatLon((Double)lat.get(0), (Double)lon.get(0)));
-        		}else if(lat.size() > 1){
-        			this.fitToBounds(new LatLon(Collections.max(lat), Collections.max(lon)), new LatLon(Collections.min(lat),Collections.min(lon)));
-        		}else{
-        			dodajPraznuMapu();
-        		}
-        	}else{
-        		dodajPraznuMapu();
-        	}
+    	if(lat.size() > 0 && !lat.isEmpty()){
+    		if(lat.size() == 1){
+    			setCenter(new LatLon((Double)lat.get(0), (Double)lon.get(0)));
+    		}else if(lat.size() > 1){
+    			fitToBounds(new LatLon(Collections.max(lat), Collections.max(lon)), new LatLon(Collections.min(lat),Collections.min(lon)));
+    		}else{
+    			dodajPraznuMapu();
+    		}
     	}else {
-        	if(!lat.isEmpty() && !lon.isEmpty()){
-
-        	}else{
-        		dodajPraznuMapu();
-        	}
+    		dodajPraznuMapu();
     	}
-
     }
     
     /*prazna mapa**/
@@ -193,7 +165,7 @@ public class Gmap extends GoogleMap{
 		String brzina = "брзина: " + javljanjePoslednje.getBrzina() + "км/ч";
 		String oznaka = javljanjePoslednje.getObjekti().getOznaka();
 		//setCaption(String.join("\n", oznaka + " ", brzina + " ", datum[1] + " ", datum[0]));
-		return String.join("\n", oznaka + " ", brzina + " ", datum[1] + " ", datum[0]);
+		return String.join("\n", oznaka + "; ", brzina + "; ", datum[1] + "; ", datum[0]);
 	}
 	
 	public String  podesiCaption(Javljanja javljanjePoslednje) {
@@ -202,8 +174,33 @@ public class Gmap extends GoogleMap{
 		String brzina = "брзина: " + javljanjePoslednje.getBrzina() + "км/ч";
 		String oznaka = javljanjePoslednje.getObjekti().getOznaka();
 		//setCaption(String.join("\n", oznaka + " ", brzina + " ", datum[1] + " ", datum[0]));
-		return String.join("\n", oznaka + " ", brzina + " ", datum[1] + " ", datum[0]);
+		return String.join("\n", oznaka + "; ", brzina + "; ", datum[1] + "; ", datum[0]);
 	}
+	
+	public void prikaziGMarkerPodatke(GoogleMapMarker clickedMarker){
+		try{
+			klikMarker = (GoogleMapMarker) clickedMarker;
+		    if(window != null){
+		    	closeInfoWindow(window);
+		    	//if(isInfoWindowOpen(window))	
+		    	}
+		    VerticalLayout infoSadrzaj = new VerticalLayout();
+		    infoSadrzaj.setMargin(false);
+		    infoSadrzaj.setSpacing(false);
+		    String[] caption = klikMarker.getCaption().split(";");
+		    for(int i = 0; i < caption.length; i++) {
+		    	infoSadrzaj.addComponent(new Label(caption[i]));
+		    }
+
+		    window = new GoogleMapInfoWindow("", (GoogleMapMarker) klikMarker);
+		    setInfoWindowContents(window, infoSadrzaj);				
+		    if (clickedMarker.equals(clickedMarker)) {
+		    	openInfoWindow(window);
+		    	} 
+		    }catch(Exception e){
+	        	System.out.println("marker: " + e.getMessage());
+		    }
+		}
 	
 	public void prikaziMarkerPodatke(GoogleMapMarker clickedMarker){
 		try{

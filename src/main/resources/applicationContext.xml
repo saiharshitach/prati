@@ -92,6 +92,7 @@
                <value>pratiBaza.pomocne.Mail</value>
                <value>pratiBaza.pomocne.Obracuni</value>
                <value>pratiBaza.pomocne.RadnoVremePutGPS</value>
+               <value>pratiBaza.pomocne.StajanjeMirovanje</value>
             </list>
         </property>
     <property name="hibernateProperties">

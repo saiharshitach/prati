@@ -210,7 +210,7 @@ public class NyitechThread implements Runnable{
 	public synchronized void stop(){
 		this.isStopped = true;
     	try{
-			if(!socket.isClosed()){
+			if(socket != null && !socket.isClosed()){
 				input.close();
 				out.close();
 				socket.close();
@@ -246,7 +246,7 @@ public class NyitechThread implements Runnable{
 							javljanje.setSistemAlarmi(server.stajanje);
 							zaustavljeno = true;
 							}else {
-								Servis.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
+								server.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
 								javljanje.setSistemAlarmi(server.stajanje);
 								zaustavljeno = true;
 							}
@@ -261,7 +261,7 @@ public class NyitechThread implements Runnable{
 					if(javljanje.getSistemAlarmi().getSifra().equals("0")) {
 						javljanje.setSistemAlarmi(server.prekoracenjeBrzine);
 					}else {
-						Servis.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
+						server.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
 						javljanje.setSistemAlarmi(server.prekoracenjeBrzine);
 					}
 					if(javljanje.getEventData().equals("0")) {
@@ -291,7 +291,7 @@ public class NyitechThread implements Runnable{
         							javljanje.setEventData(objekatZona.getZone().getNaziv());
         							break;
         						}else {
-        							Servis.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
+        							server.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
         							javljanje.setSistemAlarmi(server.ulazak);
         							javljanje.setEventData(objekatZona.getZone().getNaziv());
         							break;
@@ -308,7 +308,7 @@ public class NyitechThread implements Runnable{
     							javljanje.setSistemAlarmi(server.izlazak);
     							javljanje.setEventData(zonaPoslednja.getNaziv());
     						}else {
-    							Servis.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
+    							server.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
     							javljanje.setSistemAlarmi(server.izlazak);
     							javljanje.setEventData(zonaPoslednja.getNaziv());
     						}
@@ -321,7 +321,7 @@ public class NyitechThread implements Runnable{
 					}
 				}
     		}
-			Servis.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
+			server.izvrsavanje.obradaAlarma(javljanje, alarmiKorisnici);
 		}
 	}
     

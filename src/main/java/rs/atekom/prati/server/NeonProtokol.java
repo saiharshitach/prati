@@ -4,25 +4,23 @@ import java.sql.Timestamp;
 import java.util.Date;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import com.google.maps.GeocodingApi;
-import com.google.maps.model.GeocodingResult;
-import com.google.maps.model.LatLng;
 import pratiBaza.tabele.Javljanja;
 import pratiBaza.tabele.Objekti;
 import pratiBaza.tabele.SistemAlarmi;
 
 
 public class NeonProtokol {
-
-	public NeonProtokol() {
-		
+	private OpstiServer server;
+	
+	public NeonProtokol(OpstiServer srv) {
+		server = srv;
 	}
 	
-	public Javljanja neonObrada(String[] da, String ulaz, Objekti objekat, boolean zaustavljeno, int vreme, Javljanja stop) {
+	public Javljanja neonObrada(String[] da, String ulaz, Objekti objekat) {
 
 		Javljanja javljanje = null;
 		String eventData = "0";
-		String alarm_id = "0";
+		String alarmId = "0";
 		Double longitude = 0.00;
 		Double latitude = 0.00;
 		Integer brzina = 0;
@@ -36,25 +34,23 @@ public class NeonProtokol {
 		Timestamp upis;
 		Date sada;
 		SistemAlarmi alarm;
-		LatLng pozicija;
-		String adresa = "";
 		Timestamp datumVreme = new Timestamp(parseDateTime("010170", "000000").getTime());
 		boolean ispravnoVreme;
 		try{
 			//String[] da = ulaz.split(",");
 			//prvo provera da li je validan ako jeste idemo dalje ako nije ne upisujemo ništa
+			
 			if (da[5].equals("A")) {
-				valid = true;			
-			}
-			if(valid){
+				valid = true;	
+
 				//id vozila 2
 				//vozilo_id = da[2];
 				//alarm id 3
 				if(da[3] != null && !da[3].isEmpty()){
 					if(da[3].equals("1071")){
-						alarm_id = "6022";
+						alarmId = "6022";
 						}else{
-							alarm_id = da[3];
+							alarmId = da[3];
 							}
 					}
 				//validan
@@ -125,55 +121,19 @@ public class NeonProtokol {
 				//Float temp = 0.00f;
 				sada = new Date();
 				upis = new Timestamp(sada.getTime());
-				alarm = Servis.sistemAlarmServis.nadjiAlarmPoSifri(String.valueOf(alarm_id));
-				if(alarm == null || alarm_id.equals("0")){
-					alarm = Servis.sistemAlarmServis.nadjiAlarmPoSifri(String.valueOf(0));
+				alarm = Servis.sistemAlarmServis.nadjiAlarmPoSifri(alarmId);
+				
+				if(alarm == null || alarmId.equals("0")){
+					alarm = server.redovno;
 					}
-				if(!(stop == null) && !zaustavljeno && vreme != 0){
+				
+				/*if((stop != null) && !zaustavljeno && vreme != 0){
 					if((datumVreme.getTime() - stop.getDatumVreme().getTime())/1000 > vreme*60){
-						alarm = Servis.sistemAlarmServis.nadjiAlarmPoSifri("1095");
+						alarm = server.stajanje;
 					}
-				}
+				}**/
 				
 				if(objekat != null){
-					if(!alarm.getSifra().equals("0") && (latitude!=0.00 && longitude!=0.00)){
-						if(alarm.isAdresa()){
-							try {
-								Address adressa = Servis.nominatim.getAdress(latitude, longitude);
-								if(adressa != null){
-									if(!adressa.getHouseNumber().equals(""))
-										adresa = adressa.getHouseNumber() + ", ";
-									if(!adressa.getRoad().equals(""))
-										adresa = adresa + adressa.getRoad() + ", ";
-									if(!adressa.getSuburb().equals(""))
-										adresa = adresa + adressa.getSuburb() + ", ";
-									if(!adressa.getCity().equals(""))
-										adresa = adresa + adressa.getCity() + " ";
-									if(!adressa.getPostcode().equals(""))
-										adresa = adresa + adressa.getPostcode();
-									if(!adressa.getCounty().equals(""))
-										adresa = adresa + ", " + adressa.getCounty() + ", ";
-									if(!adressa.getCountry().equals(""))
-										adresa = adresa + adressa.getCountry();
-									}else{
-										pozicija = new LatLng(latitude, longitude);
-										GeocodingResult[] adresaTrazena= GeocodingApi.reverseGeocode(Servis.gContext, pozicija).await();
-										adresa = adresaTrazena[0].formattedAddress;
-										}
-								if(eventData.equals("0")){
-									eventData = adresa;
-									}else{
-										eventData = eventData + " " + adresa;
-										if(eventData.length() > 250){
-											eventData = adresa;
-											} 
-										}
-								} catch (Exception e) {
-									System.out.println("Problem sa adresama openstreet mape... ");
-									 e.printStackTrace();
-									}
-							}
-						}
 					if(brzina < 200 && ispravnoVreme){
 						javljanje = new Javljanja();
 						javljanje.setValid(valid);
@@ -191,15 +151,15 @@ public class NeonProtokol {
 						javljanje.setIbutton(iButton);
 						javljanje.setKreirano(upis);
 						javljanje.setIzmenjeno(upis);
-					}
+						}
 					return javljanje;
 					}else{
 						return null;
 						}
 				}else{
-				System.out.println("Neispravan GPS podatak - ");
-				return null;
-				}
+					System.out.println("Neispravan GPS podatak - ");
+					return null;
+					}
 			}catch(Exception e){
 				System.out.println("Nije podržan protokol" + " " + e.getMessage());
 				return null;

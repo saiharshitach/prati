@@ -49,8 +49,16 @@ public class IstorijaView extends OpstiPanelView{
 		podaci.setWidth("100%");
 		
 		String slot = "dupli-panel-slot";
-		mapa = new Gmap(Servis.apiGoogle, null, "serbian");
-		mapa.centriraj();
+		String apKey = "";
+		String apiPretplatnik = korisnik.getSistemPretplatnici() == null ? "": korisnik.getSistemPretplatnici().getApiKey();
+		if(!apiPretplatnik.isEmpty() && !apiPretplatnik.equals("") && apiPretplatnik != null) {
+			 apKey = apiPretplatnik;
+		}else {
+			apKey = Servis.apiGoogle;
+		}
+		
+		mapa = new Gmap(apKey, null, "serbian");
+		
 		Component content = buildContent(createContentWraper(mapa, slot, true), createContentWraper(podaci, slot, true));
 		
 		grupeCombo.addValueChangeListener(new ValueChangeListener<Grupe>() {
