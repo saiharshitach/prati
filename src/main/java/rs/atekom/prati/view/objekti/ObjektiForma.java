@@ -91,6 +91,7 @@ public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 						public void onClose(ConfirmDialog dialog) {
 							if(dialog.isConfirmed()) {
 								logika.sacuvajPodatak(sacuvajPodatak(logika.view.dajIzabraniRed()));
+								uredjaji.setItems(uredjaji.lista(pretplatnici.getValue(), organizacije.getValue(), null));
 							}
 						}
 					});
@@ -118,6 +119,7 @@ public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 					public void onClose(ConfirmDialog dialog) {
 						if(dialog.isConfirmed()) {
 							logika.ukloniPodatak();
+							uredjaji.setItems(uredjaji.lista(pretplatnici.getValue(), organizacije.getValue(), null));
 						}
 					}
 				});

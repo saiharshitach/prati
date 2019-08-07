@@ -3,6 +3,7 @@ package rs.atekom.prati.view;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
@@ -71,7 +72,15 @@ public class OpstaForma extends CssLayout{
 		return Date.from(datum.atStartOfDay(ZoneId.systemDefault()).toInstant());
 	}
 	
+	public Date dateTimeDatum(LocalDateTime datumVreme) {
+	    return java.util.Date.from(datumVreme.atZone(ZoneId.systemDefault()).toInstant());
+	}
+	
 	public LocalDate localDatum(Date datum) {
 		return (new Date(datum.getTime())).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	}
+	
+	public LocalDateTime localTimeDatum(Date datum) {
+		return datum.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 	}
 }

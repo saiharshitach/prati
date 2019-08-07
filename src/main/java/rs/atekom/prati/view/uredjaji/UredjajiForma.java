@@ -78,6 +78,8 @@ public class UredjajiForma extends OpstaForma implements OpstaFormaInterface{
 						public void onClose(ConfirmDialog dialog) {
 							if(dialog.isConfirmed()) {
 								logika.sacuvajPodatak(sacuvajPodatak(logika.view.dajIzabraniRed()));
+								sim.setItems(sim.lista(pretplatnici.getValue(), organizacije.getValue(), null));
+								sim2.setItems(sim2.lista(pretplatnici.getValue(), organizacije.getValue(), null));
 							}
 						}
 					});
@@ -105,6 +107,8 @@ public class UredjajiForma extends OpstaForma implements OpstaFormaInterface{
 					public void onClose(ConfirmDialog dialog) {
 						if(dialog.isConfirmed()) {
 							logika.ukloniPodatak();
+							sim.setItems(sim.lista(pretplatnici.getValue(), organizacije.getValue(), null));
+							sim2.setItems(sim2.lista(pretplatnici.getValue(), organizacije.getValue(), null));
 						}
 					}
 				});

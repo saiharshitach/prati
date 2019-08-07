@@ -30,8 +30,15 @@ import pratiBaza.servis.SistemSesijeServis;
 import pratiBaza.servis.SistemUredjajiModeliServis;
 import pratiBaza.servis.SistemUredjajiProizvodjaciServis;
 import pratiBaza.servis.UredjajiServis;
+import pratiBaza.servis.VozaciDozvoleServis;
+import pratiBaza.servis.VozaciLekarskoServis;
+import pratiBaza.servis.VozaciLicnaServis;
+import pratiBaza.servis.VozaciPasosiServis;
+import pratiBaza.servis.VozaciServis;
+import pratiBaza.servis.VozilaNaloziServis;
 import pratiBaza.servis.ObjekatZoneServis;
 import pratiBaza.servis.ZoneServis;
+import pratiBaza.tabele.VozilaNalozi;
 import rs.atekom.prati.ApplicationContextProvider;
 import rs.atekom.prati.server.NominatimReverseGeocodingJAPI;
 
@@ -61,8 +68,18 @@ public class Servis implements ServletContextListener{
 	public static SistemUredjajiModeliServis sistemUredjajModelServis;
 	public static SistemUredjajiProizvodjaciServis sistemUredjajProizvodjacServis;
 	public static UredjajiServis uredjajServis;
+	
+	public static VozaciServis vozacServis;
+	public static VozaciDozvoleServis dozvolaServis;
+	public static VozaciLekarskoServis lekarskoServis;
+	public static VozaciLicnaServis licnaServis;
+	public static VozaciPasosiServis pasosServis;
+	
+	public static VozilaNaloziServis nalogServis;
+	
 	public static ObjekatZoneServis zonaObjekatServis;
 	public static ZoneServis zonaServis;
+	
 	public static String apiGoogle;
 	public static GeoApiContext gContext;
 	public static NominatimClient nClient;
@@ -100,8 +117,15 @@ public class Servis implements ServletContextListener{
 		sistemUredjajModelServis = ApplicationContextProvider.getApplicationContext().getBean("sistemUredjajModelServis", SistemUredjajiModeliServis.class);
 		sistemUredjajProizvodjacServis = ApplicationContextProvider.getApplicationContext().getBean("sistemUredjajProizvodjacServis", SistemUredjajiProizvodjaciServis.class);
 		uredjajServis = ApplicationContextProvider.getApplicationContext().getBean("uredjajServis", UredjajiServis.class);
+		vozacServis = ApplicationContextProvider.getApplicationContext().getBean("vozacServis", VozaciServis.class);
+		dozvolaServis = ApplicationContextProvider.getApplicationContext().getBean("vozacDozvolaServis", VozaciDozvoleServis.class);
+		lekarskoServis = ApplicationContextProvider.getApplicationContext().getBean("vozacLekarskoServis", VozaciLekarskoServis.class);
+		licnaServis = ApplicationContextProvider.getApplicationContext().getBean("vozacLicnaServis", VozaciLicnaServis.class);
+		pasosServis = ApplicationContextProvider.getApplicationContext().getBean("vozacPasosServis", VozaciPasosiServis.class);
+		nalogServis = ApplicationContextProvider.getApplicationContext().getBean("voziloNalogServis", VozilaNaloziServis.class);
 		zonaObjekatServis = ApplicationContextProvider.getApplicationContext().getBean("zonaObjekatServis", ObjekatZoneServis.class);
 		zonaServis = ApplicationContextProvider.getApplicationContext().getBean("zonaServis", ZoneServis.class);
+		
 		apiGoogle = sistemServis.vratiSistem().getApi();
 		gContext = new GeoApiContext().setApiKey(apiGoogle);
 		nClient = new NominatimClient(sistemServis.vratiSistem().getEmailVlasnika(), sistemServis.vratiSistem().getNominatimAdresa());
@@ -112,7 +136,7 @@ public class Servis implements ServletContextListener{
 		try {
 			neon = new OpstiServer(9000, 300);
 			nyitech = new NyitechServer(9010, 10);
-			geneko = new OpstiServer(9030, 20);
+			geneko = new OpstiServer(9030, 30);
 			ruptela = new OpstiServer(9040, 30);
 			
 			neonServer = new Thread(neon);

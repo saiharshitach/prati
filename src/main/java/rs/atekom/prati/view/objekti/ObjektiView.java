@@ -24,7 +24,7 @@ import rs.atekom.prati.view.OpstiViewInterface;
 
 @NavigatorViewName("objekti") // an empty view name will also be the default view
 @MenuCaption("Објекти")
-@MenuIcon(VaadinIcons.CAR)
+@MenuIcon(VaadinIcons.LOCATION_ARROW_CIRCLE)
 public class ObjektiView extends OpstiView implements OpstiViewInterface{
 
 	private static final long serialVersionUID = 1L;

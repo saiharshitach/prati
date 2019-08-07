@@ -2,7 +2,12 @@ package rs.atekom.prati.view.pretplatnici;
 
 import com.vaadin.server.Page;
 import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.CheckBoxGroup;
+
 import pratiBaza.tabele.SistemPretplatnici;
+
+import java.util.ArrayList;
+
 import org.vaadin.dialogs.ConfirmDialog;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -20,6 +25,8 @@ public class PretplatniciForma extends OpstaForma implements OpstaFormaInterface
 	private Tekst naziv, ePosta, api;
 	private CheckBox googleMapa, aktivan, izbrisan;
 	private Datum aktivanDo;
+	private CheckBoxGroup<CheckBox> chb;
+	private ArrayList<CheckBox> niz;
 
 	public PretplatniciForma(PretplatniciLogika log) {
 		logika = log;
@@ -30,6 +37,14 @@ public class PretplatniciForma extends OpstaForma implements OpstaFormaInterface
 		api = new Tekst("апи", false);
 		aktivan = new CheckBox("активан");
 		izbrisan = new CheckBox("избрисан");
+		
+		niz = new ArrayList<CheckBox>();
+		niz.add(googleMapa);
+		niz.add(aktivan);
+		niz.add(izbrisan);
+		chb = new CheckBoxGroup<CheckBox>();
+		chb.setItemCaptionGenerator(item -> item.getCaption());
+		chb.setItems(niz);
 		
 		sacuvaj.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
@@ -78,10 +93,8 @@ public class PretplatniciForma extends OpstaForma implements OpstaFormaInterface
 		layout.addComponent(naziv);
 		layout.addComponent(ePosta);
 		layout.addComponent(aktivanDo);
-		layout.addComponent(googleMapa);
 		layout.addComponent(api);
-		layout.addComponent(aktivan);
-		layout.addComponent(izbrisan);
+		layout.addComponent(chb);
 		
 		layout.addComponentsAndExpand(expander);
 		layout.addComponent(sacuvaj);

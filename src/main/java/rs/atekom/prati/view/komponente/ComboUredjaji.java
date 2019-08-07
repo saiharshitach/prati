@@ -24,7 +24,7 @@ public class ComboUredjaji extends ComboBox<Uredjaji>{
 		setWidth("100%");
 	}
 	
-	private List<Uredjaji> lista(SistemPretplatnici pretplatnik, Organizacije organizacija, Uredjaji uredjaj){
+	public List<Uredjaji> lista(SistemPretplatnici pretplatnik, Organizacije organizacija, Uredjaji uredjaj){
 		return Servis.uredjajServis.nadjiSveAktivneSlobodneUredjajePoPretplatniku(pretplatnik, organizacija, uredjaj);
 	}
 }

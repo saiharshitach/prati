@@ -13,6 +13,8 @@ import com.github.appreciated.app.layout.builder.entities.DefaultNotificationHol
 import static com.github.appreciated.app.layout.builder.Section.HEADER;
 import static com.github.appreciated.app.layout.builder.Section.FOOTER;
 import com.vaadin.icons.VaadinIcons;
+
+import pratiBaza.tabele.VozilaNalozi;
 import rs.atekom.prati.meni.PratiEventBus;
 import rs.atekom.prati.meni.PratiEvent.KorisnikLoggedOutEvent;
 import rs.atekom.prati.view.PracenjeView;
@@ -23,6 +25,7 @@ import rs.atekom.prati.view.grupe.GrupeObjektiView;
 import rs.atekom.prati.view.grupe.GrupeView;
 import rs.atekom.prati.view.istorija.IstorijaView;
 import rs.atekom.prati.view.izvestaji.IzvestajiView;
+import rs.atekom.prati.view.kalendar.KalendarView;
 import rs.atekom.prati.view.korisnici.KorisniciView;
 import rs.atekom.prati.view.objekatZone.ObjekatZoneView;
 import rs.atekom.prati.view.objekti.ObjektiView;
@@ -38,6 +41,12 @@ import rs.atekom.prati.view.sistem.SistemView;
 import rs.atekom.prati.view.sistemSesije.SistemSesijeView;
 import rs.atekom.prati.view.uredjaji.UredjajiView;
 import rs.atekom.prati.view.uredjajiModeli.UredjajiModeliView;
+import rs.atekom.prati.view.vozaci.VozaciView;
+import rs.atekom.prati.view.vozaci.dozvole.VozaciDozvoleView;
+import rs.atekom.prati.view.vozaci.lekarsko.VozaciLekarskoView;
+import rs.atekom.prati.view.vozaci.licna.VozaciLicnaView;
+import rs.atekom.prati.view.vozaci.pasosi.VozaciPasosiView;
+import rs.atekom.prati.view.vozilo.nalozi.VozilaNaloziView;
 import rs.atekom.prati.view.zone.ZoneView;
 
 public class PratiMeniKorisnik{
@@ -88,24 +97,36 @@ public class PratiMeniKorisnik{
         //.add(SubmenuBuilder.get("Извештаји", VaadinIcons.BAR_CHART)
         		//.add(NivoGorivaView.class)
         		//.build())
-        .add(SubmenuBuilder.get("Подаци", VaadinIcons.COG)
+        .add(SubmenuBuilder.get("Објекти", VaadinIcons.LOCATION_ARROW_CIRCLE)
         		.add(GrupeView.class)
         		.add(GrupeObjektiView.class)
-                .add(ZoneView.class)
-        		.add(KorisniciView.class)
-                .add(ObjektiView.class)
+        		.add(ObjektiView.class)
                 .add(ObjekatZoneView.class)
-                .add(ObjektiDetaljiView.class)
-                .add(OrganizacijeView.class)
-                .add(RutaView.class)
                 .add(SimView.class)
-                .add(SistemSesijeView.class)
                 .add(UredjajiView.class)
                 .build())
+        .add(SubmenuBuilder.get("Организација", VaadinIcons.COG)
+        		.add(KorisniciView.class)
+                .add(OrganizacijeView.class)
+                .add(RutaView.class)
+                .add(SistemSesijeView.class)
+                .add(ZoneView.class)
+                .build())
+        .add(SubmenuBuilder.get("Возила", VaadinIcons.CAR)
+        		.add(ObjektiDetaljiView.class)
+        		.add(KalendarView.class)
+        		.add(VozilaNaloziView.class)
+        		.build())
+        .add(SubmenuBuilder.get("Возачи", VaadinIcons.USER_CHECK)
+        		.add(VozaciView.class)
+        		.add(VozaciDozvoleView.class)
+        		.add(VozaciLekarskoView.class)
+        		.add(VozaciLicnaView.class)
+        		.add(VozaciPasosiView.class)
+        		.build())
         //.add(View6.class)
         .addClickable("Одјава", VaadinIcons.SIGN_OUT, clickEvent -> PratiEventBus.post(new KorisnikLoggedOutEvent()), FOOTER)
         .build();
-	
 	}
 	
 	//sistem
@@ -124,20 +145,33 @@ public class PratiMeniKorisnik{
 		        //.add(SubmenuBuilder.get("Извештаји", VaadinIcons.BAR_CHART)
 		        		//.add(NivoGorivaView.class)
 		        		//.build())
-		        .add(SubmenuBuilder.get("Подаци", VaadinIcons.COG)
+		        .add(SubmenuBuilder.get("Објекти", VaadinIcons.LOCATION_ARROW_CIRCLE)
 		        		.add(GrupeView.class)
 		        		.add(GrupeObjektiView.class)
-		                .add(ZoneView.class)
-		        		.add(KorisniciView.class)
-		                .add(ObjektiView.class)
+		        		.add(ObjektiView.class)
 		                .add(ObjekatZoneView.class)
-		                .add(ObjektiDetaljiView.class)
-		                .add(OrganizacijeView.class)
-		                .add(RutaView.class)
 		                .add(SimView.class)
-		                .add(SistemSesijeView.class)
 		                .add(UredjajiView.class)
 		                .build())
+		        .add(SubmenuBuilder.get("Организација", VaadinIcons.COG)
+		        		.add(KorisniciView.class)
+		                .add(OrganizacijeView.class)
+		                .add(RutaView.class)
+		                .add(SistemSesijeView.class)
+		                .add(ZoneView.class)
+		                .build())
+		        .add(SubmenuBuilder.get("Возила", VaadinIcons.CAR)
+		        		.add(ObjektiDetaljiView.class)
+		        		.add(KalendarView.class)
+		        		.add(VozilaNaloziView.class)
+		        		.build())
+                .add(SubmenuBuilder.get("Возачи", VaadinIcons.USER_CHECK)
+                		.add(VozaciView.class)
+                		.add(VozaciDozvoleView.class)
+                		.add(VozaciLekarskoView.class)
+                		.add(VozaciLicnaView.class)
+                		.add(VozaciPasosiView.class)
+                		.build())
 		        .add(SubmenuBuilder.get("Систем", VaadinIcons.DOCTOR)
 		        		.add(AlarmiView.class)
 		        		.add(GorivoView.class)

@@ -1,19 +1,19 @@
-package rs.atekom.prati.view.objektiDetalji;
+package rs.atekom.prati.view.vozaci.lekarsko;
 
 import com.vaadin.server.Page;
-
-import pratiBaza.tabele.ObjektiDetalji;
+import pratiBaza.tabele.VozaciLekarsko;
 import rs.atekom.prati.Prati;
 import rs.atekom.prati.server.Servis;
 import rs.atekom.prati.view.LogikaInterface;
 
-public class ObjektiDetaljiLogika implements LogikaInterface{
+public class VozaciLekarskoLogika implements LogikaInterface{
 
-	public ObjektiDetaljiView view;
-
-	public ObjektiDetaljiLogika(ObjektiDetaljiView objektDetaljView) {
-		view = objektDetaljView;
+	public VozaciLekarskoView view;
+	
+	public VozaciLekarskoLogika(VozaciLekarskoView vozaciLekarskoView) {
+		view = vozaciLekarskoView;
 	}
+
 	@Override
 	public void init() {
 		izmeniPodatak(null);
@@ -48,33 +48,29 @@ public class ObjektiDetaljiLogika implements LogikaInterface{
 		}else {
 			try {
 				int id = Integer.parseInt(objectId);
-				ObjektiDetalji objektDetalj = Servis.objekatDetaljiServis.nadjiObjektiDetaljiPoId(id);
-				view.izaberiRed(objektDetalj);
+				VozaciLekarsko lekarsko = Servis.lekarskoServis.nadjiVozacLekarskoPoId(id);
+				view.izaberiRed(lekarsko);
 			}catch (Exception e) {
-				// TODO: handle exception
+				
 			}
 		}
 	}
 
 	@Override
 	public void sacuvajPodatak(Object podatak) {
-		ObjektiDetalji objekatDetalj = (ObjektiDetalji)podatak;
+		VozaciLekarsko lekarsko = (VozaciLekarsko)podatak;
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
 		setFragmentParametar("");
-		if(objekatDetalj.getId() != null) {
-			Servis.objekatDetaljiServis.azurirajObjektiDetalji(objekatDetalj);
-			view.pokaziPorukuUspesno("детаљи објекта измењени");
+		if(lekarsko.getId() != null) {
+			Servis.lekarskoServis.izmeniVozacLekarsko(lekarsko);
+			view.pokaziPorukuUspesno("подаци за лекарско уверење измењени");
 		}else {
 			try {
-				if(Servis.objekatDetaljiServis.nadjiObjekatDetaljePoObjektu(objekatDetalj.getObjekti()) == null) {
-					Servis.objekatDetaljiServis.unesiObjektiDetalji(objekatDetalj);
-					view.pokaziPorukuUspesno("детаљи објекта сачувани");
-				}else {
-					view.pokaziPorukuGreska("детаљи за изабрани објекат су већ унети!");
-				}
+				Servis.lekarskoServis.unesiVozacLekarsko(lekarsko);
+				view.pokaziPorukuUspesno("подаци за лекарско уверење сачувани");
 			}catch (Exception e) {
-				view.pokaziPorukuGreska("детаљи објекта због грешке нису сачувани!");
+				view.pokaziPorukuGreska("грешка, контактирајте администратора");
 			}
 		}
 		view.updateTable();
@@ -82,20 +78,20 @@ public class ObjektiDetaljiLogika implements LogikaInterface{
 
 	@Override
 	public void izmeniPodatak(Object podatak) {
-		ObjektiDetalji objekatDetalj = (ObjektiDetalji)podatak;
-		if(objekatDetalj == null) {
+		VozaciLekarsko lekarsko = (VozaciLekarsko)podatak;
+		if(lekarsko == null) {
 			setFragmentParametar("");
 		}else {
-			setFragmentParametar(objekatDetalj.getId() + "");
+			setFragmentParametar(lekarsko.getId() + "");
 		}
-		view.izmeniPodatak(objekatDetalj);
+		view.izmeniPodatak(lekarsko);
 	}
 
 	@Override
 	public void noviPodatak() {
 		view.ocistiIzbor();
 		setFragmentParametar("new");
-		view.izmeniPodatak(new ObjektiDetalji());
+		view.izmeniPodatak(new VozaciLekarsko());
 	}
 
 	@Override
@@ -109,7 +105,6 @@ public class ObjektiDetaljiLogika implements LogikaInterface{
 
 	@Override
 	public void redIzabran(Object podatak) {
-		view.izmeniPodatak((ObjektiDetalji)podatak);
+		view.izmeniPodatak((VozaciLekarsko)podatak);
 	}
-	
 }

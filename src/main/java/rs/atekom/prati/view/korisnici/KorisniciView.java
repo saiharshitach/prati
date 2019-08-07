@@ -101,7 +101,7 @@ public class KorisniciView extends OpstiView implements OpstiViewInterface{
 		tabela.addColumn(Korisnici::getMobilni).setCaption("мобилни");
 		tabela.addColumn(Korisnici::getIbutton).setCaption("и-дугме");
 		tabela.addColumn(korisnici -> korisnici.getOrganizacija() == null ? "" : korisnici.getOrganizacija().getNaziv()).setCaption("организација");
-		if(this.isAdmin()) {
+		if(isAdmin()) {
 			tabela.addComponentColumn(korisnici -> {CheckBox chb = new CheckBox(); if(korisnici.isSistem()) {chb.setValue(true);} return chb;}).setCaption("систем").setStyleGenerator(korisnici -> "v-align-right");
 			tabela.addComponentColumn(korisnici -> {CheckBox chb = new CheckBox(); if(korisnici.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(korisnici -> "v-align-right");
 		}

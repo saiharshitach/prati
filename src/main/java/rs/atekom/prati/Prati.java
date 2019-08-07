@@ -4,7 +4,6 @@ import java.io.File;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -177,6 +176,11 @@ public class Prati extends UI implements BroadcastListener{
 				prijavi = false;
 				}
 			//ubaciti kontrolu za vreme korisnika ako je podešeno
+			Date datum = new Date();
+			if(korisnik.getAktivanDo() != null && datum.after(korisnik.getAktivanDo())) {
+				prijavi = false;
+			}
+			
 			if(korisnik.getSistemPretplatnici() != null) {
 				if(korisnik.getSistemPretplatnici().isIzbrisan()) {
 					prijavi = false;
@@ -184,7 +188,12 @@ public class Prati extends UI implements BroadcastListener{
 				if(!korisnik.getSistemPretplatnici().isAktivan()) {
 					prijavi = false;
 					}
-				}//ubaciti kontrolu za vreme za pretplatnika ako je podešeno
+				}
+			//ubaciti kontrolu za vreme za pretplatnika ako je podešeno
+			if(korisnik.getSistemPretplatnici() != null && korisnik.getSistemPretplatnici().getAktivanDo() != null && datum.after(korisnik.getSistemPretplatnici().getAktivanDo())) {
+				prijavi = false;
+			}
+			
 			if(korisnik.getOrganizacija() != null) {
 				if(korisnik.getOrganizacija().isIzbrisan()) {
 					prijavi = false;
@@ -194,23 +203,31 @@ public class Prati extends UI implements BroadcastListener{
 					}
 				}
 			}
+		
 		if(prijavi) {
+			sesija = new SistemSesije();
+
 			VaadinSession.getCurrent().setAttribute(Korisnici.class.getName(), korisnik);
 			Prati.sesija.setDatumPocetak(new Timestamp((new Date()).getTime()));
 			Prati.sesija.setSistemPretplatnici(korisnik.getSistemPretplatnici());
 			Prati.sesija.setOrganizacija(korisnik.getOrganizacija());
 			Prati.sesija.setKorisnici(korisnik);
-			Servis.sistemSesijaServis.izmeniSesiju(sesija);
+			
+			ip = getClientIpAddr(request);
+			sesija.setIpAdresa(ip);
+			Servis.sistemSesijaServis.unesiSesiju(sesija);
+			//Servis.sistemSesijaServis.izmeniSesiju(sesija);
+			
 			if(korisnik.isAdmin()) {
 				sviObjekti = Servis.objekatServis.vratiSveObjekte(korisnik, true);
 			}else {
 				ArrayList<Grupe> grupe = Servis.grupeKorisnikServis.vratiSveGrupePoKorisniku(korisnik);
 				sviObjekti = Servis.grupeObjekatServis.nadjiSveObjektePoGrupama(grupe);
 			}
-			
 		}else {
 			showNotification(new Notification("Пријава није успела, покушајте поново или контактирајте администратора!", Notification.Type.HUMANIZED_MESSAGE));
 		}
+		
 		updateContent();
 	}
 	
@@ -255,13 +272,13 @@ public class Prati extends UI implements BroadcastListener{
 		@Override
 		public void sessionInit(SessionInitEvent event) throws ServiceException {
 			//System.out.println("sesija počela...");
-			sesija = new SistemSesije();
+			/*sesija = new SistemSesije();
 			//ip = VaadinService.getCurrentRequest().getHeader("x-forwarded-for");
 			//ip = getClientIp(request);
 			ip = getClientIpAddr(request);
 			sesija.setIpAdresa(ip);
 			//sesija.setIpAdresa(Prati.getCurrent().getSession().getBrowser().getAddress());
-			Servis.sistemSesijaServis.unesiSesiju(sesija);
+			Servis.sistemSesijaServis.unesiSesiju(sesija);**/
 		}
 
 		@Override
@@ -272,7 +289,7 @@ public class Prati extends UI implements BroadcastListener{
 		}
     }
     
-	private static String getClientIp(HttpServletRequest request) {
+	/*private static String getClientIp(HttpServletRequest request) {
         String remoteAddr = "";
         if (request != null) {
             remoteAddr = request.getHeader("X-FORWARDED-FOR");
@@ -297,7 +314,7 @@ public class Prati extends UI implements BroadcastListener{
 		    }
 	    }
 	    return new StringTokenizer(xForwardedForHeader, ",").nextToken().trim();
-	}
+	}**/
 	
 	private static String getClientIpAddr(HttpServletRequest request) {  
 	    String ip = request.getHeader("X-Forwarded-For");  

@@ -50,7 +50,7 @@ public class ObjektiDetaljiForma extends OpstaForma implements OpstaFormaInterfa
 		gorivo = new ComboGorivo("гориво", true, false);
 		rezervoar = new Celobrojni("резервоар", false);
 		potrosnja = new Decimalni("просечна потрошња", false);
-		teretno = new CheckBox("возило");
+		teretno = new CheckBox("теретно");
 		brojSaobracajne = new Tekst("број саобраћајне", false);
 		serijskiBroj = new Tekst("серијски број",false);
 		datumPrveRegistracije = new Datum("датум прве регистрације", false);

@@ -25,7 +25,7 @@ import rs.atekom.prati.view.OpstiView;
 import rs.atekom.prati.view.OpstiViewInterface;
 
 @NavigatorViewName("objektiDetalji") // an empty view name will also be the default view
-@MenuCaption("Објекти детаљи")
+@MenuCaption("Возила")
 @MenuIcon(VaadinIcons.DASHBOARD)
 public class ObjektiDetaljiView extends OpstiView implements OpstiViewInterface{
 

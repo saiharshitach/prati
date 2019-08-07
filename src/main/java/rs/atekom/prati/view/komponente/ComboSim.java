@@ -21,7 +21,7 @@ public class ComboSim extends ComboBox<Sim>{
 		setWidth("100%");
 	}
 	
-	private List<Sim> lista(SistemPretplatnici pretplatnici, Organizacije organizacija, Sim sim){
+	public List<Sim> lista(SistemPretplatnici pretplatnici, Organizacije organizacija, Sim sim){
 		return Servis.simServis.vratiSveAktivneSimKartice(pretplatnici, organizacija, sim);
 	}
 }
