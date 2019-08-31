@@ -75,7 +75,7 @@ public class Prati extends UI implements BroadcastListener{
 	public static final String DANSATFORMAT = "%1$td/%1$tm/%1$tY %1$tH:%1$tM:%1$tS";
     public static String basepath;
     public Resource zvuk;
-    private static Audio upozorenje = new Audio();
+    private Audio upozorenje;
 	public SistemPretplatnici pretplatnik;
 	public Organizacije organizacija;
 	public Grupe grupa;
@@ -128,7 +128,12 @@ public class Prati extends UI implements BroadcastListener{
 		javljanjaAlarmi.addColumn(Javljanja::getEventData).setCaption("опис");
 		
 		updateContent();
-		basepath = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath() + "/WEB-INF/sound/";
+		basepath = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
+		zvuk = new FileResource(new File(basepath + "/WEB-INF/sound/sirena.mp3"));
+		upozorenje = new Audio(null, zvuk);
+		upozorenje.setAutoplay(false);
+		upozorenje.setShowControls(false);
+		//upozorenje.setSource(zvuk);
 		Broadcaster.register(this);
     }
 	
@@ -413,7 +418,7 @@ public class Prati extends UI implements BroadcastListener{
 							}
 						}
 					
-						if(message.getSistemAlarmi() != null && message.getSistemAlarmi().isAlarmiranje()) {
+						if(message.getSistemAlarmi() != null && message.getSistemAlarmi().isAktivan() && message.getSistemAlarmi().isAlarmiranje()) {
 							pokreniAlarm(message);
 						}
 					}
@@ -468,8 +473,7 @@ public class Prati extends UI implements BroadcastListener{
         obavestenje.setPosition(Position.TOP_RIGHT);
         obavestenje.show(Prati.getCurrent().getPage());
 		//Pracenje.getCurrent().upozorenje.play();
-        zvuk = new FileResource(new File(basepath + "sirena.mp3"));
-        upozorenje.setSource(zvuk);
+
         upozorenje.play();
 	}
 }

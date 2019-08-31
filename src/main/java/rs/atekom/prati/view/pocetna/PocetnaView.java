@@ -60,15 +60,19 @@ public class PocetnaView extends OpstiPanelView{
 		paneli = new CssLayout();
 		paneli.addStyleName("dashboard-panels");
 		Responsive.makeResponsive(paneli);
-		
-		if(buildBrzine() != null) {
-			paneli.addComponent(buildBrzine());
+		/*
+		Component brzina = buildBrzine();
+		if(brzina != null) {
+			paneli.addComponent(brzina);
 		}
-		if(buildKilometri() != null) {
-			paneli.addComponent(buildKilometri());
+		Component km = buildKilometri();
+		if(km != null) {
+			paneli.addComponent(km);
 		}
-		if(buildAlarmi() != null) {
-			paneli.addComponent(buildAlarmi());
+		**/
+		Component alarmi = buildAlarmi();
+		if(alarmi != null) {
+			paneli.addComponent(alarmi);
 		}
 		
 		return paneli;
@@ -93,7 +97,6 @@ public class PocetnaView extends OpstiPanelView{
 		}else {
 			return null;
 		}
-	    
 	}
 	
 	private Component buildBrzine() {
@@ -105,7 +108,6 @@ public class PocetnaView extends OpstiPanelView{
 		}else {
 			return null;
 		}
-
 	}
 	
 	private Component buildKilometri() {

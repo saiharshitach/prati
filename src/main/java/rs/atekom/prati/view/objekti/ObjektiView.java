@@ -178,7 +178,8 @@ public class ObjektiView extends OpstiView implements OpstiViewInterface{
 						(t.getUredjaji() == null ? "" : t.getUredjaji().getKod()).toLowerCase().contains(filter.getValue().toLowerCase()) ||
 						(t.getUredjaji() == null ? "" : t.getUredjaji().getSerijskiBr()).toLowerCase().contains(filter.getValue().toLowerCase()) ||
 						(t.getUredjaji() == null ? "" : (t.getUredjaji().getSim() == null ? "" : t.getUredjaji().getSim().getBroj())).toLowerCase().contains(filter.getValue().toLowerCase()) ||
-						(t.getUredjaji() == null ? "" : (t.getUredjaji().getSim() == null ? "" : t.getUredjaji().getSim().getIccid())).toLowerCase().contains(filter.getValue().toLowerCase()));
+						(t.getUredjaji() == null ? "" : (t.getUredjaji().getSim() == null ? "" : t.getUredjaji().getSim().getIccid())).toLowerCase().contains(filter.getValue().toLowerCase()) ||
+						(t.getUredjaji() == null ? "" : (t.getUredjaji().getSistemUredjajiModeli() == null ? "" : t.getUredjaji().getSistemUredjajiModeli().getNaziv())).toLowerCase().contains(filter.getValue().toLowerCase()));
 			}
 		};
 		filter.addValueChangeListener(e -> {osveziFilter();});

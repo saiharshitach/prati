@@ -160,7 +160,7 @@ public class OpstiServer implements Runnable{
     	}
     
     public void postaviAlarmStajanje(Javljanja javljanje) {
-    	if(stajanje != null) {
+    	if(stajanje != null && stajanje.isAktivan()) {
         	javljanje.setSistemAlarmi(stajanje);
     	}else {
     		if(redovno != null) {
@@ -170,7 +170,7 @@ public class OpstiServer implements Runnable{
     }
     
     public void postaviAlarmPrekoracenjeBrzine(Javljanja javljanje) {
-    	if(prekoracenjeBrzine != null) {
+    	if(prekoracenjeBrzine != null && prekoracenjeBrzine.isAktivan()) {
         	javljanje.setSistemAlarmi(prekoracenjeBrzine);
     	}else {
     		if(redovno != null) {
@@ -180,7 +180,7 @@ public class OpstiServer implements Runnable{
     }
     
     public void postaviAlarmIstakanje(Javljanja javljanje) {
-    	if(istakanje != null) {
+    	if(istakanje != null && istakanje.isAktivan()) {
         	javljanje.setSistemAlarmi(istakanje);
     	}else {
     		if(redovno != null) {
@@ -190,7 +190,7 @@ public class OpstiServer implements Runnable{
     }
     
     public void postaviAlarmIzlazakIzZone(Javljanja javljanje) {
-    	if(izlazak != null) {
+    	if(izlazak != null && izlazak.isAktivan()) {
         	javljanje.setSistemAlarmi(izlazak);
     	}else {
     		if(redovno != null) {
@@ -199,7 +199,7 @@ public class OpstiServer implements Runnable{
     	}
     }
     public void postaviAlarmUlazakUZonu(Javljanja javljanje) {
-    	if(ulazak != null) {
+    	if(ulazak != null && ulazak.isAktivan()) {
         	javljanje.setSistemAlarmi(ulazak);
     	}else {
     		if(redovno != null) {

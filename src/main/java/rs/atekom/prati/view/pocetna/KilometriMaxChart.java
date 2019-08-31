@@ -2,7 +2,6 @@ package rs.atekom.prati.view.pocetna;
 
 import java.awt.Color;
 import java.util.ArrayList;
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.AxisLocation;
@@ -16,7 +15,6 @@ import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
-
 import pratiBaza.pomocne.PredjeniPut;
 
 
@@ -76,12 +74,12 @@ public class KilometriMaxChart {
 		final String gps = "ГПС";
         final String obd = "ОБД";
         try{
-            	final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-                for(PredjeniPut put: predjeniPut){
-                	dataset.addValue(put.getVirtualOdo(), gps, put.getObjekatNaziv());
-                	dataset.addValue(put.getUkupnoKm(), obd, put.getObjekatNaziv());
-                }
-                return dataset;
+        	final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        	for(PredjeniPut put: predjeniPut){
+        		dataset.addValue(put.getVirtualOdo(), gps, put.getObjekatNaziv());
+        		dataset.addValue(put.getUkupnoKm(), obd, put.getObjekatNaziv());
+        		}
+        	return dataset;
         	}catch(Exception e){
             	System.out.println("problem " + e);
             	return null;

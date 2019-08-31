@@ -22,11 +22,14 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.themes.ValoTheme;
 import pratiBaza.pomocne.IzvestajTip;
 import pratiBaza.tabele.Grupe;
+import pratiBaza.tabele.Javljanja;
+import pratiBaza.tabele.Obd;
 import pratiBaza.tabele.Objekti;
 import pratiBaza.tabele.SistemAlarmi;
 import rs.atekom.prati.server.Servis;
 import rs.atekom.prati.view.OpstiPanelView;
 import rs.atekom.prati.view.izvestaji.nivoGoriva.NivoGorivaLayout;
+import rs.atekom.prati.view.izvestaji.nivoGoriva.PregledNoviGoriva;
 import rs.atekom.prati.view.komponente.ComboIzvestaji;
 import rs.atekom.prati.view.komponente.ComboObjekti;
 import rs.atekom.prati.view.komponente.DatumVreme;
@@ -60,7 +63,7 @@ public class IzvestajiView extends OpstiPanelView{
 		izvestajiCombo = new ComboIzvestaji();
 		topLayout.addComponent(izvestajiCombo);
 
-        objektiCombo = new ComboObjekti(korisnik, null, true, false);
+        objektiCombo = new ComboObjekti(null, null, true, false);
         prikazi = new Button();
         prikazi.setIcon(VaadinIcons.CHECK);
         
@@ -126,6 +129,8 @@ public class IzvestajiView extends OpstiPanelView{
 				break;
 			case 4: postaviParametreNivoGoriva();
 			    break;
+			case 5: postaviParametreStajanje();;
+		        break;
 			default:
 				break;
 			}
@@ -229,6 +234,46 @@ public class IzvestajiView extends OpstiPanelView{
 		dodajParametreDatum(false);
 	}
 	
+	private void postaviParametreStajanje() {
+		vremeOd = new DatumVreme(false, "", 0, 0, 0);
+        vremeDo = new DatumVreme(false, "", 0, 0, 1);
+        vremeOd.addValueChangeListener(vremePromena);
+        vremeDo.addValueChangeListener(vremePromena);
+        
+		prikazi.addClickListener(new ClickListener() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void buttonClick(ClickEvent event) {
+				ArrayList<Objekti> objekti = new ArrayList<Objekti>();
+				if(preuzimanje != null) {
+					topLayout.removeComponent(preuzimanje);
+					preuzimanje = null;
+				}
+				if(vremeOd.getValue() != null && vremeDo.getValue() != null && 
+						((Timestamp.valueOf(vremeDo.getValue()).getTime() - Timestamp.valueOf(vremeOd.getValue()).getTime())/1000 < 32*86400)) {
+					if(grupeCombo.getValue() == null && objektiCombo.getValue() == null) {
+						pokaziPorukuGreska("морате одабрати групу или објекат!");
+					}else {//ako ima ili objekat ili grupaObjekata
+						if(objektiCombo.getValue() == null) {
+							objekti = Servis.grupeObjekatServis.nadjiSveObjektePoGrupi(grupeCombo.getValue());
+							}else {
+								objekti.add(objektiCombo.getValue());
+							}
+						StajanjeLayout stajanje = new StajanjeLayout(objekti, Timestamp.valueOf(vremeOd.getValue()), Timestamp.valueOf(vremeDo.getValue()), 60);
+						preuzimanje = stajanje.vratiPreuzimanje();
+						topLayout.addComponent(preuzimanje);
+						podaci.setContent(stajanje);
+						dodajPodatke();
+					}
+				}else {
+					pokaziPorukuGreska("морате одабрати време у оба поља и период може бити највише 31 дан!");
+				}
+			}
+		});
+        
+		dodajParametreDatum(false);
+	}
+	
 	private void postaviParametreRadnoVremeGPS() {
 		vremeOd = new DatumVreme(false, "", 0, 0, 0);
         vremeDo = new DatumVreme(false, "", 0, 0, 1);
@@ -285,7 +330,10 @@ public class IzvestajiView extends OpstiPanelView{
 						NivoGorivaLayout gorivo = new NivoGorivaLayout(objektiCombo.getValue(), Timestamp.valueOf(vremeOd.getValue()), Timestamp.valueOf(vremeDo.getValue()));
 						preuzimanje = gorivo.vratiPreuzimanje();
 						topLayout.addComponent(preuzimanje);
-						podaci.setContent(gorivo);
+						ArrayList<Javljanja> javljanja = Servis.javljanjeServis.vratiJavljanjaObjektaOdDo(objektiCombo.getValue(), Timestamp.valueOf(vremeOd.getValue()), Timestamp.valueOf(vremeDo.getValue()));
+						ArrayList<Obd> obd = Servis.obdServis.nadjiObdPoObjektuOdDo(objektiCombo.getValue(), Timestamp.valueOf(vremeOd.getValue()), Timestamp.valueOf(vremeDo.getValue()));
+						PregledNoviGoriva nivoGoriva = new PregledNoviGoriva(javljanja, obd);
+						podaci.setContent(nivoGoriva);
 						dodajPodatke();
 					}else {
 						pokaziPorukuGreska("морате изабрати објекат!");
@@ -310,6 +358,7 @@ public class IzvestajiView extends OpstiPanelView{
 			vremeDo.clear();
 		grupeCombo.clear();
 		objektiCombo.clear();
+		objektiCombo.setItems(new ArrayList<Objekti>());
 		if(preuzimanje != null) {
 			topLayout.removeComponent(preuzimanje);
 			preuzimanje = null;

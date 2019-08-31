@@ -41,7 +41,6 @@ public class VozilaNaloziView extends OpstiView implements OpstiViewInterface{
 	public VozilaNaloziView() {
 		viewLogika = new VozilaNaloziLogika(this);
 		forma = new VozilaNaloziForma(viewLogika);
-		
 		forma.setEnabled(false);
 		
 		buildToolbar();
@@ -99,7 +98,7 @@ public class VozilaNaloziView extends OpstiView implements OpstiViewInterface{
 		tabela.addColumn(VozilaNalozi::getKomentar).setCaption("коментар");
 		tabela.addColumn(voziloNalog -> voziloNalog.getOrganizacija() == null ? "" : voziloNalog.getOrganizacija().getNaziv()).setCaption("организација");
 		if(isAdmin()) {
-			tabela.addComponentColumn(vozaciDozvola -> {CheckBox chb = new CheckBox(); if(vozaciDozvola.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(vozaci -> "v-align-right");
+			tabela.addComponentColumn(voziloNalog -> {CheckBox chb = new CheckBox(); if(voziloNalog.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(vozaci -> "v-align-right");
 		}
 		tabela.addColumn(VozilaNalozi::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(objekti -> "v-align-right");
 		tabela.addColumn(VozilaNalozi::getKreirano, new DateRenderer(DANSATFORMAT)).setCaption("креирано").setStyleGenerator(objekti -> "v-align-right");

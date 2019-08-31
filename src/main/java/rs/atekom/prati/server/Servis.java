@@ -32,13 +32,16 @@ import pratiBaza.servis.SistemUredjajiProizvodjaciServis;
 import pratiBaza.servis.UredjajiServis;
 import pratiBaza.servis.VozaciDozvoleServis;
 import pratiBaza.servis.VozaciLekarskoServis;
+import pratiBaza.servis.VozaciLicenceServis;
 import pratiBaza.servis.VozaciLicnaServis;
 import pratiBaza.servis.VozaciPasosiServis;
 import pratiBaza.servis.VozaciServis;
 import pratiBaza.servis.VozilaNaloziServis;
+import pratiBaza.servis.VozilaOpremaPrijemServis;
+import pratiBaza.servis.VozilaOpremaServis;
+import pratiBaza.servis.VozilaPrimoPredajeServis;
 import pratiBaza.servis.ObjekatZoneServis;
 import pratiBaza.servis.ZoneServis;
-import pratiBaza.tabele.VozilaNalozi;
 import rs.atekom.prati.ApplicationContextProvider;
 import rs.atekom.prati.server.NominatimReverseGeocodingJAPI;
 
@@ -72,10 +75,14 @@ public class Servis implements ServletContextListener{
 	public static VozaciServis vozacServis;
 	public static VozaciDozvoleServis dozvolaServis;
 	public static VozaciLekarskoServis lekarskoServis;
+	public static VozaciLicenceServis licencaServis;
 	public static VozaciLicnaServis licnaServis;
 	public static VozaciPasosiServis pasosServis;
 	
 	public static VozilaNaloziServis nalogServis;
+	public static VozilaOpremaServis opremaServis;
+	public static VozilaOpremaPrijemServis opremaPrijemServis;
+	public static VozilaPrimoPredajeServis primoPredajaServis;
 	
 	public static ObjekatZoneServis zonaObjekatServis;
 	public static ZoneServis zonaServis;
@@ -117,12 +124,19 @@ public class Servis implements ServletContextListener{
 		sistemUredjajModelServis = ApplicationContextProvider.getApplicationContext().getBean("sistemUredjajModelServis", SistemUredjajiModeliServis.class);
 		sistemUredjajProizvodjacServis = ApplicationContextProvider.getApplicationContext().getBean("sistemUredjajProizvodjacServis", SistemUredjajiProizvodjaciServis.class);
 		uredjajServis = ApplicationContextProvider.getApplicationContext().getBean("uredjajServis", UredjajiServis.class);
+		
 		vozacServis = ApplicationContextProvider.getApplicationContext().getBean("vozacServis", VozaciServis.class);
 		dozvolaServis = ApplicationContextProvider.getApplicationContext().getBean("vozacDozvolaServis", VozaciDozvoleServis.class);
 		lekarskoServis = ApplicationContextProvider.getApplicationContext().getBean("vozacLekarskoServis", VozaciLekarskoServis.class);
+		licencaServis = ApplicationContextProvider.getApplicationContext().getBean("vozacLicencaServis", VozaciLicenceServis.class);
 		licnaServis = ApplicationContextProvider.getApplicationContext().getBean("vozacLicnaServis", VozaciLicnaServis.class);
 		pasosServis = ApplicationContextProvider.getApplicationContext().getBean("vozacPasosServis", VozaciPasosiServis.class);
+		
 		nalogServis = ApplicationContextProvider.getApplicationContext().getBean("voziloNalogServis", VozilaNaloziServis.class);
+		opremaServis = ApplicationContextProvider.getApplicationContext().getBean("voziloOpremaServis", VozilaOpremaServis.class);
+		opremaPrijemServis = ApplicationContextProvider.getApplicationContext().getBean("voziloOpremaPrijemServis", VozilaOpremaPrijemServis.class);
+		primoPredajaServis = ApplicationContextProvider.getApplicationContext().getBean("voziloPrimoPredajaServis", VozilaPrimoPredajeServis.class);
+		
 		zonaObjekatServis = ApplicationContextProvider.getApplicationContext().getBean("zonaObjekatServis", ObjekatZoneServis.class);
 		zonaServis = ApplicationContextProvider.getApplicationContext().getBean("zonaServis", ZoneServis.class);
 		

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -190,29 +191,48 @@ public class OpstiThread implements Runnable{
 			
     		//alarm gorivo
 			test = " gorivo ";
-    		if(obdTrenutni != null && mladje) {
-    			if(obdStop != null) {
-    				if(!gorivo) {
-    					if(obdTrenutni.getNivoGoriva() - obdStop.getNivoGoriva() > 1 && brojIspodNivoa > 10) {
-    						if(javljanjeTrenutno.getSistemAlarmi().getSifra().equals("0")) {
-    							server.postaviAlarmIstakanje(javljanjeTrenutno);
-    							gorivo = true;
-    							}else {
-    								server.izvrsavanje.obradaAlarma(javljanjeTrenutno, alarmiKorisnici);
-    								server.postaviAlarmIstakanje(javljanjeTrenutno);
-    								gorivo = true;
-    							}
-    						}else {
-        						if(obdStop.getNivoGoriva() - obdTrenutni.getNivoGoriva() > 1) {
-        							brojIspodNivoa++;
-        							}
-        						}
-    					}else {
-        					brojIspodNivoa = 0;
+    		if(obdTrenutni != null && mladje && javljanjeTrenutno.getBrzina() < 6) {
+    			//System.out.println(test);
+    			if(!gorivo) {
+    				//System.out.println(test += " false");
+        			Javljanja poslednjeSaBrzinom = Servis.javljanjeServis.vratiJavljanjeZaStajanje(objekat);
+        			ArrayList<Obd> poslednjiObdUMirovanju = Servis.obdServis.nadjiObdPoslednjaStajanja(objekat, new Timestamp(poslednjeSaBrzinom.getDatumVreme().getTime()));
+        			//System.out.println(test + " brzina " + poslednjeSaBrzinom.getBrzina() + " " + poslednjeSaBrzinom.getDatumVreme() + " komada " + poslednjiObdUMirovanju.size());
+        			/*System.out.println("početni " + poslednjiObdUMirovanju.get(0).getNivoGoriva() + " krajnji " + obdTrenutni.getNivoGoriva() + " razlika " 
+        			+ (poslednjiObdUMirovanju.get(0).getNivoGoriva() - obdTrenutni.getNivoGoriva()));**/
+        			if(!gorivo && poslednjiObdUMirovanju.size() > 0 && poslednjiObdUMirovanju.get(0).getNivoGoriva() - obdTrenutni.getNivoGoriva() > 3) {
+        				//System.out.println(test  + " razlika > 2");
+        				if(!javljanjeTrenutno.getSistemAlarmi().getSifra().equals("0")) {
+        					server.izvrsavanje.obradaAlarma(javljanjeTrenutno, alarmiKorisnici);
         					}
+        				server.postaviAlarmIstakanje(javljanjeTrenutno);
+						gorivo = true;
+        			}
+        			/*if(obdStop != null) {
+        				if(!gorivo) {
+        					if(obdTrenutni.getNivoGoriva() - obdStop.getNivoGoriva() > 1 && brojIspodNivoa > 10) {
+        						if(javljanjeTrenutno.getSistemAlarmi().getSifra().equals("0")) {
+        							server.postaviAlarmIstakanje(javljanjeTrenutno);
+        							gorivo = true;
+        							}else {
+        								server.izvrsavanje.obradaAlarma(javljanjeTrenutno, alarmiKorisnici);
+        								server.postaviAlarmIstakanje(javljanjeTrenutno);
+        								gorivo = true;
+        							}
+        						}else {
+            						if(obdStop.getNivoGoriva() - obdTrenutni.getNivoGoriva() > 1) {
+            							brojIspodNivoa++;
+            							}
+            						}
+        					}else {
+            					brojIspodNivoa = 0;
+            					}
+        				}**/
+        			Servis.obdServis.unesiObd(obdTrenutni);
+        			}
+    			}else {
+    				gorivo = false;
     				}
-    			Servis.obdServis.unesiObd(obdTrenutni);
-    			}
     		
     		//alarm zona
     		test = " zona ";
@@ -226,7 +246,8 @@ public class OpstiThread implements Runnable{
 				if(zonaPoslednja == null) {
 					for(ObjekatZone objekatZona : objekatZone) {
 						if(objekatZona.isAktivan() && objekatZona.isIzlaz()) {
-        					if(Servis.obracun.rastojanjeKoordinate(javljanjeTrenutno, objekatZona.getZone().getLat(), objekatZona.getZone().getLon()) <= objekatZona.getZone().getPrecnik()) {
+        					if(Servis.obracun.rastojanjeKoordinate(javljanjeTrenutno, objekatZona.getZone().getLat(), objekatZona.getZone().getLon()) 
+        							<= objekatZona.getZone().getPrecnik()) {
         						javljanjeTrenutno.setZona(objekatZona.getZone());
         						if(javljanjeTrenutno.getSistemAlarmi().getSifra().equals("0")) {
         							server.postaviAlarmUlazakUZonu(javljanjeTrenutno);
@@ -244,6 +265,7 @@ public class OpstiThread implements Runnable{
 				}else {
 					//izlazak
 					test = " zona izlaz ";
+					javljanjeTrenutno.setZona(zonaPoslednja);
 					ObjekatZone objZona = Servis.zonaObjekatServis.nadjiObjekatZonuPoZoniObjektu(objekat, zonaPoslednja);
 					if(objZona != null && objZona.isAktivan() && objZona.isIzlaz()) {
     					if(Servis.obracun.rastojanjeKoordinate(javljanjeTrenutno, zonaPoslednja.getLat(), zonaPoslednja.getLon()) > zonaPoslednja.getPrecnik()) {
@@ -256,12 +278,12 @@ public class OpstiThread implements Runnable{
     							javljanjeTrenutno.setEventData(zonaPoslednja.getNaziv());
     						}
     						javljanjeTrenutno.setZona(null);
-    					}else {
+    					}/*else {
     						javljanjeTrenutno.setZona(zonaPoslednja);
-    					}
-					}else {
+    					}**/
+					}/*else {
 						javljanjeTrenutno.setZona(zonaPoslednja);
-					}
+					}**/
 				}
     		}
     		test = " izvrsavanje ";

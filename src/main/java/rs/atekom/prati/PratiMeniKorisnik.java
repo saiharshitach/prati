@@ -13,8 +13,6 @@ import com.github.appreciated.app.layout.builder.entities.DefaultNotificationHol
 import static com.github.appreciated.app.layout.builder.Section.HEADER;
 import static com.github.appreciated.app.layout.builder.Section.FOOTER;
 import com.vaadin.icons.VaadinIcons;
-
-import pratiBaza.tabele.VozilaNalozi;
 import rs.atekom.prati.meni.PratiEventBus;
 import rs.atekom.prati.meni.PratiEvent.KorisnikLoggedOutEvent;
 import rs.atekom.prati.view.PracenjeView;
@@ -44,9 +42,12 @@ import rs.atekom.prati.view.uredjajiModeli.UredjajiModeliView;
 import rs.atekom.prati.view.vozaci.VozaciView;
 import rs.atekom.prati.view.vozaci.dozvole.VozaciDozvoleView;
 import rs.atekom.prati.view.vozaci.lekarsko.VozaciLekarskoView;
+import rs.atekom.prati.view.vozaci.licenca.VozaciLicencaView;
 import rs.atekom.prati.view.vozaci.licna.VozaciLicnaView;
 import rs.atekom.prati.view.vozaci.pasosi.VozaciPasosiView;
 import rs.atekom.prati.view.vozilo.nalozi.VozilaNaloziView;
+import rs.atekom.prati.view.vozilo.oprema.VozilaOpremaView;
+import rs.atekom.prati.view.vozilo.primoPredaje.VozilaPrimoPredajeView;
 import rs.atekom.prati.view.zone.ZoneView;
 
 public class PratiMeniKorisnik{
@@ -83,6 +84,8 @@ public class PratiMeniKorisnik{
 	
 	//administrator
 	public AppLayoutComponent vratiMeniAdministrator(String korisnik) {
+		//AppLayoutComponent admin = vratiMeniKorisnik(korisnik);
+		//AppLayoutDesign design = AppLayoutDesign.CUSTOM;
 		return AppLayout.getDefaultBuilder(izgled)
         .withTitle("праћење")
         .addToAppBar(new AppBarNotificationButton(notifications))
@@ -116,17 +119,22 @@ public class PratiMeniKorisnik{
         		.add(ObjektiDetaljiView.class)
         		.add(KalendarView.class)
         		.add(VozilaNaloziView.class)
+        		.add(VozilaPrimoPredajeView.class)
+        		.add(VozilaOpremaView.class)
         		.build())
         .add(SubmenuBuilder.get("Возачи", VaadinIcons.USER_CHECK)
         		.add(VozaciView.class)
         		.add(VozaciDozvoleView.class)
         		.add(VozaciLekarskoView.class)
+        		.add(VozaciLicencaView.class)
         		.add(VozaciLicnaView.class)
         		.add(VozaciPasosiView.class)
         		.build())
         //.add(View6.class)
+        
         .addClickable("Одјава", VaadinIcons.SIGN_OUT, clickEvent -> PratiEventBus.post(new KorisnikLoggedOutEvent()), FOOTER)
-        .build();
+        .build()
+        /*.setDesign(design)**/;
 	}
 	
 	//sistem
@@ -164,11 +172,14 @@ public class PratiMeniKorisnik{
 		        		.add(ObjektiDetaljiView.class)
 		        		.add(KalendarView.class)
 		        		.add(VozilaNaloziView.class)
+		        		.add(VozilaPrimoPredajeView.class)
+		        		.add(VozilaOpremaView.class)
 		        		.build())
                 .add(SubmenuBuilder.get("Возачи", VaadinIcons.USER_CHECK)
                 		.add(VozaciView.class)
                 		.add(VozaciDozvoleView.class)
                 		.add(VozaciLekarskoView.class)
+                		.add(VozaciLicencaView.class)
                 		.add(VozaciLicnaView.class)
                 		.add(VozaciPasosiView.class)
                 		.build())

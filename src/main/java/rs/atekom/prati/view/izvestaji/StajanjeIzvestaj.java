@@ -37,8 +37,20 @@ public class StajanjeIzvestaj extends PrintPreviewReport<StajanjeMirovanje>{
 		Style broj = new StyleBuilder(true).setPattern(decimalFormat).setFont(Font.ARIAL_MEDIUM).build();
 		broj.setHorizontalAlign(HorizontalAlign.RIGHT);
 		
-		Style datum = new StyleBuilder(true).setPattern(DATUMVREME).setFont(Font.ARIAL_MEDIUM).build();
-		datum.setHorizontalAlign(HorizontalAlign.LEFT);
+		Style tekstLevo = new StyleBuilder(true).setFont(Font.ARIAL_MEDIUM).build();
+		tekstLevo.setHorizontalAlign(HorizontalAlign.LEFT);
+		
+		Style tekstDesno= new StyleBuilder(true).setFont(Font.ARIAL_MEDIUM).build();
+		tekstDesno.setHorizontalAlign(HorizontalAlign.RIGHT);
+		
+		Style datumLevo = new StyleBuilder(true).setPattern(DATUMVREME).setFont(Font.ARIAL_MEDIUM).build();
+		datumLevo.setHorizontalAlign(HorizontalAlign.LEFT);
+		
+		Style datumDesno = new StyleBuilder(true).setPattern(DATUMVREME).setFont(Font.ARIAL_MEDIUM).build();
+		datumLevo.setHorizontalAlign(HorizontalAlign.RIGHT);
+		
+		Style vremeCentar = new StyleBuilder(true).setFont(Font.ARIAL_MEDIUM).build();
+		vremeCentar.setHorizontalAlign(HorizontalAlign.CENTER);
 		
 		Style footerStyle = new StyleBuilder(true).setFont(Font.ARIAL_MEDIUM_BOLD).build();
 		getReportBuilder()
@@ -47,44 +59,44 @@ public class StajanjeIzvestaj extends PrintPreviewReport<StajanjeMirovanje>{
 		.setDefaultEncoding(Font.PDF_ENCODING_Identity_H_Unicode_with_horizontal_writing)
 		.setTitle("Преглед стајања и мировања")
 		.addAutoText("Преглед података за период: " + outputFormat.format(vremeOd) + " - " + outputFormat.format(vremeDo), AutoText.POSITION_HEADER, AutoText.ALIGMENT_LEFT, 450, headerStyle)
-		.addAutoText("извештај урађен: " + datumVreme.format(new Date()), AutoText.POSITION_HEADER, AutoText.ALIGNMENT_RIGHT, 300, datum)
+		.addAutoText("извештај урађен: " + datumVreme.format(new Date()), AutoText.POSITION_HEADER, AutoText.ALIGNMENT_RIGHT, 300, datumLevo)
 		.addAutoText("Атеком доо               www.atekom.rs                    info@atekom.rs ", AutoText.POSITION_FOOTER, AutoText.ALIGMENT_CENTER, 800, footerStyle)
 		.addAutoText(AutoText.AUTOTEXT_PAGE_X, AutoText.POSITION_FOOTER, AutoText.ALIGMENT_RIGHT)
 		.setPrintBackgroundOnOddRows(true)
 		.addColumn(ColumnBuilder.getNew()
-				.setColumnProperty("objekta", String.class)
+				.setColumnProperty("objekat", String.class)
 				.setTitle("објекат")
 				.setWidth(20)
-				.setStyle(datum)
+				.setStyle(tekstLevo)
 				.build())
 		.addColumn(ColumnBuilder.getNew()
 				.setColumnProperty("pocetak", Date.class)
 				.setTitle("почетак")
-				.setWidth(20)
-				.setStyle(datum)
+				.setWidth(30)
+				.setStyle(datumLevo)
 				.build())
 		.addColumn(ColumnBuilder.getNew()
 				.setColumnProperty("kraj", Date.class)
 				.setTitle("крај")
-				.setWidth(20)
-				.setStyle(datum)
+				.setWidth(30)
+				.setStyle(datumDesno)
 				.build())
 		.addColumn(ColumnBuilder.getNew()
 				.setColumnProperty("vremeStajanja", String.class)
 				.setTitle("време стајања")
-				.setWidth(20)
-				.setStyle(datum)
+				.setWidth(10)
+				.setStyle(vremeCentar)
 				.build())
 		.addColumn(ColumnBuilder.getNew()
 				.setColumnProperty("vremeMirovanja", String.class)
 				.setTitle("време мировања")
-				.setWidth(20)
-				.setStyle(datum)
+				.setWidth(10)
+				.setStyle(vremeCentar)
 				.build())
 		.addColumn(ColumnBuilder.getNew()
 				.setColumnProperty("opis", String.class)
 				.setTitle("опис")
-				.setStyle(datum)
+				.setStyle(tekstDesno)
 				.build());
 		setItems(vratiListu(objekti, vremeOd, vremeDo, duzina));
 	}

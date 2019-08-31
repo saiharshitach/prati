@@ -93,7 +93,7 @@ public class VozaciLicnaView extends OpstiView implements OpstiViewInterface{
 		tabela.addColumn(VozaciLicna::getVaziDo, new DateRenderer(DANFORMAT)).setCaption("важеће до").setStyleGenerator(objekti -> "v-align-right");
 		tabela.addColumn(vozaciLicna -> vozaciLicna.getOrganizacija() == null ? "" : vozaciLicna.getOrganizacija().getNaziv()).setCaption("организација");
 		if(isAdmin()) {
-			tabela.addComponentColumn(vozaciLicna -> {CheckBox chb = new CheckBox(); if(vozaciLicna.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(vozaci -> "v-align-right");
+			tabela.addComponentColumn(vozaciLicna -> {CheckBox chb = new CheckBox(); if(vozaciLicna.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(vozaciLicna -> "v-align-right");
 		}
 		tabela.addColumn(VozaciLicna::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(objekti -> "v-align-right");
 		tabela.addColumn(VozaciLicna::getKreirano, new DateRenderer(DANSATFORMAT)).setCaption("креирано").setStyleGenerator(objekti -> "v-align-right");
@@ -164,7 +164,8 @@ public class VozaciLicnaView extends OpstiView implements OpstiViewInterface{
 			private static final long serialVersionUID = 1L;
 			@Override
 			public boolean test(VozaciLicna t) {
-				return (((t.getKorisnici() == null ? "" : t.getKorisnici().toString().toLowerCase()).contains(filter.getValue().toLowerCase())));
+				return (((t.getKorisnici() == null ? "" : t.getKorisnici().toString().toLowerCase()).contains(filter.getValue().toLowerCase())) ||
+						((t.getBroj() == null ? "" : t.getBroj().toLowerCase()).contains(filter.getValue().toLowerCase())));
 			}
 		};
 		filter.addValueChangeListener(e -> {osveziFilter();});

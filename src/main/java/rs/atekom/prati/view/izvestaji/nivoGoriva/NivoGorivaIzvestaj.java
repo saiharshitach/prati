@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
-import org.jfree.data.time.Hour;
+import org.jfree.data.time.Second;
 import org.vaadin.reports.PrintPreviewReport;
 import com.ibm.icu.text.SimpleDateFormat;
 import com.vaadin.server.SerializableSupplier;
@@ -126,13 +126,14 @@ public class NivoGorivaIzvestaj extends PrintPreviewReport<Obd>{
 				.setLegendBackgroundColor(Color.WHITE)
 				.setLegendPosition(DJChartOptions.EDGE_BOTTOM)
 				.setTitlePosition(DJChartOptions.EDGE_TOP)
-				.setLineStyle(DJChartOptions.LINE_STYLE_DOTTED)
+				.setLineStyle(DJChartOptions.LINE_STYLE_DOUBLE)
 				.setLineWidth(1)
 				.setLineColor(Color.DARK_GRAY)
 				.setPadding(5)
 				//dataset
 				.setTimePeriod((PropertyColumn)datumVr)
-				.setTimePeriodClass(Hour.class)
+				//.setTimePeriodClass((datumVremeDo.getTime() - datumVremeOd.getTime())/1000 > 7200 ? Hour.class : Minute.class)
+				.setTimePeriodClass(Second.class)
 				.addSerie(nivo)
 				//plot
 				.setShowShapes(true)

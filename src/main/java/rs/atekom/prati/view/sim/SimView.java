@@ -171,7 +171,8 @@ public class SimView extends OpstiView implements OpstiViewInterface{
 			public boolean test(Sim t) {
 				return (t.getBroj().toLowerCase().contains(filter.getValue().toLowerCase()) ||
 						t.getIccid().toLowerCase().contains(filter.getValue().toLowerCase()) ||
-						(t.getUredjaji() == null ? "" : t.getUredjaji().getSerijskiBr()).toLowerCase().contains(filter.getValue().toLowerCase()));
+						(t.getUredjaji() == null ? "" : t.getUredjaji().getSerijskiBr()).toLowerCase().contains(filter.getValue().toLowerCase()) ||
+						(t.getUredjaji() == null ? "" : t.getUredjaji().getObjekti().getOznaka()).toLowerCase().contains(filter.getValue().toLowerCase()));
 			}
 		};
 		filter.addValueChangeListener(e -> {osveziFilter();});
