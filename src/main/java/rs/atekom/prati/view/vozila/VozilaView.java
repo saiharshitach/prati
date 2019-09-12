@@ -1,4 +1,4 @@
-package rs.atekom.prati.view.objektiDetalji;
+package rs.atekom.prati.view.vozila;
 
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
@@ -19,39 +19,39 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
 
-import pratiBaza.tabele.ObjektiDetalji;
+import pratiBaza.tabele.Vozila;
 import rs.atekom.prati.server.Servis;
 import rs.atekom.prati.view.OpstiView;
 import rs.atekom.prati.view.OpstiViewInterface;
 
-@NavigatorViewName("objektiDetalji") // an empty view name will also be the default view
+@NavigatorViewName("vozila") // an empty view name will also be the default view
 @MenuCaption("Возила")
 @MenuIcon(VaadinIcons.DASHBOARD)
-public class ObjektiDetaljiView extends OpstiView implements OpstiViewInterface{
+public class VozilaView extends OpstiView implements OpstiViewInterface{
 
 	private static final long serialVersionUID = 1L;
-	public final String VIEW_NAME = "objektiDetalji";
-	private Grid<ObjektiDetalji> tabela;
-	private ListDataProvider<ObjektiDetalji> dataProvider;
-	private SerializablePredicate<ObjektiDetalji> filterPredicate;
-	private ArrayList<ObjektiDetalji> pocetno, lista;
-	private ObjektiDetaljiLogika viewLogika;
-	private ObjektiDetaljiForma forma;
-	private ObjektiDetalji izabrani;
+	public final String VIEW_NAME = "vozila";
+	private Grid<Vozila> tabela;
+	private ListDataProvider<Vozila> dataProvider;
+	private SerializablePredicate<Vozila> filterPredicate;
+	private ArrayList<Vozila> pocetno, lista;
+	private VozilaLogika viewLogika;
+	private VozilaForma forma;
+	private Vozila izabrani;
 	
-	public ObjektiDetaljiView() {
-		viewLogika = new ObjektiDetaljiLogika(this);
-		forma = new ObjektiDetaljiForma(viewLogika);
+	public VozilaView() {
+		viewLogika = new VozilaLogika(this);
+		forma = new VozilaForma(viewLogika);
 		forma.removeStyleName("visible");
 		forma.setEnabled(false);
 		
 		buildToolbar();
 		buildTable();
 		
-		tabela.addSelectionListener(new SelectionListener<ObjektiDetalji>() {
+		tabela.addSelectionListener(new SelectionListener<Vozila>() {
 			private static final long serialVersionUID = 1L;
 			@Override
-			public void selectionChange(SelectionEvent<ObjektiDetalji> event) {
+			public void selectionChange(SelectionEvent<Vozila> event) {
 				if(event.getFirstSelectedItem().isPresent()) {
 					izabrani = event.getFirstSelectedItem().get();
 				}else {
@@ -87,31 +87,31 @@ public class ObjektiDetaljiView extends OpstiView implements OpstiViewInterface{
 	
 	@Override
 	public void buildTable() {
-		tabela = new Grid<ObjektiDetalji>();
+		tabela = new Grid<Vozila>();
 		updateTable();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
 		if(isAdmin()) {
-			tabela.addColumn(objektiDetalji -> objektiDetalji.getSistemPretplatnici() == null ? "" : objektiDetalji.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
+			tabela.addColumn(vozila -> vozila.getSistemPretplatnici() == null ? "" : vozila.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
-		tabela.addColumn(objektiDetalji -> objektiDetalji.getObjekti() == null ? "" : objektiDetalji.getObjekti().getOznaka()).setCaption("објекат");
-		tabela.addColumn(ObjektiDetalji::getRegistracija).setCaption("регистрација");
-		tabela.addColumn(ObjektiDetalji::getMarka).setCaption("марка");
-		tabela.addColumn(ObjektiDetalji::getModel).setCaption("модел");
-		tabela.addColumn(ObjektiDetalji::getTip).setCaption("тип");
-		tabela.addColumn(ObjektiDetalji::getGodina).setCaption("година");
-		tabela.addColumn(objektiDetalji -> objektiDetalji.getSistemGoriva() == null ? "" : objektiDetalji.getSistemGoriva().getNaziv()).setCaption("врста горива");
-		tabela.addColumn(ObjektiDetalji::getPotrosnja).setCaption("потрошња");
-		tabela.addComponentColumn(objektiDetalji -> {CheckBox chb = new CheckBox(); if(objektiDetalji.isTeretno()) {chb.setValue(true);} return chb;}).setCaption("теретно").setStyleGenerator(objekti -> "v-align-right");
-		tabela.addColumn(ObjektiDetalji::getBrojSaobracajne).setCaption("број саобраћајне");
-		tabela.addColumn(ObjektiDetalji::getSerijskiBroj).setCaption("серијски број");
-		tabela.addColumn(ObjektiDetalji::getDatumRegistracije, new DateRenderer(DANFORMAT)).setCaption("датум прве регистрације").setStyleGenerator(objekti -> "v-align-right");
+		tabela.addColumn(vozila -> vozila.getObjekti() == null ? "" : vozila.getObjekti().getOznaka()).setCaption("објекат");
+		tabela.addColumn(Vozila::getRegistracija).setCaption("регистрација");
+		tabela.addColumn(Vozila::getMarka).setCaption("марка");
+		tabela.addColumn(Vozila::getModel).setCaption("модел");
+		tabela.addColumn(Vozila::getTip).setCaption("тип");
+		tabela.addColumn(Vozila::getGodina).setCaption("година");
+		tabela.addColumn(vozila -> vozila.getSistemGoriva() == null ? "" : vozila.getSistemGoriva().getNaziv()).setCaption("врста горива");
+		tabela.addColumn(Vozila::getPotrosnja).setCaption("потрошња");
+		tabela.addComponentColumn(vozila -> {CheckBox chb = new CheckBox(); if(vozila.isTeretno()) {chb.setValue(true);} return chb;}).setCaption("теретно").setStyleGenerator(objekti -> "v-align-right");
+		tabela.addColumn(Vozila::getBrojSaobracajne).setCaption("број саобраћајне");
+		tabela.addColumn(Vozila::getSerijskiBroj).setCaption("серијски број");
+		tabela.addColumn(Vozila::getDatumRegistracije, new DateRenderer(DANFORMAT)).setCaption("датум прве регистрације").setStyleGenerator(objekti -> "v-align-right");
 		if(isAdmin()) {
-			tabela.addComponentColumn(objektiDetalji -> {CheckBox chb = new CheckBox(); if(objektiDetalji.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("izbrisan").setStyleGenerator(objekti -> "v-align-right");
+			tabela.addComponentColumn(vozila -> {CheckBox chb = new CheckBox(); if(vozila.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("izbrisan").setStyleGenerator(objekti -> "v-align-right");
 		}
-		tabela.addColumn(ObjektiDetalji::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(objekti -> "v-align-right");
-		tabela.addColumn(ObjektiDetalji::getKreirano, new DateRenderer(DANSATFORMAT)).setCaption("креирано").setStyleGenerator(objekti -> "v-align-right");
+		tabela.addColumn(Vozila::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(objekti -> "v-align-right");
+		tabela.addColumn(Vozila::getKreirano, new DateRenderer(DANSATFORMAT)).setCaption("креирано").setStyleGenerator(objekti -> "v-align-right");
 	}
 
 	@Override
@@ -121,7 +121,7 @@ public class ObjektiDetaljiView extends OpstiView implements OpstiViewInterface{
 
 	@Override
 	public void izaberiRed(Object red) {
-		tabela.getSelectionModel().select((ObjektiDetalji)red);
+		tabela.getSelectionModel().select((Vozila)red);
 	}
 
 	@Override
@@ -135,7 +135,7 @@ public class ObjektiDetaljiView extends OpstiView implements OpstiViewInterface{
 
 	@Override
 	public void izmeniPodatak(Object podatak) {
-		ObjektiDetalji objekatDetalji = (ObjektiDetalji)podatak;
+		Vozila objekatDetalji = (Vozila)podatak;
 		if(objekatDetalji != null) {
 			forma.addStyleName("visible");
 			forma.setEnabled(true);
@@ -150,7 +150,7 @@ public class ObjektiDetaljiView extends OpstiView implements OpstiViewInterface{
 	public void ukloniPodatak() {
 		if(izabrani != null) {
 			if(!izabrani.isIzbrisan()) {
-				Servis.objekatDetaljiServis.izbrisiObjektiDetalji(izabrani);
+				Servis.voziloServis.izbrisiVozilo(izabrani);
 				pokaziPorukuUspesno("детаљи објекта су избрисани");
 			}else {
 				pokaziPorukuGreska("детаљи објекта су већ избрисани!");
@@ -162,18 +162,18 @@ public class ObjektiDetaljiView extends OpstiView implements OpstiViewInterface{
 	@Override
 	public void updateTable() {
 		filter.clear();
-		pocetno = new ArrayList<ObjektiDetalji>();
-		lista = Servis.objekatDetaljiServis.vratisveObjekatDetalje(korisnik, false);
+		pocetno = new ArrayList<Vozila>();
+		lista = Servis.voziloServis.vratisvaVozila(korisnik, false);
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {
 			tabela.setItems(pocetno);
 		}
-		dataProvider = (ListDataProvider<ObjektiDetalji>)tabela.getDataProvider();
-		filterPredicate = new SerializablePredicate<ObjektiDetalji>() {
+		dataProvider = (ListDataProvider<Vozila>)tabela.getDataProvider();
+		filterPredicate = new SerializablePredicate<Vozila>() {
 			private static final long serialVersionUID = 1L;
 			@Override
-			public boolean test(ObjektiDetalji t) {
+			public boolean test(Vozila t) {
 				return ((t.getSistemPretplatnici() == null ? "" : t.getSistemPretplatnici().getNaziv()).toLowerCase().contains(filter.getValue().toLowerCase()) ||
 						(t.getObjekti() == null ? "" : t.getObjekti().getOznaka()).toLowerCase().contains(filter.getValue().toLowerCase()));
 			}

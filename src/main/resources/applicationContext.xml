@@ -72,7 +72,6 @@
                <value>pratiBaza.tabele.Korisnici</value> 
                <value>pratiBaza.tabele.Obd</value>
                <value>pratiBaza.tabele.Objekti</value>
-               <value>pratiBaza.tabele.ObjektiDetalji</value>
                <value>pratiBaza.tabele.ObjektiPoslednje</value>
                <value>pratiBaza.tabele.Organizacije</value>
                <value>pratiBaza.tabele.Sim</value>
@@ -92,6 +91,7 @@
                <value>pratiBaza.tabele.VozaciLicna</value>
                <value>pratiBaza.tabele.VozaciLicence</value>
                <value>pratiBaza.tabele.VozaciPasosi</value>
+               <value>pratiBaza.tabele.Vozila</value>
                <value>pratiBaza.tabele.VozilaNalozi</value>
                <value>pratiBaza.tabele.VozilaOprema</value>
                <value>pratiBaza.tabele.VozilaOpremaPrijem</value>
@@ -177,12 +177,7 @@
   <bean id="objekatServis" class="pratiBaza.servisImpl.ObjektiServisImpl">
         <property name="objekatDAO" ref="objekatDAO"></property>
   </bean>
-  <bean id="objekatDetaljDAO" class="pratiBaza.daoImpl.ObjektiDetaljiDAOImpl">
-        <property name="sessionFactory" ref="sessionFactory" />
-  </bean>
-  <bean id="objekatDetaljServis" class="pratiBaza.servisImpl.ObjektiDetaljiServisImpl">
-        <property name="objekatDetaljDAO" ref="objekatDetaljDAO"></property>
-  </bean>
+
    <bean id="objekatPoslednjeDAO" class="pratiBaza.daoImpl.ObjektiPoslednjeDAOImpl">
         <property name="sessionFactory" ref="sessionFactory" />
   </bean>
@@ -296,6 +291,12 @@
   </bean>
   <bean id="vozacPasosServis" class="pratiBaza.servisImpl.VozaciPasosiServisImpl">
         <property name="vozacPasosDAO" ref="vozacPasosDAO"></property>
+  </bean>
+  <bean id="voziloDAO" class="pratiBaza.daoImpl.VozilaDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="voziloServis" class="pratiBaza.servisImpl.VozilaServisImpl">
+        <property name="voziloDAO" ref="voziloDAO"></property>
   </bean>
   <bean id="voziloNalogDAO" class="pratiBaza.daoImpl.VozilaNaloziDAOImpl">
         <property name="sessionFactory" ref="sessionFactory" />

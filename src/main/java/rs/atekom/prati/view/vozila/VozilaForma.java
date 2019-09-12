@@ -1,4 +1,4 @@
-package rs.atekom.prati.view.objektiDetalji;
+package rs.atekom.prati.view.vozila;
 
 import org.vaadin.dialogs.ConfirmDialog;
 import com.vaadin.data.HasValue.ValueChangeListener;
@@ -7,7 +7,7 @@ import com.vaadin.server.Page;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import pratiBaza.tabele.ObjektiDetalji;
+import pratiBaza.tabele.Vozila;
 import pratiBaza.tabele.Organizacije;
 import pratiBaza.tabele.SistemPretplatnici;
 import rs.atekom.prati.server.Servis;
@@ -23,10 +23,10 @@ import rs.atekom.prati.view.komponente.Datum;
 import rs.atekom.prati.view.komponente.Decimalni;
 import rs.atekom.prati.view.komponente.Tekst;
 
-public class ObjektiDetaljiForma extends OpstaForma implements OpstaFormaInterface{
+public class VozilaForma extends OpstaForma implements OpstaFormaInterface{
 
 	private static final long serialVersionUID = 1L;
-	private ObjektiDetaljiLogika logika;
+	private VozilaLogika logika;
 	private ComboPretplatnici pretplatnici;
 	private ComboOrganizacije organizacije;
 	private Tekst registracija, marka, model, tip, brojSaobracajne, serijskiBroj;
@@ -37,7 +37,7 @@ public class ObjektiDetaljiForma extends OpstaForma implements OpstaFormaInterfa
 	private Decimalni potrosnja;
 	private Datum datumPrveRegistracije;
 
-	public ObjektiDetaljiForma(ObjektiDetaljiLogika log) {
+	public VozilaForma(VozilaLogika log) {
 		logika = log;
 		pretplatnici = new ComboPretplatnici("претплатник", true, true);
 		organizacije = new ComboOrganizacije(pretplatnici.getValue(), "организација", true, false);
@@ -160,11 +160,11 @@ public class ObjektiDetaljiForma extends OpstaForma implements OpstaFormaInterfa
 	@Override
 	public void izmeniPodatak(Object podatak) {
 		ocistiPodatak();
-		ObjektiDetalji objekatDetalj;
+		Vozila objekatDetalj;
 		if(podatak == null) {
-			objekatDetalj = new ObjektiDetalji();
+			objekatDetalj = new Vozila();
 		}else {
-			objekatDetalj = (ObjektiDetalji)podatak;
+			objekatDetalj = (Vozila)podatak;
 			postaviPodatak(objekatDetalj);
 		}
 		String scrollScript = "window.document.getElementById('" + getId() + "').scrollTop = 0;";
@@ -173,11 +173,11 @@ public class ObjektiDetaljiForma extends OpstaForma implements OpstaFormaInterfa
 
 	@Override
 	public Object sacuvajPodatak(Object podatak) {
-		ObjektiDetalji objekatDetalj;
+		Vozila objekatDetalj;
 		if(podatak == null) {
-			objekatDetalj = new ObjektiDetalji();
+			objekatDetalj = new Vozila();
 		}else {
-			objekatDetalj = (ObjektiDetalji)podatak;
+			objekatDetalj = (Vozila)podatak;
 		}
 		objekatDetalj.setSistemPretplatnici(pretplatnici.getValue());
 		objekatDetalj.setObjekti(objekti.getValue());
@@ -234,7 +234,7 @@ public class ObjektiDetaljiForma extends OpstaForma implements OpstaFormaInterfa
 
 	@Override
 	public void postaviPodatak(Object podatak) {
-		ObjektiDetalji objekatDetalj = (ObjektiDetalji)podatak;
+		Vozila objekatDetalj = (Vozila)podatak;
 		if(objekatDetalj.getId() != null) {
 			pretplatnici.setValue(objekatDetalj.getSistemPretplatnici());
 			organizacije.setValue(objekatDetalj.getOrganizacija());

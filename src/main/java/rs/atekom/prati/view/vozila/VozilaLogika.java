@@ -1,17 +1,17 @@
-package rs.atekom.prati.view.objektiDetalji;
+package rs.atekom.prati.view.vozila;
 
 import com.vaadin.server.Page;
 
-import pratiBaza.tabele.ObjektiDetalji;
+import pratiBaza.tabele.Vozila;
 import rs.atekom.prati.Prati;
 import rs.atekom.prati.server.Servis;
 import rs.atekom.prati.view.LogikaInterface;
 
-public class ObjektiDetaljiLogika implements LogikaInterface{
+public class VozilaLogika implements LogikaInterface{
 
-	public ObjektiDetaljiView view;
+	public VozilaView view;
 
-	public ObjektiDetaljiLogika(ObjektiDetaljiView objektDetaljView) {
+	public VozilaLogika(VozilaView objektDetaljView) {
 		view = objektDetaljView;
 	}
 	@Override
@@ -48,7 +48,7 @@ public class ObjektiDetaljiLogika implements LogikaInterface{
 		}else {
 			try {
 				int id = Integer.parseInt(objectId);
-				ObjektiDetalji objektDetalj = Servis.objekatDetaljiServis.nadjiObjektiDetaljiPoId(id);
+				Vozila objektDetalj = Servis.voziloServis.nadjiVoziloPoId(id);
 				view.izaberiRed(objektDetalj);
 			}catch (Exception e) {
 				// TODO: handle exception
@@ -58,17 +58,17 @@ public class ObjektiDetaljiLogika implements LogikaInterface{
 
 	@Override
 	public void sacuvajPodatak(Object podatak) {
-		ObjektiDetalji objekatDetalj = (ObjektiDetalji)podatak;
+		Vozila objekatDetalj = (Vozila)podatak;
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
 		setFragmentParametar("");
 		if(objekatDetalj.getId() != null) {
-			Servis.objekatDetaljiServis.azurirajObjektiDetalji(objekatDetalj);
+			Servis.voziloServis.azurirajVozilo(objekatDetalj);
 			view.pokaziPorukuUspesno("детаљи објекта измењени");
 		}else {
 			try {
-				if(Servis.objekatDetaljiServis.nadjiObjekatDetaljePoObjektu(objekatDetalj.getObjekti()) == null) {
-					Servis.objekatDetaljiServis.unesiObjektiDetalji(objekatDetalj);
+				if(Servis.voziloServis.nadjiVoziloPoObjektu(objekatDetalj.getObjekti()) == null) {
+					Servis.voziloServis.unesiVozilo(objekatDetalj);
 					view.pokaziPorukuUspesno("детаљи објекта сачувани");
 				}else {
 					view.pokaziPorukuGreska("детаљи за изабрани објекат су већ унети!");
@@ -82,7 +82,7 @@ public class ObjektiDetaljiLogika implements LogikaInterface{
 
 	@Override
 	public void izmeniPodatak(Object podatak) {
-		ObjektiDetalji objekatDetalj = (ObjektiDetalji)podatak;
+		Vozila objekatDetalj = (Vozila)podatak;
 		if(objekatDetalj == null) {
 			setFragmentParametar("");
 		}else {
@@ -95,7 +95,7 @@ public class ObjektiDetaljiLogika implements LogikaInterface{
 	public void noviPodatak() {
 		view.ocistiIzbor();
 		setFragmentParametar("new");
-		view.izmeniPodatak(new ObjektiDetalji());
+		view.izmeniPodatak(new Vozila());
 	}
 
 	@Override
@@ -109,7 +109,7 @@ public class ObjektiDetaljiLogika implements LogikaInterface{
 
 	@Override
 	public void redIzabran(Object podatak) {
-		view.izmeniPodatak((ObjektiDetalji)podatak);
+		view.izmeniPodatak((Vozila)podatak);
 	}
 	
 }

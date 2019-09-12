@@ -16,7 +16,7 @@ import pratiBaza.servis.JavljanjaPoslednjaServis;
 import pratiBaza.servis.JavljanjaServis;
 import pratiBaza.servis.KorisniciServis;
 import pratiBaza.servis.ObdServis;
-import pratiBaza.servis.ObjektiDetaljiServis;
+import pratiBaza.servis.VozilaServis;
 import pratiBaza.servis.ObjektiServis;
 import pratiBaza.servis.OrganizacijeServis;
 import pratiBaza.servis.ProcedureServis;
@@ -57,7 +57,6 @@ public class Servis implements ServletContextListener{
 	public static JavljanjaServis javljanjeServis;
 	public static KorisniciServis korisnikServis;
 	public static ObdServis obdServis;
-	public static ObjektiDetaljiServis objekatDetaljiServis;
 	public static ObjektiServis objekatServis;
 	public static OrganizacijeServis organizacijaServis;
 	public static ProcedureServis proceduraServis;
@@ -79,6 +78,7 @@ public class Servis implements ServletContextListener{
 	public static VozaciLicnaServis licnaServis;
 	public static VozaciPasosiServis pasosServis;
 	
+	public static VozilaServis voziloServis;
 	public static VozilaNaloziServis nalogServis;
 	public static VozilaOpremaServis opremaServis;
 	public static VozilaOpremaPrijemServis opremaPrijemServis;
@@ -110,7 +110,6 @@ public class Servis implements ServletContextListener{
 		javljanjeServis = ApplicationContextProvider.getApplicationContext().getBean("javljanjeServis", JavljanjaServis.class);
 		korisnikServis = ApplicationContextProvider.getApplicationContext().getBean("korisnikServis", KorisniciServis.class);
 		obdServis = ApplicationContextProvider.getApplicationContext().getBean("obdServis", ObdServis.class);
-		objekatDetaljiServis = ApplicationContextProvider.getApplicationContext().getBean("objekatDetaljServis", ObjektiDetaljiServis.class);
 		objekatServis =ApplicationContextProvider.getApplicationContext().getBean("objekatServis", ObjektiServis.class);
 		organizacijaServis = ApplicationContextProvider.getApplicationContext().getBean("organizacijaServis", OrganizacijeServis.class);
 		proceduraServis = ApplicationContextProvider.getApplicationContext().getBean("proceduraServis", ProcedureServis.class);
@@ -132,6 +131,7 @@ public class Servis implements ServletContextListener{
 		licnaServis = ApplicationContextProvider.getApplicationContext().getBean("vozacLicnaServis", VozaciLicnaServis.class);
 		pasosServis = ApplicationContextProvider.getApplicationContext().getBean("vozacPasosServis", VozaciPasosiServis.class);
 		
+		voziloServis = ApplicationContextProvider.getApplicationContext().getBean("voziloServis", VozilaServis.class);
 		nalogServis = ApplicationContextProvider.getApplicationContext().getBean("voziloNalogServis", VozilaNaloziServis.class);
 		opremaServis = ApplicationContextProvider.getApplicationContext().getBean("voziloOpremaServis", VozilaOpremaServis.class);
 		opremaPrijemServis = ApplicationContextProvider.getApplicationContext().getBean("voziloOpremaPrijemServis", VozilaOpremaPrijemServis.class);
