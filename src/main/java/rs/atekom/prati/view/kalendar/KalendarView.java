@@ -6,8 +6,6 @@ import com.github.appreciated.app.layout.annotations.NavigatorViewName;
 import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 
 import pratiBaza.tabele.Grupe;
 import rs.atekom.prati.view.OpstiView;

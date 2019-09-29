@@ -28,6 +28,7 @@ import rs.atekom.prati.view.korisnici.KorisniciView;
 import rs.atekom.prati.view.objekatZone.ObjekatZoneView;
 import rs.atekom.prati.view.objekti.ObjektiView;
 import rs.atekom.prati.view.organizacije.OrganizacijeView;
+import rs.atekom.prati.view.partneri.PartneriView;
 import rs.atekom.prati.view.pocetna.PocetnaView;
 import rs.atekom.prati.view.pretplatnici.PretplatniciView;
 import rs.atekom.prati.view.proizvodjaci.UredjajiProizvodjaciView;
@@ -45,6 +46,8 @@ import rs.atekom.prati.view.vozaci.licenca.VozaciLicencaView;
 import rs.atekom.prati.view.vozaci.licna.VozaciLicnaView;
 import rs.atekom.prati.view.vozaci.pasosi.VozaciPasosiView;
 import rs.atekom.prati.view.vozila.VozilaView;
+import rs.atekom.prati.view.vozila.saobracajna.VozilaSaobracajnaView;
+import rs.atekom.prati.view.vozila.saobracajna2.VozilaSaobracajna2View;
 import rs.atekom.prati.view.vozilo.nalozi.VozilaNaloziView;
 import rs.atekom.prati.view.vozilo.oprema.VozilaOpremaView;
 import rs.atekom.prati.view.vozilo.primoPredaje.VozilaPrimoPredajeView;
@@ -108,9 +111,10 @@ public class PratiMeniKorisnik{
                 .add(SimView.class)
                 .add(UredjajiView.class)
                 .build())
-        .add(SubmenuBuilder.get("Организација", VaadinIcons.COG)
+        .add(SubmenuBuilder.get("Администрација", VaadinIcons.COG)
         		.add(KorisniciView.class)
                 .add(OrganizacijeView.class)
+                .add(PartneriView.class)
                 .add(RutaView.class)
                 .add(SistemSesijeView.class)
                 .add(ZoneView.class)
@@ -119,8 +123,10 @@ public class PratiMeniKorisnik{
         		.add(VozilaView.class)
         		.add(KalendarView.class)
         		.add(VozilaNaloziView.class)
-        		.add(VozilaPrimoPredajeView.class)
         		.add(VozilaOpremaView.class)
+        		.add(VozilaPrimoPredajeView.class)
+        		.add(VozilaSaobracajnaView.class)
+        		//.add(VozilaSaobracajna2View.class)
         		.build())
         .add(SubmenuBuilder.get("Возачи", VaadinIcons.USER_CHECK)
         		.add(VozaciView.class)
@@ -161,9 +167,10 @@ public class PratiMeniKorisnik{
 		                .add(SimView.class)
 		                .add(UredjajiView.class)
 		                .build())
-		        .add(SubmenuBuilder.get("Организација", VaadinIcons.COG)
+		        .add(SubmenuBuilder.get("Администрација", VaadinIcons.COG)
 		        		.add(KorisniciView.class)
 		                .add(OrganizacijeView.class)
+		                .add(PartneriView.class)
 		                .add(RutaView.class)
 		                .add(SistemSesijeView.class)
 		                .add(ZoneView.class)
@@ -172,8 +179,10 @@ public class PratiMeniKorisnik{
 		        		.add(VozilaView.class)
 		        		.add(KalendarView.class)
 		        		.add(VozilaNaloziView.class)
-		        		.add(VozilaPrimoPredajeView.class)
 		        		.add(VozilaOpremaView.class)
+		        		.add(VozilaPrimoPredajeView.class)
+		        		.add(VozilaSaobracajnaView.class)
+		        		//.add(VozilaSaobracajna2View.class)
 		        		.build())
                 .add(SubmenuBuilder.get("Возачи", VaadinIcons.USER_CHECK)
                 		.add(VozaciView.class)

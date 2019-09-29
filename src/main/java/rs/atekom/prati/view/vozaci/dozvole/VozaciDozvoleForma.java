@@ -1,9 +1,7 @@
 package rs.atekom.prati.view.vozaci.dozvole;
 
 import java.util.ArrayList;
-
 import org.vaadin.dialogs.ConfirmDialog;
-
 import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.server.Page;
@@ -11,15 +9,12 @@ import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.CheckBoxGroup;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import pratiBaza.tabele.Organizacije;
 import pratiBaza.tabele.SistemPretplatnici;
 import pratiBaza.tabele.VozaciDozvole;
-import rs.atekom.prati.server.Servis;
 import rs.atekom.prati.view.OpstaForma;
 import rs.atekom.prati.view.OpstaFormaInterface;
 import rs.atekom.prati.view.OpstiView;
-import rs.atekom.prati.view.komponente.ComboKorisniciVozaci;
-import rs.atekom.prati.view.komponente.ComboOrganizacije;
+import rs.atekom.prati.view.komponente.ComboVozaci;
 import rs.atekom.prati.view.komponente.ComboPretplatnici;
 import rs.atekom.prati.view.komponente.Datum;
 import rs.atekom.prati.view.komponente.Tekst;
@@ -29,8 +24,8 @@ public class VozaciDozvoleForma extends OpstaForma implements OpstaFormaInterfac
 	private static final long serialVersionUID = 1L;
 	private VozaciDozvoleLogika logika;
 	private ComboPretplatnici pretplatnici;
-	private ComboOrganizacije organizacije;
-	private ComboKorisniciVozaci vozaci;
+	//private ComboOrganizacije organizacije;
+	private ComboVozaci vozaci;
 	private Tekst broj, izdao;
 	private Datum vaziDo;
 	private CheckBox izbrisan;
@@ -41,8 +36,8 @@ public class VozaciDozvoleForma extends OpstaForma implements OpstaFormaInterfac
 	public VozaciDozvoleForma(VozaciDozvoleLogika log) {
 		logika = log;
 		pretplatnici = new ComboPretplatnici("претплатник", true, true);
-		organizacije = new ComboOrganizacije(pretplatnici.getValue(), "организација", true, false);
-		vozaci = new ComboKorisniciVozaci(logika.view.korisnik, "возач", true, true);
+		//organizacije = new ComboOrganizacije(pretplatnici.getValue(), "организација", true, false);
+		vozaci = new ComboVozaci(logika.view.korisnik, "возач", true, true);
 		broj = new Tekst("број", true);
 		izdao = new Tekst("издао", false);
 		vaziDo = new Datum("важеће до", true);
@@ -91,17 +86,17 @@ public class VozaciDozvoleForma extends OpstaForma implements OpstaFormaInterfac
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void valueChange(ValueChangeEvent<SistemPretplatnici> event) {
-				organizacije.setItems(Servis.organizacijaServis.nadjiSveOrganizacije(pretplatnici.getValue(), true));
+				//organizacije.setItems(Servis.organizacijaServis.nadjiSveOrganizacije(pretplatnici.getValue(), true));
 			}
 		});
 		
-		organizacije.addValueChangeListener(new ValueChangeListener<Organizacije>() {
+		/*organizacije.addValueChangeListener(new ValueChangeListener<Organizacije>() {
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void valueChange(ValueChangeEvent<Organizacije> event) {
 				
 			}
-		});
+		});**/
 		
 		sacuvaj.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
@@ -150,9 +145,9 @@ public class VozaciDozvoleForma extends OpstaForma implements OpstaFormaInterfac
 		if(logika.view.korisnik.isSistem() && logika.view.korisnik.getSistemPretplatnici() == null) {
 			layout.addComponent(pretplatnici);
 		}
-		if(logika.view.korisnik.isAdmin() && logika.view.korisnik.getOrganizacija() == null) {
+		/*if(logika.view.korisnik.isAdmin() && logika.view.korisnik.getOrganizacija() == null) {
 			layout.addComponent(organizacije);
-		}
+		}**/
 		layout.addComponent(vozaci);
 		layout.addComponent(broj);
 		layout.addComponent(izdao);
@@ -194,8 +189,8 @@ public class VozaciDozvoleForma extends OpstaForma implements OpstaFormaInterfac
 			dozvola = (VozaciDozvole)podatak;
 		}
 		dozvola.setSistemPretplatnici(pretplatnici.getValue());
-		dozvola.setOrganizacija(organizacije.getValue());
-		dozvola.setKorisnici(vozaci.getValue());
+		//dozvola.setOrganizacija(organizacije.getValue());
+		dozvola.setVozaci(vozaci.getValue());
 		dozvola.setBrojDozvole(broj.getValue());
 		dozvola.setIzdao(izdao.getValue());
 		try {
@@ -231,11 +226,11 @@ public class VozaciDozvoleForma extends OpstaForma implements OpstaFormaInterfac
 		}else {
 			pretplatnici.clear();
 		}
-		if(logika.view.korisnik.getOrganizacija() != null) {
+		/*if(logika.view.korisnik.getOrganizacija() != null) {
 			organizacije.setValue(logika.view.korisnik.getOrganizacija());
 		}else {
 			organizacije.clear();
-		}
+		}**/
 		vozaci.clear();
 		broj.clear();
 		izdao.clear();
@@ -265,8 +260,8 @@ public class VozaciDozvoleForma extends OpstaForma implements OpstaFormaInterfac
 		VozaciDozvole dozvola = (VozaciDozvole)podatak;
 		if(dozvola.getId() != null) {
 			pretplatnici.setValue(dozvola.getSistemPretplatnici());
-			organizacije.setValue(dozvola.getOrganizacija());
-			vozaci.setValue(dozvola.getKorisnici());
+			//organizacije.setValue(dozvola.getOrganizacija());
+			vozaci.setValue(dozvola.getVozaci());
 			try {
 				izdao.setValue(dozvola.getIzdao());
 			}catch (Exception e) {

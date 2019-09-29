@@ -104,7 +104,7 @@ public class PracenjeView extends OpstiPanelView{
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void valueChange(ValueChangeEvent<Grupe> event) {
-				if(event.getValue() != null) {
+				if(event.getValue() != null && Servis.grupeObjekatServis.nadjiSveObjektePoGrupi(event.getValue()) != null) {
 					Prati.getCurrent().poslednjaJavljanja.setItems(Servis.javljanjePoslednjeServis.vratiListuJavljanjaPoslednjih(Servis.grupeObjekatServis.nadjiSveObjektePoGrupi(event.getValue())));
 				}else {
 					Prati.getCurrent().poslednjaJavljanja.setItems(new ArrayList<JavljanjaPoslednja>());

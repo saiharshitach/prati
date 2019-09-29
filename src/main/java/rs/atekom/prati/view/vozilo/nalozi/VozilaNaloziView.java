@@ -88,7 +88,9 @@ public class VozilaNaloziView extends OpstiView implements OpstiViewInterface{
 			tabela.addColumn(voziloNalog -> voziloNalog.getSistemPretplatnici() == null ? "" : voziloNalog.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
 		tabela.addColumn(VozilaNalozi::getBrojNaloga).setCaption("број налога");
-		tabela.addColumn(voziloNalog -> voziloNalog.getVozilo() == null ? "" : voziloNalog.getVozilo().getOznaka()).setCaption("возило");
+		tabela.addColumn(voziloNalog -> voziloNalog.getVozilo().getObjekti() == null ? "" : voziloNalog.getVozilo().getObjekti().getOznaka()).setCaption("возило");
+		tabela.addColumn(voziloNalog -> voziloNalog.getVozilo() == null ? "" : voziloNalog.getVozilo().getRegistracija()).setCaption("регистрација");
+		tabela.addColumn(voziloNalog -> voziloNalog.getVozac() == null ? "" : voziloNalog.getVozac().getKorisnici().toString()).setCaption("возач");
 		tabela.addColumn(VozilaNalozi::getOdMesta).setCaption("од места");
 		tabela.addColumn(VozilaNalozi::getDoMesta).setCaption("до места");
 		tabela.addColumn(VozilaNalozi::getMedjuTacke).setCaption("међу тачке");
@@ -96,7 +98,8 @@ public class VozilaNaloziView extends OpstiView implements OpstiViewInterface{
 		tabela.addColumn(VozilaNalozi::getOcekivaniDolazak, new DateRenderer(DANSATFORMAT)).setCaption("очекивани долазак").setStyleGenerator(objekti -> "v-align-right");
 		tabela.addColumn(voziloNalog -> voziloNalog.getVozac() == null ? "" : voziloNalog.getVozac().toString()).setCaption("возач");
 		tabela.addColumn(VozilaNalozi::getKomentar).setCaption("коментар");
-		tabela.addColumn(voziloNalog -> voziloNalog.getOrganizacija() == null ? "" : voziloNalog.getOrganizacija().getNaziv()).setCaption("организација");
+		tabela.addColumn(voziloNalog -> voziloNalog.getVozilo().getObjekti().getOrganizacija() == null ? "" : voziloNalog.getVozilo().getObjekti().getOrganizacija().getNaziv()).setCaption("организација");
+		tabela.addColumn(voziloNalog -> voziloNalog.getVozilo() == null ? "" : voziloNalog.getVozilo().getObjekti().getOrganizacija() == null ? "" : voziloNalog.getVozilo().getObjekti().getOrganizacija().getNaziv()).setCaption("организација");
 		if(isAdmin()) {
 			tabela.addComponentColumn(voziloNalog -> {CheckBox chb = new CheckBox(); if(voziloNalog.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(vozaci -> "v-align-right");
 		}
@@ -169,8 +172,9 @@ public class VozilaNaloziView extends OpstiView implements OpstiViewInterface{
 			private static final long serialVersionUID = 1L;
 			@Override
 			public boolean test(VozilaNalozi t) {
-				return (((t.getVozac() == null ? "" : t.getVozac().toString().toLowerCase()).contains(filter.getValue().toLowerCase())) ||
-						((t.getVozilo() == null ? "" : t.getVozilo().toString().toLowerCase()).contains(filter.getValue().toLowerCase())) ||
+				return (((t.getVozac().getKorisnici() == null ? "" : t.getVozac().getKorisnici().toString().toLowerCase()).contains(filter.getValue().toLowerCase())) ||
+						((t.getVozilo().getObjekti() == null ? "" : t.getVozilo().getObjekti().toString().toLowerCase()).contains(filter.getValue().toLowerCase())) ||
+						((t.getVozilo() == null ? "" : t.getVozilo().getRegistracija().toLowerCase()).contains(filter.getValue().toLowerCase())) ||
 						(t.getBrojNaloga() == null ? "" : t.getBrojNaloga().toLowerCase()).contains(filter.getValue().toLowerCase()));
 			}
 		};

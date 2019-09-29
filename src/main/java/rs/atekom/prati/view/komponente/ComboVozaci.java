@@ -4,24 +4,25 @@ import java.util.List;
 
 import com.vaadin.ui.ComboBox;
 import pratiBaza.tabele.Korisnici;
+import pratiBaza.tabele.Vozaci;
 import rs.atekom.prati.server.Servis;
 
 
-public class ComboKorisniciVozaci extends ComboBox<Korisnici>{
+public class ComboVozaci extends ComboBox<Vozaci>{
 
 	private static final long serialVersionUID = 1L;
 	
-	public ComboKorisniciVozaci(Korisnici korisnik, String naziv, boolean prazno, boolean indicator) {
+	public ComboVozaci(Korisnici korisnik, String naziv, boolean prazno, boolean indicator) {
 		setCaption(naziv);
 		setPlaceholder("корисници...");
-		setItemCaptionGenerator(Korisnici::toString);
+		setItemCaptionGenerator(vozaci -> vozaci.getKorisnici().toString());
 		setItems(lista(korisnik));
 		setEmptySelectionAllowed(prazno);
 		setRequiredIndicatorVisible(indicator);
 		setWidth("100%");
 	}
 
-	public List<Korisnici> lista(Korisnici korisnik){
-		return Servis.korisnikServis.nadjiSveKorisnikeVozace(korisnik, true);
+	public List<Vozaci> lista(Korisnici korisnik){
+		return Servis.vozacServis.nadjiSveVozace(korisnik);
 	}
 }

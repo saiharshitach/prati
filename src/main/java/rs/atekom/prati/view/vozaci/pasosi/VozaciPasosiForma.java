@@ -16,7 +16,7 @@ import rs.atekom.prati.server.Servis;
 import rs.atekom.prati.view.OpstaForma;
 import rs.atekom.prati.view.OpstaFormaInterface;
 import rs.atekom.prati.view.OpstiView;
-import rs.atekom.prati.view.komponente.ComboKorisniciVozaci;
+import rs.atekom.prati.view.komponente.ComboVozaci;
 import rs.atekom.prati.view.komponente.ComboOrganizacije;
 import rs.atekom.prati.view.komponente.ComboPretplatnici;
 import rs.atekom.prati.view.komponente.Datum;
@@ -27,8 +27,8 @@ public class VozaciPasosiForma extends OpstaForma implements OpstaFormaInterface
 	private static final long serialVersionUID = 1L;
 	private VozaciPasosiLogika logika;
 	private ComboPretplatnici pretplatnici;
-	private ComboOrganizacije organizacije;
-	private ComboKorisniciVozaci vozaci;
+	//private ComboOrganizacije organizacije;
+	private ComboVozaci vozaci;
 	private Tekst broj;
 	private Datum izdato, vaziDo;
 	private CheckBox izbrisan;
@@ -36,8 +36,8 @@ public class VozaciPasosiForma extends OpstaForma implements OpstaFormaInterface
 	public VozaciPasosiForma(VozaciPasosiLogika log) {
 		logika = log;
 		pretplatnici = new ComboPretplatnici("претплатник", true, true);
-		organizacije = new ComboOrganizacije(pretplatnici.getValue(), "организација", true, false);
-		vozaci = new ComboKorisniciVozaci(logika.view.korisnik, "возач", true, true);
+		//organizacije = new ComboOrganizacije(pretplatnici.getValue(), "организација", true, false);
+		vozaci = new ComboVozaci(logika.view.korisnik, "возач", true, true);
 		broj = new Tekst("број", true);
 		izdato = new Datum("издато", true);
 		vaziDo = new Datum("важеће до", true);
@@ -47,17 +47,17 @@ public class VozaciPasosiForma extends OpstaForma implements OpstaFormaInterface
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void valueChange(ValueChangeEvent<SistemPretplatnici> event) {
-				organizacije.setItems(Servis.organizacijaServis.nadjiSveOrganizacije(pretplatnici.getValue(), true));
+				//organizacije.setItems(Servis.organizacijaServis.nadjiSveOrganizacije(pretplatnici.getValue(), true));
 			}
 		});
 		
-		organizacije.addValueChangeListener(new ValueChangeListener<Organizacije>() {
+		/*organizacije.addValueChangeListener(new ValueChangeListener<Organizacije>() {
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void valueChange(ValueChangeEvent<Organizacije> event) {
 				
 			}
-		});
+		});**/
 		
 		sacuvaj.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
@@ -106,9 +106,9 @@ public class VozaciPasosiForma extends OpstaForma implements OpstaFormaInterface
 		if(logika.view.korisnik.isSistem() && logika.view.korisnik.getSistemPretplatnici() == null) {
 			layout.addComponent(pretplatnici);
 		}
-		if(logika.view.korisnik.isAdmin() && logika.view.korisnik.getOrganizacija() == null) {
+		/*if(logika.view.korisnik.isAdmin() && logika.view.korisnik.getOrganizacija() == null) {
 			layout.addComponent(organizacije);
-		}
+		}**/
 		layout.addComponent(vozaci);
 		layout.addComponent(broj);
 		layout.addComponent(izdato);
@@ -147,8 +147,8 @@ public class VozaciPasosiForma extends OpstaForma implements OpstaFormaInterface
 			pasos = (VozaciPasosi)podatak;
 		}
 		pasos.setSistemPretplatnici(pretplatnici.getValue());
-		pasos.setOrganizacija(organizacije.getValue());
-		pasos.setKorisnici(vozaci.getValue());
+		//pasos.setOrganizacija(organizacije.getValue());
+		pasos.setVozaci(vozaci.getValue());
 		pasos.setBrojPasosa(broj.getValue());
 		
 		try {
@@ -172,11 +172,11 @@ public class VozaciPasosiForma extends OpstaForma implements OpstaFormaInterface
 		}else {
 			pretplatnici.clear();
 		}
-		if(logika.view.korisnik.getOrganizacija() != null) {
+		/*if(logika.view.korisnik.getOrganizacija() != null) {
 			organizacije.setValue(logika.view.korisnik.getOrganizacija());
 		}else {
 			organizacije.clear();
-		}
+		}**/
 		vozaci.clear();
 		broj.clear();
 		izdato.clear();
@@ -189,8 +189,8 @@ public class VozaciPasosiForma extends OpstaForma implements OpstaFormaInterface
 		VozaciPasosi pasos = (VozaciPasosi)podatak;
 		if(pasos.getId() != null) {
 			pretplatnici.setValue(pasos.getSistemPretplatnici());
-			organizacije.setValue(pasos.getOrganizacija());
-			vozaci.setValue(pasos.getKorisnici());
+			//organizacije.setValue(pasos.getOrganizacija());
+			vozaci.setValue(pasos.getVozaci());
 			try {
 				broj.setValue(pasos.getBrojPasosa());
 			}catch (Exception e) {

@@ -8,7 +8,6 @@ import com.vaadin.server.Page;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-
 import pratiBaza.tabele.Organizacije;
 import pratiBaza.tabele.SistemPretplatnici;
 import pratiBaza.tabele.Vozaci;
@@ -16,7 +15,7 @@ import rs.atekom.prati.server.Servis;
 import rs.atekom.prati.view.OpstaForma;
 import rs.atekom.prati.view.OpstaFormaInterface;
 import rs.atekom.prati.view.OpstiView;
-import rs.atekom.prati.view.komponente.ComboKorisniciVozaci;
+import rs.atekom.prati.view.komponente.ComboKorisnici;
 import rs.atekom.prati.view.komponente.ComboOrganizacije;
 import rs.atekom.prati.view.komponente.ComboPretplatnici;
 import rs.atekom.prati.view.komponente.Datum;
@@ -28,7 +27,7 @@ public class VozaciForma extends OpstaForma implements OpstaFormaInterface{
 	private VozaciLogika logika;
 	private ComboPretplatnici pretplatnici;
 	private ComboOrganizacije organizacije;
-	private ComboKorisniciVozaci vozaci;
+	private ComboKorisnici vozaci;
 	private Tekst jmbg, prebivaliste;
 	private Datum zaposlenDo, zaposlenOd;
 	private CheckBox izbrisan;
@@ -37,7 +36,7 @@ public class VozaciForma extends OpstaForma implements OpstaFormaInterface{
 		logika = log;
 		pretplatnici = new ComboPretplatnici("претплатник", true, true);
 		organizacije = new ComboOrganizacije(pretplatnici.getValue(), "организација", true, false);
-		vozaci = new ComboKorisniciVozaci(logika.view.korisnik, "возач", true, true);
+		vozaci = new ComboKorisnici(logika.view.korisnik, "возач", true, true);
 		jmbg = new Tekst("јмбг", false);
 		prebivaliste = new Tekst("пребивалиште", false);
 		zaposlenOd = new Datum("запослен од", true);

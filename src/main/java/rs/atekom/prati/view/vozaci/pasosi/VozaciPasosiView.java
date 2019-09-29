@@ -86,11 +86,11 @@ public class VozaciPasosiView extends OpstiView implements OpstiViewInterface{
 		if(korisnik.isSistem() && korisnik.getSistemPretplatnici() == null) {
 			tabela.addColumn(vozaciPasos -> vozaciPasos.getSistemPretplatnici() == null ? "" : vozaciPasos.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
-		tabela.addColumn(vozaciPasos -> vozaciPasos.getKorisnici() == null ? "" : vozaciPasos.getKorisnici().toString()).setCaption("корисник");
+		tabela.addColumn(vozaciPasos -> vozaciPasos.getVozaci().getKorisnici() == null ? "" : vozaciPasos.getVozaci().getKorisnici().toString()).setCaption("корисник");
 		tabela.addColumn(VozaciPasosi::getBrojPasosa).setCaption("број");
 		tabela.addColumn(VozaciPasosi::getIzdato, new DateRenderer(DANFORMAT)).setCaption("издато").setStyleGenerator(objekti -> "v-align-right");
 		tabela.addColumn(VozaciPasosi::getVaziDo, new DateRenderer(DANFORMAT)).setCaption("важеће до").setStyleGenerator(objekti -> "v-align-right");
-		tabela.addColumn(vozaciPasos -> vozaciPasos.getOrganizacija() == null ? "" : vozaciPasos.getOrganizacija().getNaziv()).setCaption("организација");
+		tabela.addColumn(vozaciPasos -> vozaciPasos.getVozaci().getKorisnici().getOrganizacija() == null ? "" : vozaciPasos.getVozaci().getKorisnici().getOrganizacija().getNaziv()).setCaption("организација");
 		if(isAdmin()) {
 			tabela.addComponentColumn(vozaciPasos -> {CheckBox chb = new CheckBox(); if(vozaciPasos.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(vozaci -> "v-align-right");
 		}
@@ -141,7 +141,7 @@ public class VozaciPasosiView extends OpstiView implements OpstiViewInterface{
 		if(izabrani != null) {
 			if(!izabrani.isIzbrisan()) {
 				Servis.pasosServis.izbrisiVozacPasos(izabrani);
-				pokaziPorukuUspesno("подаци за пасош " + izabrani.getKorisnici().toString() + " избрисани");
+				pokaziPorukuUspesno("подаци за пасош " + izabrani.getVozaci().getKorisnici().toString() + " избрисани");
 			}else {
 				pokaziPorukuGreska("подаци за пасош су већ избрисани!");
 			}
@@ -164,7 +164,7 @@ public class VozaciPasosiView extends OpstiView implements OpstiViewInterface{
 			private static final long serialVersionUID = 1L;
 			@Override
 			public boolean test(VozaciPasosi t) {
-				return (((t.getKorisnici() == null ? "" : t.getKorisnici().toString().toLowerCase()).contains(filter.getValue().toLowerCase())));
+				return (((t.getVozaci().getKorisnici() == null ? "" : t.getVozaci().getKorisnici().toString().toLowerCase()).contains(filter.getValue().toLowerCase())));
 			}
 		};
 		filter.addValueChangeListener(e -> {osveziFilter();});

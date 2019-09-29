@@ -90,12 +90,13 @@ public class VozilaPrimoPredajeView extends OpstiView implements OpstiViewInterf
 		}
 		tabela.addColumn(VozilaPrimoPredaje::getBroj).setCaption("број");
 		tabela.addColumn(VozilaPrimoPredaje::getDatum, new DateRenderer(DANFORMAT)).setCaption("датум").setStyleGenerator(objekti -> "v-align-right");
-		tabela.addColumn(voziloPrimoPredaja -> voziloPrimoPredaja.getVozilo() == null ? "" : voziloPrimoPredaja.getVozilo().getOznaka()).setCaption("возило");
-		tabela.addColumn(voziloPrimoPredaja -> voziloPrimoPredaja.getVozacPredaja() == null ? "" : voziloPrimoPredaja.getVozacPredaja().toString()).setCaption("возач предаја");
-		tabela.addColumn(voziloPrimoPredaja -> voziloPrimoPredaja.getVozacPrijem() == null ? "" : voziloPrimoPredaja.getVozacPrijem().toString()).setCaption("возач пријем");
+		tabela.addColumn(voziloPrimoPredaja -> voziloPrimoPredaja.getVozilo().getObjekti() == null ? "" : voziloPrimoPredaja.getVozilo().getObjekti().getOznaka()).setCaption("возило");
+		tabela.addColumn(voziloPrimoPredaja -> voziloPrimoPredaja.getVozilo().getObjekti() == null ? "" : voziloPrimoPredaja.getVozilo().getRegistracija()).setCaption("регистрација");
+		tabela.addColumn(voziloPrimoPredaja -> voziloPrimoPredaja.getVozacPredaja().getKorisnici() == null ? "" : voziloPrimoPredaja.getVozacPredaja().getKorisnici().toString()).setCaption("возач предаја");
+		tabela.addColumn(voziloPrimoPredaja -> voziloPrimoPredaja.getVozacPrijem().getKorisnici() == null ? "" : voziloPrimoPredaja.getVozacPrijem().getKorisnici().toString()).setCaption("возач пријем");
 		tabela.addColumn(voziloPrimoPredaja -> voziloPrimoPredaja.getAdministrator() == null ? "" : voziloPrimoPredaja.getAdministrator().toString()).setCaption("администратор");
 		tabela.addColumn(VozilaPrimoPredaje::getKomentar).setCaption("коментар");
-		tabela.addColumn(voziloPrimoPredaja -> voziloPrimoPredaja.getOrganizacija() == null ? "" : voziloPrimoPredaja.getOrganizacija().getNaziv()).setCaption("организација");
+		tabela.addColumn(voziloPrimoPredaja -> voziloPrimoPredaja.getVozilo().getObjekti().getOrganizacija() == null ? "" : voziloPrimoPredaja.getVozilo().getObjekti().getOrganizacija().getNaziv()).setCaption("организација");
 		if(isAdmin()) {
 			tabela.addComponentColumn(voziloPrimoPredaja -> {CheckBox chb = new CheckBox(); if(voziloPrimoPredaja.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(vozaci -> "v-align-right");
 		}

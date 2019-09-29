@@ -1,19 +1,19 @@
-package rs.atekom.prati.view.vozila;
+package rs.atekom.prati.view.partneri;
 
 import com.vaadin.server.Page;
-
-import pratiBaza.tabele.Vozila;
+import pratiBaza.tabele.Partneri;
 import rs.atekom.prati.Prati;
 import rs.atekom.prati.server.Servis;
 import rs.atekom.prati.view.LogikaInterface;
 
-public class VozilaLogika implements LogikaInterface{
+public class PartneriLogika implements LogikaInterface{
 
-	public VozilaView view;
-
-	public VozilaLogika(VozilaView voziloView) {
-		view = voziloView;
+	public PartneriView view;
+	
+	public PartneriLogika(PartneriView partneriView) {
+		view = partneriView;
 	}
+	
 	@Override
 	public void init() {
 		izmeniPodatak(null);
@@ -48,33 +48,34 @@ public class VozilaLogika implements LogikaInterface{
 		}else {
 			try {
 				int id = Integer.parseInt(objectId);
-				Vozila vozilo = Servis.voziloServis.nadjiVoziloPoId(id);
-				view.izaberiRed(vozilo);
+				Partneri partner = Servis.partnerServis.nadjiPartneraPoId(id);
+				view.izaberiRed(partner);
 			}catch (Exception e) {
-				// TODO: handle exception
+				
 			}
 		}
 	}
 
 	@Override
 	public void sacuvajPodatak(Object podatak) {
-		Vozila vozilo = (Vozila)podatak;
+		Partneri partner = (Partneri)podatak;
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
 		setFragmentParametar("");
-		if(vozilo.getId() != null) {
-			Servis.voziloServis.azurirajVozilo(vozilo);
-			view.pokaziPorukuUspesno("подаци возила измењени");
+		if(partner.getId() != null) {
+			Servis.partnerServis.izmeniPartnera(partner);
+			view.pokaziPorukuUspesno("партнер измењен");
 		}else {
 			try {
-				if(Servis.voziloServis.nadjiVoziloPoObjektu(vozilo.getObjekti()) == null) {
-					Servis.voziloServis.unesiVozilo(vozilo);
-					view.pokaziPorukuUspesno("подаци возила сачувани");
+				if(Servis.partnerServis.nadjiPartneraPoPibu(partner.getSistemPretplatnici(), partner.getPib()) == null) {
+					Servis.partnerServis.unesiPartnera(partner);
+					view.pokaziPorukuUspesno("партнер сачуван");
 				}else {
-					view.pokaziPorukuGreska("подаци за изабрано возило су већ унети!");
+					view.pokaziPorukuGreska("партнер са овим ПИБ-ом је већ унет!");
 				}
+				
 			}catch (Exception e) {
-				view.pokaziPorukuGreska("подаци за возило због грешке нису сачувани!");
+				view.pokaziPorukuGreska("партнер са овим ПИБ-ом је већ унет!");
 			}
 		}
 		view.updateTable();
@@ -82,20 +83,20 @@ public class VozilaLogika implements LogikaInterface{
 
 	@Override
 	public void izmeniPodatak(Object podatak) {
-		Vozila vozilo = (Vozila)podatak;
-		if(vozilo == null) {
+		Partneri partner = (Partneri)podatak;
+		if(partner == null) {
 			setFragmentParametar("");
 		}else {
-			setFragmentParametar(vozilo.getId() + "");
+			setFragmentParametar(partner.getId() + "");
 		}
-		view.izmeniPodatak(vozilo);
+		view.izmeniPodatak(partner);
 	}
 
 	@Override
 	public void noviPodatak() {
 		view.ocistiIzbor();
 		setFragmentParametar("new");
-		view.izmeniPodatak(new Vozila());
+		view.izmeniPodatak(new Partneri());
 	}
 
 	@Override
@@ -109,7 +110,7 @@ public class VozilaLogika implements LogikaInterface{
 
 	@Override
 	public void redIzabran(Object podatak) {
-		view.izmeniPodatak((Vozila)podatak);
+		view.izmeniPodatak((Partneri)podatak);
 	}
-	
+
 }

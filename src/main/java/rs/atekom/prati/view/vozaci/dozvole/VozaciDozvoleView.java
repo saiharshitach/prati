@@ -86,11 +86,11 @@ public class VozaciDozvoleView extends OpstiView implements OpstiViewInterface{
 		if(korisnik.isSistem() && korisnik.getSistemPretplatnici() == null) {
 			tabela.addColumn(vozaciDozvola -> vozaciDozvola.getSistemPretplatnici() == null ? "" : vozaciDozvola.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
-		tabela.addColumn(vozaciDozvola -> vozaciDozvola.getKorisnici() == null ? "" : vozaciDozvola.getKorisnici().toString()).setCaption("корисник");
+		tabela.addColumn(vozaciDozvola -> vozaciDozvola.getVozaci() == null ? "" : vozaciDozvola.getVozaci().getKorisnici().toString()).setCaption("возач");
 		tabela.addColumn(VozaciDozvole::getBrojDozvole).setCaption("број");
 		tabela.addColumn(VozaciDozvole::getIzdao).setCaption("издао");
 		tabela.addColumn(VozaciDozvole::getVaziDo, new DateRenderer(DANFORMAT)).setCaption("важеће до").setStyleGenerator(objekti -> "v-align-right");
-		tabela.addColumn(vozaciDozvola -> vozaciDozvola.getOrganizacija() == null ? "" : vozaciDozvola.getOrganizacija().getNaziv()).setCaption("организација");
+		tabela.addColumn(vozaciDozvola -> vozaciDozvola.getVozaci().getKorisnici().getOrganizacija() == null ? "" : vozaciDozvola.getVozaci().getKorisnici().getOrganizacija().getNaziv()).setCaption("организација");
 		if(isAdmin()) {
 			tabela.addComponentColumn(vozaciDozvola -> {CheckBox chb = new CheckBox(); if(vozaciDozvola.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(vozaci -> "v-align-right");
 		}
@@ -140,7 +140,7 @@ public class VozaciDozvoleView extends OpstiView implements OpstiViewInterface{
 		if(izabrani != null) {
 			if(!izabrani.isIzbrisan()) {
 				Servis.dozvolaServis.izbrisiVozacDozvola(izabrani);
-				pokaziPorukuUspesno("подаци за возачку дозволу " + izabrani.getKorisnici().toString() + " избрисани");
+				pokaziPorukuUspesno("подаци за возачку дозволу " + izabrani.getVozaci().getKorisnici().toString() + " избрисани");
 			}else {
 				pokaziPorukuGreska("подаци за личну карту су већ избрисани!");
 			}
@@ -163,7 +163,7 @@ public class VozaciDozvoleView extends OpstiView implements OpstiViewInterface{
 			private static final long serialVersionUID = 1L;
 			@Override
 			public boolean test(VozaciDozvole t) {
-				return (((t.getKorisnici() == null ? "" : t.getKorisnici().toString().toLowerCase()).contains(filter.getValue().toLowerCase())));
+				return (((t.getVozaci().getKorisnici() == null ? "" : t.getVozaci().getKorisnici().toString().toLowerCase()).contains(filter.getValue().toLowerCase())));
 			}
 		};
 		filter.addValueChangeListener(e -> {osveziFilter();});

@@ -79,7 +79,6 @@ public class VozilaView extends OpstiView implements OpstiViewInterface{
 		viewLogika.init();
 	}
 
-
 	@Override
 	public void enter(ViewChangeEvent event) {
 		viewLogika.enter(event.getParameters());
@@ -135,15 +134,15 @@ public class VozilaView extends OpstiView implements OpstiViewInterface{
 
 	@Override
 	public void izmeniPodatak(Object podatak) {
-		Vozila objekatDetalji = (Vozila)podatak;
-		if(objekatDetalji != null) {
+		Vozila vozilo = (Vozila)podatak;
+		if(vozilo != null) {
 			forma.addStyleName("visible");
 			forma.setEnabled(true);
 		}else {
 			forma.removeStyleName("visible");
 			forma.setEnabled(false);
 		}
-		forma.izmeniPodatak(objekatDetalji);
+		forma.izmeniPodatak(vozilo);
 	}
 
 	@Override
@@ -151,9 +150,9 @@ public class VozilaView extends OpstiView implements OpstiViewInterface{
 		if(izabrani != null) {
 			if(!izabrani.isIzbrisan()) {
 				Servis.voziloServis.izbrisiVozilo(izabrani);
-				pokaziPorukuUspesno("детаљи објекта су избрисани");
+				pokaziPorukuUspesno("возило избрисано");
 			}else {
-				pokaziPorukuGreska("детаљи објекта су већ избрисани!");
+				pokaziPorukuGreska("возило већ избрисано!");
 			}
 		}
 	}

@@ -87,12 +87,12 @@ public class VozaciLekarskoView extends OpstiView implements OpstiViewInterface{
 		if(korisnik.isSistem() && korisnik.getSistemPretplatnici() == null) {
 			tabela.addColumn(vozaciLekarsko -> vozaciLekarsko.getSistemPretplatnici() == null ? "" : vozaciLekarsko.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
-		tabela.addColumn(vozaciLekarsko -> vozaciLekarsko.getKorisnici() == null ? "" : vozaciLekarsko.getKorisnici().toString()).setCaption("корисник");
+		tabela.addColumn(vozaciLekarsko -> vozaciLekarsko.getVozaci().getKorisnici() == null ? "" : vozaciLekarsko.getVozaci().getKorisnici().toString()).setCaption("возач");
 		tabela.addColumn(VozaciLekarsko::getIzdao).setCaption("издао");
 		tabela.addColumn(VozaciLekarsko::getIzdato, new DateRenderer(DANFORMAT)).setCaption("издато").setStyleGenerator(objekti -> "v-align-right");
 		tabela.addColumn(VozaciLekarsko::getVaziDo, new DateRenderer(DANFORMAT)).setCaption("важеће до").setStyleGenerator(objekti -> "v-align-right");
 		tabela.addColumn(VozaciLekarsko::getOpis).setCaption("опис");
-
+		tabela.addColumn(vozaciLekarsko -> vozaciLekarsko.getVozaci().getKorisnici() == null ? "" : vozaciLekarsko.getVozaci().getKorisnici().toString()).setCaption("организација");
 		if(isAdmin()) {
 			tabela.addComponentColumn(vozaciLekarsko -> {CheckBox chb = new CheckBox(); if(vozaciLekarsko.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(vozaci -> "v-align-right");
 		}
@@ -138,7 +138,7 @@ public class VozaciLekarskoView extends OpstiView implements OpstiViewInterface{
 		if(izabrani != null) {
 			if(!izabrani.isIzbrisan()) {
 				Servis.lekarskoServis.izbrisiVozacLekarsko(izabrani);
-				pokaziPorukuUspesno("подаци за лекарско уверење " + izabrani.getKorisnici().toString() + " избрисани");
+				pokaziPorukuUspesno("подаци за лекарско уверење " + izabrani.getVozaci().getKorisnici().toString() + " избрисани");
 			}else {
 				pokaziPorukuGreska("подаци за лекарско уверење су већ избрисани!");
 			}
@@ -160,7 +160,7 @@ public class VozaciLekarskoView extends OpstiView implements OpstiViewInterface{
 			private static final long serialVersionUID = 1L;
 			@Override
 			public boolean test(VozaciLekarsko t) {
-				return (((t.getKorisnici() == null ? "" : t.getKorisnici().toString().toLowerCase()).contains(filter.getValue().toLowerCase())));
+				return (((t.getVozaci().getKorisnici() == null ? "" : t.getVozaci().getKorisnici().toString().toLowerCase()).contains(filter.getValue().toLowerCase())));
 			}
 		};
 		filter.addValueChangeListener(e -> {osveziFilter();});

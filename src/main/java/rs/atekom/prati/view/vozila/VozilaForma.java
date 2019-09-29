@@ -160,12 +160,12 @@ public class VozilaForma extends OpstaForma implements OpstaFormaInterface{
 	@Override
 	public void izmeniPodatak(Object podatak) {
 		ocistiPodatak();
-		Vozila objekatDetalj;
+		Vozila vozilo;
 		if(podatak == null) {
-			objekatDetalj = new Vozila();
+			vozilo = new Vozila();
 		}else {
-			objekatDetalj = (Vozila)podatak;
-			postaviPodatak(objekatDetalj);
+			vozilo = (Vozila)podatak;
+			postaviPodatak(vozilo);
 		}
 		String scrollScript = "window.document.getElementById('" + getId() + "').scrollTop = 0;";
 		Page.getCurrent().getJavaScript().execute(scrollScript);
@@ -173,40 +173,40 @@ public class VozilaForma extends OpstaForma implements OpstaFormaInterface{
 
 	@Override
 	public Object sacuvajPodatak(Object podatak) {
-		Vozila objekatDetalj;
+		Vozila vozilo;
 		if(podatak == null) {
-			objekatDetalj = new Vozila();
+			vozilo = new Vozila();
 		}else {
-			objekatDetalj = (Vozila)podatak;
+			vozilo = (Vozila)podatak;
 		}
-		objekatDetalj.setSistemPretplatnici(pretplatnici.getValue());
-		objekatDetalj.setObjekti(objekti.getValue());
-		objekatDetalj.setRegistracija(registracija.getValue());
-		objekatDetalj.setMarka(marka.getValue());
-		objekatDetalj.setModel(model.getValue());
-		objekatDetalj.setTip(tip.getValue());
-		objekatDetalj.setGodina(Integer.parseInt(godina.getValue()));
-		objekatDetalj.setSistemGoriva(gorivo.getValue());
+		vozilo.setSistemPretplatnici(pretplatnici.getValue());
+		vozilo.setObjekti(objekti.getValue());
+		vozilo.setRegistracija(registracija.getValue());
+		vozilo.setMarka(marka.getValue());
+		vozilo.setModel(model.getValue());
+		vozilo.setTip(tip.getValue());
+		vozilo.setGodina(Integer.parseInt(godina.getValue()));
+		vozilo.setSistemGoriva(gorivo.getValue());
 		try {
-			objekatDetalj.setRezervoar(Integer.parseInt(rezervoar.getValue()));
+			vozilo.setRezervoar(Integer.parseInt(rezervoar.getValue()));
 		}catch (Exception e) {
-			objekatDetalj.setRezervoar(0);
+			vozilo.setRezervoar(0);
 		}
 		try {
-			objekatDetalj.setPotrosnja(Float.parseFloat(potrosnja.getValue()));
+			vozilo.setPotrosnja(Float.parseFloat(potrosnja.getValue()));
 		}catch (Exception e) {
-			objekatDetalj.setPotrosnja(0.0f);
+			vozilo.setPotrosnja(0.0f);
 		}
-		objekatDetalj.setTeretno(teretno.getValue());
-		objekatDetalj.setBrojSaobracajne(brojSaobracajne.getValue());
-		objekatDetalj.setSerijskiBroj(serijskiBroj.getValue());
+		vozilo.setTeretno(teretno.getValue());
+		vozilo.setBrojSaobracajne(brojSaobracajne.getValue());
+		vozilo.setSerijskiBroj(serijskiBroj.getValue());
 		try {
-			objekatDetalj.setDatumRegistracije(dateDatum(datumPrveRegistracije.getValue()));
+			vozilo.setDatumRegistracije(dateDatum(datumPrveRegistracije.getValue()));
 		}catch (Exception e) {
-			objekatDetalj.setDatumRegistracije(null);
+			vozilo.setDatumRegistracije(null);
 		}
-		objekatDetalj.setIzbrisan(izbrisan.getValue());
-		return objekatDetalj;
+		vozilo.setIzbrisan(izbrisan.getValue());
+		return vozilo;
 	}
 
 	@Override
@@ -234,69 +234,69 @@ public class VozilaForma extends OpstaForma implements OpstaFormaInterface{
 
 	@Override
 	public void postaviPodatak(Object podatak) {
-		Vozila objekatDetalj = (Vozila)podatak;
-		if(objekatDetalj.getId() != null) {
-			pretplatnici.setValue(objekatDetalj.getSistemPretplatnici());
-			organizacije.setValue(objekatDetalj.getOrganizacija());
+		Vozila vozilo = (Vozila)podatak;
+		if(vozilo.getId() != null) {
+			pretplatnici.setValue(vozilo.getSistemPretplatnici());
+			organizacije.setValue(vozilo.getOrganizacija());
 			try {
-				objekti.setValue(objekatDetalj.getObjekti());
+				objekti.setValue(vozilo.getObjekti());
 			}catch (Exception e) {
 				logika.view.pokaziPorukuGreska("грешка у преузимању објекта!");
 				objekti.setValue(null);
 			}
 			try {
-				registracija.setValue(objekatDetalj.getRegistracija());
+				registracija.setValue(vozilo.getRegistracija());
 			}catch (Exception e) {
 				registracija.setValue("");
 			}
 			try {
-				marka.setValue(objekatDetalj.getMarka());
+				marka.setValue(vozilo.getMarka());
 			}catch (Exception e) {
 				marka.setValue("");
 			}
 			try {
-				model.setValue(objekatDetalj.getModel());
+				model.setValue(vozilo.getModel());
 			}catch (Exception e) {
 				model.setValue("");
 			}
 			try {
-				tip.setValue(objekatDetalj.getTip());
+				tip.setValue(vozilo.getTip());
 			}catch (Exception e) {
 				tip.setValue("");
 			}
 			try {
-				godina.setValue(String.valueOf(objekatDetalj.getGodina()));
+				godina.setValue(String.valueOf(vozilo.getGodina()));
 			}catch (Exception e) {
 				godina.setValue("");
 			}
-			gorivo.setValue(objekatDetalj.getSistemGoriva());
+			gorivo.setValue(vozilo.getSistemGoriva());
 			try {
-				rezervoar.setValue(String.valueOf(objekatDetalj.getRezervoar()));
+				rezervoar.setValue(String.valueOf(vozilo.getRezervoar()));
 			}catch (Exception e) {
 				rezervoar.setValue("");
 			}
 			try {
-				potrosnja.setValue(String.valueOf(objekatDetalj.getPotrosnja()));
+				potrosnja.setValue(String.valueOf(vozilo.getPotrosnja()));
 			}catch (Exception e) {
 				potrosnja.setValue("");
 			}
-			teretno.setValue(objekatDetalj.isTeretno());
+			teretno.setValue(vozilo.isTeretno());
 			try {
-				brojSaobracajne.setValue(objekatDetalj.getBrojSaobracajne());
+				brojSaobracajne.setValue(vozilo.getBrojSaobracajne());
 			}catch (Exception e) {
 				brojSaobracajne.setValue("");
 			}
 			try {
-				serijskiBroj.setValue(objekatDetalj.getSerijskiBroj());
+				serijskiBroj.setValue(vozilo.getSerijskiBroj());
 			}catch (Exception e) {
 				serijskiBroj.setValue("");
 			}
-			if(objekatDetalj.getDatumRegistracije() != null) {
-				datumPrveRegistracije.setValue(localDatum(objekatDetalj.getDatumRegistracije()));
+			if(vozilo.getDatumRegistracije() != null) {
+				datumPrveRegistracije.setValue(localDatum(vozilo.getDatumRegistracije()));
 			}else {
 				datumPrveRegistracije.setValue(null);
 			}
-			izbrisan.setValue(objekatDetalj.isIzbrisan());
+			izbrisan.setValue(vozilo.isIzbrisan());
 		}
 		
 	}
@@ -310,16 +310,16 @@ public class VozilaForma extends OpstaForma implements OpstaFormaInterface{
 		if(objekti.getValue() == null) {
 			sveIma = false;
 		}
-		if(registracija.isEmpty() || registracija.getValue() == "") {
+		if(registracija.isEmpty() || registracija.getValue().isEmpty()) {
 			sveIma = false;
 		}
-		if(marka.isEmpty() || marka.getValue() == "") {
+		if(marka.isEmpty() || marka.getValue().isEmpty()) {
 			sveIma = false;
 		}
-		if(model.isEmpty() || model.getValue() == "") {
+		if(model.isEmpty() || model.getValue().isEmpty()) {
 			sveIma = false;
 		}
-		if(godina.isEmpty() || godina.getValue() == "") {
+		if(godina.isEmpty() || godina.getValue().isEmpty()) {
 			sveIma = false;
 		}
 		return sveIma;

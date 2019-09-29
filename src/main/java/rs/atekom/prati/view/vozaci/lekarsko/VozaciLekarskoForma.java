@@ -16,7 +16,7 @@ import rs.atekom.prati.server.Servis;
 import rs.atekom.prati.view.OpstaForma;
 import rs.atekom.prati.view.OpstaFormaInterface;
 import rs.atekom.prati.view.OpstiView;
-import rs.atekom.prati.view.komponente.ComboKorisniciVozaci;
+import rs.atekom.prati.view.komponente.ComboVozaci;
 import rs.atekom.prati.view.komponente.ComboOrganizacije;
 import rs.atekom.prati.view.komponente.ComboPretplatnici;
 import rs.atekom.prati.view.komponente.Datum;
@@ -27,8 +27,8 @@ public class VozaciLekarskoForma extends OpstaForma implements OpstaFormaInterfa
 	private static final long serialVersionUID = 1L;
 	private VozaciLekarskoLogika logika;
 	private ComboPretplatnici pretplatnici;
-	private ComboOrganizacije organizacije;
-	private ComboKorisniciVozaci vozaci;
+	//private ComboOrganizacije organizacije;
+	private ComboVozaci vozaci;
 	private Tekst izdao, opis;
 	private Datum izdato, vaziDo;
 	private CheckBox izbrisan;
@@ -36,8 +36,8 @@ public class VozaciLekarskoForma extends OpstaForma implements OpstaFormaInterfa
 	public VozaciLekarskoForma(VozaciLekarskoLogika log) {
 		logika = log;
 		pretplatnici = new ComboPretplatnici("претплатник", true, true);
-		organizacije = new ComboOrganizacije(pretplatnici.getValue(), "организација", true, false);
-		vozaci = new ComboKorisniciVozaci(logika.view.korisnik, "возач", true, true);
+		//organizacije = new ComboOrganizacije(pretplatnici.getValue(), "организација", true, false);
+		vozaci = new ComboVozaci(logika.view.korisnik, "возач", true, true);
 		izdao = new Tekst("издао", false);
 		izdato = new Datum("издато", true);
 		vaziDo = new Datum("важеће до", true);
@@ -48,17 +48,17 @@ public class VozaciLekarskoForma extends OpstaForma implements OpstaFormaInterfa
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void valueChange(ValueChangeEvent<SistemPretplatnici> event) {
-				organizacije.setItems(Servis.organizacijaServis.nadjiSveOrganizacije(pretplatnici.getValue(), true));
+				//organizacije.setItems(Servis.organizacijaServis.nadjiSveOrganizacije(pretplatnici.getValue(), true));
 			}
 		});
 		
-		organizacije.addValueChangeListener(new ValueChangeListener<Organizacije>() {
+		/*organizacije.addValueChangeListener(new ValueChangeListener<Organizacije>() {
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void valueChange(ValueChangeEvent<Organizacije> event) {
 				
 			}
-		});
+		});**/
 		
 		sacuvaj.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
@@ -108,7 +108,7 @@ public class VozaciLekarskoForma extends OpstaForma implements OpstaFormaInterfa
 			layout.addComponent(pretplatnici);
 		}
 		if(logika.view.korisnik.isAdmin() && logika.view.korisnik.getOrganizacija() == null) {
-			layout.addComponent(organizacije);
+			//layout.addComponent(organizacije);
 		}
 		layout.addComponent(vozaci);
 		layout.addComponent(izdao);
@@ -149,8 +149,8 @@ public class VozaciLekarskoForma extends OpstaForma implements OpstaFormaInterfa
 			lekarsko = (VozaciLekarsko)podatak;
 		}
 		lekarsko.setSistemPretplatnici(pretplatnici.getValue());
-		lekarsko.setOrganizacija(organizacije.getValue());
-		lekarsko.setKorisnici(vozaci.getValue());
+		//lekarsko.setOrganizacija(organizacije.getValue());
+		lekarsko.setVozaci(vozaci.getValue());
 		lekarsko.setIzdao(izdao.getValue());
 		
 		try {
@@ -175,11 +175,11 @@ public class VozaciLekarskoForma extends OpstaForma implements OpstaFormaInterfa
 		}else {
 			pretplatnici.clear();
 		}
-		if(logika.view.korisnik.getOrganizacija() != null) {
+		/*if(logika.view.korisnik.getOrganizacija() != null) {
 			organizacije.setValue(logika.view.korisnik.getOrganizacija());
 		}else {
 			organizacije.clear();
-		}
+		}**/
 		vozaci.clear();
 		izdao.clear();
 		izdato.clear();
@@ -193,8 +193,8 @@ public class VozaciLekarskoForma extends OpstaForma implements OpstaFormaInterfa
 		VozaciLekarsko lekarsko = (VozaciLekarsko)podatak;
 		if(lekarsko.getId() != null) {
 			pretplatnici.setValue(lekarsko.getSistemPretplatnici());
-			organizacije.setValue(lekarsko.getOrganizacija());
-			vozaci.setValue(lekarsko.getKorisnici());
+			//organizacije.setValue(lekarsko.getOrganizacija());
+			vozaci.setValue(lekarsko.getVozaci());
 			try {
 				izdao.setValue(lekarsko.getIzdao());
 			}catch (Exception e) {

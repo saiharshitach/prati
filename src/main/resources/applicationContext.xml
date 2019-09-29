@@ -74,6 +74,7 @@
                <value>pratiBaza.tabele.Objekti</value>
                <value>pratiBaza.tabele.ObjektiPoslednje</value>
                <value>pratiBaza.tabele.Organizacije</value>
+               <value>pratiBaza.tabele.Partneri</value>
                <value>pratiBaza.tabele.Sim</value>
                <value>pratiBaza.tabele.Sistem</value>
                <value>pratiBaza.tabele.SistemAlarmi</value>
@@ -96,6 +97,8 @@
                <value>pratiBaza.tabele.VozilaOprema</value>
                <value>pratiBaza.tabele.VozilaOpremaPrijem</value>
                <value>pratiBaza.tabele.VozilaPrimoPredaje</value>
+               <value>pratiBaza.tabele.VozilaSaobracajne</value>
+               <value>pratiBaza.tabele.VozilaSaobracajne2</value>
                <value>pratiBaza.tabele.Zone</value>
                <value>pratiBaza.tabele.ObjekatZone</value>
                <value>pratiBaza.pomocne.IzvestajTip</value>
@@ -190,13 +193,31 @@
   <bean id="organizacijaServis" class="pratiBaza.servisImpl.OrganizacijeServisImpl">
         <property name="organizacijaDAO" ref="organizacijaDAO"></property>
   </bean>
-   <bean id="proceduraDAO" class="pratiBaza.daoImpl.ProcedureDAOImpl">
+  <bean id="partnerDAO" class="pratiBaza.daoImpl.PartneriDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="partnerServis" class="pratiBaza.servisImpl.PartneriServisImpl">
+        <property name="partnerDAO" ref="partnerDAO"></property>
+  </bean>
+  <bean id="proceduraDAO" class="pratiBaza.daoImpl.ProcedureDAOImpl">
         <property name="sessionFactory" ref="sessionFactory" />
   </bean>
   <bean id="proceduraServis" class="pratiBaza.servisImpl.ProcedureServisImpl">
         <property name="proceduraDAO" ref="proceduraDAO"></property>
   </bean>
-    <bean id="simDAO" class="pratiBaza.daoImpl.SimDAOImpl">
+  <bean id="saobracajnaDAO" class="pratiBaza.daoImpl.VozilaSaobracajneDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="saobracajnaServis" class="pratiBaza.servisImpl.VozilaSaobracajneServisImpl">
+        <property name="saobracajnaDAO" ref="saobracajnaDAO"></property>
+  </bean>
+    <bean id="saobracajna2DAO" class="pratiBaza.daoImpl.VozilaSaobracajne2DAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="saobracajna2Servis" class="pratiBaza.servisImpl.VozilaSaobracajne2ServisImpl">
+        <property name="saobracajna2DAO" ref="saobracajna2DAO"></property>
+  </bean>
+  <bean id="simDAO" class="pratiBaza.daoImpl.SimDAOImpl">
         <property name="sessionFactory" ref="sessionFactory" />
   </bean>
   <bean id="simServis" class="pratiBaza.servisImpl.SimServisImpl">
@@ -268,7 +289,7 @@
   <bean id="vozacDozvolaServis" class="pratiBaza.servisImpl.VozaciDozvoleServisImpl">
         <property name="vozacDozvolaDAO" ref="vozacDozvolaDAO"></property>
   </bean>
-    <bean id="vozacLekarskoDAO" class="pratiBaza.daoImpl.VozaciLekarskoDAOImpl">
+  <bean id="vozacLekarskoDAO" class="pratiBaza.daoImpl.VozaciLekarskoDAOImpl">
         <property name="sessionFactory" ref="sessionFactory" />
   </bean>
   <bean id="vozacLekarskoServis" class="pratiBaza.servisImpl.VozaciLekarskoServisImpl">
