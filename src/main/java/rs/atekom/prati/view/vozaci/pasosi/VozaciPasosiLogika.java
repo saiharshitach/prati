@@ -1,5 +1,7 @@
 package rs.atekom.prati.view.vozaci.pasosi;
 
+import java.util.ArrayList;
+
 import com.vaadin.server.Page;
 import pratiBaza.tabele.VozaciPasosi;
 import rs.atekom.prati.Prati;
@@ -67,8 +69,25 @@ public class VozaciPasosiLogika implements LogikaInterface{
 			view.pokaziPorukuUspesno("подаци за пасош уверење измењени");
 		}else {
 			try {
-				Servis.pasosServis.unesiVozacPasos(pasos);
-				view.pokaziPorukuUspesno("подаци за пасош сачувани");
+				ArrayList<VozaciPasosi> lista = Servis.pasosServis.nadjiSveVozacPasosPoVozacu(pasos.getVozaci());
+				if(lista.isEmpty() || lista == null) {
+					Servis.pasosServis.unesiVozacPasos(pasos);
+					view.pokaziPorukuUspesno("подаци за пасош сачувани");
+				}else {
+					boolean unet = false;
+					for(VozaciPasosi pas: lista) {
+						if((pas.getBrojPasosa() != null && pas.getBrojPasosa().equals(pasos.getBrojPasosa()) || pas.getVaziDo() == null || pas.getVaziDo().after(pas.getIzdato()))) {
+							unet = true;
+						}
+					}
+					if(!unet) {
+						Servis.pasosServis.unesiVozacPasos(pasos);
+						view.pokaziPorukuUspesno("подаци за пасош сачувани");
+					}else {
+						view.pokaziPorukuGreska("подаци за о пасошу већ унети, проверите унос броја и датума");
+					}
+				}
+				
 			}catch (Exception e) {
 				view.pokaziPorukuGreska("грешка, контактирајте администратора");
 			}

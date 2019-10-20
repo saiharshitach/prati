@@ -1,5 +1,7 @@
 package rs.atekom.prati.view.vozaci.licenca;
 
+import java.util.ArrayList;
+
 import com.vaadin.server.Page;
 import pratiBaza.tabele.VozaciLicence;
 import rs.atekom.prati.Prati;
@@ -67,8 +69,24 @@ public class VozaciLicencaLogika implements LogikaInterface{
 			view.pokaziPorukuUspesno("подаци за лиценцу измењени");
 		}else {
 			try {
-				Servis.licencaServis.unesiVozacLicenca(licenca);
-				view.pokaziPorukuUspesno("подаци за лиценцу сачувани");
+				ArrayList<VozaciLicence> lista = Servis.licencaServis.nadjiSveVozacLicencaPoVozacu(licenca.getVozaci());
+				if(lista.isEmpty() || lista == null) {
+					Servis.licencaServis.unesiVozacLicenca(licenca);
+					view.pokaziPorukuUspesno("подаци за лиценцу сачувани");
+				}else {
+					boolean unet = false;
+					for(VozaciLicence lic: lista) {
+						if((lic.getBroj() != null && lic.getBroj().equals(licenca.getBroj())) || lic.getVaziDo() == null || lic.getVaziDo().after(licenca.getIzdato())){
+							unet = true;
+						}
+					}
+					if(!unet) {
+						Servis.licencaServis.unesiVozacLicenca(licenca);
+						view.pokaziPorukuUspesno("подаци за лиценцу сачувани");
+					}else {
+						view.pokaziPorukuGreska("подаци за о лиценци већ унети, проверите унос броја и датума");
+					}
+				}
 			}catch (Exception e) {
 				view.pokaziPorukuGreska("грешка, контактирајте администратора");
 			}

@@ -1,7 +1,6 @@
 package rs.atekom.prati.view.vozaci;
 
 import org.vaadin.dialogs.ConfirmDialog;
-
 import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.server.Page;
@@ -47,7 +46,12 @@ public class VozaciForma extends OpstaForma implements OpstaFormaInterface{
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void valueChange(ValueChangeEvent<SistemPretplatnici> event) {
-				organizacije.setItems(Servis.organizacijaServis.nadjiSveOrganizacije(pretplatnici.getValue(), true));
+				organizacije.clear();
+				vozaci.clear();
+				if(event.getValue() != null) {
+					organizacije.setItems(Servis.organizacijaServis.nadjiSveOrganizacije(event.getValue(), true));
+					vozaci.setItems(Servis.korisnikServis.nadjiSveKorisnikeVozace(event.getValue(), null, true));
+				}
 			}
 		});
 		
@@ -55,7 +59,8 @@ public class VozaciForma extends OpstaForma implements OpstaFormaInterface{
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void valueChange(ValueChangeEvent<Organizacije> event) {
-				
+				vozaci.clear();
+				vozaci.setItems(Servis.korisnikServis.nadjiSveKorisnikeVozace(pretplatnici.getValue(), event.getValue(), true));
 			}
 		});
 		
@@ -149,7 +154,7 @@ public class VozaciForma extends OpstaForma implements OpstaFormaInterface{
 			vozac = (Vozaci)podatak;
 		}
 		vozac.setSistemPretplatnici(pretplatnici.getValue());
-		vozac.setOrganizacija(organizacije.getValue());
+		vozac.setOrganizacija(null);
 		vozac.setKorisnici(vozaci.getValue());
 		vozac.setJmbg(jmbg.getValue());
 		vozac.setPrebivaliste(prebivaliste.getValue());
@@ -178,6 +183,7 @@ public class VozaciForma extends OpstaForma implements OpstaFormaInterface{
 			organizacije.setValue(logika.view.korisnik.getOrganizacija());
 		}else {
 			organizacije.clear();
+			organizacije.setEnabled(true);
 		}
 		vozaci.clear();
 		jmbg.clear();
@@ -192,7 +198,8 @@ public class VozaciForma extends OpstaForma implements OpstaFormaInterface{
 		Vozaci vozac = (Vozaci)podatak;
 		if(vozac.getId() != null) {
 			pretplatnici.setValue(vozac.getSistemPretplatnici());
-			organizacije.setValue(vozac.getOrganizacija());
+			organizacije.setValue(vozac.getKorisnici().getOrganizacija());
+			organizacije.setEnabled(false);
 			vozaci.setValue(vozac.getKorisnici());
 			try {
 				jmbg.setValue(vozac.getJmbg());

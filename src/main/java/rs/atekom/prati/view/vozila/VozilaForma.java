@@ -60,13 +60,11 @@ public class VozilaForma extends OpstaForma implements OpstaFormaInterface{
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void valueChange(ValueChangeEvent<SistemPretplatnici> event) {
-				if(event != null) {
-					if(event.getValue() != null) {
-						organizacije.setItems(Servis.organizacijaServis.nadjiSveOrganizacije(event.getValue(), true));
-						organizacije.clear();
-						objekti.setItems(Servis.objekatServis.vratiObjektePoPretplatniku(event.getValue(), organizacije.getValue(),true));
-						objekti.clear();
-					}
+				organizacije.clear();
+				objekti.clear();
+				if(event.getValue() != null) {
+					organizacije.setItems(Servis.organizacijaServis.nadjiSveOrganizacije(event.getValue(), true));
+					objekti.setItems(Servis.objekatServis.vratiObjektePoPretplatniku(event.getValue(), organizacije.getValue(), true));
 				}
 			}
 		});
@@ -75,11 +73,11 @@ public class VozilaForma extends OpstaForma implements OpstaFormaInterface{
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void valueChange(ValueChangeEvent<Organizacije> event) {
-				if(event != null) {
-					if(event.getValue() != null) {
-						objekti.setItems(Servis.objekatServis.vratiObjektePoPretplatniku(pretplatnici.getValue(), event.getValue(),true));
-						objekti.clear();
-					}
+				objekti.clear();
+				if(event.getValue() != null) {
+					objekti.setItems(Servis.objekatServis.vratiObjektePoPretplatniku(pretplatnici.getValue(), event.getValue(),true));
+				}else {
+					objekti.setItems(Servis.objekatServis.vratiObjektePoPretplatniku(pretplatnici.getValue(), null, true));
 				}
 			}
 		});
@@ -180,6 +178,7 @@ public class VozilaForma extends OpstaForma implements OpstaFormaInterface{
 			vozilo = (Vozila)podatak;
 		}
 		vozilo.setSistemPretplatnici(pretplatnici.getValue());
+		vozilo.setOrganizacija(null);
 		vozilo.setObjekti(objekti.getValue());
 		vozilo.setRegistracija(registracija.getValue());
 		vozilo.setMarka(marka.getValue());
@@ -216,6 +215,12 @@ public class VozilaForma extends OpstaForma implements OpstaFormaInterface{
 		}else {
 			pretplatnici.clear();
 		}
+		if(logika.view.korisnik.getOrganizacija() != null) {
+			organizacije.setValue(logika.view.korisnik.getOrganizacija());
+		}else {
+			organizacije.clear();
+			organizacije.setEnabled(true);
+		}
 		objekti.clear();
 		registracija.clear();
 		marka.clear();
@@ -237,7 +242,8 @@ public class VozilaForma extends OpstaForma implements OpstaFormaInterface{
 		Vozila vozilo = (Vozila)podatak;
 		if(vozilo.getId() != null) {
 			pretplatnici.setValue(vozilo.getSistemPretplatnici());
-			organizacije.setValue(vozilo.getOrganizacija());
+			organizacije.setValue(vozilo.getObjekti().getOrganizacija());
+			organizacije.setEnabled(false);
 			try {
 				objekti.setValue(vozilo.getObjekti());
 			}catch (Exception e) {

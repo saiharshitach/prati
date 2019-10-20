@@ -98,7 +98,7 @@ public class OpstiThread implements Runnable{
 					if(javljanjePoslednje != null && javljanjePoslednje.getBrzina() < 6 && 
 							!javljanjePoslednje.getSistemAlarmi().getSifra().equals("1095") && !vremeStarijeOdStajanja) {
 						javljanjeStop = javljanjePoslednje;
-						obdStop = Servis.obdServis.nadjiObdPoslednji(objekat);
+						obdStop = Servis.obdServis.nadjiObdPoslednji(objekat, null);
 						}else {
 							javljanjeStop = null;
             				obdStop = null;

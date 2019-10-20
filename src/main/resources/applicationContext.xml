@@ -104,6 +104,9 @@
                <value>pratiBaza.pomocne.IzvestajTip</value>
                <value>pratiBaza.pomocne.Mail</value>
                <value>pratiBaza.pomocne.Obracuni</value>
+               <value>pratiBaza.pomocne.PredjeniPut</value>
+               <value>pratiBaza.pomocne.PredjeniPutGPS</value>
+               <value>pratiBaza.pomocne.PredjeniPutOBD</value>
                <value>pratiBaza.pomocne.StavkaPrijema</value>
                <value>pratiBaza.pomocne.RadnoVremePutGPS</value>
                <value>pratiBaza.pomocne.StajanjeMirovanje</value>

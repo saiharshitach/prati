@@ -1,5 +1,7 @@
 package rs.atekom.prati.view.vozila.saobracajna;
 
+import java.util.ArrayList;
+
 import com.vaadin.server.Page;
 
 import pratiBaza.tabele.Vozila;
@@ -85,10 +87,28 @@ public class VozilaSaobracajnaLogika implements LogikaInterface{
 			view.pokaziPorukuUspesno("подаци саобраћајне измењени");
 		}else{
 			try {
-				Servis.saobracajnaServis.unesiSaobracajnu(saobracajna);
-				saobracajna.getVozilo().setSaobracajna(saobracajna);
-				Servis.voziloServis.azurirajVozilo(saobracajna.getVozilo());
-				view.pokaziPorukuUspesno("подаци саобраћајне сачувани");
+				ArrayList<VozilaSaobracajne> lista = new ArrayList<VozilaSaobracajne>();
+				if(lista.isEmpty() || lista == null) {
+					Servis.saobracajnaServis.unesiSaobracajnu(saobracajna);
+					saobracajna.getVozilo().setSaobracajna(saobracajna);
+					Servis.voziloServis.azurirajVozilo(saobracajna.getVozilo());
+					view.pokaziPorukuUspesno("подаци саобраћајне сачувани");
+				}else {
+					boolean unet = false;
+					for(VozilaSaobracajne saob: lista) {
+						if(saob.getDatumIzdavanja().after(saobracajna.getDatumIzdavanja())) {
+							unet = true;
+						}
+					}
+					if(!unet) {
+						Servis.saobracajnaServis.unesiSaobracajnu(saobracajna);
+						saobracajna.getVozilo().setSaobracajna(saobracajna);
+						Servis.voziloServis.azurirajVozilo(saobracajna.getVozilo());
+						view.pokaziPorukuUspesno("подаци саобраћајне сачувани");
+					}else {
+						view.pokaziPorukuGreska("подаци за о саобраћајнон већ унети, проверите унос броја и датума");
+					}
+				}
 			}catch (Exception e) {
 				view.pokaziPorukuGreska("подаци saobraćajne због грешке нису сачувани!");
 			}

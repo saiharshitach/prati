@@ -8,15 +8,15 @@ import pratiBaza.tabele.Vozaci;
 import rs.atekom.prati.server.Servis;
 
 
-public class ComboVozaci extends ComboBox<Vozaci>{
+public class ComboKorisniciVozaci extends ComboBox<Vozaci>{
 
 	private static final long serialVersionUID = 1L;
 	
-	public ComboVozaci(Korisnici korisnik, String naziv, boolean prazno, boolean indicator) {
+	public ComboKorisniciVozaci(Korisnici korisnik, String naziv, boolean prazno, boolean indicator) {
 		setCaption(naziv);
 		setPlaceholder("корисници...");
 		setItemCaptionGenerator(vozaci -> vozaci.getKorisnici().toString());
-		setItems(lista(korisnik));
+		//setItems(lista(korisnik));
 		setEmptySelectionAllowed(prazno);
 		setRequiredIndicatorVisible(indicator);
 		setWidth("100%");

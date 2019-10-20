@@ -15,8 +15,6 @@ import ar.com.fdvs.dj.domain.constants.Font;
 import ar.com.fdvs.dj.domain.constants.HorizontalAlign;
 import ar.com.fdvs.dj.domain.constants.Page;
 import pratiBaza.pomocne.PredjeniPut;
-import pratiBaza.tabele.Javljanja;
-import pratiBaza.tabele.Obd;
 import pratiBaza.tabele.Objekti;
 import rs.atekom.prati.server.Servis;
 
@@ -25,6 +23,7 @@ public class PredjeniPutIzvestaj extends PrintPreviewReport<PredjeniPut>{
 	private static final long serialVersionUID = 1L;
 	private String decimalFormat = "###,###,###.##";
 	private static final String DATUMVREME = "dd/MM/yyyy HH:mm:ss";
+	private List<PredjeniPut> lista = new ArrayList<PredjeniPut>();
 
 	public PredjeniPutIzvestaj(ArrayList<Objekti> objekti, Timestamp datumVremeOd, Timestamp datumVremeDo) {
 		setSizeUndefined();
@@ -94,34 +93,14 @@ public class PredjeniPutIzvestaj extends PrintPreviewReport<PredjeniPut>{
 	}
 	
 	public SerializableSupplier<List<? extends PredjeniPut>> vratiSeriju(ArrayList<Objekti> objekti, Timestamp datumVremeOd, Timestamp datumVremeDo){
-		SerializableSupplier<List<? extends PredjeniPut>> serija = () -> obracun(objekti, datumVremeOd, datumVremeDo);
+		SerializableSupplier<List<? extends PredjeniPut>> serija = () -> lista;//obracun(objekti, datumVremeOd, datumVremeDo);
 		return serija;
 	}
 	
 	private List<PredjeniPut> obracun(ArrayList<Objekti> objekti, Timestamp datumVremeOd, Timestamp datumVremeDo){
-		List<PredjeniPut> lista = new ArrayList<PredjeniPut>();
-		for(Objekti objekat : objekti) {
-			
-			ArrayList<Javljanja> javljanja = Servis.javljanjeServis.vratiJavljanjaObjektaOdDoPrvoPoslednje(objekat, datumVremeOd, datumVremeDo);
-			ArrayList<Obd> obdLista = Servis.obdServis.nadjiObdPoObjektuOdDoPrvoPoslednje(objekat, datumVremeOd, datumVremeDo);
-
-			PredjeniPut predjeniPut = new PredjeniPut(objekat.getOznaka(), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-			
-			if(javljanja != null && !javljanja.isEmpty()) {
-				predjeniPut.setVirtualOdo(javljanja.get(1).getVirtualOdo() - javljanja.get(0).getVirtualOdo());
-				if(obdLista != null && !obdLista.isEmpty()) {
-					predjeniPut.setUkupnoKm(obdLista.get(1).getUkupnoKm() - obdLista.get(0).getUkupnoKm());
-					predjeniPut.setUkupnoGorivo(obdLista.get(1).getUkupnoGorivo() - obdLista.get(0).getUkupnoGorivo());
-					if(predjeniPut.getVirtualOdo() != 0.0f) {
-						predjeniPut.setProsPotGps(predjeniPut.getUkupnoGorivo()/(predjeniPut.getVirtualOdo()/100));
-					}
-					if(predjeniPut.getUkupnoKm() != 0.0f) {
-						predjeniPut.setProsPotr(predjeniPut.getUkupnoGorivo()/(predjeniPut.getUkupnoKm()/100));
-					}
-				}
-			}
-			lista.add(predjeniPut);
-		}
+		lista.clear();
+		lista = Servis.javljanjeServis.vratiPredjeniPut(objekti, datumVremeOd, datumVremeDo);
+		//lista = Servis.javljanjeServis.nadjiPredjeniPut(objekti, datumVremeOd, datumVremeDo);
 		return lista;
 	}
 }

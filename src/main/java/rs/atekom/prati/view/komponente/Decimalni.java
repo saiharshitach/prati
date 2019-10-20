@@ -13,6 +13,6 @@ public class Decimalni extends TextField{
 		setCaption(naziv);
 		addStyleName("numerical");
 		setWidth("100%");
-		new NumeralFieldFormatter(".", ",", 2).extend(this);
+		new NumeralFieldFormatter(",", ".", 2).extend(this);
 	}
 }

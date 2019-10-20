@@ -1,5 +1,7 @@
 package rs.atekom.prati.view.vozaci.licna;
 
+import java.util.ArrayList;
+
 import com.vaadin.server.Page;
 
 import pratiBaza.tabele.VozaciLicna;
@@ -68,8 +70,25 @@ public class VozaciLicnaLogika implements LogikaInterface{
 			view.pokaziPorukuUspesno("подаци за личну карту измењени");
 		}else {
 			try {
-				Servis.licnaServis.unesiVozacLicna(licna);
-				view.pokaziPorukuUspesno("подаци за личну карту сачувани");
+				ArrayList<VozaciLicna> lista = Servis.licnaServis.nadjiSveVozacLicnaPoVozacu(licna.getVozaci());
+				if(lista.isEmpty() || lista == null) {
+					Servis.licnaServis.unesiVozacLicna(licna);
+					view.pokaziPorukuUspesno("подаци за личну карту сачувани");
+				}else {
+					boolean unet = false;
+					for(VozaciLicna lic: lista) {
+						if((lic.getBroj() != null && lic.getBroj().equals(licna.getBroj())) || lic.getVaziDo() == null || lic.getVaziDo().after(licna.getIzdato())) {
+							unet = true;
+						}
+					}
+					if(!unet) {
+						Servis.licnaServis.unesiVozacLicna(licna);
+						view.pokaziPorukuUspesno("подаци за личну карту сачувани");
+					}else {
+						view.pokaziPorukuGreska("подаци за о личној већ унети, проверите унос броја и датума");
+					}
+				}
+				
 			}catch (Exception e) {
 				view.pokaziPorukuGreska("грешка, контактирајте администратора");
 			}

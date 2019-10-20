@@ -72,7 +72,6 @@ public class Kalendar extends CustomComponent{
     
     private void onCalendarRangeSelect(CalendarComponentEvents.RangeSelectEvent event) {
     	Grupe grupa = view.grupeCombo.getValue();
-    	System.out.println(" grupa " + grupa.getNaziv());
     	if(grupa != null) {
         	ArrayList<VozilaNalozi> nalozi = Servis.nalogServis.nadjiNalogeZaGrupuUPeriodu(Servis.objekatServis.vratiObjektePoGrupi(grupa), 
         			Timestamp.valueOf(event.getStart().toLocalDateTime()), Timestamp.valueOf(event.getEnd().toLocalDateTime()));
@@ -178,7 +177,7 @@ public class Kalendar extends CustomComponent{
         		Dogadjaj dog = new Dogadjaj(!calendar.getStartDate().truncatedTo(DAYS).equals(calendar.getEndDate().truncatedTo(DAYS)));
         		dog.setStart(ZonedDateTime.ofInstant(nalog.getOcekivaniPolazak().toInstant(), ZoneId.systemDefault()));
         		dog.setEnd(ZonedDateTime.ofInstant(nalog.getOcekivaniDolazak().toInstant(), ZoneId.systemDefault()));
-        		dog.setName(nalog.getVozilo().getObjekti().getOznaka() + " " + nalog.getVozac() + " " + nalog.getBrojNaloga());
+        		dog.setName(nalog.getVozilo().getOznaka() + " " + nalog.getVozac().toString() + " " + nalog.getBrojNaloga());
         		dog.setDetails(nalog.getDoMesta() + " полазак: " + nalog.getOcekivaniPolazak() + " долазак: " + nalog.getOcekivaniDolazak() + " " + nalog.getKomentar());
         		eventProvider.addItem(new DogadjajStavka(dog));
         	}

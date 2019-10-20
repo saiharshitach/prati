@@ -18,7 +18,7 @@ public class ComboObjekti extends ComboBox<Objekti>{
 		setCaption(naziv);
 		setPlaceholder("објекти...");
 		setItemCaptionGenerator(Objekti::getOznaka);
-		if(korisnik != null) {
+		if(korisnik != null && korisnik.getSistemPretplatnici() != null) {
 			setItems(lista(korisnik));
 		}
 		setEmptySelectionAllowed(prazno);

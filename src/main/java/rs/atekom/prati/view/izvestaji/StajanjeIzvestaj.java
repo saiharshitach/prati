@@ -26,6 +26,7 @@ public class StajanjeIzvestaj extends PrintPreviewReport<StajanjeMirovanje>{
 	private static final long serialVersionUID = 1L;
 	private String decimalFormat = "###,###,###.##";
 	private static final String DATUMVREME = "dd/MM/yyyy HH:mm:ss";
+	private List<StajanjeMirovanje> lista;
 
 	public StajanjeIzvestaj(ArrayList<Objekti> objekti, Timestamp vremeOd, Timestamp vremeDo, int duzina) {
 		setSizeUndefined();
@@ -102,11 +103,12 @@ public class StajanjeIzvestaj extends PrintPreviewReport<StajanjeMirovanje>{
 	}
 	
 	public List<StajanjeMirovanje> vratiListu(ArrayList<Objekti> objekti, Timestamp vremeOd, Timestamp vremeDo, int duzina){
-		return Servis.javljanjeServis.vratiStajanjaMirovanja(objekti, vremeOd, vremeDo, duzina);
+		lista = Servis.javljanjeServis.vratiStajanjaMirovanja(objekti, vremeOd, vremeDo, duzina);
+		return lista;
 	}
 	
 	public SerializableSupplier<List<? extends StajanjeMirovanje>> vratiSeriju(ArrayList<Objekti> objekti, Timestamp vremeOd, Timestamp vremeDo, int duzina){
-		SerializableSupplier<List<? extends StajanjeMirovanje>> serija = () -> Servis.javljanjeServis.vratiStajanjaMirovanja(objekti, vremeOd, vremeDo, duzina);
+		SerializableSupplier<List<? extends StajanjeMirovanje>> serija = () -> lista; //Servis.javljanjeServis.vratiStajanjaMirovanja(objekti, vremeOd, vremeDo, duzina);
 		return serija;
 	}
 }

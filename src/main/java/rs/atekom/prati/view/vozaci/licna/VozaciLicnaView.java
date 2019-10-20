@@ -86,12 +86,13 @@ public class VozaciLicnaView extends OpstiView implements OpstiViewInterface{
 		if(korisnik.isSistem() && korisnik.getSistemPretplatnici() == null) {
 			tabela.addColumn(vozaciLicna -> vozaciLicna.getSistemPretplatnici() == null ? "" : vozaciLicna.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
-		tabela.addColumn(vozaciLicna -> vozaciLicna.getVozaci().getKorisnici() == null ? "" : vozaciLicna.getVozaci().getKorisnici().toString()).setCaption("возач");
+		tabela.addColumn(vozaciLicna -> vozaciLicna.getVozaci() == null ? "" : vozaciLicna.getVozaci().getKorisnici() == null ? "" : vozaciLicna.getVozaci().getKorisnici().toString()).setCaption("возач");
 		tabela.addColumn(VozaciLicna::getBroj).setCaption("број");
 		tabela.addColumn(VozaciLicna::getIzdao).setCaption("издао");
 		tabela.addColumn(VozaciLicna::getIzdato, new DateRenderer(DANFORMAT)).setCaption("издато").setStyleGenerator(objekti -> "v-align-right");
 		tabela.addColumn(VozaciLicna::getVaziDo, new DateRenderer(DANFORMAT)).setCaption("важеће до").setStyleGenerator(objekti -> "v-align-right");
-		tabela.addColumn(vozaciLicna -> vozaciLicna.getVozaci().getKorisnici().getOrganizacija() == null ? "" : vozaciLicna.getVozaci().getKorisnici().getOrganizacija().getNaziv()).setCaption("организација");
+		tabela.addColumn(vozaciLicna -> vozaciLicna.getVozaci() == null ? "" : vozaciLicna.getVozaci().getKorisnici() == null ? "" : vozaciLicna.getVozaci().getKorisnici().getOrganizacija() == null ? "" : 
+			vozaciLicna.getVozaci().getKorisnici().getOrganizacija().getNaziv()).setCaption("организација");
 		if(isAdmin()) {
 			tabela.addComponentColumn(vozaciLicna -> {CheckBox chb = new CheckBox(); if(vozaciLicna.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(vozaciLicna -> "v-align-right");
 		}

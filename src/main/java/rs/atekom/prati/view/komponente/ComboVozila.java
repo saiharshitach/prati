@@ -14,7 +14,7 @@ public class ComboVozila extends ComboBox<Vozila>{
 		setCaption(naziv);
 		setPlaceholder("возила...");
 		setItemCaptionGenerator(vozila -> vozila.getObjekti().getOznaka());
-		if(korisnik != null) {
+		if(korisnik != null && korisnik.getSistemPretplatnici() != null) {
 			setItems(lista(korisnik));
 		}
 		setEmptySelectionAllowed(prazno);

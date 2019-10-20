@@ -24,7 +24,7 @@ import rs.atekom.prati.view.OpstaForma;
 import rs.atekom.prati.view.OpstaFormaInterface;
 import rs.atekom.prati.view.OpstiView;
 import rs.atekom.prati.view.komponente.Celobrojni;
-import rs.atekom.prati.view.komponente.ComboVozaci;
+import rs.atekom.prati.view.komponente.ComboKorisniciVozaci;
 import rs.atekom.prati.view.komponente.ComboOprema;
 import rs.atekom.prati.view.komponente.ComboPretplatnici;
 import rs.atekom.prati.view.komponente.ComboVozila;
@@ -37,7 +37,7 @@ public class VozilaPrimoPredajeForma extends OpstaForma implements OpstaFormaInt
 	private VozilaPrimoPredajeLogika logika;
 	private ComboPretplatnici pretplatnici;
 	//private ComboOrganizacije organizacije;
-	private ComboVozaci vozacPrijem, vozacPredaja;
+	private ComboKorisniciVozaci vozacPrijem, vozacPredaja;
 	private Tekst administrator, broj, komentar;
 	private ComboVozila vozila;
 	private CheckBox izbrisan;
@@ -55,8 +55,8 @@ public class VozilaPrimoPredajeForma extends OpstaForma implements OpstaFormaInt
 		broj = new Tekst("број", false);
 		datum = new Datum("датум", true);
 		vozila = new ComboVozila(logika.view.korisnik, "возила", true, true);
-		vozacPrijem = new ComboVozaci(logika.view.korisnik, "возач пријем", true, true);
-		vozacPredaja = new ComboVozaci(logika.view.korisnik, "возач прeдаја", true, true);
+		vozacPrijem = new ComboKorisniciVozaci(logika.view.korisnik, "возач пријем", true, true);
+		vozacPredaja = new ComboKorisniciVozaci(logika.view.korisnik, "возач прeдаја", true, true);
 		administrator =  new Tekst("администратор", false);
 		administrator.setEnabled(false);
 		komentar =  new Tekst("коментар", false);

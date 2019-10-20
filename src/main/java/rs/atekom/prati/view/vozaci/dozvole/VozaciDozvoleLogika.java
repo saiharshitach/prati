@@ -1,5 +1,7 @@
 package rs.atekom.prati.view.vozaci.dozvole;
 
+import java.util.ArrayList;
+
 import com.vaadin.server.Page;
 
 import pratiBaza.tabele.VozaciDozvole;
@@ -68,8 +70,25 @@ public class VozaciDozvoleLogika implements LogikaInterface{
 			view.pokaziPorukuUspesno("подаци за возачку дозволу измењени");
 		}else {
 			try {
-				Servis.dozvolaServis.unesiVozacDozvola(dozvola);
-				view.pokaziPorukuUspesno("подаци за возачку дозволу сачувани");
+				ArrayList<VozaciDozvole> lista = Servis.dozvolaServis.nadjiSveVozacDozvolePoVozacu(dozvola.getVozaci());
+				if(lista.isEmpty() || lista == null) {
+					Servis.dozvolaServis.unesiVozacDozvola(dozvola);
+					view.pokaziPorukuUspesno("подаци за возачку дозволу сачувани");
+				}else {
+					boolean unet = false;
+					for(VozaciDozvole doz: lista) {
+						if((doz.getBrojDozvole() != null && doz.getBrojDozvole().equals(dozvola.getBrojDozvole())) || doz.getVaziDo() == null || doz.getVaziDo().after(dozvola.getVaziDo())) {
+							unet = true;
+						}
+					}
+					if(!unet) {
+						Servis.dozvolaServis.unesiVozacDozvola(dozvola);
+						view.pokaziPorukuUspesno("подаци за возача сачувани");
+					}else {
+						view.pokaziPorukuGreska("подаци за о дозволи већ унети, проверите унос броја и датума");
+					}
+				}
+				
 			}catch (Exception e) {
 				view.pokaziPorukuGreska("грешка, контактирајте администратора");
 			}

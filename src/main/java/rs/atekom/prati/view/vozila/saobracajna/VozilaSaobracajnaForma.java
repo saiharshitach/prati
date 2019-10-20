@@ -7,6 +7,8 @@ import com.vaadin.server.Page;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+
+import pratiBaza.tabele.Organizacije;
 import pratiBaza.tabele.SistemPretplatnici;
 import pratiBaza.tabele.VozilaSaobracajne;
 import rs.atekom.prati.server.Servis;
@@ -14,6 +16,7 @@ import rs.atekom.prati.view.OpstaForma;
 import rs.atekom.prati.view.OpstaFormaInterface;
 import rs.atekom.prati.view.OpstiView;
 import rs.atekom.prati.view.komponente.Celobrojni;
+import rs.atekom.prati.view.komponente.ComboOrganizacije;
 import rs.atekom.prati.view.komponente.ComboPretplatnici;
 import rs.atekom.prati.view.komponente.ComboVozila;
 import rs.atekom.prati.view.komponente.Datum;
@@ -25,6 +28,7 @@ public class VozilaSaobracajnaForma extends OpstaForma implements OpstaFormaInte
 	private static final long serialVersionUID = 1L;
 	private VozilaSaobracajnaLogika logika;
 	private ComboPretplatnici pretplatnici;
+	private ComboOrganizacije organizacije;
 	private ComboVozila vozila;
 	private Tekst brojSaobracajne, izdao, homologacija, sasija, brojMotora, boja, masa, ukupnaMasa, kategorija, nosivost;
 	private Datum datumIzdavanja;
@@ -35,6 +39,7 @@ public class VozilaSaobracajnaForma extends OpstaForma implements OpstaFormaInte
 	public VozilaSaobracajnaForma(VozilaSaobracajnaLogika log) {
 		logika = log;
 		pretplatnici = new ComboPretplatnici("претплатник", true, true);
+		organizacije = new ComboOrganizacije(pretplatnici.getValue(), "организација", true, false);
 		vozila = new ComboVozila(logika.view.korisnik, "возило", true, true);
 		brojSaobracajne = new Tekst("број саобраћајне", true);
 		datumIzdavanja = new Datum("датум издавања", true);
@@ -58,12 +63,26 @@ public class VozilaSaobracajnaForma extends OpstaForma implements OpstaFormaInte
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void valueChange(ValueChangeEvent<SistemPretplatnici> event) {
-				if(event != null) {
-					if(event.getValue() != null) {
-						vozila.setItems(Servis.voziloServis.vratisvaVozila(logika.view.korisnik, true));
-						vozila.clear();
-					}
+				vozila.clear();
+				organizacije.clear();
+				if(event.getValue() != null) {
+					organizacije.setItems(Servis.organizacijaServis.nadjiSveOrganizacije(event.getValue(), true));
+					vozila.setItems(Servis.voziloServis.vratisvaVozila(logika.view.korisnik, true));
 				}
+			}
+		});
+		
+		organizacije.addValueChangeListener(new ValueChangeListener<Organizacije>() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void valueChange(ValueChangeEvent<Organizacije> event) {
+				vozila.clear();
+				if(event.getValue() != null) {
+					vozila.setItems(Servis.voziloServis.nadjisvaVozilaPoOrganizaciji(event.getValue()));
+				}else {
+					vozila.setItems(Servis.voziloServis.nadjisvaVozilaPoPretplatniku(pretplatnici.getValue()));
+				}
+				
 			}
 		});
 		
@@ -111,8 +130,11 @@ public class VozilaSaobracajnaForma extends OpstaForma implements OpstaFormaInte
 			}
 		});
 		
-		if(logika.view.isAdmin()) {
+		if(logika.view.korisnik.isSistem() && logika.view.korisnik.getSistemPretplatnici() == null) {
 			layout.addComponent(pretplatnici);
+		}
+		if(logika.view.korisnik.isAdmin() && logika.view.korisnik.getOrganizacija() == null) {
+			layout.addComponent(organizacije);
 		}
 		layout.addComponent(vozila);
 		layout.addComponent(brojSaobracajne);
@@ -165,6 +187,7 @@ public class VozilaSaobracajnaForma extends OpstaForma implements OpstaFormaInte
 			saobracajna = (VozilaSaobracajne)podatak;
 		}
 		saobracajna.setSistemPretplatnici(pretplatnici.getValue());
+		saobracajna.setOrganizacija(null);
 		saobracajna.setVozilo(vozila.getValue());
 		saobracajna.setBrojSaobracajne(brojSaobracajne.getValue());
 		try {
@@ -217,6 +240,12 @@ public class VozilaSaobracajnaForma extends OpstaForma implements OpstaFormaInte
 		}else {
 			pretplatnici.clear();
 		}
+		if(logika.view.korisnik.getOrganizacija() != null) {
+			organizacije.setValue(logika.view.korisnik.getOrganizacija());
+		}else {
+			organizacije.clear();
+			organizacije.setEnabled(true);
+		}
 		vozila.clear();
 		datumIzdavanja.clear();
 		izdao.clear();
@@ -241,104 +270,106 @@ public class VozilaSaobracajnaForma extends OpstaForma implements OpstaFormaInte
 		VozilaSaobracajne saobracajna = (VozilaSaobracajne)podatak;
 		if(saobracajna.getId() != null) {
 			pretplatnici.setValue(saobracajna.getSistemPretplatnici());
+			organizacije.setValue(saobracajna.getVozilo().getOrganizacija());
+			organizacije.setEnabled(false);
+			try {
+				vozila.setValue(saobracajna.getVozilo());
+			}catch (Exception e) {
+				logika.view.pokaziPorukuGreska("грешка у преузимању возила!");
+				vozila.setValue(null);
+			}
+			try {
+				brojSaobracajne.setValue(saobracajna.getBrojSaobracajne());
+			}catch (Exception e) {
+				brojSaobracajne.setValue("");
+			}
+			if(saobracajna.getDatumIzdavanja() != null) {
+				datumIzdavanja.setValue(localDatum(saobracajna.getDatumIzdavanja()));
+			}else {
+				datumIzdavanja.setValue(null);
+			}
+			try {
+				izdao.setValue(saobracajna.getIzdao());
+			}catch (Exception e) {
+				izdao.setValue("");
+			}
+			try {
+				homologacija.setValue(saobracajna.getHomologacija());
+			}catch (Exception e) {
+				homologacija.setValue("");
+			}
+			try {
+				sasija.setValue(saobracajna.getSasija());
+			}catch (Exception e) {
+				sasija.setValue("");
+			}
+			try {
+				brojMotora.setValue(saobracajna.getBrojMotora());
+			}catch (Exception e) {
+				brojMotora.setValue("");
+			}
+			try {
+				snagaMotora.setValue(String.valueOf(saobracajna.getSnagaMotora()));
+			}catch (Exception e) {
+				snagaMotora.setValue(String.valueOf(0.0));
+			}
+			try {
+				zapreminaMotora.setValue(String.valueOf(saobracajna.getZapreminaMotora()));
+			}catch (Exception e) {
+				zapreminaMotora.setValue(String.valueOf(0));
+			}
+			try {
+				zapreminaRezervoara.setValue(String.valueOf(saobracajna.getZapreminaRezervoara()));
+			}catch (Exception e) {
+				zapreminaRezervoara.setValue(String.valueOf(0));
+			}
+			try {
+				zapreminaRezervoaraAdBlue.setValue(String.valueOf(saobracajna.getZapreminaRezervoaraAdBlue()));
+			}catch (Exception e) {
+				zapreminaRezervoaraAdBlue.setValue(String.valueOf(0));
+			}
+			try {
+				boja.setValue(saobracajna.getBoja());
+			}catch (Exception e) {
+				sasija.setValue("");
+			}
+			try {
+				masa.setValue(saobracajna.getMasa());
+			}catch (Exception e) {
+				masa.setValue("");
+			}
+			try {
+				ukupnaMasa.setValue(saobracajna.getUkupnaMasa());
+			}catch (Exception e) {
+				ukupnaMasa.setValue("");
+			}
+			try {
+				kategorija.setValue(saobracajna.getKategorija());
+			}catch (Exception e) {
+				kategorija.setValue("");
+			}
+			try {
+				masa.setValue(saobracajna.getMasa());
+			}catch (Exception e) {
+				masa.setValue("");
+			}
+			try {
+				kategorija.setValue(saobracajna.getKategorija());
+			}catch (Exception e) {
+				kategorija.setValue("");
+			}
+			try {
+				nosivost.setValue(saobracajna.getNosivost());
+			}catch (Exception e) {
+				nosivost.setValue("");
+			}
+			try {
+				mestaSedenja.setValue(String.valueOf(saobracajna.getMestaSedenja()));
+			}catch (Exception e) {
+				mestaSedenja.setValue(String.valueOf(0));
+			}
+			izbrisan.setValue(saobracajna.isIzbrisan());
 		}
-		try {
-			vozila.setValue(saobracajna.getVozilo());
-		}catch (Exception e) {
-			logika.view.pokaziPorukuGreska("грешка у преузимању возила!");
-			vozila.setValue(null);
-		}
-		try {
-			brojSaobracajne.setValue(saobracajna.getBrojSaobracajne());
-		}catch (Exception e) {
-			brojSaobracajne.setValue("");
-		}
-		if(saobracajna.getDatumIzdavanja() != null) {
-			datumIzdavanja.setValue(localDatum(saobracajna.getDatumIzdavanja()));
-		}else {
-			datumIzdavanja.setValue(null);
-		}
-		try {
-			izdao.setValue(saobracajna.getIzdao());
-		}catch (Exception e) {
-			izdao.setValue("");
-		}
-		try {
-			homologacija.setValue(saobracajna.getHomologacija());
-		}catch (Exception e) {
-			homologacija.setValue("");
-		}
-		try {
-			sasija.setValue(saobracajna.getSasija());
-		}catch (Exception e) {
-			sasija.setValue("");
-		}
-		try {
-			brojMotora.setValue(saobracajna.getBrojMotora());
-		}catch (Exception e) {
-			brojMotora.setValue("");
-		}
-		try {
-			snagaMotora.setValue(String.valueOf(saobracajna.getSnagaMotora()));
-		}catch (Exception e) {
-			snagaMotora.setValue(String.valueOf(0.0));
-		}
-		try {
-			zapreminaMotora.setValue(String.valueOf(saobracajna.getZapreminaMotora()));
-		}catch (Exception e) {
-			zapreminaMotora.setValue(String.valueOf(0));
-		}
-		try {
-			zapreminaRezervoara.setValue(String.valueOf(saobracajna.getZapreminaRezervoara()));
-		}catch (Exception e) {
-			zapreminaRezervoara.setValue(String.valueOf(0));
-		}
-		try {
-			zapreminaRezervoaraAdBlue.setValue(String.valueOf(saobracajna.getZapreminaRezervoaraAdBlue()));
-		}catch (Exception e) {
-			zapreminaRezervoaraAdBlue.setValue(String.valueOf(0));
-		}
-		try {
-			boja.setValue(saobracajna.getBoja());
-		}catch (Exception e) {
-			sasija.setValue("");
-		}
-		try {
-			masa.setValue(saobracajna.getMasa());
-		}catch (Exception e) {
-			masa.setValue("");
-		}
-		try {
-			ukupnaMasa.setValue(saobracajna.getUkupnaMasa());
-		}catch (Exception e) {
-			ukupnaMasa.setValue("");
-		}
-		try {
-			kategorija.setValue(saobracajna.getKategorija());
-		}catch (Exception e) {
-			kategorija.setValue("");
-		}
-		try {
-			masa.setValue(saobracajna.getMasa());
-		}catch (Exception e) {
-			masa.setValue("");
-		}
-		try {
-			kategorija.setValue(saobracajna.getKategorija());
-		}catch (Exception e) {
-			kategorija.setValue("");
-		}
-		try {
-			nosivost.setValue(saobracajna.getNosivost());
-		}catch (Exception e) {
-			nosivost.setValue("");
-		}
-		try {
-			mestaSedenja.setValue(String.valueOf(saobracajna.getMestaSedenja()));
-		}catch (Exception e) {
-			mestaSedenja.setValue(String.valueOf(0));
-		}
-		izbrisan.setValue(saobracajna.isIzbrisan());
 	}
 
 	@Override

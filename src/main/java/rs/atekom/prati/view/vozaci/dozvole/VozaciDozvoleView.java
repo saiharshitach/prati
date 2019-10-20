@@ -86,11 +86,13 @@ public class VozaciDozvoleView extends OpstiView implements OpstiViewInterface{
 		if(korisnik.isSistem() && korisnik.getSistemPretplatnici() == null) {
 			tabela.addColumn(vozaciDozvola -> vozaciDozvola.getSistemPretplatnici() == null ? "" : vozaciDozvola.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
-		tabela.addColumn(vozaciDozvola -> vozaciDozvola.getVozaci() == null ? "" : vozaciDozvola.getVozaci().getKorisnici().toString()).setCaption("возач");
+		tabela.addColumn(vozaciDozvola -> vozaciDozvola.getVozaci() == null ? "" : vozaciDozvola.getVozaci().getKorisnici() == null ? "" : 
+			vozaciDozvola.getVozaci().getKorisnici().toString()).setCaption("возач");
 		tabela.addColumn(VozaciDozvole::getBrojDozvole).setCaption("број");
 		tabela.addColumn(VozaciDozvole::getIzdao).setCaption("издао");
 		tabela.addColumn(VozaciDozvole::getVaziDo, new DateRenderer(DANFORMAT)).setCaption("важеће до").setStyleGenerator(objekti -> "v-align-right");
-		tabela.addColumn(vozaciDozvola -> vozaciDozvola.getVozaci().getKorisnici().getOrganizacija() == null ? "" : vozaciDozvola.getVozaci().getKorisnici().getOrganizacija().getNaziv()).setCaption("организација");
+		tabela.addColumn(vozaciDozvola -> vozaciDozvola.getVozaci() == null ? "" : vozaciDozvola.getVozaci().getKorisnici() == null ? "" :
+			vozaciDozvola.getVozaci().getKorisnici().getOrganizacija() == null ? "" : vozaciDozvola.getVozaci().getKorisnici().getOrganizacija().getNaziv()).setCaption("организација");
 		if(isAdmin()) {
 			tabela.addComponentColumn(vozaciDozvola -> {CheckBox chb = new CheckBox(); if(vozaciDozvola.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(vozaci -> "v-align-right");
 		}

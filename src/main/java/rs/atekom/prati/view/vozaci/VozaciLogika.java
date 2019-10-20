@@ -1,5 +1,7 @@
 package rs.atekom.prati.view.vozaci;
 
+import java.util.ArrayList;
+
 import com.vaadin.server.Page;
 import pratiBaza.tabele.Vozaci;
 import rs.atekom.prati.Prati;
@@ -67,8 +69,24 @@ public class VozaciLogika implements LogikaInterface{
 			view.pokaziPorukuUspesno("подаци за возача измењени");
 		}else {
 			try {
-				Servis.vozacServis.unesiVozaca(vozac);
-				view.pokaziPorukuUspesno("подаци за возача сачувани");
+				ArrayList<Vozaci> lista = Servis.vozacServis.nadjiSveVozacePoKorisniku(vozac.getKorisnici());
+				if(lista.isEmpty() || lista == null) {
+					Servis.vozacServis.unesiVozaca(vozac);
+					view.pokaziPorukuUspesno("подаци за возача сачувани");
+				}else {
+					boolean unet = false;
+					for(Vozaci voz: lista) {
+						if(voz.getZaposlenDo() == null || voz.getZaposlenDo().after(vozac.getZaposlenOd())) {
+							unet = true;
+						}
+					}
+					if(!unet) {
+						Servis.vozacServis.unesiVozaca(vozac);
+						view.pokaziPorukuUspesno("подаци за возача сачувани");
+					}else {
+						view.pokaziPorukuGreska("подаци за овог возача већ унети");
+					}
+				}
 			}catch (Exception e) {
 				view.pokaziPorukuGreska("грешка, контактирајте администратора");
 			}

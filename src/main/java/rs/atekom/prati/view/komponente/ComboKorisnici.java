@@ -14,7 +14,9 @@ public class ComboKorisnici extends ComboBox<Korisnici>{
 		setCaption(naziv);
 		setPlaceholder("корисници...");
 		setItemCaptionGenerator(Korisnici::toString);
-		setItems(lista(korisnik));
+		if(korisnik != null && korisnik.getSistemPretplatnici() != null) {
+			setItems(lista(korisnik));
+		}
 		setEmptySelectionAllowed(prazno);
 		setRequiredIndicatorVisible(true);
 		setWidth("100%");

@@ -16,7 +16,9 @@ public class ComboZone extends ComboBox<Zone>{
 		setCaption(naziv);
 		setPlaceholder("корисници...");
 		setItemCaptionGenerator(Zone::getNaziv);
-		setItems(lista(korisnik));
+		if(korisnik != null && korisnik.getSistemPretplatnici() != null) {
+			setItems(lista(korisnik));
+		}
 		setEmptySelectionAllowed(prazno);
 		setRequiredIndicatorVisible(true);
 		setWidth("100%");

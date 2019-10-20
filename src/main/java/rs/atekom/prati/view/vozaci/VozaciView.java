@@ -91,7 +91,8 @@ public class VozaciView extends OpstiView implements OpstiViewInterface{
 		tabela.addColumn(Vozaci::getPrebivaliste).setCaption("пребивалиште");
 		tabela.addColumn(Vozaci::getZaposlenOd, new DateRenderer(DANFORMAT)).setCaption("запослен од").setStyleGenerator(objekti -> "v-align-right");
 		tabela.addColumn(Vozaci::getZaposlenDo, new DateRenderer(DANFORMAT)).setCaption("запослен до").setStyleGenerator(objekti -> "v-align-right");
-		tabela.addColumn(vozaci -> vozaci.getOrganizacija() == null ? "" : vozaci.getOrganizacija().getNaziv()).setCaption("организација");
+		tabela.addColumn(vozaci -> vozaci.getKorisnici() == null ? "" : vozaci.getKorisnici().getOrganizacija() == null ? "" : 
+			vozaci.getKorisnici().getOrganizacija().getNaziv()).setCaption("организација");
 		if(isAdmin()) {
 			tabela.addComponentColumn(vozaci -> {CheckBox chb = new CheckBox(); if(vozaci.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(vozaci -> "v-align-right");
 		}

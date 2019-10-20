@@ -26,6 +26,7 @@ public class ZoneIzvestaj extends PrintPreviewReport<Javljanja>{
 	private static final long serialVersionUID = 1L;
 	private String decimalFormat = "###,###,###.##";
 	private static final String DATUMVREME = "dd/MM/yyyy HH:mm:ss";
+	private List<Javljanja> lista = new ArrayList<Javljanja>();;
 
 	public ZoneIzvestaj(ArrayList<Objekti> objekti, Timestamp datumVremeOd, Timestamp datumVremeDo, ArrayList<SistemAlarmi> alarmi) {
 		setSizeUndefined();
@@ -94,7 +95,7 @@ public class ZoneIzvestaj extends PrintPreviewReport<Javljanja>{
 	}
 	
 	private List<Javljanja> obracun(ArrayList<Objekti> objekti, Timestamp datumVremeOd, Timestamp datumVremeDo, ArrayList<SistemAlarmi> alarmi){
-		List<Javljanja> lista = new ArrayList<Javljanja>();
+		lista.clear();
 		for(Objekti objekat : objekti) {
 			ArrayList<Javljanja> javljanja = Servis.javljanjeServis.vratiJavljanjaObjektaOdDoSaAlarmimaZona(objekat, datumVremeOd, datumVremeDo, alarmi);
 			Collections.sort(javljanja, (o1, o2) -> o1.getDatumVreme().compareTo(o2.getDatumVreme()));

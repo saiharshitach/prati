@@ -106,6 +106,7 @@ public class VozilaView extends OpstiView implements OpstiViewInterface{
 		tabela.addColumn(Vozila::getBrojSaobracajne).setCaption("број саобраћајне");
 		tabela.addColumn(Vozila::getSerijskiBroj).setCaption("серијски број");
 		tabela.addColumn(Vozila::getDatumRegistracije, new DateRenderer(DANFORMAT)).setCaption("датум прве регистрације").setStyleGenerator(objekti -> "v-align-right");
+		tabela.addColumn(vozila -> vozila.getObjekti() == null ? "" : vozila.getObjekti().getOrganizacija() == null ? "" : vozila.getObjekti().getOrganizacija().getNaziv());
 		if(isAdmin()) {
 			tabela.addComponentColumn(vozila -> {CheckBox chb = new CheckBox(); if(vozila.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("izbrisan").setStyleGenerator(objekti -> "v-align-right");
 		}

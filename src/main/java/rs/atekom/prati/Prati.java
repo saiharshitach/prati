@@ -4,6 +4,7 @@ import java.io.File;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -95,6 +96,7 @@ public class Prati extends UI implements BroadcastListener{
 	
 	@Override
     protected void init(VaadinRequest vaadinRequest) {
+		VaadinSession.getCurrent().getSession().setMaxInactiveInterval((int)TimeUnit.MINUTES.toSeconds(30));  // Setting timeout of 45 minutes = ( 30 * 60 ) seconds
 		PratiEventBus.register(this);
 		addStyleName("v-font");
 		objekti = new ArrayList<Objekti>();

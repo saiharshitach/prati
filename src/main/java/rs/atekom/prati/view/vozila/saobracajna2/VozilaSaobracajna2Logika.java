@@ -2,7 +2,10 @@ package rs.atekom.prati.view.vozila.saobracajna2;
 
 import com.vaadin.server.Page;
 
+import pratiBaza.tabele.VozilaSaobracajne;
+import pratiBaza.tabele.VozilaSaobracajne2;
 import rs.atekom.prati.Prati;
+import rs.atekom.prati.server.Servis;
 import rs.atekom.prati.view.LogikaInterface;
 
 public class VozilaSaobracajna2Logika implements LogikaInterface{
@@ -40,8 +43,18 @@ public class VozilaSaobracajna2Logika implements LogikaInterface{
 
 	@Override
 	public void enter(String objectId) {
-		// TODO Auto-generated method stub
-		
+		if(objectId != null && !objectId.isEmpty()) {
+			if(objectId.equals("new")) {
+				noviPodatak();
+			}
+		}else {
+			try {
+				int id = Integer.parseInt(objectId);
+				VozilaSaobracajne2 saobracajna = Servis.saobracajna2Servis.nadjiSaobracajnu2PoId(id);
+			}catch (Exception e) {
+				// TODO: handle exception
+			}
+		}
 	}
 
 	@Override
@@ -52,26 +65,38 @@ public class VozilaSaobracajna2Logika implements LogikaInterface{
 
 	@Override
 	public void izmeniPodatak(Object podatak) {
-		// TODO Auto-generated method stub
-		
+		VozilaSaobracajne2 saobracajna = (VozilaSaobracajne2)podatak;
+		view.ocistiIzbor();
+		view.izmeniPodatak(null);
+		setFragmentParametar("");
+		if(saobracajna.getId() != null) {
+			
+			view.pokaziPorukuUspesno("подаци саобраћајне 2 измењени");
+		}else {
+			
+		}
+		view.updateTable();
 	}
 
 	@Override
 	public void noviPodatak() {
-		// TODO Auto-generated method stub
-		
+		view.ocistiIzbor();
+		setFragmentParametar("new");
+		view.izmeniPodatak(new VozilaSaobracajne());
 	}
 
 	@Override
 	public void ukloniPodatak() {
-		// TODO Auto-generated method stub
-		
+		view.ukloniPodatak();
+		view.ocistiIzbor();
+		view.izmeniPodatak(null);
+		view.updateTable();
+		setFragmentParametar("");
 	}
 
 	@Override
 	public void redIzabran(Object podatak) {
-		// TODO Auto-generated method stub
-		
+		view.izmeniPodatak((VozilaSaobracajne2)podatak);
 	}
 
 }

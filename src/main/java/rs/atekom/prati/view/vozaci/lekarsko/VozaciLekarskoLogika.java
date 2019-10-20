@@ -1,5 +1,7 @@
 package rs.atekom.prati.view.vozaci.lekarsko;
 
+import java.util.ArrayList;
+
 import com.vaadin.server.Page;
 import pratiBaza.tabele.VozaciLekarsko;
 import rs.atekom.prati.Prati;
@@ -67,8 +69,25 @@ public class VozaciLekarskoLogika implements LogikaInterface{
 			view.pokaziPorukuUspesno("подаци за лекарско уверење измењени");
 		}else {
 			try {
-				Servis.lekarskoServis.unesiVozacLekarsko(lekarsko);
+				ArrayList<VozaciLekarsko> lista = Servis.lekarskoServis.nadjiSveVozacLekarskePoVozacu(lekarsko.getVozaci());
+				if(lista.isEmpty() || lista == null) {
+					Servis.lekarskoServis.unesiVozacLekarsko(lekarsko);
 				view.pokaziPorukuUspesno("подаци за лекарско уверење сачувани");
+				}else {
+					boolean unet = false;
+					for(VozaciLekarsko lek: lista) {
+						if(lek.getVaziDo() == null || lek.getVaziDo().after(lekarsko.getIzdato())){
+							unet = true;
+						}
+					}
+					if(!unet) {
+						Servis.lekarskoServis.izmeniVozacLekarsko(lekarsko);
+						view.pokaziPorukuUspesno("подаци за лекарско уверење измењени");
+					}else {
+						view.pokaziPorukuGreska("подаци за о лекарском већ унети");
+					}
+				}
+				
 			}catch (Exception e) {
 				view.pokaziPorukuGreska("грешка, контактирајте администратора");
 			}

@@ -111,6 +111,8 @@ public class VozilaSaobracajnaView extends OpstiView implements OpstiViewInterfa
 		tabela.addColumn(VozilaSaobracajne::getNosivost).setCaption("носивост");
 		tabela.addColumn(VozilaSaobracajne::getMestaSedenja).setCaption("места за седење");
 		tabela.addColumn(VozilaSaobracajne::getBrojSaobracajne).setCaption("број саобраћајне");
+		tabela.addColumn(vozilaSaobracajna -> vozilaSaobracajna.getVozilo() == null ? "" : vozilaSaobracajna.getVozilo().getOrganizacija() == null ? "" : 
+			vozilaSaobracajna.getVozilo().getOrganizacija().getNaziv()).setCaption("организација");
 		if(isAdmin()) {
 			tabela.addComponentColumn(vozilaSaobracajne -> {CheckBox chb = new CheckBox(); if(vozilaSaobracajne.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("izbrisan").setStyleGenerator(objekti -> "v-align-right");
 		}

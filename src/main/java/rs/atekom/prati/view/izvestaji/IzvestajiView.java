@@ -121,7 +121,7 @@ public class IzvestajiView extends OpstiPanelView{
 		brisanje();
 		if(tip != null) {
 			switch (tip.getRb()) {
-			case 1: postaviParametrePredjeniPut();
+			case 1: postaviParametrePredjeniPut(tip.getRb());
 				break;
 			case 2: postaviParametreZone();
 			    break;
@@ -129,15 +129,21 @@ public class IzvestajiView extends OpstiPanelView{
 				break;
 			case 4: postaviParametreNivoGoriva();
 			    break;
-			case 5: postaviParametreStajanje();;
+			case 5: postaviParametreStajanje();
 		        break;
+			case 6: postaviParametrePredjeniPut(tip.getRb());
+	            break;
+			case 7: postaviParametrePredjeniPut(tip.getRb());
+	            break;
+			case 8: postaviParametreStanje();
+                break;
 			default:
 				break;
 			}
 		}
 	}
 	
-	private void postaviParametrePredjeniPut() {
+	private void postaviParametrePredjeniPut(int izvestaj) {
 		vremeOd = new DatumVreme(false, "", 0, 0, 0);
         vremeDo = new DatumVreme(false, "", 0, 0, 1);
         vremeOd.addValueChangeListener(vremePromena);
@@ -156,25 +162,36 @@ public class IzvestajiView extends OpstiPanelView{
 				if(vremeOd.getValue() != null && vremeDo.getValue() != null && 
 						((Timestamp.valueOf(vremeDo.getValue()).getTime() - Timestamp.valueOf(vremeOd.getValue()).getTime())/1000 < 32*86400)) {
 					if(grupeCombo.getValue() == null && objektiCombo.getValue() == null) {
-						pokaziPorukuGreska("морате одабрати групу или објекат!");
-						/*if(!korisnik.isAdmin()) {
-							ArrayList<Grupe> grupe = Servis.grupeKorisnikServis.vratiSveGrupePoKorisniku(korisnik);
-							objekti = Servis.grupeObjekatServis.nadjiSveObjektePoGrupama(grupe);
-						}else {
-							if(korisnik.getSistemPretplatnici() != null) {
-								objekti = Servis.objekatServis.vratiSveObjekte(korisnik, true);
-							}
-						}**/
+						pokaziPorukuGreska("морате одабрати групу!");
 					}else {//ako ima ili objekat ili grupaObjekata
 						if(objektiCombo.getValue() == null) {
 							objekti = Servis.grupeObjekatServis.nadjiSveObjektePoGrupi(grupeCombo.getValue());
 							}else {
 								objekti.add(objektiCombo.getValue());
 							}
-						PredjeniPutLayout  predjeniPut = new PredjeniPutLayout(objekti, Timestamp.valueOf(vremeOd.getValue()), Timestamp.valueOf(vremeDo.getValue()));
-						preuzimanje = predjeniPut.vratiPreuzimanje();
-						topLayout.addComponent(preuzimanje);
-						podaci.setContent(predjeniPut);
+						if(izvestaj == 1) {
+							if(objektiCombo.getValue() != null) {
+								PredjeniPutLayout predjeniPut = new PredjeniPutLayout(objekti, Timestamp.valueOf(vremeOd.getValue()), Timestamp.valueOf(vremeDo.getValue()));
+								preuzimanje = predjeniPut.vratiPreuzimanje();
+								topLayout.addComponent(preuzimanje);
+								podaci.setContent(predjeniPut);
+							}else {
+								pokaziPorukuGreska("морате одабрати објекат!");
+							}
+							
+						}
+						if(izvestaj == 6) {
+							PredjeniPutGPSLayout predjeniPut = new PredjeniPutGPSLayout(objekti, Timestamp.valueOf(vremeOd.getValue()), Timestamp.valueOf(vremeDo.getValue()));
+							preuzimanje = predjeniPut.vratiPreuzimanje();
+							topLayout.addComponent(preuzimanje);
+							podaci.setContent(predjeniPut);
+						}
+						if(izvestaj == 7) {
+							PredjeniPutOBDLayout predjeniPut = new PredjeniPutOBDLayout(objekti, Timestamp.valueOf(vremeOd.getValue()), Timestamp.valueOf(vremeDo.getValue()));
+							preuzimanje = predjeniPut.vratiPreuzimanje();
+							topLayout.addComponent(preuzimanje);
+							podaci.setContent(predjeniPut);
+						}
 						dodajPodatke();
 					}
 
@@ -185,8 +202,41 @@ public class IzvestajiView extends OpstiPanelView{
 		};
 		
 		prikazi.addClickListener(prikaziClick);
-        
-		dodajParametreDatum(false);
+		dodajParametreDatum(false, true);
+	}
+	
+	private void postaviParametreStanje() {
+		vremeDo = new DatumVreme(false, "", 0, 0, 1);
+		vremeDo.addValueChangeListener(vremePromena);
+		
+		prikazi.addClickListener(new ClickListener() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void buttonClick(ClickEvent event) {
+				ArrayList<Objekti> objekti = new ArrayList<Objekti>();
+				if(preuzimanje != null) {
+					topLayout.removeComponent(preuzimanje);
+					preuzimanje = null;
+				}
+				if(vremeDo.getValue() != null) {
+					if(grupeCombo.getValue() == null && objektiCombo.getValue() == null) {
+						pokaziPorukuGreska("морате одабрати групу!");
+					}else {
+						if(objektiCombo.getValue() == null) {
+							objekti = Servis.grupeObjekatServis.nadjiSveObjektePoGrupi(grupeCombo.getValue());
+							}else {
+								objekti.add(objektiCombo.getValue());
+							}
+						StanjeOBDLayout izvestaj = new StanjeOBDLayout(objekti, Timestamp.valueOf(vremeDo.getValue()));
+						preuzimanje = izvestaj.vratiPreuzimanje();
+						topLayout.addComponent(preuzimanje);
+						podaci.setContent(izvestaj);
+						dodajPodatke();
+					}
+				}
+			}
+		});
+		dodajParametreDatum(false, false);
 	}
 	
 	private void postaviParametreZone() {
@@ -214,8 +264,6 @@ public class IzvestajiView extends OpstiPanelView{
 							}else {
 								objekti.add(objektiCombo.getValue());
 							}
-						//SistemAlarmi ulaz = Servis.sistemAlarmServis.nadjiAlarmPoSifri("1101");
-						//SistemAlarmi izlaz = Servis.sistemAlarmServis.nadjiAlarmPoSifri("1101");
 						ArrayList<SistemAlarmi> alarmi = new ArrayList<SistemAlarmi>();
 						alarmi.add(Servis.sistemAlarmServis.nadjiAlarmPoSifri("1101"));
 						alarmi.add(Servis.sistemAlarmServis.nadjiAlarmPoSifri("1100"));
@@ -231,7 +279,7 @@ public class IzvestajiView extends OpstiPanelView{
 			}
 		});
         
-		dodajParametreDatum(false);
+		dodajParametreDatum(false, true);
 	}
 	
 	private void postaviParametreStajanje() {
@@ -252,7 +300,7 @@ public class IzvestajiView extends OpstiPanelView{
 				if(vremeOd.getValue() != null && vremeDo.getValue() != null && 
 						((Timestamp.valueOf(vremeDo.getValue()).getTime() - Timestamp.valueOf(vremeOd.getValue()).getTime())/1000 < 32*86400)) {
 					if(grupeCombo.getValue() == null && objektiCombo.getValue() == null) {
-						pokaziPorukuGreska("морате одабрати групу или објекат!");
+						pokaziPorukuGreska("морате одабрати групу!");
 					}else {//ako ima ili objekat ili grupaObjekata
 						if(objektiCombo.getValue() == null) {
 							objekti = Servis.grupeObjekatServis.nadjiSveObjektePoGrupi(grupeCombo.getValue());
@@ -271,7 +319,7 @@ public class IzvestajiView extends OpstiPanelView{
 			}
 		});
         
-		dodajParametreDatum(false);
+		dodajParametreDatum(false, true);
 	}
 	
 	private void postaviParametreRadnoVremeGPS() {
@@ -307,7 +355,7 @@ public class IzvestajiView extends OpstiPanelView{
 			}
 		});
 		
-		dodajParametreDatum(true);
+		dodajParametreDatum(true, true);
 	}
 	
 	public void postaviParametreNivoGoriva() {
@@ -345,7 +393,7 @@ public class IzvestajiView extends OpstiPanelView{
 			}
 		});
 		
-		dodajParametreDatum(false);
+		dodajParametreDatum(false, true);
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -371,7 +419,7 @@ public class IzvestajiView extends OpstiPanelView{
 		parametri.removeAllComponents();
 	}
 	
-	private void dodajParametreDatum(boolean dodajSate) {
+	private void dodajParametreDatum(boolean dodajSate, boolean datumVremeOd) {
         if(dodajSate) {
             List<Integer> data = IntStream.range(0, 24).mapToObj(i -> i).collect(Collectors.toList());
             satiOd = new NativeSelect<>(null, data);
@@ -419,7 +467,9 @@ public class IzvestajiView extends OpstiPanelView{
         
         parametri.addComponent(grupeCombo);
         parametri.addComponent(objektiCombo);
-        parametri.addComponent(vremeOd);
+        if(datumVremeOd) {
+        	parametri.addComponent(vremeOd);
+        }
         parametri.addComponent(vremeDo);
         if(dodajSate) {
             parametri.addComponent(satiOd);
