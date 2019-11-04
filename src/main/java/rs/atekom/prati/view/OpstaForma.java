@@ -8,13 +8,17 @@ import java.time.ZoneId;
 import java.util.Date;
 
 import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.VerticalLayout;
 
+import pratiBaza.tabele.Korisnici;
 import rs.atekom.prati.Prati;
 import rs.atekom.prati.view.komponente.Celobrojni;
+import rs.atekom.prati.view.komponente.ComboOrganizacije;
+import rs.atekom.prati.view.komponente.ComboPretplatnici;
 import rs.atekom.prati.view.komponente.Decimalni;
 import rs.atekom.prati.view.komponente.Tekst;
 
@@ -31,8 +35,15 @@ public class OpstaForma extends CssLayout{
 	public Tekst tekst;
 	public DateField datum;
 	public Date dat;
+	public Korisnici korisnik;
+	public ComboPretplatnici pretplatnici;
+	public ComboOrganizacije organizacije;
 	
 	public OpstaForma() {
+		pretplatnici = new ComboPretplatnici("претплатник", true, true);
+		organizacije = new ComboOrganizacije(pretplatnici.getValue(), "организација", true, false);
+		korisnik = (Korisnici) VaadinSession.getCurrent().getAttribute(Korisnici.class.getName());
+		
 		addStyleName("product-form");
 		addStyleName("product-form-wrapper");
 		decimalFormatSymbols = new DecimalFormatSymbols();
@@ -51,6 +62,14 @@ public class OpstaForma extends CssLayout{
 		expander = new CssLayout();
 		expander.addStyleName("expander");
 		
+		if(isSistem()) {
+			layout.addComponent(pretplatnici);
+		}
+		
+		if(isSistem() || isAdmin()) {
+			layout.addComponent(organizacije);
+		}
+		
 		sacuvaj = new Button("сачувај");
 		sacuvaj.addStyleName("primary");
 		
@@ -60,6 +79,26 @@ public class OpstaForma extends CssLayout{
 		
 		izbrisi = new Button("избриши");
 		izbrisi.addStyleName("danger");
+	}
+	
+	public boolean isSistem() {
+		return (korisnik.isSistem() && korisnik.getSistemPretplatnici().isSistem());
+	}
+	
+	public boolean isAdmin() {
+		return (korisnik.isAdmin() && korisnik.getOrganizacija() == null);
+	}
+	
+	public void ukloniCombo() {
+		layout.removeComponent(pretplatnici);
+		layout.removeComponent(organizacije);
+	}
+	
+	public void dodajExpanderButton() {
+		layout.addComponentsAndExpand(expander);
+		layout.addComponent(sacuvaj);
+		layout.addComponent(otkazi);
+		layout.addComponent(izbrisi);
 	}
 	
 	public Double parsirajDecimalni(String vrednost) {

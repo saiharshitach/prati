@@ -1,7 +1,6 @@
 package rs.atekom.prati.view.zone;
 
 import org.vaadin.dialogs.ConfirmDialog;
-
 import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
 import com.google.maps.model.GeocodingResult;
@@ -19,18 +18,13 @@ import rs.atekom.prati.view.OpstaForma;
 import rs.atekom.prati.view.OpstaFormaInterface;
 import rs.atekom.prati.view.OpstiView;
 import rs.atekom.prati.view.komponente.Celobrojni;
-import rs.atekom.prati.view.komponente.ComboOrganizacije;
-import rs.atekom.prati.view.komponente.ComboPretplatnici;
 import rs.atekom.prati.view.komponente.DecimalniPozicija;
 import rs.atekom.prati.view.komponente.Tekst;
-
 
 public class ZoneForma extends OpstaForma implements OpstaFormaInterface{
 
 	private static final long serialVersionUID = 1L;
 	private ZoneLogika logika;
-	private ComboPretplatnici pretplatnici;
-	private ComboOrganizacije organizacije;
 	private Tekst adresa, naziv, opis;
 	private DecimalniPozicija lon, lat;
 	private Celobrojni poluprecnik;
@@ -41,8 +35,6 @@ public class ZoneForma extends OpstaForma implements OpstaFormaInterface{
 	public ZoneForma(ZoneLogika log) {
 		logika = log;
 		brojPokusaja = 0;
-		pretplatnici = new ComboPretplatnici("претплатник", true, true);
-		organizacije = new ComboOrganizacije(pretplatnici.getValue(), "организација", true, false);
 		adresa = new Tekst("адреса", false);
 		nadjiLokaciju = new Button("нађи локацију");
 		nadjiLokaciju.addStyleName("primary");
@@ -109,10 +101,7 @@ public class ZoneForma extends OpstaForma implements OpstaFormaInterface{
 				});
 			}
 		});
-		
-		if(logika.view.isAdmin()) {
-			layout.addComponent(pretplatnici);
-		}
+
 		layout.addComponent(adresa);
 		layout.addComponent(nadjiLokaciju);
 		layout.addComponent(naziv);
@@ -121,19 +110,14 @@ public class ZoneForma extends OpstaForma implements OpstaFormaInterface{
 		layout.addComponent(poluprecnik);
 		layout.addComponent(opis);
 		layout.addComponent(aktivan);
-		if(logika.view.korisnik.isAdmin() && logika.view.korisnik.getOrganizacija() == null) {
-			layout.addComponent(organizacije);
-		}
-		if(logika.view.isAdmin())  {
+
+		if(logika.view.isSistem())  {
 			layout.addComponent(izbrisan);
 		}
 		
 		Gmap mapa = new Gmap(Servis.apiGoogle, null, "serbian");
 		expander.addComponent(mapa);
-		layout.addComponentsAndExpand(expander);
-		layout.addComponent(sacuvaj);
-		layout.addComponent(otkazi);
-		layout.addComponent(izbrisi);
+		dodajExpanderButton();
 		
 		addComponent(layout);
 	}

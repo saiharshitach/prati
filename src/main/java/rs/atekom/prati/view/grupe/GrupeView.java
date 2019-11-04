@@ -84,14 +84,16 @@ public class GrupeView extends OpstiView implements OpstiViewInterface{
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
-		if(korisnik.isSistem() && korisnik.getSistemPretplatnici() == null) {
+		if(isSistem()) {
 			tabela.addColumn(grupe -> grupe.getSistemPretplatnici() == null ? "" : grupe.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
 		tabela.addColumn(Grupe::getNaziv).setCaption("назив");
 		tabela.addColumn(Grupe::getOpis).setCaption("опис");
 		tabela.addComponentColumn(grupe -> {CheckBox chb = new CheckBox(); if(grupe.isAktivan()) {chb.setValue(true);} return chb;}).setCaption("активан").setStyleGenerator(uredjaji -> "v-align-right");
-		tabela.addColumn(grupe -> grupe.getOrganizacija() == null ? "" : grupe.getOrganizacija().getNaziv()).setCaption("организација");
-		if(this.isAdmin()) {
+		if(isSistem() || (korisnik.isAdmin() && korisnik.getOrganizacija() == null)) {
+			tabela.addColumn(grupe -> grupe.getOrganizacija() == null ? "" : grupe.getOrganizacija().getNaziv()).setCaption("организација");
+		}
+		if(isSistem()) {
 			tabela.addComponentColumn(grupe -> {CheckBox chb = new CheckBox(); if(grupe.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(uredjaji -> "v-align-right");
 		}
 		tabela.addColumn(Grupe::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(uredjaji -> "v-align-right");

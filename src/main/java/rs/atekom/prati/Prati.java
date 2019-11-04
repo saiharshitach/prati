@@ -147,19 +147,17 @@ public class Prati extends UI implements BroadcastListener{
 			//DefaultBadgeHolder badge = new DefaultBadgeHolder();
 			PratiMeniKorisnik meniKlasa = new PratiMeniKorisnik();
 			AppLayoutComponent meni;
-			if(korisnik.getSistemPretplatnici() == null && korisnik.isSistem()) {
+			if(korisnik.getSistemPretplatnici().isSistem() && korisnik.isSistem()) {
 				meni = meniKlasa.vratiMeniSistem(korisnik.getIme() + " " + korisnik.getPrezime());
-			}else if (korisnik.getSistemPretplatnici() != null && korisnik.isAdmin()){
+			}else if (korisnik.isAdmin()){
 				meni = meniKlasa.vratiMeniAdministrator(korisnik.getIme() + " " + korisnik.getPrezime());
 			}else {
 				meni = meniKlasa.vratiMeniKorisnik(korisnik.getIme() + " " + korisnik.getPrezime());
 			}
-			
 		    setContent(meni);
 			removeStyleName("loginview");
 			getNavigator().navigateTo("pracenje");
 			getNavigator().setErrorView(GreskaView.class);
-
 		}else {
 			setContent(new PrijavaView());
 			addStyleName("loginview");
@@ -195,9 +193,11 @@ public class Prati extends UI implements BroadcastListener{
 				if(!korisnik.getSistemPretplatnici().isAktivan()) {
 					prijavi = false;
 					}
+				}else {
+					prijavi = false;
 				}
 			//ubaciti kontrolu za vreme za pretplatnika ako je podešeno
-			if(korisnik.getSistemPretplatnici() != null && korisnik.getSistemPretplatnici().getAktivanDo() != null && datum.after(korisnik.getSistemPretplatnici().getAktivanDo())) {
+			if(korisnik.getSistemPretplatnici().getAktivanDo() != null && datum.after(korisnik.getSistemPretplatnici().getAktivanDo())) {
 				prijavi = false;
 			}
 			
@@ -225,7 +225,7 @@ public class Prati extends UI implements BroadcastListener{
 			Servis.sistemSesijaServis.unesiSesiju(sesija);
 			//Servis.sistemSesijaServis.izmeniSesiju(sesija);
 			
-			if(korisnik.isAdmin()) {
+			if(korisnik.isAdmin() || korisnik.getSistemPretplatnici().isSistem()) {
 				sviObjekti = Servis.objekatServis.vratiSveObjekte(korisnik, true);
 			}else {
 				ArrayList<Grupe> grupe = Servis.grupeKorisnikServis.vratiSveGrupePoKorisniku(korisnik);
@@ -291,8 +291,13 @@ public class Prati extends UI implements BroadcastListener{
 		@Override
 		public void sessionDestroy(SessionDestroyEvent event) {
 			//System.out.println("sesija kraj...");
-			sesija.setDatumKraj(new Timestamp((new Date()).getTime()));
-			Servis.sistemSesijaServis.izmeniSesiju(sesija);
+			try {
+				sesija.setDatumKraj(new Timestamp((new Date()).getTime()));
+				Servis.sistemSesijaServis.izmeniSesiju(sesija);
+			}catch (Exception e) {
+				// TODO: handle exception
+			}
+			
 		}
     }
     

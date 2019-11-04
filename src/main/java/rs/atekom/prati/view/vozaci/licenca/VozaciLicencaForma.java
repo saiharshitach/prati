@@ -15,8 +15,6 @@ import rs.atekom.prati.view.OpstaForma;
 import rs.atekom.prati.view.OpstaFormaInterface;
 import rs.atekom.prati.view.OpstiView;
 import rs.atekom.prati.view.komponente.ComboKorisniciVozaci;
-import rs.atekom.prati.view.komponente.ComboOrganizacije;
-import rs.atekom.prati.view.komponente.ComboPretplatnici;
 import rs.atekom.prati.view.komponente.Datum;
 import rs.atekom.prati.view.komponente.Tekst;
 
@@ -24,8 +22,6 @@ public class VozaciLicencaForma extends OpstaForma implements OpstaFormaInterfac
 
 	private static final long serialVersionUID = 1L;
 	private VozaciLicencaLogika logika;
-	private ComboPretplatnici pretplatnici;
-	private ComboOrganizacije organizacije;
 	private ComboKorisniciVozaci vozaci;
 	private Tekst broj, izdao;
 	private Datum izdato, vaziDo;
@@ -33,8 +29,6 @@ public class VozaciLicencaForma extends OpstaForma implements OpstaFormaInterfac
 
 	public VozaciLicencaForma(VozaciLicencaLogika log) {
 		logika = log;
-		pretplatnici = new ComboPretplatnici("претплатник", true, true);
-		organizacije = new ComboOrganizacije(pretplatnici.getValue(), "организација", true, false);
 		vozaci = new ComboKorisniciVozaci(logika.view.korisnik, "возач", true, true);
 		broj = new Tekst("број", true);
 		izdao = new Tekst("издао", false);
@@ -111,25 +105,16 @@ public class VozaciLicencaForma extends OpstaForma implements OpstaFormaInterfac
 				});
 			}
 		});
-		
-		if(logika.view.korisnik.isSistem() && logika.view.korisnik.getSistemPretplatnici() == null) {
-			layout.addComponent(pretplatnici);
-		}
-		if(logika.view.korisnik.isAdmin() && logika.view.korisnik.getOrganizacija() == null) {
-			layout.addComponent(organizacije);
-		}
+
 		layout.addComponent(vozaci);
 		layout.addComponent(broj);
 		layout.addComponent(izdao);
 		layout.addComponent(izdato);
 		layout.addComponent(vaziDo);
-		if(logika.view.isAdmin())  {
+		if(logika.view.isSistem())  {
 			layout.addComponent(izbrisan);
 		}
-		layout.addComponentsAndExpand(expander);
-		layout.addComponent(sacuvaj);
-		layout.addComponent(otkazi);
-		layout.addComponent(izbrisi);
+		dodajExpanderButton();
 		
 		addComponent(layout);
 	}

@@ -85,13 +85,13 @@ public class OrganizacijeView extends OpstiView implements OpstiViewInterface{
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
-		if(korisnik.isSistem() && korisnik.getSistemPretplatnici() == null) {
+		if(isSistem()) {
 			tabela.addColumn(organizacije -> organizacije.getSistemPretplatnici() == null ? "" : organizacije.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
 		tabela.addColumn(Organizacije::getNaziv).setCaption("naziv");
 		tabela.addColumn(Organizacije::getOpis).setCaption("опис");
 		tabela.addComponentColumn(organizacije -> {CheckBox chb = new CheckBox(); if(organizacije.isAktivan()) {chb.setValue(true);} return chb;}).setCaption("активан").setStyleGenerator(uredjaji -> "v-align-right");
-		if(korisnik.isSistem() && korisnik.getSistemPretplatnici() == null) {
+		if(isSistem()) {
 			tabela.addComponentColumn(organizacije -> {CheckBox chb = new CheckBox(); if(organizacije.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(uredjaji -> "v-align-right");
 		}
 		tabela.addColumn(Organizacije::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(uredjaji -> "v-align-right");

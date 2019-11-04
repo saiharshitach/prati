@@ -1,5 +1,7 @@
 package rs.atekom.prati.view.pretplatnici;
 
+import java.util.ArrayList;
+
 import com.vaadin.server.Page;
 
 import pratiBaza.tabele.SistemPretplatnici;
@@ -63,12 +65,32 @@ public class PretplatniciLogika implements LogikaInterface{
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
 		setFragmentParametar("");
+		ArrayList<SistemPretplatnici> pretplatnici = Servis.sistemPretplatnikServis.nadjiSveAktivneSistemskePretplatnike();
+		
 		if(pretplatnik.getId() != null) {
-			Servis.sistemPretplatnikServis.izmeniPretplatnika(pretplatnik);
-			view.pokaziPorukuUspesno("претплатник измењен");
+			if(pretplatnici.size() > 0 && pretplatnik.isSistem()) {
+				boolean ima = false;
+				for(SistemPretplatnici pr : pretplatnici) {
+					if(pr.getId().equals(pretplatnik.getId())) {
+						Servis.sistemPretplatnikServis.izmeniPretplatnika(pretplatnik);
+						view.pokaziPorukuUspesno("претплатник измењен");
+						ima = true;
+					}
+				}
+				if(!ima) {
+					view.pokaziPorukuUspesno("већ постоји системски претплатник!");
+				}
+			}else {
+				Servis.sistemPretplatnikServis.izmeniPretplatnika(pretplatnik);
+				view.pokaziPorukuUspesno("претплатник измењен");
+			}
 		}else {
-			Servis.sistemPretplatnikServis.unesiPretplatnika(pretplatnik);
-			view.pokaziPorukuUspesno("претплатник сачуван");
+			if(pretplatnici.size() > 0 && pretplatnik.isSistem()) {
+				view.pokaziPorukuUspesno("већ постоји системски претплатник!");
+			}else {
+				Servis.sistemPretplatnikServis.unesiPretplatnika(pretplatnik);
+				view.pokaziPorukuUspesno("претплатник сачуван");
+			}
 		}
 		view.updateTable();
 	}

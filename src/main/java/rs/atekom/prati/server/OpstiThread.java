@@ -80,7 +80,8 @@ public class OpstiThread implements Runnable{
 			uredjaj = Servis.uredjajServis.nadjiUredjajPoKodu(kodUredjaja);
 			
 			if(uredjaj != null) {
-				objekat = Servis.objekatServis.nadjiObjekatPoUredjaju(uredjaj);						
+				//objekat = Servis.objekatServis.nadjiObjekatPoUredjaju(uredjaj);						
+				objekat = uredjaj.getObjekti();
 				
 				if(objekat != null) {
 					objekatZone = Servis.zonaObjekatServis.nadjiZoneObjektePoObjektu(objekat);
@@ -193,14 +194,14 @@ public class OpstiThread implements Runnable{
 			test = " gorivo ";
     		if(obdTrenutni != null && mladje && javljanjeTrenutno.getBrzina() < 6) {
     			//System.out.println(test);
-    			if(!gorivo) {
+    			Javljanja poslednjeSaBrzinom = Servis.javljanjeServis.vratiJavljanjeZaStajanje(objekat);
+    			if(!gorivo && poslednjeSaBrzinom != null) {
     				//System.out.println(test += " false");
-        			Javljanja poslednjeSaBrzinom = Servis.javljanjeServis.vratiJavljanjeZaStajanje(objekat);
         			ArrayList<Obd> poslednjiObdUMirovanju = Servis.obdServis.nadjiObdPoslednjaStajanja(objekat, new Timestamp(poslednjeSaBrzinom.getDatumVreme().getTime()));
         			//System.out.println(test + " brzina " + poslednjeSaBrzinom.getBrzina() + " " + poslednjeSaBrzinom.getDatumVreme() + " komada " + poslednjiObdUMirovanju.size());
         			/*System.out.println("početni " + poslednjiObdUMirovanju.get(0).getNivoGoriva() + " krajnji " + obdTrenutni.getNivoGoriva() + " razlika " 
         			+ (poslednjiObdUMirovanju.get(0).getNivoGoriva() - obdTrenutni.getNivoGoriva()));**/
-        			if(!gorivo && poslednjiObdUMirovanju.size() > 0 && poslednjiObdUMirovanju.get(0).getNivoGoriva() - obdTrenutni.getNivoGoriva() > 3) {
+        			if(!gorivo && poslednjiObdUMirovanju.size() > 0 && (poslednjiObdUMirovanju.get(0).getNivoGoriva() - obdTrenutni.getNivoGoriva() > 3)) {
         				//System.out.println(test  + " razlika > 2");
         				if(!javljanjeTrenutno.getSistemAlarmi().getSifra().equals("0")) {
         					server.izvrsavanje.obradaAlarma(javljanjeTrenutno, alarmiKorisnici);

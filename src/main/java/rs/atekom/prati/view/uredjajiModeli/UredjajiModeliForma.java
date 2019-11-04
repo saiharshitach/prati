@@ -28,6 +28,8 @@ public class UredjajiModeliForma extends OpstaForma implements OpstaFormaInterfa
 		obd = new CheckBox("обд");
 		izbrisan = new CheckBox("избрисан");
 		
+		ukloniCombo();
+		
 		sacuvaj.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
 			@Override
@@ -77,11 +79,7 @@ public class UredjajiModeliForma extends OpstaForma implements OpstaFormaInterfa
 		layout.addComponent(opis);
 		layout.addComponent(obd);
 		layout.addComponent(izbrisan);
-		
-		layout.addComponentsAndExpand(expander);
-		layout.addComponent(sacuvaj);
-		layout.addComponent(otkazi);
-		layout.addComponent(izbrisi);
+		dodajExpanderButton();
 		
 		addComponent(layout);
 	}

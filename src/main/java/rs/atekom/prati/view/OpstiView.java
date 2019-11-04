@@ -125,12 +125,12 @@ public abstract class OpstiView extends CssLayout implements View {
 			}
 		});
         
-        if(isAdmin()) {
+        if(isSistem()) {
         	topLayout.addComponent(pretplatniciCombo);
         }else {
         	pretplatniciCombo.setValue(korisnik.getSistemPretplatnici());
         }
-        if(isAdmin() || korisnik.getOrganizacija() == null) {
+        if(isSistem() || korisnik.getOrganizacija() == null) {
         	topLayout.addComponent(organizacijeCombo);
         }else {
         	organizacijeCombo.setValue(korisnik.getOrganizacija());
@@ -170,8 +170,8 @@ public abstract class OpstiView extends CssLayout implements View {
 		Notification.show(msg, Type.TRAY_NOTIFICATION);
 	}
 	
-	public boolean isAdmin() {
-		return (korisnik.isSistem() && korisnik.getSistemPretplatnici() == null);
+	public boolean isSistem() {
+		return (korisnik.isSistem() && korisnik.getSistemPretplatnici().isSistem());
 	}
 	
 }

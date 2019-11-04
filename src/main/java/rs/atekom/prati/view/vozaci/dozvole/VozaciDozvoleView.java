@@ -83,7 +83,7 @@ public class VozaciDozvoleView extends OpstiView implements OpstiViewInterface{
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
-		if(korisnik.isSistem() && korisnik.getSistemPretplatnici() == null) {
+		if(isSistem()) {
 			tabela.addColumn(vozaciDozvola -> vozaciDozvola.getSistemPretplatnici() == null ? "" : vozaciDozvola.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
 		tabela.addColumn(vozaciDozvola -> vozaciDozvola.getVozaci() == null ? "" : vozaciDozvola.getVozaci().getKorisnici() == null ? "" : 
@@ -91,9 +91,11 @@ public class VozaciDozvoleView extends OpstiView implements OpstiViewInterface{
 		tabela.addColumn(VozaciDozvole::getBrojDozvole).setCaption("број");
 		tabela.addColumn(VozaciDozvole::getIzdao).setCaption("издао");
 		tabela.addColumn(VozaciDozvole::getVaziDo, new DateRenderer(DANFORMAT)).setCaption("важеће до").setStyleGenerator(objekti -> "v-align-right");
-		tabela.addColumn(vozaciDozvola -> vozaciDozvola.getVozaci() == null ? "" : vozaciDozvola.getVozaci().getKorisnici() == null ? "" :
+		if(isSistem() || (korisnik.isAdmin() && korisnik.getOrganizacija() == null)) {
+					tabela.addColumn(vozaciDozvola -> vozaciDozvola.getVozaci() == null ? "" : vozaciDozvola.getVozaci().getKorisnici() == null ? "" :
 			vozaciDozvola.getVozaci().getKorisnici().getOrganizacija() == null ? "" : vozaciDozvola.getVozaci().getKorisnici().getOrganizacija().getNaziv()).setCaption("организација");
-		if(isAdmin()) {
+		}
+		if(isSistem()) {
 			tabela.addComponentColumn(vozaciDozvola -> {CheckBox chb = new CheckBox(); if(vozaciDozvola.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(vozaci -> "v-align-right");
 		}
 		tabela.addColumn(VozaciDozvole::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(objekti -> "v-align-right");

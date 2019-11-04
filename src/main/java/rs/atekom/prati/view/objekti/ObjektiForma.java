@@ -1,5 +1,7 @@
 package rs.atekom.prati.view.objekti;
 
+import java.util.ArrayList;
+
 import org.vaadin.dialogs.ConfirmDialog;
 import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.HasValue.ValueChangeListener;
@@ -16,8 +18,6 @@ import rs.atekom.prati.view.OpstaForma;
 import rs.atekom.prati.view.OpstaFormaInterface;
 import rs.atekom.prati.view.OpstiView;
 import rs.atekom.prati.view.komponente.Celobrojni;
-import rs.atekom.prati.view.komponente.ComboOrganizacije;
-import rs.atekom.prati.view.komponente.ComboPretplatnici;
 import rs.atekom.prati.view.komponente.ComboUredjaji;
 import rs.atekom.prati.view.komponente.Tekst;
 
@@ -25,8 +25,6 @@ public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 
 	private static final long serialVersionUID = 1L;
 	private ObjektiLogika logika;
-	private ComboPretplatnici pretplatnici;
-	private ComboOrganizacije organizacije;
 	private ComboUredjaji uredjaji;
 	private Tekst oznaka, simBroj, sim;
 	private CheckBox aktivan, vozilo, izbrisan;
@@ -34,8 +32,6 @@ public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 	
 	public ObjektiForma(ObjektiLogika log) {
 		logika = log;
-		pretplatnici = new ComboPretplatnici("претплатник", true, true);
-		organizacije = new ComboOrganizacije(pretplatnici.getValue(), "организација", true, true);
 		oznaka = new Tekst("ознака", true);
 		
 		//sim = new SimCombo(logika.view.korisnik, "сим картица", true, true);
@@ -55,7 +51,15 @@ public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void valueChange(ValueChangeEvent<SistemPretplatnici> event) {
-				
+				if(logika.view.korisnik.getSistemPretplatnici() == null) {
+					if(event.getValue() != null) {
+						organizacije.setItems(Servis.organizacijaServis.nadjiSveOrganizacije(event.getValue(), true));
+						uredjaji.setItems(Servis.uredjajServis.nadjiSveAktivneSlobodneUredjajePoPretplatniku(null, null, null));
+					}else {
+						organizacije.setItems(new ArrayList<Organizacije>());
+						uredjaji.setItems(new ArrayList<Uredjaji>());
+					}
+				}
 			}
 		});
 		
@@ -63,7 +67,13 @@ public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void valueChange(ValueChangeEvent<Organizacije> event) {
-				
+				if(logika.view.korisnik.getSistemPretplatnici() != null) {
+					if(event.getValue() != null) {
+						uredjaji.setItems(Servis.uredjajServis.nadjiSveAktivneSlobodneUredjajePoPretplatniku(pretplatnici.getValue(), event.getValue(), null));
+					}else {
+						uredjaji.setItems(Servis.uredjajServis.nadjiSveAktivneSlobodneUredjajePoPretplatniku(null, null, null));
+					}
+				}
 			}
 		});
 		
@@ -126,9 +136,6 @@ public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 			}
 		});
 		
-		if(logika.view.isAdmin()) {
-			layout.addComponent(pretplatnici);
-		}
 		layout.addComponent(oznaka);
 		layout.addComponent(uredjaji);
 		layout.addComponent(sim);
@@ -137,16 +144,10 @@ public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 		layout.addComponent(vremeStajanja);
 		layout.addComponent(prekoracenjeBrzine);
 		layout.addComponent(aktivan);
-		if(logika.view.korisnik.isAdmin() && logika.view.korisnik.getOrganizacija() == null) {
-			layout.addComponent(organizacije);
-		}
-		if(logika.view.isAdmin())  {
+		if(logika.view.isSistem())  {
 			layout.addComponent(izbrisan);
 		}
-		layout.addComponentsAndExpand(expander);
-		layout.addComponent(sacuvaj);
-		layout.addComponent(otkazi);
-		layout.addComponent(izbrisi);
+		dodajExpanderButton();
 		
 		addComponent(layout);
 	}
@@ -227,9 +228,15 @@ public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 			}catch (Exception e) {
 				oznaka.setValue("");
 			}
+			organizacije.setItems(Servis.organizacijaServis.nadjiSveOrganizacije(objekat.getSistemPretplatnici(), true));
+			organizacije.setValue(objekat.getOrganizacija());
 			try {
 				Uredjaji uredjaj = objekat.getUredjaji();
-				uredjaji.setItems(Servis.uredjajServis.nadjiSveAktivneSlobodneUredjajePoPretplatniku(objekat.getSistemPretplatnici(), objekat.getOrganizacija(), uredjaj));
+				if(logika.view.korisnik.getSistemPretplatnici() != null) {
+					uredjaji.setItems(Servis.uredjajServis.nadjiSveAktivneSlobodneUredjajePoPretplatniku(objekat.getSistemPretplatnici(), objekat.getOrganizacija(), uredjaj));
+				}else {
+					uredjaji.setItems(Servis.uredjajServis.nadjiSveAktivneSlobodneUredjajePoPretplatniku(null, null, uredjaj));
+				}
 				uredjaji.setSelectedItem(uredjaj);
 			}catch (Exception e) {
 				uredjaji.setItems(Servis.uredjajServis.nadjiSveAktivneSlobodneUredjajePoPretplatniku(objekat.getSistemPretplatnici(), objekat.getOrganizacija(), null));
@@ -272,6 +279,7 @@ public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 		if(brz != 0 && brz < 80) {
 			sveIma = false;
 		}
+		
 		return sveIma;
 	}
 

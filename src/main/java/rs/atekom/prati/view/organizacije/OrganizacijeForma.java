@@ -4,33 +4,29 @@ import org.vaadin.dialogs.ConfirmDialog;
 
 import com.vaadin.server.Page;
 import com.vaadin.ui.CheckBox;
-
 import pratiBaza.tabele.Organizacije;
-
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-
 import rs.atekom.prati.view.OpstaForma;
 import rs.atekom.prati.view.OpstaFormaInterface;
 import rs.atekom.prati.view.OpstiView;
-import rs.atekom.prati.view.komponente.ComboPretplatnici;
 import rs.atekom.prati.view.komponente.Tekst;
 
 public class OrganizacijeForma extends OpstaForma implements OpstaFormaInterface{
 
 	private static final long serialVersionUID = 1L;
 	private OrganizacijeLogika logika;
-	private ComboPretplatnici pretplatnici;
 	private Tekst naziv, opis;
 	private CheckBox aktivan, izbrisan;
 
 	public OrganizacijeForma(OrganizacijeLogika log) {
 		logika = log;
-		pretplatnici = new ComboPretplatnici("претплатници", true, true);
 		naziv = new Tekst("назив", true);
 		opis = new Tekst("опис", false);
 		aktivan = new CheckBox("активан");
 		izbrisan = new CheckBox("избрисан");
+		
+		layout.removeComponent(organizacije);
 		
 		sacuvaj.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
@@ -75,21 +71,14 @@ public class OrganizacijeForma extends OpstaForma implements OpstaFormaInterface
 				});
 			}
 		});
-		
-		if(logika.view.isAdmin()) {
-			layout.addComponent(pretplatnici);
-		}
+
 		layout.addComponent(naziv);
 		layout.addComponent(opis);
 		layout.addComponent(aktivan);
-		if(logika.view.isAdmin()) {
+		if(logika.view.isSistem()) {
 			layout.addComponent(izbrisan);
 		}
-		
-		layout.addComponentsAndExpand(expander);
-		layout.addComponent(sacuvaj);
-		layout.addComponent(otkazi);
-		layout.addComponent(izbrisi);
+		dodajExpanderButton();
 		
 		addComponent(layout);
 	}

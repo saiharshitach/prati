@@ -32,6 +32,8 @@ public class AlarmiForma extends OpstaForma implements OpstaFormaInterface{
 		aktivan = new CheckBox("активан");
 		izbrisan = new CheckBox("избрисан");
 		
+		ukloniCombo();
+		
 		sacuvaj.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
 			@Override
@@ -87,10 +89,7 @@ public class AlarmiForma extends OpstaForma implements OpstaFormaInterface{
 		layout.addComponent(aktivan);
 		layout.addComponent(izbrisan);
 		
-		layout.addComponentsAndExpand(expander);
-		layout.addComponent(sacuvaj);
-		layout.addComponent(otkazi);
-		layout.addComponent(izbrisi);
+		dodajExpanderButton();
 		
 		addComponent(layout);
 	}

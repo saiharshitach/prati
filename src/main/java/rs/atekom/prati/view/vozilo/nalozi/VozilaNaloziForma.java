@@ -16,8 +16,6 @@ import rs.atekom.prati.view.OpstaFormaInterface;
 import rs.atekom.prati.view.OpstiView;
 import rs.atekom.prati.view.komponente.ComboKorisnici;
 import rs.atekom.prati.view.komponente.ComboObjekti;
-import rs.atekom.prati.view.komponente.ComboOrganizacije;
-import rs.atekom.prati.view.komponente.ComboPretplatnici;
 import rs.atekom.prati.view.komponente.DatumVreme;
 import rs.atekom.prati.view.komponente.Tekst;
 
@@ -25,8 +23,6 @@ public class VozilaNaloziForma extends OpstaForma implements OpstaFormaInterface
 
 	private static final long serialVersionUID = 1L;
 	private VozilaNaloziLogika logika;
-	private ComboPretplatnici pretplatnici;
-	private ComboOrganizacije organizacije;
 	private ComboKorisnici vozaci;
 	private DatumVreme polazak, dolazak;
 	private Tekst brojNaloga, odMesta, doMesta, medjuTacke, komentar;
@@ -35,8 +31,6 @@ public class VozilaNaloziForma extends OpstaForma implements OpstaFormaInterface
 
 	public VozilaNaloziForma(VozilaNaloziLogika log) {
 		logika = log;
-		pretplatnici = new ComboPretplatnici("претплатник", true, true);
-		organizacije = new ComboOrganizacije(pretplatnici.getValue(), "организација", true, false);
 		brojNaloga = new Tekst("број", false);
 		vozila = new ComboObjekti(logika.view.korisnik, "возила", true, true);
 		odMesta = new Tekst("од", true);
@@ -126,13 +120,7 @@ public class VozilaNaloziForma extends OpstaForma implements OpstaFormaInterface
 				});
 			}
 		});
-		
-		if(logika.view.korisnik.isSistem() && logika.view.korisnik.getSistemPretplatnici() == null) {
-			layout.addComponent(pretplatnici);
-		}
-		if(logika.view.korisnik.isAdmin() && logika.view.korisnik.getOrganizacija() == null) {
-			layout.addComponent(organizacije);
-		}
+
 		layout.addComponent(brojNaloga);
 		layout.addComponent(vozila);
 		layout.addComponent(odMesta);
@@ -142,13 +130,10 @@ public class VozilaNaloziForma extends OpstaForma implements OpstaFormaInterface
 		layout.addComponent(dolazak);
 		layout.addComponent(vozaci);
 		layout.addComponent(komentar);
-		if(logika.view.isAdmin())  {
+		if(logika.view.isSistem())  {
 			layout.addComponent(izbrisan);
 		}
-		layout.addComponentsAndExpand(expander);
-		layout.addComponent(sacuvaj);
-		layout.addComponent(otkazi);
-		layout.addComponent(izbrisi);
+		dodajExpanderButton();
 		
 		addComponent(layout);
 	}

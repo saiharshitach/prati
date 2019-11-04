@@ -89,7 +89,7 @@ public class VozilaSaobracajna2View extends OpstiView implements OpstiViewInterf
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
-		if(isAdmin()) {
+		if(isSistem()) {
 			
 		}
 	}

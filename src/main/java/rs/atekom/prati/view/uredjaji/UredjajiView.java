@@ -85,7 +85,7 @@ public class UredjajiView extends OpstiView implements OpstiViewInterface{
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
-		if(isAdmin()) {
+		if(isSistem()) {
 			tabela.addColumn(uredjaji -> uredjaji.getSistemPretplatnici() == null ? "" : uredjaji.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
 		tabela.addColumn(Uredjaji::getSerijskiBr).setCaption("серијски број");
@@ -98,7 +98,7 @@ public class UredjajiView extends OpstiView implements OpstiViewInterface{
 		tabela.addColumn(uredjaji -> uredjaji.getObjekti() == null ? "" : uredjaji.getObjekti().getOznaka()).setCaption("објекат");
 		tabela.addComponentColumn(uredjaji -> {CheckBox chb = new CheckBox(); if(uredjaji.isAktivno()) {chb.setValue(true); }return chb;}).setCaption("активан").setStyleGenerator(uredjaji -> "v-align-right");
 		tabela.addColumn(uredjaji -> uredjaji.getOrganizacija() == null ? "" : uredjaji.getOrganizacija().getNaziv()).setCaption("организација");
-		if(isAdmin()) {
+		if(isSistem()) {
 			tabela.addComponentColumn(uredjaji -> {CheckBox chb = new CheckBox(); if(uredjaji.isIzbrisan()) {chb.setValue(true); }return chb;}).setCaption("избрисан").setStyleGenerator(uredjaji -> "v-align-right");
 		}
 		tabela.addColumn(Uredjaji::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(uredjaji -> "v-align-right");

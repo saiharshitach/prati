@@ -38,6 +38,8 @@ public class SistemForma extends OpstaForma implements OpstaFormaInterface{
 		koristiServerMape = new CheckBox("користи сервер мапе");
 		nominatim = new Tekst("номинатим", true);
 		
+		ukloniCombo();
+		
 		sacuvaj.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
 			@Override
@@ -95,10 +97,7 @@ public class SistemForma extends OpstaForma implements OpstaFormaInterface{
 		layout.addComponent(koristiServerMape);
 		layout.addComponent(nominatim);
 		
-		layout.addComponentsAndExpand(expander);
-		layout.addComponent(sacuvaj);
-		layout.addComponent(otkazi);
-		layout.addComponent(izbrisi);
+		dodajExpanderButton();
 		
 		addComponent(layout);
 	}

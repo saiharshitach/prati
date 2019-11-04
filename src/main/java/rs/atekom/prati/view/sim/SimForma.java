@@ -6,29 +6,22 @@ import com.vaadin.ui.CheckBox;
 import pratiBaza.tabele.Sim;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-
 import rs.atekom.prati.view.OpstaForma;
 import rs.atekom.prati.view.OpstaFormaInterface;
 import rs.atekom.prati.view.OpstiView;
 import rs.atekom.prati.view.komponente.ComboOperateri;
-import rs.atekom.prati.view.komponente.ComboOrganizacije;
-import rs.atekom.prati.view.komponente.ComboPretplatnici;
 import rs.atekom.prati.view.komponente.Tekst;
 
 public class SimForma extends OpstaForma implements OpstaFormaInterface{
 
 	private static final long serialVersionUID = 1L;
 	private SimLogika logika;
-	private ComboPretplatnici pretplatnici;
-	private ComboOrganizacije organizacije;
 	private ComboOperateri operateri;
 	private Tekst uredjaj, broj, iccid, opis;
 	private CheckBox aktivan, izbrisan;
 	
 	public SimForma(SimLogika log) {
 		logika = log;
-		pretplatnici = new ComboPretplatnici("претплатник", true, true);
-		organizacije = new ComboOrganizacije(pretplatnici.getValue(), "организација", true, false);
 		operateri = new ComboOperateri("оператер", true, true);
 		uredjaj = new Tekst("уређај", false);
 		uredjaj.setEnabled(false);
@@ -82,26 +75,16 @@ public class SimForma extends OpstaForma implements OpstaFormaInterface{
 			}
 		});
 		
-		if(logika.view.korisnik.isSistem() && logika.view.korisnik.getSistemPretplatnici() == null) {
-			layout.addComponent(pretplatnici);
-		}
 		layout.addComponent(operateri);
 		layout.addComponent(iccid);
 		layout.addComponent(broj);
 		layout.addComponent(uredjaj);
 		layout.addComponent(opis);
 		layout.addComponent(aktivan);
-		if(logika.view.isAdmin() || logika.view.korisnik.getOrganizacija() == null) {
-			layout.addComponent(organizacije);
-		}
-		if(logika.view.isAdmin())  {
+		if(logika.view.isSistem())  {
 			layout.addComponent(izbrisan);
 		}
-		
-		layout.addComponentsAndExpand(expander);
-		layout.addComponent(sacuvaj);
-		layout.addComponent(otkazi);
-		layout.addComponent(izbrisi);
+		dodajExpanderButton();
 		
 		addComponent(layout);
 	}

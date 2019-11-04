@@ -66,24 +66,26 @@ public class ObjektiLogika implements LogikaInterface{
 		setFragmentParametar("");
 		if(objekat.getId() != null) {
 			Servis.objekatServis.azurirajObjekte(objekat);
-			if(objekat.getUredjaji() != null) {
+			
+			/*if(objekat.getUredjaji() != null) {
 				Uredjaji uredjaj = objekat.getUredjaji();
 				uredjaj.setObjekti(objekat);
 				uredjaj.setZauzet(true);
 				Servis.uredjajServis.izmeniUredjaj(uredjaj);
-			}
+			}**/
 			view.pokaziPorukuUspesno("објекат измењен");
 		}else {
 			try {
 				Servis.objekatServis.unesiObjekte(objekat);
-				if(objekat.getUredjaji() != null) {
-					Uredjaji uredjaj = objekat.getUredjaji();
+				Uredjaji uredjaj = objekat.getUredjaji();
+				if(uredjaj != null) {
 					uredjaj.setObjekti(objekat);
 					uredjaj.setZauzet(true);
 					Servis.uredjajServis.izmeniUredjaj(uredjaj);
 				}
 				view.pokaziPorukuUspesno("објекат сачуван");
 			}catch (Exception e) {
+				e.printStackTrace();
 				view.pokaziPorukuGreska("објекат због грешке није сачуван!");
 			}
 		}

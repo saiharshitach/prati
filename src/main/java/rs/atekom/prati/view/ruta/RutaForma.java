@@ -115,7 +115,7 @@ public class RutaForma extends OpstaForma implements OpstaFormaInterface{
 			}
 		});
 		
-		if(logika.view.isAdmin()) {
+		if(logika.view.isSistem()) {
 			layout.addComponent(pretplatnici);
 		}
 		if(logika.view.korisnik.isAdmin() && logika.view.korisnik.getOrganizacija() == null) {

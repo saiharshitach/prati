@@ -1,34 +1,27 @@
 package rs.atekom.prati.view.partneri;
 
 import org.vaadin.dialogs.ConfirmDialog;
-
 import com.vaadin.server.Page;
 import com.vaadin.ui.CheckBox;
-
 import pratiBaza.tabele.Partneri;
-
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-
 import rs.atekom.prati.view.OpstaForma;
 import rs.atekom.prati.view.OpstaFormaInterface;
 import rs.atekom.prati.view.OpstiView;
 import rs.atekom.prati.view.komponente.Celobrojni;
-import rs.atekom.prati.view.komponente.ComboPretplatnici;
 import rs.atekom.prati.view.komponente.Tekst;
 
 public class PartneriForma extends OpstaForma implements OpstaFormaInterface{
 
 	private static final long serialVersionUID = 1L;
 	private PartneriLogika logika;
-	private ComboPretplatnici pretplatnici;
 	private Tekst naziv, mb, adresa, telefon, mobilni, eposta, kontaktOsoba;
 	private Celobrojni pib;
 	private CheckBox izbrisan;
 
 	public PartneriForma(PartneriLogika log) {
 		logika = log;
-		pretplatnici = new ComboPretplatnici("претплатник", true, true);
 		naziv = new Tekst("назив", true);
 		pib = new Celobrojni("ПИБ", true);
 		mb = new Tekst("мб", false);
@@ -38,6 +31,8 @@ public class PartneriForma extends OpstaForma implements OpstaFormaInterface{
 		eposta = new Tekst("е-пошта", false);
 		kontaktOsoba = new Tekst("контакт особа", false);
 		izbrisan = new CheckBox("избрисан");
+		
+		layout.removeComponent(organizacije);
 		
 		sacuvaj.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
@@ -82,11 +77,7 @@ public class PartneriForma extends OpstaForma implements OpstaFormaInterface{
 				});
 			}
 		});
-		
-		if(logika.view.korisnik.isSistem() && logika.view.korisnik.getSistemPretplatnici() == null) {
-			layout.addComponent(pretplatnici);
-		}
-		
+
 		layout.addComponent(naziv);
 		layout.addComponent(pib);
 		layout.addComponent(mb);
@@ -96,10 +87,7 @@ public class PartneriForma extends OpstaForma implements OpstaFormaInterface{
 		layout.addComponent(eposta);
 		layout.addComponent(kontaktOsoba);
 		layout.addComponent(izbrisan);
-		layout.addComponentsAndExpand(expander);
-		layout.addComponent(sacuvaj);
-		layout.addComponent(otkazi);
-		layout.addComponent(izbrisi);
+		dodajExpanderButton();
 		
 		addComponent(layout);
 	}

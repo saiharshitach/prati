@@ -83,7 +83,7 @@ public class VozaciLicnaView extends OpstiView implements OpstiViewInterface{
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
-		if(korisnik.isSistem() && korisnik.getSistemPretplatnici() == null) {
+		if(isSistem()) {
 			tabela.addColumn(vozaciLicna -> vozaciLicna.getSistemPretplatnici() == null ? "" : vozaciLicna.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
 		tabela.addColumn(vozaciLicna -> vozaciLicna.getVozaci() == null ? "" : vozaciLicna.getVozaci().getKorisnici() == null ? "" : vozaciLicna.getVozaci().getKorisnici().toString()).setCaption("возач");
@@ -91,9 +91,11 @@ public class VozaciLicnaView extends OpstiView implements OpstiViewInterface{
 		tabela.addColumn(VozaciLicna::getIzdao).setCaption("издао");
 		tabela.addColumn(VozaciLicna::getIzdato, new DateRenderer(DANFORMAT)).setCaption("издато").setStyleGenerator(objekti -> "v-align-right");
 		tabela.addColumn(VozaciLicna::getVaziDo, new DateRenderer(DANFORMAT)).setCaption("важеће до").setStyleGenerator(objekti -> "v-align-right");
-		tabela.addColumn(vozaciLicna -> vozaciLicna.getVozaci() == null ? "" : vozaciLicna.getVozaci().getKorisnici() == null ? "" : vozaciLicna.getVozaci().getKorisnici().getOrganizacija() == null ? "" : 
+		if(isSistem() || (korisnik.isAdmin() && korisnik.getOrganizacija() == null)) {
+					tabela.addColumn(vozaciLicna -> vozaciLicna.getVozaci() == null ? "" : vozaciLicna.getVozaci().getKorisnici() == null ? "" : vozaciLicna.getVozaci().getKorisnici().getOrganizacija() == null ? "" : 
 			vozaciLicna.getVozaci().getKorisnici().getOrganizacija().getNaziv()).setCaption("организација");
-		if(isAdmin()) {
+		}
+		if(isSistem()) {
 			tabela.addComponentColumn(vozaciLicna -> {CheckBox chb = new CheckBox(); if(vozaciLicna.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(vozaciLicna -> "v-align-right");
 		}
 		tabela.addColumn(VozaciLicna::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(objekti -> "v-align-right");

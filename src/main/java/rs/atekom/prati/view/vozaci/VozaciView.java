@@ -83,7 +83,7 @@ public class VozaciView extends OpstiView implements OpstiViewInterface{
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
-		if(korisnik.isSistem() && korisnik.getSistemPretplatnici() == null) {
+		if(isSistem()) {
 			tabela.addColumn(vozaci -> vozaci.getSistemPretplatnici() == null ? "" : vozaci.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
 		tabela.addColumn(vozaci -> vozaci.getKorisnici() == null ? "" : vozaci.getKorisnici().toString()).setCaption("корисник");
@@ -91,9 +91,11 @@ public class VozaciView extends OpstiView implements OpstiViewInterface{
 		tabela.addColumn(Vozaci::getPrebivaliste).setCaption("пребивалиште");
 		tabela.addColumn(Vozaci::getZaposlenOd, new DateRenderer(DANFORMAT)).setCaption("запослен од").setStyleGenerator(objekti -> "v-align-right");
 		tabela.addColumn(Vozaci::getZaposlenDo, new DateRenderer(DANFORMAT)).setCaption("запослен до").setStyleGenerator(objekti -> "v-align-right");
-		tabela.addColumn(vozaci -> vozaci.getKorisnici() == null ? "" : vozaci.getKorisnici().getOrganizacija() == null ? "" : 
+		if(isSistem() || (korisnik.isAdmin() && korisnik.getOrganizacija() == null)) {
+			tabela.addColumn(vozaci -> vozaci.getKorisnici() == null ? "" : vozaci.getKorisnici().getOrganizacija() == null ? "" : 
 			vozaci.getKorisnici().getOrganizacija().getNaziv()).setCaption("организација");
-		if(isAdmin()) {
+		}
+		if(isSistem()) {
 			tabela.addComponentColumn(vozaci -> {CheckBox chb = new CheckBox(); if(vozaci.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(vozaci -> "v-align-right");
 		}
 		tabela.addColumn(Vozaci::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(objekti -> "v-align-right");

@@ -118,7 +118,7 @@ public class ZoneView extends OpstiPanelView implements OpstiViewInterface{
 		tabela.addStyleName(ValoTheme.TABLE_NO_HORIZONTAL_LINES);
 		tabela.addStyleName(ValoTheme.TABLE_COMPACT);
 		tabela.setSelectionMode(SelectionMode.SINGLE);
-		if(isAdmin()) {
+		if(isSistem()) {
 			tabela.addColumn(zone -> zone.getSistemPretplatnici() == null ? "" : zone.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
 		tabela.addColumn(Zone::getNaziv).setCaption("назив");
@@ -127,8 +127,10 @@ public class ZoneView extends OpstiPanelView implements OpstiViewInterface{
 		tabela.addColumn(Zone::getLat, new NumberRenderer(new DecimalFormat(DECIMALNIVISE))).setCaption("ширина").setStyleGenerator(zone -> "v-align-right");
 		tabela.addColumn(Zone::getPrecnik).setCaption("пречник").setStyleGenerator(zone -> "v-align-right");
 		tabela.addComponentColumn(zone -> {CheckBox chb = new CheckBox(); if(zone.isAktivan()) {chb.setValue(true);}return chb;}).setCaption("активан").setStyleGenerator(uredjaji -> "v-align-right");
-		tabela.addColumn(zone -> zone.getOrganizacija() == null ? "" : zone.getOrganizacija().getNaziv()).setCaption("организација");
-		if(isAdmin()) {
+		if(isSistem() || (korisnik.isAdmin() && korisnik.getOrganizacija() == null)) {
+			tabela.addColumn(zone -> zone.getOrganizacija() == null ? "" : zone.getOrganizacija().getNaziv()).setCaption("организација");
+		}
+		if(isSistem()) {
 			tabela.addComponentColumn(zone -> {CheckBox chb = new CheckBox(); if(zone.isIzbrisan()) {chb.setValue(true);}return chb;}).setCaption("избрисан").setStyleGenerator(uredjaji -> "v-align-right");
 		}
 		tabela.addColumn(Zone::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(uredjaji -> "v-align-right");

@@ -121,12 +121,12 @@ public class NivoGorivaView extends OpstiPanelView{
 	
 	private void dodajParametreDatum(boolean dodajSate) {
 
-        if(isAdmin()) {
+        if(isSistem()) {
         	parametri.addComponent(pretplatniciCombo);
         }else {
         	pretplatniciCombo.setValue(korisnik.getSistemPretplatnici());
         }
-        if(isAdmin() || (korisnik.isAdmin() && korisnik.getOrganizacija() == null)) {
+        if(isSistem() || (korisnik.isAdmin() && korisnik.getOrganizacija() == null)) {
         	parametri.addComponent(organizacijeCombo);
         }else {
         	organizacijeCombo.setValue(korisnik.getOrganizacija());

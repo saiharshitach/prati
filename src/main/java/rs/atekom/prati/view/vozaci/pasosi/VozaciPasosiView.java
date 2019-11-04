@@ -83,7 +83,7 @@ public class VozaciPasosiView extends OpstiView implements OpstiViewInterface{
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
-		if(korisnik.isSistem() && korisnik.getSistemPretplatnici() == null) {
+		if(isSistem()) {
 			tabela.addColumn(vozaciPasos -> vozaciPasos.getSistemPretplatnici() == null ? "" : vozaciPasos.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
 		tabela.addColumn(vozaciPasos -> vozaciPasos.getVozaci() == null ? "" : vozaciPasos.getVozaci().getKorisnici() == null ? "" : 
@@ -91,9 +91,11 @@ public class VozaciPasosiView extends OpstiView implements OpstiViewInterface{
 		tabela.addColumn(VozaciPasosi::getBrojPasosa).setCaption("број");
 		tabela.addColumn(VozaciPasosi::getIzdato, new DateRenderer(DANFORMAT)).setCaption("издато").setStyleGenerator(objekti -> "v-align-right");
 		tabela.addColumn(VozaciPasosi::getVaziDo, new DateRenderer(DANFORMAT)).setCaption("важеће до").setStyleGenerator(objekti -> "v-align-right");
-		tabela.addColumn(vozaciPasos -> vozaciPasos.getVozaci() == null ? "" : vozaciPasos.getVozaci().getKorisnici() == null ? "" : 
+		if(isSistem() || (korisnik.isAdmin() && korisnik.getOrganizacija() == null)) {
+					tabela.addColumn(vozaciPasos -> vozaciPasos.getVozaci() == null ? "" : vozaciPasos.getVozaci().getKorisnici() == null ? "" : 
 			vozaciPasos.getVozaci().getKorisnici().getOrganizacija() == null ? "" : vozaciPasos.getVozaci().getKorisnici().getOrganizacija().getNaziv()).setCaption("организација");
-		if(isAdmin()) {
+		}
+		if(isSistem()) {
 			tabela.addComponentColumn(vozaciPasos -> {CheckBox chb = new CheckBox(); if(vozaciPasos.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(vozaci -> "v-align-right");
 		}
 		tabela.addColumn(VozaciPasosi::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(objekti -> "v-align-right");

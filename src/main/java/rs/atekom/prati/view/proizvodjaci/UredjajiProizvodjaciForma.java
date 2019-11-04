@@ -2,14 +2,10 @@ package rs.atekom.prati.view.proizvodjaci;
 
 import com.vaadin.server.Page;
 import com.vaadin.ui.CheckBox;
-
 import pratiBaza.tabele.SistemUredjajiProizvodjac;
-
 import org.vaadin.dialogs.ConfirmDialog;
-
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-
 import rs.atekom.prati.view.OpstaForma;
 import rs.atekom.prati.view.OpstaFormaInterface;
 import rs.atekom.prati.view.OpstiView;
@@ -28,6 +24,8 @@ public class UredjajiProizvodjaciForma extends OpstaForma implements OpstaFormaI
 		opis = new Tekst("опис", false);
 		adresa = new Tekst("адреса", false);
 		izbrisan = new CheckBox("избрисан");
+		
+		ukloniCombo();
 		
 		sacuvaj.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
@@ -79,10 +77,7 @@ public class UredjajiProizvodjaciForma extends OpstaForma implements OpstaFormaI
 		layout.addComponent(adresa);
 		layout.addComponent(izbrisan);
 		
-		layout.addComponentsAndExpand(expander);
-		layout.addComponent(sacuvaj);
-		layout.addComponent(otkazi);
-		layout.addComponent(izbrisi);
+		dodajExpanderButton();
 		
 		addComponent(layout);
 	}

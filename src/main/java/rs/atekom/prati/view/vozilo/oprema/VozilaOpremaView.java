@@ -84,12 +84,12 @@ public class VozilaOpremaView extends OpstiView implements OpstiViewInterface{
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
-		if(korisnik.isSistem() && korisnik.getSistemPretplatnici() == null) {
+		if(isSistem()) {
 			tabela.addColumn(voziloOprema -> voziloOprema.getSistemPretplatnici() == null ? "" : voziloOprema.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
 		tabela.addColumn(voziloOprema -> voziloOprema.getNaziv() == null ? "" : voziloOprema.getNaziv()).setCaption("назив");
 		tabela.addColumn(voziloOprema -> voziloOprema.getOpis() == null ? "" : voziloOprema.getOpis()).setCaption("опис");
-		if(isAdmin()) {
+		if(isSistem()) {
 			tabela.addComponentColumn(voziloOprema -> {CheckBox chb = new CheckBox(); if(voziloOprema.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(vozaci -> "v-align-right");
 		}
 		tabela.addColumn(VozilaOprema::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(objekti -> "v-align-right");

@@ -84,11 +84,8 @@ public class AlarmKorisnikView extends OpstiView implements OpstiViewInterface{
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
-		if(korisnik.isSistem() && korisnik.getSistemPretplatnici() == null) {
+		if(isSistem()) {
 			tabela.addColumn(alarmiKorisnik -> alarmiKorisnik.getSistemPretplatnici() == null ? "" : alarmiKorisnik.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
-		}
-		if(korisnik.isAdmin() && korisnik.getOrganizacija() == null) {
-			tabela.addColumn(alarmiKorisnik -> alarmiKorisnik.getOrganizacija() == null ? "" : alarmiKorisnik.getOrganizacija().getNaziv()).setCaption("организација");
 		}
 		tabela.addColumn(alarmiKorisnik -> alarmiKorisnik.getKorisnik().toString()).setCaption("корисник");
 		tabela.addColumn(alarmiKorisnik -> alarmiKorisnik.getObjekti().getOznaka()).setCaption("објекат");
@@ -96,6 +93,9 @@ public class AlarmKorisnikView extends OpstiView implements OpstiViewInterface{
 		tabela.addComponentColumn(alarmiKorisnik -> {CheckBox chb = new CheckBox(); if(alarmiKorisnik.isEmail()) {chb.setValue(true);} return chb;}).setCaption("е-пошта").setStyleGenerator(alarmiKorisnik -> "v-align-right");
 		tabela.addComponentColumn(alarmiKorisnik -> {CheckBox chb = new CheckBox(); if(alarmiKorisnik.isObavestenje()) {chb.setValue(true);} return chb;}).setCaption("обавештење").setStyleGenerator(alarmiKorisnik -> "v-align-right");
 		tabela.addComponentColumn(alarmiKorisnik -> {CheckBox chb = new CheckBox(); if(alarmiKorisnik.isAktivan()) {chb.setValue(true);} return chb;}).setCaption("активан").setStyleGenerator(alarmiKorisnik -> "v-align-right");
+		if(isSistem() || (korisnik.isAdmin() && korisnik.getOrganizacija() == null)) {
+			tabela.addColumn(alarmiKorisnik -> alarmiKorisnik.getOrganizacija() == null ? "" : alarmiKorisnik.getOrganizacija().getNaziv()).setCaption("организација");
+		}
 		tabela.addColumn(AlarmiKorisnik::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(objekti -> "v-align-right");
 		tabela.addColumn(AlarmiKorisnik::getKreirano, new DateRenderer(DANSATFORMAT)).setCaption("креирано").setStyleGenerator(objekti -> "v-align-right");
 	}

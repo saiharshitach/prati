@@ -89,7 +89,7 @@ public class VozilaSaobracajnaView extends OpstiView implements OpstiViewInterfa
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
-		if(isAdmin()) {
+		if(isSistem()) {
 			tabela.addColumn(vozilaSaobracajna -> vozilaSaobracajna.getSistemPretplatnici() == null ? "" : vozilaSaobracajna.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
 		tabela.addColumn(vozilaSaobracajna -> vozilaSaobracajna.getVozilo() == null ? "" : vozilaSaobracajna.getVozilo().getObjekti() == null ? "" : vozilaSaobracajna.getVozilo().getObjekti().getOznaka()).setCaption("објекат");
@@ -111,9 +111,11 @@ public class VozilaSaobracajnaView extends OpstiView implements OpstiViewInterfa
 		tabela.addColumn(VozilaSaobracajne::getNosivost).setCaption("носивост");
 		tabela.addColumn(VozilaSaobracajne::getMestaSedenja).setCaption("места за седење");
 		tabela.addColumn(VozilaSaobracajne::getBrojSaobracajne).setCaption("број саобраћајне");
-		tabela.addColumn(vozilaSaobracajna -> vozilaSaobracajna.getVozilo() == null ? "" : vozilaSaobracajna.getVozilo().getOrganizacija() == null ? "" : 
+		if(isSistem() || (korisnik.isAdmin() && korisnik.getOrganizacija() == null)) {
+					tabela.addColumn(vozilaSaobracajna -> vozilaSaobracajna.getVozilo() == null ? "" : vozilaSaobracajna.getVozilo().getOrganizacija() == null ? "" : 
 			vozilaSaobracajna.getVozilo().getOrganizacija().getNaziv()).setCaption("организација");
-		if(isAdmin()) {
+		}
+		if(isSistem()) {
 			tabela.addComponentColumn(vozilaSaobracajne -> {CheckBox chb = new CheckBox(); if(vozilaSaobracajne.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("izbrisan").setStyleGenerator(objekti -> "v-align-right");
 		}
 		tabela.addColumn(VozilaSaobracajne::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(objekti -> "v-align-right");

@@ -424,7 +424,8 @@ public class NyiTechProtokol {
 			 if((alarm = Servis.sistemAlarmServis.nadjiAlarmPoSifri(String.valueOf(alarm_id))) == null){
 				 alarm = Servis.sistemAlarmServis.nadjiAlarmPoSifri(String.valueOf(0));
 				 }
-			 objekat = Servis.objekatServis.nadjiObjekatPoUredjaju(Servis.uredjajServis.nadjiUredjajPoKodu(uredjajId));
+			 //uredjaj = Servis.uredjajServis.nadjiUredjajPoKodu(uredjajId);
+			 objekat = Servis.uredjajServis.nadjiUredjajPoKodu(uredjajId).getObjekti();
 			 if(objekat != null){
 				 if(obdData){
 					 obd = new Obd();
@@ -454,7 +455,7 @@ public class NyiTechProtokol {
 				 if(brzina < 200){
 					 javljanje = new Javljanja();
 					 javljanje.setValid(valid);
-					 javljanje.setObjekti(Servis.objekatServis.nadjiObjekatPoUredjaju(Servis.uredjajServis.nadjiUredjajPoKodu(uredjajId)));
+					 javljanje.setObjekti(objekat);
 					 javljanje.setDatumVreme(datumVreme);
 					 javljanje.setLon(longitude);
 					 javljanje.setLat(latitude);

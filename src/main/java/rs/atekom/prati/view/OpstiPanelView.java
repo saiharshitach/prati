@@ -162,12 +162,12 @@ public abstract class OpstiPanelView extends Panel implements View, Serializable
         topLayout.addComponent(filter);
         topLayout.setComponentAlignment(filter, Alignment.MIDDLE_LEFT);
         
-        if(isAdmin()) {
+        if(isSistem()) {
         	topLayout.addComponent(pretplatniciCombo);
         }else {
         	pretplatniciCombo.setValue(korisnik.getSistemPretplatnici());
         }
-        if(isAdmin() || (korisnik.isAdmin() && korisnik.getOrganizacija() == null)) {
+        if(isSistem() || (korisnik.isAdmin() && korisnik.getOrganizacija() == null)) {
         	topLayout.addComponent(organizacijeCombo);
         }else {
         	organizacijeCombo.setValue(korisnik.getOrganizacija());
@@ -200,12 +200,12 @@ public abstract class OpstiPanelView extends Panel implements View, Serializable
         prikazi.setIcon(VaadinIcons.CHECK);
         prikazi.setDescription("прикажи историју");
         
-        if(isAdmin()) {
+        if(isSistem()) {
         	topLayout.addComponent(pretplatniciCombo);
         }else {
         	pretplatniciCombo.setValue(korisnik.getSistemPretplatnici());
         }
-        if(isAdmin() || (korisnik.isAdmin() && korisnik.getOrganizacija() == null)) {
+        if(isSistem() || (korisnik.isAdmin() && korisnik.getOrganizacija() == null)) {
         	topLayout.addComponent(organizacijeCombo);
         }else {
         	organizacijeCombo.setValue(korisnik.getOrganizacija());
@@ -276,8 +276,8 @@ public abstract class OpstiPanelView extends Panel implements View, Serializable
 		Notification.show(msg, Type.TRAY_NOTIFICATION);
 	}
 	
-	public boolean isAdmin() {
-		return (korisnik.isSistem() && korisnik.getSistemPretplatnici() == null);
+	public boolean isSistem() {
+		return (korisnik.isSistem() && korisnik.getSistemPretplatnici().isSistem());
 	}
 	
 	public Component createContentWraper(final Component content, String slotStyle, Boolean maxSize) {

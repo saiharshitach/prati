@@ -38,6 +38,8 @@ public class PretplatniciForma extends OpstaForma implements OpstaFormaInterface
 		aktivan = new CheckBox("активан");
 		izbrisan = new CheckBox("избрисан");
 		
+		ukloniCombo();
+		
 		niz = new ArrayList<CheckBox>();
 		niz.add(googleMapa);
 		niz.add(aktivan);
@@ -96,10 +98,7 @@ public class PretplatniciForma extends OpstaForma implements OpstaFormaInterface
 		layout.addComponent(api);
 		layout.addComponent(chb);
 		
-		layout.addComponentsAndExpand(expander);
-		layout.addComponent(sacuvaj);
-		layout.addComponent(otkazi);
-		layout.addComponent(izbrisi);
+		dodajExpanderButton();
 		
 		addComponent(layout);
 	}

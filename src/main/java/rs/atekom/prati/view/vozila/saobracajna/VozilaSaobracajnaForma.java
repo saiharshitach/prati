@@ -7,7 +7,6 @@ import com.vaadin.server.Page;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-
 import pratiBaza.tabele.Organizacije;
 import pratiBaza.tabele.SistemPretplatnici;
 import pratiBaza.tabele.VozilaSaobracajne;
@@ -16,8 +15,6 @@ import rs.atekom.prati.view.OpstaForma;
 import rs.atekom.prati.view.OpstaFormaInterface;
 import rs.atekom.prati.view.OpstiView;
 import rs.atekom.prati.view.komponente.Celobrojni;
-import rs.atekom.prati.view.komponente.ComboOrganizacije;
-import rs.atekom.prati.view.komponente.ComboPretplatnici;
 import rs.atekom.prati.view.komponente.ComboVozila;
 import rs.atekom.prati.view.komponente.Datum;
 import rs.atekom.prati.view.komponente.Decimalni;
@@ -27,8 +24,6 @@ public class VozilaSaobracajnaForma extends OpstaForma implements OpstaFormaInte
 
 	private static final long serialVersionUID = 1L;
 	private VozilaSaobracajnaLogika logika;
-	private ComboPretplatnici pretplatnici;
-	private ComboOrganizacije organizacije;
 	private ComboVozila vozila;
 	private Tekst brojSaobracajne, izdao, homologacija, sasija, brojMotora, boja, masa, ukupnaMasa, kategorija, nosivost;
 	private Datum datumIzdavanja;
@@ -38,8 +33,6 @@ public class VozilaSaobracajnaForma extends OpstaForma implements OpstaFormaInte
 
 	public VozilaSaobracajnaForma(VozilaSaobracajnaLogika log) {
 		logika = log;
-		pretplatnici = new ComboPretplatnici("претплатник", true, true);
-		organizacije = new ComboOrganizacije(pretplatnici.getValue(), "организација", true, false);
 		vozila = new ComboVozila(logika.view.korisnik, "возило", true, true);
 		brojSaobracajne = new Tekst("број саобраћајне", true);
 		datumIzdavanja = new Datum("датум издавања", true);
@@ -130,12 +123,6 @@ public class VozilaSaobracajnaForma extends OpstaForma implements OpstaFormaInte
 			}
 		});
 		
-		if(logika.view.korisnik.isSistem() && logika.view.korisnik.getSistemPretplatnici() == null) {
-			layout.addComponent(pretplatnici);
-		}
-		if(logika.view.korisnik.isAdmin() && logika.view.korisnik.getOrganizacija() == null) {
-			layout.addComponent(organizacije);
-		}
 		layout.addComponent(vozila);
 		layout.addComponent(brojSaobracajne);
 		layout.addComponent(datumIzdavanja);
@@ -153,13 +140,10 @@ public class VozilaSaobracajnaForma extends OpstaForma implements OpstaFormaInte
 		layout.addComponent(kategorija);
 		layout.addComponent(nosivost);
 		layout.addComponent(mestaSedenja);
-		if(logika.view.isAdmin())  {
+		if(logika.view.isSistem())  {
 			layout.addComponent(izbrisan);
 		}
-		layout.addComponentsAndExpand(expander);
-		layout.addComponent(sacuvaj);
-		layout.addComponent(otkazi);
-		layout.addComponent(izbrisi);
+		dodajExpanderButton();
 		
 		addComponent(layout);
 	}

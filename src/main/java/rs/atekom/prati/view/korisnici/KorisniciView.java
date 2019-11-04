@@ -86,7 +86,7 @@ public class KorisniciView extends OpstiView implements OpstiViewInterface{
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
-		if(korisnik.isSistem() && korisnik.getSistemPretplatnici() == null) {
+		if(isSistem()) {
 			tabela.addColumn(korisnici -> korisnici.getSistemPretplatnici() == null ? "" : korisnici.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
 		tabela.addColumn(Korisnici::getIme).setCaption("име");
@@ -100,8 +100,10 @@ public class KorisniciView extends OpstiView implements OpstiViewInterface{
 		tabela.addColumn(Korisnici::getTelefon).setCaption("телефон");
 		tabela.addColumn(Korisnici::getMobilni).setCaption("мобилни");
 		tabela.addColumn(Korisnici::getIbutton).setCaption("и-дугме");
-		tabela.addColumn(korisnici -> korisnici.getOrganizacija() == null ? "" : korisnici.getOrganizacija().getNaziv()).setCaption("организација");
-		if(isAdmin()) {
+		if(isSistem() || (korisnik.isAdmin() && korisnik.getOrganizacija() == null)) {
+			tabela.addColumn(korisnici -> korisnici.getOrganizacija() == null ? "" : korisnici.getOrganizacija().getNaziv()).setCaption("организација");
+		}
+		if(isSistem()) {
 			tabela.addComponentColumn(korisnici -> {CheckBox chb = new CheckBox(); if(korisnici.isSistem()) {chb.setValue(true);} return chb;}).setCaption("систем").setStyleGenerator(korisnici -> "v-align-right");
 			tabela.addComponentColumn(korisnici -> {CheckBox chb = new CheckBox(); if(korisnici.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(korisnici -> "v-align-right");
 		}

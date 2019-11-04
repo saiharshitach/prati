@@ -33,8 +33,6 @@ public class KorisniciForma extends OpstaForma implements OpstaFormaInterface{
 
 	private static final long serialVersionUID = 1L;
 	private KorisniciLogika logika;
-	private ComboPretplatnici pretplatnici;
-	private ComboOrganizacije organizacije;
 	private Grid<Grupe> grupeTabela;
 	private ArrayList<Grupe> lista;
 	private Tekst ime, prezime, ePosta, telefon, mobilni, iDugme;
@@ -44,7 +42,6 @@ public class KorisniciForma extends OpstaForma implements OpstaFormaInterface{
 	
 	public KorisniciForma(KorisniciLogika log) {
 		logika = log;
-		pretplatnici = new ComboPretplatnici("претплатник", true, true);
 		ime = new Tekst("име", true);
 		prezime = new Tekst("презиме", true);
 		ePosta = new Tekst("е-пошта", true);
@@ -58,7 +55,6 @@ public class KorisniciForma extends OpstaForma implements OpstaFormaInterface{
 		mobilni = new Tekst("мобилни", false);
 		iDugme = new Tekst("и-дугме", false);
 		sistem = new CheckBox("систем");
-		organizacije = new ComboOrganizacije(pretplatnici.getValue(), "организација", true, true);
 		
 		grupeTabela = new Grid<Grupe>();
 		grupeTabela.setCaption("групе");
@@ -132,11 +128,7 @@ public class KorisniciForma extends OpstaForma implements OpstaFormaInterface{
 				});
 			}
 		});
-		
-		if(logika.view.korisnik.isSistem() && logika.view.korisnik.getSistemPretplatnici() == null) {
-			layout.addComponent(pretplatnici);
-		}
-		
+
 		layout.addComponent(ime);
 		layout.addComponent(prezime);
 		layout.addComponent(ePosta);
@@ -149,18 +141,12 @@ public class KorisniciForma extends OpstaForma implements OpstaFormaInterface{
 		layout.addComponent(telefon);
 		layout.addComponent(mobilni);
 		layout.addComponent(iDugme);
-		if(logika.view.korisnik.isAdmin() && logika.view.korisnik.getOrganizacija() == null) {
-			layout.addComponent(organizacije);
-		}
-		if(logika.view.isAdmin())  {
+		if(logika.view.isSistem())  {
 			layout.addComponent(sistem);
 			layout.addComponent(izbrisan);
 		}
 		layout.addComponent(grupeTabela);
-		layout.addComponentsAndExpand(expander);
-		layout.addComponent(sacuvaj);
-		layout.addComponent(otkazi);
-		layout.addComponent(izbrisi);
+		dodajExpanderButton();
 		
 		addComponent(layout);
 	}

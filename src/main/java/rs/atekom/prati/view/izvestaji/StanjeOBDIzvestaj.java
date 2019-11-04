@@ -4,33 +4,27 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-
-import org.hibernate.loader.custom.Return;
 import org.vaadin.reports.PrintPreviewReport;
-
 import com.ibm.icu.text.SimpleDateFormat;
 import com.vaadin.server.SerializableSupplier;
-
 import ar.com.fdvs.dj.domain.AutoText;
-import ar.com.fdvs.dj.domain.CustomExpression;
 import ar.com.fdvs.dj.domain.Style;
 import ar.com.fdvs.dj.domain.builders.ColumnBuilder;
 import ar.com.fdvs.dj.domain.builders.StyleBuilder;
 import ar.com.fdvs.dj.domain.constants.Font;
 import ar.com.fdvs.dj.domain.constants.HorizontalAlign;
 import ar.com.fdvs.dj.domain.constants.Page;
-import ar.com.fdvs.dj.domain.entities.columns.AbstractColumn;
+import pratiBaza.pomocne.StanjeOBD;
 import pratiBaza.tabele.Obd;
 import pratiBaza.tabele.Objekti;
 import rs.atekom.prati.server.Servis;
 
-public class StanjeOBDIzvestaj extends PrintPreviewReport<Obd>{
+public class StanjeOBDIzvestaj extends PrintPreviewReport<StanjeOBD>{
 
 	private static final long serialVersionUID = 1L;
 	private String decimalFormat = "###,###,###.##";
 	private static final String DATUMVREME = "dd/MM/yyyy HH:mm:ss";
-	private List<Obd> lista = new ArrayList<Obd>();
+	private List<StanjeOBD> lista = new ArrayList<StanjeOBD>();
 	
 	public StanjeOBDIzvestaj(ArrayList<Objekti> objekti, Timestamp datumVremeDo) {
 		setSizeUndefined();
@@ -46,7 +40,7 @@ public class StanjeOBDIzvestaj extends PrintPreviewReport<Obd>{
 		datum.setHorizontalAlign(HorizontalAlign.LEFT);
 		
 		Style footerStyle = new StyleBuilder(true).setFont(Font.ARIAL_MEDIUM_BOLD).build();
-
+		/*
 		CustomExpression naziv = new CustomExpression() {
 			private static final long serialVersionUID = 1L;
 			@Override
@@ -86,7 +80,7 @@ public class StanjeOBDIzvestaj extends PrintPreviewReport<Obd>{
 				.setTitle("потрошња")
 				.setWidth(20)
 				.setStyle(broj)
-				.build();
+				.build();**/
 		
 		getReportBuilder()
 		.setPageSizeAndOrientation(Page.Page_A4_Landscape())
@@ -97,16 +91,16 @@ public class StanjeOBDIzvestaj extends PrintPreviewReport<Obd>{
 		.addAutoText("извештај урађен: " + datumVreme.format(new Date()), AutoText.POSITION_HEADER, AutoText.ALIGNMENT_RIGHT, 300, datum)
 		.addAutoText("Атеком доо               www.atekom.rs                    info@atekom.rs ", AutoText.POSITION_FOOTER, AutoText.ALIGMENT_CENTER, 800, footerStyle)
 		.addAutoText(AutoText.AUTOTEXT_PAGE_X, AutoText.POSITION_FOOTER, AutoText.ALIGMENT_RIGHT)
-		.addField("objekti", Objekti.class)
-		.addField("ukupnoGorivo", Float.class)
-		.addField("ukupnoKm", Integer.class)
+		//.addField("objekti", Objekti.class)
+		//.addField("ukupnoGorivo", Float.class)
+		//.addField("ukupnoKm", Integer.class)
 		.setPrintBackgroundOnOddRows(true)
-		/*.addColumn(ColumnBuilder.getNew()
-				.setColumnProperty("objekti.getOznaka", String.class)
+		.addColumn(ColumnBuilder.getNew()
+				.setColumnProperty("objekatNaziv", String.class)
 				.setTitle("објекат")
 				.setStyle(headerStyle)
-				.build())**/
-		.addColumn(objekat)
+				.build())
+		//.addColumn(objekat)
 		.addColumn(ColumnBuilder.getNew()
 				.setColumnProperty("ukupnoGorivo", Float.class)
 				.setTitle("гориво укупно")
@@ -125,22 +119,32 @@ public class StanjeOBDIzvestaj extends PrintPreviewReport<Obd>{
 				.setWidth(20)
 				.setStyle(broj)
 				.build())
-		.addColumn(prosPotr);
+		//.addColumn(prosPotr)
+		.addColumn(ColumnBuilder.getNew()
+				.setColumnProperty("potrosnja", Float.class)
+				.setTitle("потрошња")
+				.setWidth(20)
+				.setStyle(broj)
+				.build());
 		setItems(vratiListu(objekti, datumVremeDo));
 	}
 	
-	public List<Obd> vratiListu(ArrayList<Objekti> objekti, Timestamp datumVremeDo){
+	public List<StanjeOBD> vratiListu(ArrayList<Objekti> objekti, Timestamp datumVremeDo){
 		return obracun(objekti, datumVremeDo);
 	}
 	
-	public SerializableSupplier<List<? extends Obd>> vratiSeriju(ArrayList<Objekti> objekti, Timestamp datumVremeDo){
-		SerializableSupplier<List<? extends Obd>> serija = () -> lista;
+	public SerializableSupplier<List<? extends StanjeOBD>> vratiSeriju(ArrayList<Objekti> objekti, Timestamp datumVremeDo){
+		SerializableSupplier<List<? extends StanjeOBD>> serija = () -> lista;
 		return serija;
 	}
 	
-	private List<Obd> obracun(ArrayList<Objekti> objekti, Timestamp datumVremeDo){
+	private List<StanjeOBD> obracun(ArrayList<Objekti> objekti, Timestamp datumVremeDo){
 		lista.clear();
-		lista = Servis.obdServis.nadjiObdPoslednji(objekti, datumVremeDo);
+		ArrayList<Obd> obdLista = Servis.obdServis.nadjiObdPoslednji(objekti, datumVremeDo);
+		for(Obd obd : obdLista) {
+			StanjeOBD stanje = new StanjeOBD(obd.getObjekti().getOznaka(), obd.getUkupnoKm(), obd.getUkupnoGorivo(), obd.getUkupnoVreme());
+			lista.add(stanje);
+		}
 		return lista;
 	}
 }

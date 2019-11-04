@@ -83,7 +83,7 @@ public class SimView extends OpstiView implements OpstiViewInterface{
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
-		if(korisnik.isSistem() && korisnik.getSistemPretplatnici() == null) {
+		if(isSistem()) {
 			tabela.addColumn(sim -> sim.getSistemPretplatnici() == null ? "" : sim.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
 		tabela.addColumn(Sim::getBroj).setCaption("број");
@@ -96,8 +96,10 @@ public class SimView extends OpstiView implements OpstiViewInterface{
 			sim.getUredjaji().getObjekti().getOznaka()).setCaption("објекат");
 		tabela.addColumn(Sim::getOpis).setCaption("опис");
 		tabela.addComponentColumn(sim -> {CheckBox chb = new CheckBox(); if(sim.isAktivno()) {chb.setValue(true);} return chb;}).setCaption("активан").setStyleGenerator(sim -> "v-align-right");
-		tabela.addColumn(sim -> sim.getOrganizacija() == null ? "" : sim.getOrganizacija().getNaziv()).setCaption("организација");
-		if(isAdmin()) {
+		if(isSistem() || (korisnik.isAdmin() && korisnik.getOrganizacija() == null)) {
+			tabela.addColumn(sim -> sim.getOrganizacija() == null ? "" : sim.getOrganizacija().getNaziv()).setCaption("организација");
+		}
+		if(isSistem()) {
 			tabela.addComponentColumn(sim -> {CheckBox chb = new CheckBox(); if(sim.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(sim -> "v-align-right");
 		}
 		tabela.addColumn(Sim::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(sim -> "v-align-right");

@@ -17,15 +17,11 @@ import rs.atekom.prati.view.OpstiView;
 import rs.atekom.prati.view.komponente.ComboAlarmi;
 import rs.atekom.prati.view.komponente.ComboKorisnici;
 import rs.atekom.prati.view.komponente.ComboObjekti;
-import rs.atekom.prati.view.komponente.ComboOrganizacije;
-import rs.atekom.prati.view.komponente.ComboPretplatnici;
 
 public class AlarmKorisnikForma extends OpstaForma implements OpstaFormaInterface{
 
 	private static final long serialVersionUID = 1L;
 	private AlarmKorisnikLogika logika;
-	private ComboPretplatnici pretplatnici;
-	private ComboOrganizacije organizacije;
 	private ComboKorisnici korisnici;
 	private ComboObjekti objekti;
 	private ComboAlarmi alarmi;
@@ -34,8 +30,6 @@ public class AlarmKorisnikForma extends OpstaForma implements OpstaFormaInterfac
 
 	public AlarmKorisnikForma(AlarmKorisnikLogika log) {
 		logika = log;
-		pretplatnici = new ComboPretplatnici("претплатник", true, true);
-		organizacije = new ComboOrganizacije(pretplatnici.getValue(), "организација", true, true);
 		korisnici = new ComboKorisnici(logika.view.korisnik, "корисник", true, true);
 		objekti = new ComboObjekti(logika.view.korisnik, "објекти", true, true);
 		alarmi = new ComboAlarmi("аларми", true, true, true, false, true);
@@ -104,12 +98,6 @@ public class AlarmKorisnikForma extends OpstaForma implements OpstaFormaInterfac
 			}
 		});
 		
-		if(logika.view.korisnik.isSistem() && logika.view.korisnik.getSistemPretplatnici() == null) {
-			layout.addComponent(pretplatnici);
-		}
-		if(logika.view.korisnik.isAdmin() && logika.view.korisnik.getOrganizacija() == null) {
-			layout.addComponent(organizacije);
-		}
 		if(logika.view.korisnik.isAdmin()) {
 			layout.addComponent(korisnici);
 		}

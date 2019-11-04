@@ -84,7 +84,7 @@ public class VozilaNaloziView extends OpstiView implements OpstiViewInterface{
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
-		if(korisnik.isSistem() && korisnik.getSistemPretplatnici() == null) {
+		if(isSistem()) {
 			tabela.addColumn(voziloNalog -> voziloNalog.getSistemPretplatnici() == null ? "" : voziloNalog.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
 		tabela.addColumn(VozilaNalozi::getBrojNaloga).setCaption("број налога");
@@ -98,9 +98,11 @@ public class VozilaNaloziView extends OpstiView implements OpstiViewInterface{
 		tabela.addColumn(VozilaNalozi::getOcekivaniDolazak, new DateRenderer(DANSATFORMAT)).setCaption("очекивани долазак").setStyleGenerator(objekti -> "v-align-right");
 		tabela.addColumn(voziloNalog -> voziloNalog.getVozac() == null ? "" : voziloNalog.getVozac().toString()).setCaption("возач");
 		tabela.addColumn(VozilaNalozi::getKomentar).setCaption("коментар");
-		tabela.addColumn(voziloNalog -> voziloNalog.getVozilo().getOrganizacija() == null ? "" : voziloNalog.getVozilo().getOrganizacija().getNaziv()).setCaption("организација");
-		tabela.addColumn(voziloNalog -> voziloNalog.getVozilo() == null ? "" : voziloNalog.getVozilo().getOrganizacija() == null ? "" : voziloNalog.getVozilo().getOrganizacija().getNaziv()).setCaption("организација");
-		if(isAdmin()) {
+		if(isSistem() || (korisnik.isAdmin() && korisnik.getOrganizacija() == null)) {
+					tabela.addColumn(voziloNalog -> voziloNalog.getVozilo() == null ? "" : voziloNalog.getVozilo().getOrganizacija() == null ? "" : 
+			voziloNalog.getVozilo().getOrganizacija().getNaziv()).setCaption("организација");
+		}
+		if(isSistem()) {
 			tabela.addComponentColumn(voziloNalog -> {CheckBox chb = new CheckBox(); if(voziloNalog.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(vozaci -> "v-align-right");
 		}
 		tabela.addColumn(VozilaNalozi::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(objekti -> "v-align-right");

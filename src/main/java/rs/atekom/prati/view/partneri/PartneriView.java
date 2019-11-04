@@ -2,7 +2,6 @@ package rs.atekom.prati.view.partneri;
 
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
-
 import com.github.appreciated.app.layout.annotations.MenuCaption;
 import com.github.appreciated.app.layout.annotations.MenuIcon;
 import com.github.appreciated.app.layout.annotations.NavigatorViewName;
@@ -18,8 +17,6 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
-
-import pratiBaza.tabele.Korisnici;
 import pratiBaza.tabele.Partneri;
 import rs.atekom.prati.server.Servis;
 import rs.atekom.prati.view.OpstiView;
@@ -87,7 +84,7 @@ public class PartneriView extends OpstiView implements OpstiViewInterface{
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
-		if(korisnik.isSistem() && korisnik.getSistemPretplatnici() == null) {
+		if(isSistem()) {
 			tabela.addColumn(partneri -> partneri.getSistemPretplatnici() == null ? "" : partneri.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
 		tabela.addColumn(Partneri::getNaziv).setCaption("назив");

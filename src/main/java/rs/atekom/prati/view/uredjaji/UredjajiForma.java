@@ -5,18 +5,17 @@ import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.server.Page;
 import com.vaadin.ui.CheckBox;
+import pratiBaza.tabele.Organizacije;
 import pratiBaza.tabele.Sim;
+import pratiBaza.tabele.SistemPretplatnici;
 import pratiBaza.tabele.SistemUredjajiModeli;
 import pratiBaza.tabele.Uredjaji;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-
 import rs.atekom.prati.server.Servis;
 import rs.atekom.prati.view.OpstaForma;
 import rs.atekom.prati.view.OpstaFormaInterface;
 import rs.atekom.prati.view.OpstiView;
-import rs.atekom.prati.view.komponente.ComboOrganizacije;
-import rs.atekom.prati.view.komponente.ComboPretplatnici;
 import rs.atekom.prati.view.komponente.ComboSim;
 import rs.atekom.prati.view.komponente.ComboUredjajiModeli;
 import rs.atekom.prati.view.komponente.Tekst;
@@ -25,8 +24,6 @@ public class UredjajiForma extends OpstaForma implements OpstaFormaInterface{
 
 	private static final long serialVersionUID = 1L;
 	private UredjajiLogika logika;
-	private ComboPretplatnici pretplatnici;
-	private ComboOrganizacije organizacije;
 	private ComboUredjajiModeli modeli;
 	private ComboSim sim, sim2;
 	private Tekst kod, serBroj, opis, objekat;
@@ -34,8 +31,6 @@ public class UredjajiForma extends OpstaForma implements OpstaFormaInterface{
 
 	public UredjajiForma(UredjajiLogika log) {
 		logika = log;
-		pretplatnici = new ComboPretplatnici("претплатник", true, true);
-		organizacije = new ComboOrganizacije(pretplatnici.getValue(), "организација", true, false);
 		modeli = new ComboUredjajiModeli("модели уређаја", true, true);
 		kod = new Tekst("kod", true);
 		serBroj = new Tekst("серијски број", true);
@@ -43,6 +38,23 @@ public class UredjajiForma extends OpstaForma implements OpstaFormaInterface{
 		objekat.setEnabled(false);
 		sim = new ComboSim(pretplatnici.getValue(), organizacije.getValue(), null, "сим", true, false);
 		sim2 = new ComboSim(pretplatnici.getValue(), organizacije.getValue(), null, "сим2", true, false);
+		
+		pretplatnici.addValueChangeListener(new ValueChangeListener<SistemPretplatnici>() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void valueChange(ValueChangeEvent<SistemPretplatnici> event) {
+				
+			}
+		});
+		
+		organizacije.addValueChangeListener(new ValueChangeListener<Organizacije>() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void valueChange(ValueChangeEvent<Organizacije> event) {
+				
+			}
+		});
+		
 		modeli.addValueChangeListener(new ValueChangeListener<SistemUredjajiModeli>() {
 			private static final long serialVersionUID = 1L;
 			@Override
@@ -115,9 +127,6 @@ public class UredjajiForma extends OpstaForma implements OpstaFormaInterface{
 			}
 		});
 		
-		if(logika.view.korisnik.isSistem() && logika.view.korisnik.getSistemPretplatnici() == null) {
-			layout.addComponent(pretplatnici);
-		}
 		layout.addComponent(modeli);
 		layout.addComponent(kod);
 		layout.addComponent(serBroj);
@@ -126,17 +135,10 @@ public class UredjajiForma extends OpstaForma implements OpstaFormaInterface{
 		layout.addComponent(sim2);
 		layout.addComponent(opis);
 		layout.addComponent(aktivan);
-		if(logika.view.isAdmin() && logika.view.korisnik.getOrganizacija() == null) {
-			layout.addComponent(organizacije);
-		}
-		if(logika.view.isAdmin())  {
+		if(logika.view.isSistem())  {
 			layout.addComponent(izbrisan);
 		}
-		
-		layout.addComponentsAndExpand(expander);
-		layout.addComponent(sacuvaj);
-		layout.addComponent(otkazi);
-		layout.addComponent(izbrisi);
+		dodajExpanderButton();
 		
 		addComponent(layout);
 	}
@@ -163,15 +165,16 @@ public class UredjajiForma extends OpstaForma implements OpstaFormaInterface{
 			uredjaj = (Uredjaji)podatak;
 			Sim sim = uredjaj.getSim();
 			if(sim != null) {
-				sim.setUredjaji(null);
-				sim.setZauzet(false);
-				Servis.simServis.azurirajSim(sim);
+				//sim.setUredjaji(null);
+				//sim.setZauzet(false);
+				Servis.simServis.azurirajSim(uredjaj.removeSim(sim));
+				
 			}
 			Sim sim2 = uredjaj.getSim2();
 			if(sim2 != null) {
-				sim2.setUredjaji(null);
-				sim2.setZauzet(false);
-				Servis.simServis.azurirajSim(sim2);
+				//sim2.setUredjaji(null);
+				//sim2.setZauzet(false);
+				Servis.simServis.azurirajSim(uredjaj.removeSim(sim2));
 			}
 		}
 		uredjaj.setSistemPretplatnici(pretplatnici.getValue());

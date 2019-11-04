@@ -31,11 +31,10 @@ public class KalendarView extends OpstiView {
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void valueChange(ValueChangeEvent<Grupe> event) {
-				if(event != null) {
+				kalendar.ukloniSveDogadjaje();
+				if(event.getValue() != null) {
 					kalendar.ukloniSveDogadjaje();
 					kalendar.postaviNaloge();
-				}else {
-					kalendar.ukloniSveDogadjaje();
 				}
 			}
 		});

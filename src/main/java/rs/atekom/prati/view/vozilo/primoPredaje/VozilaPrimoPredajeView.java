@@ -85,7 +85,7 @@ public class VozilaPrimoPredajeView extends OpstiView implements OpstiViewInterf
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
-		if(korisnik.isSistem() && korisnik.getSistemPretplatnici() == null) {
+		if(isSistem()) {
 			tabela.addColumn(voziloPrimoPredaja -> voziloPrimoPredaja.getSistemPretplatnici() == null ? "" : voziloPrimoPredaja.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
 		tabela.addColumn(VozilaPrimoPredaje::getBroj).setCaption("број");
@@ -96,8 +96,12 @@ public class VozilaPrimoPredajeView extends OpstiView implements OpstiViewInterf
 		tabela.addColumn(voziloPrimoPredaja -> voziloPrimoPredaja.getVozacPrijem().getKorisnici() == null ? "" : voziloPrimoPredaja.getVozacPrijem().getKorisnici().toString()).setCaption("возач пријем");
 		tabela.addColumn(voziloPrimoPredaja -> voziloPrimoPredaja.getAdministrator() == null ? "" : voziloPrimoPredaja.getAdministrator().toString()).setCaption("администратор");
 		tabela.addColumn(VozilaPrimoPredaje::getKomentar).setCaption("коментар");
-		tabela.addColumn(voziloPrimoPredaja -> voziloPrimoPredaja.getVozilo().getObjekti().getOrganizacija() == null ? "" : voziloPrimoPredaja.getVozilo().getObjekti().getOrganizacija().getNaziv()).setCaption("организација");
-		if(isAdmin()) {
+		if(isSistem() || (korisnik.isAdmin() && korisnik.getOrganizacija() == null)) {
+			tabela.addColumn(voziloPrimoPredaja -> voziloPrimoPredaja.getVozilo().getObjekti().getOrganizacija() == null ? 
+					"" : voziloPrimoPredaja.getVozilo().getObjekti().getOrganizacija().getNaziv()).setCaption("организација");
+		}
+		
+		if(isSistem()) {
 			tabela.addComponentColumn(voziloPrimoPredaja -> {CheckBox chb = new CheckBox(); if(voziloPrimoPredaja.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(vozaci -> "v-align-right");
 		}
 		tabela.addColumn(VozilaPrimoPredaje::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(objekti -> "v-align-right");

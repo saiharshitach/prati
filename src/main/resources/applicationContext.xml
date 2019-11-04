@@ -110,6 +110,7 @@
                <value>pratiBaza.pomocne.StavkaPrijema</value>
                <value>pratiBaza.pomocne.RadnoVremePutGPS</value>
                <value>pratiBaza.pomocne.StajanjeMirovanje</value>
+               <value>pratiBaza.pomocne.StanjeOBD</value>
             </list>
         </property>
     <property name="hibernateProperties">

@@ -85,7 +85,7 @@ public class ObjekatZoneView extends OpstiView implements OpstiViewInterface{
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
-		if(isAdmin()) {
+		if(isSistem()) {
 			tabela.addColumn(objekatZone -> objekatZone.getSistemPretplatnici() == null ? "" : objekatZone.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
 		tabela.addColumn(objekatZone -> objekatZone.getObjekti() == null ? "" : objekatZone.getObjekti().getOznaka()).setCaption("објекат");
@@ -93,10 +93,10 @@ public class ObjekatZoneView extends OpstiView implements OpstiViewInterface{
 		tabela.addComponentColumn(objekatZone -> {CheckBox chb = new CheckBox(); if(objekatZone.isUlaz()) {chb.setValue(true);}return chb;}).setCaption("аларм на улаз").setStyleGenerator(objekatZone -> "v-align-right");
 		tabela.addComponentColumn(objekatZone -> {CheckBox chb = new CheckBox(); if(objekatZone.isIzlaz()) {chb.setValue(true);}return chb;}).setCaption("аларм на излаз").setStyleGenerator(objekatZone -> "v-align-right");
 		tabela.addComponentColumn(objekatZone -> {CheckBox chb = new CheckBox(); if(objekatZone.isAktivan()) {chb.setValue(true);}return chb;}).setCaption("активан").setStyleGenerator(objekatZone -> "v-align-right");
-		if(isAdmin() || korisnik.getOrganizacija() == null) {
+		if(isSistem() || (korisnik.isAdmin() && korisnik.getOrganizacija() == null)) {
 			tabela.addColumn(objekatZone -> objekatZone.getOrganizacija() == null ? "" : objekatZone.getOrganizacija().getNaziv()).setCaption("организација");
 		}
-		if(isAdmin()) {
+		if(isSistem()) {
 			tabela.addComponentColumn(objekatZone -> {CheckBox chb = new CheckBox(); if(objekatZone.isIzbrisan()) {chb.setValue(true);}return chb;}).setCaption("избрисан").setStyleGenerator(objekatZone -> "v-align-right");
 		}
 		tabela.addColumn(ObjekatZone::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(objekti -> "v-align-right");

@@ -91,7 +91,7 @@ public class VozilaView extends OpstiView implements OpstiViewInterface{
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
-		if(isAdmin()) {
+		if(isSistem()) {
 			tabela.addColumn(vozila -> vozila.getSistemPretplatnici() == null ? "" : vozila.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
 		tabela.addColumn(vozila -> vozila.getObjekti() == null ? "" : vozila.getObjekti().getOznaka()).setCaption("објекат");
@@ -106,8 +106,10 @@ public class VozilaView extends OpstiView implements OpstiViewInterface{
 		tabela.addColumn(Vozila::getBrojSaobracajne).setCaption("број саобраћајне");
 		tabela.addColumn(Vozila::getSerijskiBroj).setCaption("серијски број");
 		tabela.addColumn(Vozila::getDatumRegistracije, new DateRenderer(DANFORMAT)).setCaption("датум прве регистрације").setStyleGenerator(objekti -> "v-align-right");
-		tabela.addColumn(vozila -> vozila.getObjekti() == null ? "" : vozila.getObjekti().getOrganizacija() == null ? "" : vozila.getObjekti().getOrganizacija().getNaziv());
-		if(isAdmin()) {
+		if(isSistem() || (korisnik.isAdmin() && korisnik.getOrganizacija() == null)) {
+			tabela.addColumn(vozila -> vozila.getObjekti() == null ? "" : vozila.getObjekti().getOrganizacija() == null ? "" : vozila.getObjekti().getOrganizacija().getNaziv());
+		}
+		if(isSistem()) {
 			tabela.addComponentColumn(vozila -> {CheckBox chb = new CheckBox(); if(vozila.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("izbrisan").setStyleGenerator(objekti -> "v-align-right");
 		}
 		tabela.addColumn(Vozila::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(objekti -> "v-align-right");
