@@ -92,8 +92,8 @@ public class VozilaPrimoPredajeView extends OpstiView implements OpstiViewInterf
 		tabela.addColumn(VozilaPrimoPredaje::getDatum, new DateRenderer(DANFORMAT)).setCaption("датум").setStyleGenerator(objekti -> "v-align-right");
 		tabela.addColumn(voziloPrimoPredaja -> voziloPrimoPredaja.getVozilo().getObjekti() == null ? "" : voziloPrimoPredaja.getVozilo().getObjekti().getOznaka()).setCaption("возило");
 		tabela.addColumn(voziloPrimoPredaja -> voziloPrimoPredaja.getVozilo().getObjekti() == null ? "" : voziloPrimoPredaja.getVozilo().getRegistracija()).setCaption("регистрација");
-		tabela.addColumn(voziloPrimoPredaja -> voziloPrimoPredaja.getVozacPredaja().getKorisnici() == null ? "" : voziloPrimoPredaja.getVozacPredaja().getKorisnici().toString()).setCaption("возач предаја");
-		tabela.addColumn(voziloPrimoPredaja -> voziloPrimoPredaja.getVozacPrijem().getKorisnici() == null ? "" : voziloPrimoPredaja.getVozacPrijem().getKorisnici().toString()).setCaption("возач пријем");
+		tabela.addColumn(voziloPrimoPredaja -> voziloPrimoPredaja.getVozacPredaja() == null ? "" : voziloPrimoPredaja.getVozacPredaja().toString()).setCaption("возач предаја");
+		tabela.addColumn(voziloPrimoPredaja -> voziloPrimoPredaja.getVozacPrijem() == null ? "" : voziloPrimoPredaja.getVozacPrijem().toString()).setCaption("возач пријем");
 		tabela.addColumn(voziloPrimoPredaja -> voziloPrimoPredaja.getAdministrator() == null ? "" : voziloPrimoPredaja.getAdministrator().toString()).setCaption("администратор");
 		tabela.addColumn(VozilaPrimoPredaje::getKomentar).setCaption("коментар");
 		if(isSistem() || (korisnik.isAdmin() && korisnik.getOrganizacija() == null)) {

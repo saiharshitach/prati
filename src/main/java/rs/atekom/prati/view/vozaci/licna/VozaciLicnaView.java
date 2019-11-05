@@ -86,14 +86,14 @@ public class VozaciLicnaView extends OpstiView implements OpstiViewInterface{
 		if(isSistem()) {
 			tabela.addColumn(vozaciLicna -> vozaciLicna.getSistemPretplatnici() == null ? "" : vozaciLicna.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
-		tabela.addColumn(vozaciLicna -> vozaciLicna.getVozaci() == null ? "" : vozaciLicna.getVozaci().getKorisnici() == null ? "" : vozaciLicna.getVozaci().getKorisnici().toString()).setCaption("возач");
+		tabela.addColumn(vozaciLicna -> vozaciLicna.getVozaci() == null ? "" : vozaciLicna.getVozaci().toString()).setCaption("возач");
 		tabela.addColumn(VozaciLicna::getBroj).setCaption("број");
 		tabela.addColumn(VozaciLicna::getIzdao).setCaption("издао");
 		tabela.addColumn(VozaciLicna::getIzdato, new DateRenderer(DANFORMAT)).setCaption("издато").setStyleGenerator(objekti -> "v-align-right");
 		tabela.addColumn(VozaciLicna::getVaziDo, new DateRenderer(DANFORMAT)).setCaption("важеће до").setStyleGenerator(objekti -> "v-align-right");
 		if(isSistem() || (korisnik.isAdmin() && korisnik.getOrganizacija() == null)) {
-					tabela.addColumn(vozaciLicna -> vozaciLicna.getVozaci() == null ? "" : vozaciLicna.getVozaci().getKorisnici() == null ? "" : vozaciLicna.getVozaci().getKorisnici().getOrganizacija() == null ? "" : 
-			vozaciLicna.getVozaci().getKorisnici().getOrganizacija().getNaziv()).setCaption("организација");
+					tabela.addColumn(vozaciLicna -> vozaciLicna.getVozaci() == null ? "" : vozaciLicna.getVozaci().getOrganizacija() == null ? "" : 
+						vozaciLicna.getVozaci().getOrganizacija().getNaziv()).setCaption("организација");
 		}
 		if(isSistem()) {
 			tabela.addComponentColumn(vozaciLicna -> {CheckBox chb = new CheckBox(); if(vozaciLicna.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(vozaciLicna -> "v-align-right");
@@ -144,7 +144,7 @@ public class VozaciLicnaView extends OpstiView implements OpstiViewInterface{
 		if(izabrani != null) {
 			if(!izabrani.isIzbrisan()) {
 				Servis.licnaServis.izbrisiVozacLicna(izabrani);
-				pokaziPorukuUspesno("подаци за личну карту " + izabrani.getVozaci().getKorisnici().toString() + " избрисани");
+				pokaziPorukuUspesno("подаци за личну карту " + izabrani.getVozaci().toString() + " избрисани");
 			}else {
 				pokaziPorukuGreska("подаци за личну карту су већ избрисани!");
 			}
@@ -167,7 +167,7 @@ public class VozaciLicnaView extends OpstiView implements OpstiViewInterface{
 			private static final long serialVersionUID = 1L;
 			@Override
 			public boolean test(VozaciLicna t) {
-				return (((t.getVozaci().getKorisnici() == null ? "" : t.getVozaci().getKorisnici().toString().toLowerCase()).contains(filter.getValue().toLowerCase())) ||
+				return (((t.getVozaci() == null ? "" : t.getVozaci().toString().toLowerCase()).contains(filter.getValue().toLowerCase())) ||
 						((t.getBroj() == null ? "" : t.getBroj().toLowerCase()).contains(filter.getValue().toLowerCase())));
 			}
 		};

@@ -44,7 +44,7 @@ public class VozaciPasosiForma extends OpstaForma implements OpstaFormaInterface
 				vozaci.clear();
 				if(event.getValue() != null) {
 					organizacije.setItems(Servis.organizacijaServis.nadjiSveOrganizacije(event.getValue(), true));
-					vozaci.setItems(Servis.vozacServis.nadjiSveVozacePoPretplatniku(event.getValue()));
+					vozaci.setItems(Servis.korisnikServis.nadjiSveKorisnikeVozace(event.getValue(), null, true));
 				}
 			}
 		});
@@ -55,9 +55,9 @@ public class VozaciPasosiForma extends OpstaForma implements OpstaFormaInterface
 			public void valueChange(ValueChangeEvent<Organizacije> event) {
 				vozaci.clear();
 				if(event.getValue() != null) {
-					vozaci.setItems(Servis.vozacServis.nadjiSveVozacePoOrganizaciji(event.getValue()));
+					vozaci.setItems(Servis.korisnikServis.nadjiSveKorisnikeVozace(pretplatnici.getValue(), event.getValue(), true));
 				}else {
-					vozaci.setItems(Servis.vozacServis.nadjiSveVozacePoPretplatniku(pretplatnici.getValue()));
+					vozaci.setItems(Servis.korisnikServis.nadjiSveKorisnikeVozace(pretplatnici.getValue(), null, true));
 				}
 			}
 		});
@@ -184,7 +184,7 @@ public class VozaciPasosiForma extends OpstaForma implements OpstaFormaInterface
 		VozaciPasosi pasos = (VozaciPasosi)podatak;
 		if(pasos.getId() != null) {
 			pretplatnici.setValue(pasos.getSistemPretplatnici());
-			organizacije.setValue(pasos.getVozaci().getKorisnici().getOrganizacija());
+			organizacije.setValue(pasos.getVozaci().getOrganizacija());
 			organizacije.setEnabled(false);
 			vozaci.setValue(pasos.getVozaci());
 			try {

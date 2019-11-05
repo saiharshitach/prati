@@ -60,6 +60,8 @@ public class VozilaPrimoPredajeForma extends OpstaForma implements OpstaFormaInt
 		kolicina = new Celobrojni("количина", false);
 		lista = new ArrayList<StavkaPrijema>();
 		
+		layout.removeComponent(organizacije);
+		
 		dodajStavku = new Button("додај прему");
 		dodajStavku.addStyleName("primary");
 		dodajStavku.addClickListener(new ClickListener() {

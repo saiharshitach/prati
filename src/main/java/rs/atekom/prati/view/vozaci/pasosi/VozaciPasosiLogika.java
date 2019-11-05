@@ -89,6 +89,7 @@ public class VozaciPasosiLogika implements LogikaInterface{
 				}
 				
 			}catch (Exception e) {
+				e.printStackTrace();
 				view.pokaziPorukuGreska("грешка, контактирајте администратора");
 			}
 		}

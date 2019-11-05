@@ -85,15 +85,14 @@ public class VozaciLicencaView extends OpstiView implements OpstiViewInterface{
 		if(isSistem()) {
 			tabela.addColumn(vozaciLicenca -> vozaciLicenca.getSistemPretplatnici() == null ? "" : vozaciLicenca.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
-		tabela.addColumn(vozaciLicenca -> vozaciLicenca.getVozaci() == null ? "" : vozaciLicenca.getVozaci().getKorisnici() == null ? "" : 
-			vozaciLicenca.getVozaci().getKorisnici().toString()).setCaption("корисник");
+		tabela.addColumn(vozaciLicenca -> vozaciLicenca.getVozaci() == null ? "" : vozaciLicenca.getVozaci().toString()).setCaption("корисник");
 		tabela.addColumn(VozaciLicence::getBroj).setCaption("број");
 		tabela.addColumn(VozaciLicence::getIzdao).setCaption("издао");
 		tabela.addColumn(VozaciLicence::getIzdato, new DateRenderer(DANFORMAT)).setCaption("издато").setStyleGenerator(objekti -> "v-align-right");
 		tabela.addColumn(VozaciLicence::getVaziDo, new DateRenderer(DANFORMAT)).setCaption("важеће до").setStyleGenerator(objekti -> "v-align-right");
 		if(isSistem() || (korisnik.isAdmin() && korisnik.getOrganizacija() == null)) {
-					tabela.addColumn(vozaciLicenca -> vozaciLicenca.getVozaci() == null ? "" : vozaciLicenca.getVozaci().getKorisnici() == null ? "" : 
-			vozaciLicenca.getVozaci().getKorisnici().getOrganizacija() == null ? "" : vozaciLicenca.getVozaci().getKorisnici().getOrganizacija().getNaziv()).setCaption("организација");
+					tabela.addColumn(vozaciLicenca -> vozaciLicenca.getVozaci() == null ? "" : vozaciLicenca.getVozaci().getOrganizacija() == null ? "" : 
+						vozaciLicenca.getVozaci().getOrganizacija().getNaziv()).setCaption("организација");
 		}
 		if(isSistem()) {
 			tabela.addComponentColumn(vozaciLicenca -> {CheckBox chb = new CheckBox(); if(vozaciLicenca.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(vozaciLicenca -> "v-align-right");
@@ -144,7 +143,7 @@ public class VozaciLicencaView extends OpstiView implements OpstiViewInterface{
 		if(izabrani != null) {
 			if(!izabrani.isIzbrisan()) {
 				Servis.licencaServis.izbrisiVozacLicenca(izabrani);
-				pokaziPorukuUspesno("подаци за лиценцу " + izabrani.getVozaci().getKorisnici().toString() + " избрисани");
+				pokaziPorukuUspesno("подаци за лиценцу " + izabrani.getVozaci().toString() + " избрисани");
 			}else {
 				pokaziPorukuGreska("подаци за лиценцу су већ избрисани!");
 			}
@@ -167,7 +166,7 @@ public class VozaciLicencaView extends OpstiView implements OpstiViewInterface{
 			private static final long serialVersionUID = 1L;
 			@Override
 			public boolean test(VozaciLicence t) {
-				return (((t.getVozaci().getKorisnici() == null ? "" : t.getVozaci().getKorisnici().toString().toLowerCase()).contains(filter.getValue().toLowerCase()))||
+				return (((t.getVozaci() == null ? "" : t.getVozaci().toString().toLowerCase()).contains(filter.getValue().toLowerCase()))||
 						((t.getBroj() == null ? "" : t.getBroj().toLowerCase()).contains(filter.getValue().toLowerCase())));
 			}
 		};

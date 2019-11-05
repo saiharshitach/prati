@@ -44,7 +44,7 @@ public class VozaciLekarskoForma extends OpstaForma implements OpstaFormaInterfa
 				vozaci.clear();
 				if(event.getValue() != null) {
 					organizacije.setItems(Servis.organizacijaServis.nadjiSveOrganizacije(pretplatnici.getValue(), true));
-					vozaci.setItems(Servis.vozacServis.nadjiSveVozacePoPretplatniku(event.getValue()));
+					vozaci.setItems(Servis.korisnikServis.nadjiSveKorisnikeVozace(event.getValue(), null, true));
 				}
 				
 			}
@@ -56,9 +56,9 @@ public class VozaciLekarskoForma extends OpstaForma implements OpstaFormaInterfa
 			public void valueChange(ValueChangeEvent<Organizacije> event) {
 				vozaci.clear();
 				if(event.getValue() != null) {
-					vozaci.setItems(Servis.vozacServis.nadjiSveVozacePoOrganizaciji(event.getValue()));
+					vozaci.setItems(Servis.korisnikServis.nadjiSveKorisnikeVozace(pretplatnici.getValue(), event.getValue(), true));
 				}else {
-					vozaci.setItems(Servis.vozacServis.nadjiSveVozacePoPretplatniku(pretplatnici.getValue()));
+					vozaci.setItems(Servis.korisnikServis.nadjiSveKorisnikeVozace(pretplatnici.getValue(), null, true));
 				}
 			}
 		});
@@ -188,7 +188,7 @@ public class VozaciLekarskoForma extends OpstaForma implements OpstaFormaInterfa
 		VozaciLekarsko lekarsko = (VozaciLekarsko)podatak;
 		if(lekarsko.getId() != null) {
 			pretplatnici.setValue(lekarsko.getSistemPretplatnici());
-			organizacije.setValue(lekarsko.getVozaci().getKorisnici().getOrganizacija());
+			organizacije.setValue(lekarsko.getVozaci().getOrganizacija());
 			organizacije.setEnabled(false);
 			vozaci.setValue(lekarsko.getVozaci());
 			try {
