@@ -60,10 +60,10 @@ public class UredjajiLogika implements LogikaInterface{
 
 	@Override
 	public void sacuvajPodatak(Object podatak) {
-		Uredjaji uredjaj = (Uredjaji)podatak;
+		setFragmentParametar("");
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
-		setFragmentParametar("");
+		Uredjaji uredjaj = (Uredjaji)podatak;
 		if(uredjaj.getId() != null) {
 			Servis.uredjajServis.izmeniUredjaj(uredjaj);
 			Sim sim = uredjaj.getSim();
@@ -115,18 +115,18 @@ public class UredjajiLogika implements LogikaInterface{
 
 	@Override
 	public void noviPodatak() {
-		view.ocistiIzbor();
 		setFragmentParametar("new");
+		view.ocistiIzbor();
 		view.izmeniPodatak(new Uredjaji());
 	}
 
 	@Override
 	public void ukloniPodatak() {
+		setFragmentParametar("");
 		view.ukloniPodatak();
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
 		view.updateTable();
-		setFragmentParametar("");
 	}
 
 	@Override

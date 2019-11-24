@@ -59,10 +59,10 @@ public class UredjajiModeliLogika implements LogikaInterface{
 
 	@Override
 	public void sacuvajPodatak(Object podatak) {
-		SistemUredjajiModeli model = (SistemUredjajiModeli)podatak;
+		setFragmentParametar("");
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
-		setFragmentParametar("");
+		SistemUredjajiModeli model = (SistemUredjajiModeli)podatak;
 		if(model.getId() != null) {
 			Servis.sistemUredjajModelServis.izmeniUredjajModel(model);
 			view.pokaziPorukuUspesno("модел измењен");
@@ -86,18 +86,18 @@ public class UredjajiModeliLogika implements LogikaInterface{
 
 	@Override
 	public void noviPodatak() {
-		view.ocistiIzbor();
 		setFragmentParametar("new");
+		view.ocistiIzbor();
 		view.izmeniPodatak(new SistemUredjajiModeli());
 	}
 
 	@Override
 	public void ukloniPodatak() {
+		setFragmentParametar("");
 		view.ukloniPodatak();
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
 		view.updateTable();
-		setFragmentParametar("");
 	}
 
 	@Override

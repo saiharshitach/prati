@@ -60,10 +60,10 @@ public class ObjekatZoneLogika implements LogikaInterface{
 
 	@Override
 	public void sacuvajPodatak(Object podatak) {
-		ObjekatZone objekatZona = (ObjekatZone)podatak;
+		setFragmentParametar("");
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
-		setFragmentParametar("");
+		ObjekatZone objekatZona = (ObjekatZone)podatak;
 		if(objekatZona.getId() != null) {
 			Servis.zonaObjekatServis.izmeniZonaObjekat(objekatZona);
 			view.pokaziPorukuUspesno("објекат зона измењен");
@@ -107,18 +107,18 @@ public class ObjekatZoneLogika implements LogikaInterface{
 
 	@Override
 	public void noviPodatak() {
-		view.ocistiIzbor();
 		setFragmentParametar("new");
+		view.ocistiIzbor();
 		view.izmeniPodatak(new ObjekatZone());
 	}
 
 	@Override
 	public void ukloniPodatak() {
+		setFragmentParametar("");
 		view.ukloniPodatak();
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
 		view.updateTable();
-		setFragmentParametar("");
 	}
 
 	@Override

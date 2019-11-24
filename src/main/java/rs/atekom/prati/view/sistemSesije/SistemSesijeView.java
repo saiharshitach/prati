@@ -43,10 +43,13 @@ public class SistemSesijeView extends OpstiView implements OpstiViewInterface{
 	@Override
 	public void buildTable() {
 		tabela = new Grid<SistemSesije>();
+		pocetno = new ArrayList<SistemSesije>();
 		updateTable();
+		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
+		
 		if(korisnik.isSistem() && korisnik.getSistemPretplatnici() == null) {
 			tabela.addColumn(sistemSesije -> sistemSesije.getSistemPretplatnici() == null ? "" : sistemSesije.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
@@ -87,17 +90,26 @@ public class SistemSesijeView extends OpstiView implements OpstiViewInterface{
 		
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void updateTable() {
 		filter.clear();
-		pocetno = new ArrayList<SistemSesije>();
 		lista = Servis.sistemSesijaServis.nadjiSveSesije(korisnik);
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {
 			tabela.setItems(pocetno);
 		}
+	}
+
+	@Override
+	public void osveziFilter() {
+		dataProvider.setFilter(filterPredicate);
+		dataProvider.refreshAll();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void dodajFilter() {
 		dataProvider = (ListDataProvider<SistemSesije>)tabela.getDataProvider();
 		filterPredicate = new SerializablePredicate<SistemSesije>() {
 			private static final long serialVersionUID = 1L;
@@ -112,12 +124,6 @@ public class SistemSesijeView extends OpstiView implements OpstiViewInterface{
 			}
 		};
 		filter.addValueChangeListener(e -> {osveziFilter();});
-	}
-
-	@Override
-	public void osveziFilter() {
-		dataProvider.setFilter(filterPredicate);
-		dataProvider.refreshAll();
 	}
 
 }

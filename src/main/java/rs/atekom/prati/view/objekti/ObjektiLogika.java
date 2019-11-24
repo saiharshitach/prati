@@ -60,19 +60,18 @@ public class ObjektiLogika implements LogikaInterface{
 
 	@Override
 	public void sacuvajPodatak(Object podatak) {
-		Objekti objekat = (Objekti)podatak;
+		setFragmentParametar("");
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
-		setFragmentParametar("");
+		Objekti objekat = (Objekti)podatak;
 		if(objekat.getId() != null) {
-			Servis.objekatServis.azurirajObjekte(objekat);
-			
-			/*if(objekat.getUredjaji() != null) {
+			if(objekat.getUredjaji() != null) {
 				Uredjaji uredjaj = objekat.getUredjaji();
 				uredjaj.setObjekti(objekat);
 				uredjaj.setZauzet(true);
 				Servis.uredjajServis.izmeniUredjaj(uredjaj);
-			}**/
+			}
+			Servis.objekatServis.azurirajObjekte(objekat);
 			view.pokaziPorukuUspesno("објекат измењен");
 		}else {
 			try {
@@ -105,18 +104,19 @@ public class ObjektiLogika implements LogikaInterface{
 
 	@Override
 	public void noviPodatak() {
-		view.ocistiIzbor();
 		setFragmentParametar("new");
+		view.ocistiIzbor();
 		view.izmeniPodatak(new Objekti());
 	}
 
 	@Override
 	public void ukloniPodatak() {
+		setFragmentParametar("");
 		view.ukloniPodatak();
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
 		view.updateTable();
-		setFragmentParametar("");
+		
 	}
 
 	@Override

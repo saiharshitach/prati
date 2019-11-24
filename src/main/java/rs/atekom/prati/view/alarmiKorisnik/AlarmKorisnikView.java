@@ -80,10 +80,13 @@ public class AlarmKorisnikView extends OpstiView implements OpstiViewInterface{
 	@Override
 	public void buildTable() {
 		tabela = new Grid<AlarmiKorisnik>();
+		pocetno = new ArrayList<AlarmiKorisnik>();
 		updateTable();
+		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
+		
 		if(isSistem()) {
 			tabela.addColumn(alarmiKorisnik -> alarmiKorisnik.getSistemPretplatnici() == null ? "" : alarmiKorisnik.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
@@ -148,17 +151,26 @@ public class AlarmKorisnikView extends OpstiView implements OpstiViewInterface{
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void updateTable() {
 		filter.clear();
-		pocetno = new ArrayList<AlarmiKorisnik>();
 		lista = Servis.alarmKorisnikServis.nadjiSveAlarmePoKorisniku(korisnik, false, false, false);
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {
 			tabela.setItems(pocetno);
 		}
+	}
+
+	@Override
+	public void osveziFilter() {
+		dataProvider.setFilter(filterPredicate);
+		dataProvider.refreshAll();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void dodajFilter() {
 		dataProvider = (ListDataProvider<AlarmiKorisnik>)tabela.getDataProvider();
 		filterPredicate = new SerializablePredicate<AlarmiKorisnik>() {
 			private static final long serialVersionUID = 1L;
@@ -169,12 +181,6 @@ public class AlarmKorisnikView extends OpstiView implements OpstiViewInterface{
 						(t.getSistemAlarmi() == null ? "" : t.getSistemAlarmi().getNaziv().toLowerCase()).contains(filter.getValue().toLowerCase()));
 			}
 		};
+		filter.addValueChangeListener(e -> {osveziFilter();});
 	}
-
-	@Override
-	public void osveziFilter() {
-		dataProvider.setFilter(filterPredicate);
-		dataProvider.refreshAll();
-	}
-
 }

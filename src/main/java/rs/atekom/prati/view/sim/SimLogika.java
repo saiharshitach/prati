@@ -59,10 +59,8 @@ public class SimLogika implements LogikaInterface{
 
 	@Override
 	public void sacuvajPodatak(Object podatak) {
+		
 		Sim sim = (Sim)podatak;
-		view.ocistiIzbor();
-		view.izmeniPodatak(null);
-		setFragmentParametar("");
 		if(sim.getId() != null) {
 			Servis.simServis.azurirajSim(sim);
 			view.pokaziPorukuUspesno("сим измењена");
@@ -75,6 +73,9 @@ public class SimLogika implements LogikaInterface{
 			}
 		}
 		view.updateTable();
+		view.ocistiIzbor();
+		setFragmentParametar("");
+		view.izmeniPodatak(null);
 	}
 
 	@Override
@@ -98,10 +99,10 @@ public class SimLogika implements LogikaInterface{
 	@Override
 	public void ukloniPodatak() {
 		view.ukloniPodatak();
-		view.ocistiIzbor();
-		view.izmeniPodatak(null);
 		view.updateTable();
+		view.ocistiIzbor();
 		setFragmentParametar("");
+		view.izmeniPodatak(null);
 	}
 
 	@Override

@@ -76,13 +76,17 @@ public class SimView extends OpstiView implements OpstiViewInterface{
 		
 		viewLogika.init();
 	}
+
 	@Override
 	public void buildTable() {
 		tabela = new Grid<Sim>();
+		pocetno = new ArrayList<Sim>();
 		updateTable();
+		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
+
 		if(isSistem()) {
 			tabela.addColumn(sim -> sim.getSistemPretplatnici() == null ? "" : sim.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
@@ -133,7 +137,7 @@ public class SimView extends OpstiView implements OpstiViewInterface{
 	@Override
 	public void izmeniPodatak(Object podatak) {
 		Sim sim = (Sim)podatak;
-		if( sim != null) {
+		if( podatak != null) {
 			forma.addStyleName("visible");
 			forma.setEnabled(true);
 		}else {
@@ -155,17 +159,26 @@ public class SimView extends OpstiView implements OpstiViewInterface{
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void updateTable() {
 		filter.clear();
-		pocetno = new ArrayList<Sim>();
 		lista = Servis.simServis.vratiSveSimKartice(korisnik, false);
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {
 			tabela.setItems(pocetno);
 		}
+	}
+
+	@Override
+	public void osveziFilter() {
+		dataProvider.setFilter(filterPredicate);
+		dataProvider.refreshAll();
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public void dodajFilter() {
 		dataProvider = (ListDataProvider<Sim>)tabela.getDataProvider();
 		filterPredicate = new SerializablePredicate<Sim>() {
 			private static final long serialVersionUID = 1L;
@@ -178,12 +191,6 @@ public class SimView extends OpstiView implements OpstiViewInterface{
 			}
 		};
 		filter.addValueChangeListener(e -> {osveziFilter();});
-	}
-
-	@Override
-	public void osveziFilter() {
-		dataProvider.setFilter(filterPredicate);
-		dataProvider.refreshAll();
 	}
 
 }

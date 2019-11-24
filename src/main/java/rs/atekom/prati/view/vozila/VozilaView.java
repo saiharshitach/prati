@@ -87,10 +87,13 @@ public class VozilaView extends OpstiView implements OpstiViewInterface{
 	@Override
 	public void buildTable() {
 		tabela = new Grid<Vozila>();
+		pocetno = new ArrayList<Vozila>();
 		updateTable();
+		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
+		
 		if(isSistem()) {
 			tabela.addColumn(vozila -> vozila.getSistemPretplatnici() == null ? "" : vozila.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
@@ -106,8 +109,19 @@ public class VozilaView extends OpstiView implements OpstiViewInterface{
 		tabela.addColumn(Vozila::getBrojSaobracajne).setCaption("број саобраћајне");
 		tabela.addColumn(Vozila::getSerijskiBroj).setCaption("серијски број");
 		tabela.addColumn(Vozila::getDatumRegistracije, new DateRenderer(DANFORMAT)).setCaption("датум прве регистрације").setStyleGenerator(objekti -> "v-align-right");
+		tabela.addColumn(Vozila::getMaliServisKm).setCaption("мали сервис - км");
+		tabela.addColumn(Vozila::getMaliServisMeseci).setCaption("мали сервис - месеци");
+		tabela.addColumn(Vozila::getVelikiServisKm).setCaption("велики сервис - км");
+		tabela.addColumn(Vozila::getVelikiServisMeseci).setCaption("велики сервис - месеци");
+		tabela.addColumn(Vozila::getDatumPoslednjeRegistracije, new DateRenderer(DANFORMAT)).setCaption("датум последње регистрације").setStyleGenerator(objekti -> "v-align-right");
+		tabela.addColumn(Vozila::getMaliPoslednjiDatum, new DateRenderer(DANFORMAT)).setCaption("датум последњег МС").setStyleGenerator(objekti -> "v-align-right");
+		tabela.addColumn(Vozila::getMaliPoslednjiGPSkm).setCaption("гпсКМ последњи МС").setStyleGenerator(objekti -> "v-align-right");
+		tabela.addColumn(Vozila::getMaliPoslednjiOBDkm).setCaption("obdКМ последњи МС").setStyleGenerator(objekti -> "v-align-right");
+		tabela.addColumn(Vozila::getVelikiPoslednjiDatum, new DateRenderer(DANFORMAT)).setCaption("датум последњег ВС").setStyleGenerator(objekti -> "v-align-right");
+		tabela.addColumn(Vozila::getVelikiPoslednjiGPSkm).setCaption("гпсКМ последњи ВС").setStyleGenerator(objekti -> "v-align-right");
+		tabela.addColumn(Vozila::getVelikiPoslednjiOBDkm).setCaption("obdКМ последњи ВС").setStyleGenerator(objekti -> "v-align-right");
 		if(isSistem() || (korisnik.isAdmin() && korisnik.getOrganizacija() == null)) {
-			tabela.addColumn(vozila -> vozila.getObjekti() == null ? "" : vozila.getObjekti().getOrganizacija() == null ? "" : vozila.getObjekti().getOrganizacija().getNaziv());
+			tabela.addColumn(vozila -> vozila.getObjekti() == null ? "" : vozila.getObjekti().getOrganizacija() == null ? "" : vozila.getObjekti().getOrganizacija().getNaziv()).setCaption("организација");
 		}
 		if(isSistem()) {
 			tabela.addComponentColumn(vozila -> {CheckBox chb = new CheckBox(); if(vozila.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("izbrisan").setStyleGenerator(objekti -> "v-align-right");
@@ -160,17 +174,26 @@ public class VozilaView extends OpstiView implements OpstiViewInterface{
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void updateTable() {
 		filter.clear();
-		pocetno = new ArrayList<Vozila>();
 		lista = Servis.voziloServis.vratisvaVozila(korisnik, false);
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {
 			tabela.setItems(pocetno);
 		}
+	}
+
+	@Override
+	public void osveziFilter() {
+		dataProvider.setFilter(filterPredicate);
+		dataProvider.refreshAll();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void dodajFilter() {
 		dataProvider = (ListDataProvider<Vozila>)tabela.getDataProvider();
 		filterPredicate = new SerializablePredicate<Vozila>() {
 			private static final long serialVersionUID = 1L;
@@ -181,12 +204,6 @@ public class VozilaView extends OpstiView implements OpstiViewInterface{
 			}
 		};
 		filter.addValueChangeListener(e -> {osveziFilter();});
-	}
-
-	@Override
-	public void osveziFilter() {
-		dataProvider.setFilter(filterPredicate);
-		dataProvider.refreshAll();
 	}
 
 }

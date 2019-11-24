@@ -63,10 +63,10 @@ public class KorisniciLogika implements LogikaInterface{
 
 	@Override
 	public void sacuvajPodatak(Object podatak) {
-		Korisnici korisnik = (Korisnici)podatak;
+		setFragmentParametar("");
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
-		setFragmentParametar("");
+		Korisnici korisnik = (Korisnici)podatak;
 		if(korisnik.getId() != null) {
 			Servis.korisnikServis.azurirajKorisnika(korisnik);
 			sacuvajGrupeKorisnik(korisnik);
@@ -96,18 +96,18 @@ public class KorisniciLogika implements LogikaInterface{
 
 	@Override
 	public void noviPodatak() {
-		view.ocistiIzbor();
 		setFragmentParametar("new");
+		view.ocistiIzbor();
 		view.izmeniPodatak(new Korisnici());
 	}
 
 	@Override
 	public void ukloniPodatak() {
+		setFragmentParametar("");
 		view.ukloniPodatak();
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
 		view.updateTable();
-		setFragmentParametar("");
 	}
 
 	@Override

@@ -37,7 +37,6 @@ public class ObjekatZoneView extends OpstiView implements OpstiViewInterface{
 	private ObjekatZone izabrani;
 
 	public ObjekatZoneView() {
-
 		viewLogika = new ObjekatZoneLogika(this);
 		forma = new ObjekatZoneForma(viewLogika);
 		forma.removeStyleName("visible");
@@ -81,10 +80,13 @@ public class ObjekatZoneView extends OpstiView implements OpstiViewInterface{
 	@Override
 	public void buildTable() {
 		tabela = new Grid<ObjekatZone>();
+		pocetno = new ArrayList<ObjekatZone>();
 		updateTable();
+		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
+		
 		if(isSistem()) {
 			tabela.addColumn(objekatZone -> objekatZone.getSistemPretplatnici() == null ? "" : objekatZone.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
@@ -147,17 +149,26 @@ public class ObjekatZoneView extends OpstiView implements OpstiViewInterface{
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void updateTable() {
 		filter.clear();
-		pocetno = new ArrayList<ObjekatZone>();
 		lista = Servis.zonaObjekatServis.vratiSveObjekatZone(korisnik, false);
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {
 			tabela.setItems(pocetno);
 		}
+	}
+
+	@Override
+	public void osveziFilter() {
+		dataProvider.setFilter(filterPredicate);
+		dataProvider.refreshAll();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void dodajFilter() {
 		dataProvider = (ListDataProvider<ObjekatZone>)tabela.getDataProvider();
 		filterPredicate = new SerializablePredicate<ObjekatZone>() {
 			private static final long serialVersionUID = 1L;
@@ -168,12 +179,6 @@ public class ObjekatZoneView extends OpstiView implements OpstiViewInterface{
 			}
 		};
 		filter.addValueChangeListener(e -> {osveziFilter();});
-	}
-
-	@Override
-	public void osveziFilter() {
-		dataProvider.setFilter(filterPredicate);
-		dataProvider.refreshAll();
 	}
 
 }

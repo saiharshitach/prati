@@ -60,10 +60,10 @@ public class VozaciPasosiLogika implements LogikaInterface{
 
 	@Override
 	public void sacuvajPodatak(Object podatak) {
-		VozaciPasosi pasos = (VozaciPasosi)podatak;
+		setFragmentParametar("");
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
-		setFragmentParametar("");
+		VozaciPasosi pasos = (VozaciPasosi)podatak;
 		if(pasos.getId() != null) {
 			Servis.pasosServis.izmeniVozacPasos(pasos);
 			view.pokaziPorukuUspesno("подаци за пасош уверење измењени");
@@ -109,18 +109,18 @@ public class VozaciPasosiLogika implements LogikaInterface{
 
 	@Override
 	public void noviPodatak() {
-		view.ocistiIzbor();
 		setFragmentParametar("new");
+		view.ocistiIzbor();
 		view.izmeniPodatak(new VozaciPasosi());
 	}
 
 	@Override
 	public void ukloniPodatak() {
+		setFragmentParametar("");
 		view.ukloniPodatak();
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
 		view.updateTable();
-		setFragmentParametar("");
 	}
 
 	@Override

@@ -79,10 +79,13 @@ public class UredjajiModeliView extends OpstiView implements OpstiViewInterface{
 	@Override
 	public void buildTable() {
 		tabela = new Grid<SistemUredjajiModeli>();
+		pocetno = new ArrayList<SistemUredjajiModeli>();
 		updateTable();
+		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
+		
 		tabela.addColumn(sistemUredjajiModeli -> sistemUredjajiModeli.getSistemUredjajiProizvodjac().getNaziv()).setCaption("произвођач");
 		tabela.addColumn(SistemUredjajiModeli::getNaziv).setCaption("назив");
 		tabela.addColumn(SistemUredjajiModeli::getOpis).setCaption("опис");
@@ -139,17 +142,26 @@ public class UredjajiModeliView extends OpstiView implements OpstiViewInterface{
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void updateTable() {
 		filter.clear();
-		pocetno = new ArrayList<SistemUredjajiModeli>();
 		lista = Servis.sistemUredjajModelServis.nadjiSveUredjajModele();
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {
 			tabela.setItems(pocetno);
 		}
+	}
+
+	@Override
+	public void osveziFilter() {
+		dataProvider.setFilter(filterPredicate);
+		dataProvider.refreshAll();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void dodajFilter() {
 		dataProvider = (ListDataProvider<SistemUredjajiModeli>)tabela.getDataProvider();
 		filterPredicate = new SerializablePredicate<SistemUredjajiModeli>() {
 			private static final long serialVersionUID = 1L;
@@ -159,12 +171,6 @@ public class UredjajiModeliView extends OpstiView implements OpstiViewInterface{
 			}
 		};
 		filter.addValueChangeListener(e -> {osveziFilter();});
-	}
-
-	@Override
-	public void osveziFilter() {
-		dataProvider.setFilter(filterPredicate);
-		dataProvider.refreshAll();
 	}
 
 }

@@ -60,7 +60,7 @@ public class VozilaSaobracajnaForma extends OpstaForma implements OpstaFormaInte
 				organizacije.clear();
 				if(event.getValue() != null) {
 					organizacije.setItems(Servis.organizacijaServis.nadjiSveOrganizacije(event.getValue(), true));
-					vozila.setItems(Servis.voziloServis.vratisvaVozila(logika.view.korisnik, true));
+					vozila.setItems(Servis.voziloServis.nadjiSvaVozilaBezSaobracajnePoPretplatniku(event.getValue(), null));
 				}
 			}
 		});
@@ -71,11 +71,10 @@ public class VozilaSaobracajnaForma extends OpstaForma implements OpstaFormaInte
 			public void valueChange(ValueChangeEvent<Organizacije> event) {
 				vozila.clear();
 				if(event.getValue() != null) {
-					vozila.setItems(Servis.voziloServis.nadjisvaVozilaPoOrganizaciji(event.getValue()));
+					vozila.setItems(Servis.voziloServis.nadjiSvaVozilaBezSaobracajnePoPretplatniku(pretplatnici.getValue(), event.getValue()));
 				}else {
-					vozila.setItems(Servis.voziloServis.nadjisvaVozilaPoPretplatniku(pretplatnici.getValue()));
+					vozila.setItems(Servis.voziloServis.nadjiSvaVozilaBezSaobracajnePoPretplatniku(pretplatnici.getValue(), null));
 				}
-				
 			}
 		});
 		
@@ -219,7 +218,7 @@ public class VozilaSaobracajnaForma extends OpstaForma implements OpstaFormaInte
 
 	@Override
 	public void ocistiPodatak() {
-		if(logika.view.korisnik.getSistemPretplatnici() != null) {
+		if(!logika.view.korisnik.getSistemPretplatnici().isSistem()) {
 			pretplatnici.setValue(logika.view.korisnik.getSistemPretplatnici());
 		}else {
 			pretplatnici.clear();
@@ -258,6 +257,11 @@ public class VozilaSaobracajnaForma extends OpstaForma implements OpstaFormaInte
 			organizacije.setEnabled(false);
 			try {
 				vozila.setValue(saobracajna.getVozilo());
+				if(saobracajna.getVozilo() != null) {
+					vozila.setEnabled(false);
+				}else {
+					vozila.setEnabled(true);
+				}
 			}catch (Exception e) {
 				logika.view.pokaziPorukuGreska("грешка у преузимању возила!");
 				vozila.setValue(null);

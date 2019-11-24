@@ -59,10 +59,10 @@ public class VozilaNaloziLogika implements LogikaInterface{
 
 	@Override
 	public void sacuvajPodatak(Object podatak) {
-		VozilaNalozi nalog = (VozilaNalozi)podatak;
+		setFragmentParametar("");
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
-		setFragmentParametar("");
+		VozilaNalozi nalog = (VozilaNalozi)podatak;
 		if(nalog.getId() != null) {
 			Servis.nalogServis.izmeniVoziloNalog(nalog);
 			view.pokaziPorukuUspesno("подаци за налог измењени");
@@ -90,18 +90,18 @@ public class VozilaNaloziLogika implements LogikaInterface{
 
 	@Override
 	public void noviPodatak() {
-		view.ocistiIzbor();
 		setFragmentParametar("new");
+		view.ocistiIzbor();
 		view.izmeniPodatak(new VozilaNalozi());
 	}
 
 	@Override
 	public void ukloniPodatak() {
+		setFragmentParametar("");
 		view.ukloniPodatak();
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
 		view.updateTable();
-		setFragmentParametar("");
 	}
 
 	@Override

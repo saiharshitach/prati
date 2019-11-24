@@ -25,6 +25,6 @@ public class ComboUredjaji extends ComboBox<Uredjaji>{
 	}
 	
 	public List<Uredjaji> lista(SistemPretplatnici pretplatnik, Organizacije organizacija, Uredjaji uredjaj){
-		return Servis.uredjajServis.nadjiSveAktivneSlobodneUredjajePoPretplatniku(pretplatnik, organizacija, uredjaj);
+		return Servis.uredjajServis.nadjiSveAktivneSlobodneUredjajePoPretplatniku(pretplatnik, organizacija);
 	}
 }

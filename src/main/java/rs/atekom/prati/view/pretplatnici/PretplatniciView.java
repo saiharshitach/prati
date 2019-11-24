@@ -80,10 +80,13 @@ public class PretplatniciView extends OpstiView implements OpstiViewInterface{
 	@Override
 	public void buildTable() {
 		tabela = new Grid<SistemPretplatnici>();
+		pocetno = new ArrayList<SistemPretplatnici>();
 		updateTable();
+		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
+		
 		tabela.addColumn(SistemPretplatnici::getNaziv).setCaption("назив");
 		tabela.addColumn(SistemPretplatnici::getEmail).setCaption("е-пошта");
 		tabela.addColumn(SistemPretplatnici::getAktivanDo, new DateRenderer(DANFORMAT)).setCaption("активан до");
@@ -144,17 +147,26 @@ public class PretplatniciView extends OpstiView implements OpstiViewInterface{
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void updateTable() {
 		filter.clear();
-		pocetno = new ArrayList<SistemPretplatnici>();
 		lista = Servis.sistemPretplatnikServis.nadjiSvePretplatnike();
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {
 			tabela.setItems(pocetno);
 		}
+	}
+
+	@Override
+	public void osveziFilter() {
+		dataProvider.setFilter(filterPredicate);
+		dataProvider.refreshAll();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void dodajFilter() {
 		dataProvider = (ListDataProvider<SistemPretplatnici>)tabela.getDataProvider();
 		filterPredicate = new SerializablePredicate<SistemPretplatnici>() {
 			private static final long serialVersionUID = 1L;
@@ -164,12 +176,6 @@ public class PretplatniciView extends OpstiView implements OpstiViewInterface{
 			}
 		};
 		filter.addValueChangeListener(e -> {osveziFilter();});
-	}
-
-	@Override
-	public void osveziFilter() {
-		dataProvider.setFilter(filterPredicate);
-		dataProvider.refreshAll();
 	}
 
 }

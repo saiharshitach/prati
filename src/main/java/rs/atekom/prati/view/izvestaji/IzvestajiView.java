@@ -151,7 +151,6 @@ public class IzvestajiView extends OpstiPanelView{
         
         prikaziClick = new ClickListener() {
 			private static final long serialVersionUID = 1L;
-
 			@Override
 			public void buttonClick(ClickEvent event) {
 				ArrayList<Objekti> objekti = new ArrayList<Objekti>();
@@ -194,7 +193,6 @@ public class IzvestajiView extends OpstiPanelView{
 						}
 						dodajPodatke();
 					}
-
 				}else {
 					pokaziPorukuGreska("морате одабрати време у оба поља и период може бити највише 31 дан!");
 				}
@@ -389,7 +387,6 @@ public class IzvestajiView extends OpstiPanelView{
 				}else {
 					pokaziPorukuGreska("морате одабрати време у оба поља и период може бити највише 1 дан!");
 				}
-				
 			}
 		});
 		

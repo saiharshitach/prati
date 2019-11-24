@@ -17,4 +17,6 @@ public interface OpstiViewInterface {
 	public void updateTable();
 	
 	public void osveziFilter();
+	
+	public void dodajFilter();
 }

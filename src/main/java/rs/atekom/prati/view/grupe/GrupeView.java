@@ -80,10 +80,13 @@ public class GrupeView extends OpstiView implements OpstiViewInterface{
 	@Override
 	public void buildTable() {
 		tabela = new Grid<Grupe>();
+		pocetno = new ArrayList<Grupe>();
 		updateTable();
+		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
+		
 		if(isSistem()) {
 			tabela.addColumn(grupe -> grupe.getSistemPretplatnici() == null ? "" : grupe.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
@@ -150,17 +153,26 @@ public class GrupeView extends OpstiView implements OpstiViewInterface{
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void updateTable() {
 		filter.clear();
-		pocetno = new ArrayList<Grupe>();
 		lista = Servis.grupeServis.vratiGrupe(korisnik);
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {
 			tabela.setItems(pocetno);
 		}
+	}
+
+	@Override
+	public void osveziFilter() {
+		dataProvider.setFilter(filterPredicate);
+		dataProvider.refreshAll();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void dodajFilter() {
 		dataProvider = (ListDataProvider<Grupe>)tabela.getDataProvider();
 		filterPredicate = new SerializablePredicate<Grupe>() {
 			private static final long serialVersionUID = 1L;
@@ -171,12 +183,6 @@ public class GrupeView extends OpstiView implements OpstiViewInterface{
 			}
 		};
 		filter.addValueChangeListener(e -> {osveziFilter();});
-	}
-
-	@Override
-	public void osveziFilter() {
-		dataProvider.setFilter(filterPredicate);
-		dataProvider.refreshAll();
 	}
 
 }

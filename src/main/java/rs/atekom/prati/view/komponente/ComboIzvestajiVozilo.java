@@ -22,7 +22,9 @@ public class ComboIzvestajiVozilo extends ComboBox<IzvestajTip>{
 	
 	private List<IzvestajTip> lista(){
 		ArrayList<IzvestajTip> izvestaji = new ArrayList<IzvestajTip>();
-		izvestaji.add(new IzvestajTip(1, "возило"));
+		izvestaji.add(new IzvestajTip(1, "трошкови"));
+		izvestaji.add(new IzvestajTip(2, "сервис"));
+		izvestaji.add(new IzvestajTip(3, "саобраћајна"));
 		return izvestaji;
 	}
 }

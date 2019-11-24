@@ -17,6 +17,8 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
+
+import pratiBaza.tabele.Vozila;
 import pratiBaza.tabele.VozilaSaobracajne;
 import rs.atekom.prati.server.Servis;
 import rs.atekom.prati.view.OpstiView;
@@ -85,12 +87,16 @@ public class VozilaSaobracajnaView extends OpstiView implements OpstiViewInterfa
 	@Override
 	public void buildTable() {
 		tabela = new Grid<VozilaSaobracajne>();
+		pocetno = new ArrayList<VozilaSaobracajne>();
 		updateTable();
+		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
+		
 		if(isSistem()) {
-			tabela.addColumn(vozilaSaobracajna -> vozilaSaobracajna.getSistemPretplatnici() == null ? "" : vozilaSaobracajna.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
+			tabela.addColumn(vozilaSaobracajna -> vozilaSaobracajna.getSistemPretplatnici() == null ? "" 
+					: vozilaSaobracajna.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
 		tabela.addColumn(vozilaSaobracajna -> vozilaSaobracajna.getVozilo() == null ? "" : vozilaSaobracajna.getVozilo().getObjekti() == null ? "" : vozilaSaobracajna.getVozilo().getObjekti().getOznaka()).setCaption("објекат");
 		tabela.addColumn(vozilaSaobracajna -> vozilaSaobracajna.getVozilo() == null ? "" : vozilaSaobracajna.getVozilo().getRegistracija()).setCaption("возило");
@@ -158,9 +164,10 @@ public class VozilaSaobracajnaView extends OpstiView implements OpstiViewInterfa
 	public void ukloniPodatak() {
 		if(izabrani != null) {
 			if(!izabrani.isIzbrisan()) {
+				Vozila izabrano = izabrani.getVozilo();
+				izabrano.setSaobracajna(null);
 				Servis.saobracajnaServis.izbrisiSaobracajnu(izabrani);
-				izabrani.getVozilo().setSaobracajna(null);
-				Servis.voziloServis.azurirajVozilo(izabrani.getVozilo());
+				Servis.voziloServis.azurirajVozilo(izabrano);
 				pokaziPorukuUspesno("саобраћајна избрисана");
 			}else {
 				pokaziPorukuGreska("саобраћајна већ избрисана!");
@@ -169,17 +176,26 @@ public class VozilaSaobracajnaView extends OpstiView implements OpstiViewInterfa
 		
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void updateTable() {
 		filter.clear();
-		pocetno = new ArrayList<VozilaSaobracajne>();
 		lista = Servis.saobracajnaServis.nadjiSveSaobracajne(korisnik, false);
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {
 			tabela.setItems(pocetno);
 		}
+	}
+
+	@Override
+	public void osveziFilter() {
+		dataProvider.setFilter(filterPredicate);
+		dataProvider.refreshAll();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void dodajFilter() {
 		dataProvider = (ListDataProvider<VozilaSaobracajne>)tabela.getDataProvider();
 		filterPredicate = new SerializablePredicate<VozilaSaobracajne>() {
 			private static final long serialVersionUID = 1L;
@@ -191,12 +207,6 @@ public class VozilaSaobracajnaView extends OpstiView implements OpstiViewInterfa
 			}
 		};
 		filter.addValueChangeListener(e -> {osveziFilter();});
-	}
-
-	@Override
-	public void osveziFilter() {
-		dataProvider.setFilter(filterPredicate);
-		dataProvider.refreshAll();
 	}
 
 }

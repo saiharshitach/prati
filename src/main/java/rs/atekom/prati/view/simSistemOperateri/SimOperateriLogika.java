@@ -59,10 +59,10 @@ public class SimOperateriLogika implements LogikaInterface{
 
 	@Override
 	public void sacuvajPodatak(Object podatak) {
-		SistemOperateri operater = (SistemOperateri)podatak;
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
 		setFragmentParametar("");
+		SistemOperateri operater = (SistemOperateri)podatak;
 		if(operater.getId() != null) {
 			Servis.sistemOperaterServis.azurirajOperatera(operater);
 			view.pokaziPorukuUspesno("оператер измењен");
@@ -86,18 +86,18 @@ public class SimOperateriLogika implements LogikaInterface{
 
 	@Override
 	public void noviPodatak() {
-		view.ocistiIzbor();
 		setFragmentParametar("new");
+		view.ocistiIzbor();
 		view.izmeniPodatak(new SistemOperateri());
 	}
 
 	@Override
 	public void ukloniPodatak() {
+		setFragmentParametar("");
 		view.ukloniPodatak();
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
 		view.updateTable();
-		setFragmentParametar("");
 	}
 
 	@Override

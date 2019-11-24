@@ -58,10 +58,10 @@ public class VozilaOpremaLogika implements LogikaInterface{
 
 	@Override
 	public void sacuvajPodatak(Object podatak) {
-		VozilaOprema oprema = (VozilaOprema)podatak;
+		setFragmentParametar("");
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
-		setFragmentParametar("");
+		VozilaOprema oprema = (VozilaOprema)podatak;
 		if(oprema.getId() != null) {
 			Servis.opremaServis.izmeniVoziloOpremu(oprema);
 			view.pokaziPorukuUspesno("подаци за опрему измењени");
@@ -89,18 +89,18 @@ public class VozilaOpremaLogika implements LogikaInterface{
 
 	@Override
 	public void noviPodatak() {
-		view.ocistiIzbor();
 		setFragmentParametar("new");
+		view.ocistiIzbor();
 		view.izmeniPodatak(new VozilaOprema());
 	}
 
 	@Override
 	public void ukloniPodatak() {
+		setFragmentParametar("");
 		view.ukloniPodatak();
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
 		view.updateTable();
-		setFragmentParametar("");
 	}
 
 	@Override

@@ -37,11 +37,12 @@ public class GrupeObjektiView extends OpstiView implements OpstiViewInterface{
 	public GrupeObjektiView() {
 		view = this;
 		
-		buildTable();
-		
 		barGrid.addComponent(buildToolbarGrupe());
+		buildTable();
+
 		barGrid.addComponent(tabela);
 		barGrid.setExpandRatio(tabela, 1);
+		
 		grupeCombo.addValueChangeListener(new ValueChangeListener<Grupe>() {	
 			private static final long serialVersionUID = 1L;
 			@Override
@@ -80,6 +81,9 @@ public class GrupeObjektiView extends OpstiView implements OpstiViewInterface{
 	@Override
 	public void buildTable() {
 		tabela = new Grid<Objekti>();
+		pocetno = new ArrayList<Objekti>();
+		updateTable();
+		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.MULTI);
@@ -120,11 +124,9 @@ public class GrupeObjektiView extends OpstiView implements OpstiViewInterface{
 		
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void updateTable() {
 		filter.clear();
-		pocetno = new ArrayList<Objekti>();
 		lista = Servis.objekatServis.vratiSveObjekte(pretplatniciCombo.getValue(), organizacijeCombo.getValue());
 		if(lista != null) {
 			tabela.setItems(lista);
@@ -139,6 +141,17 @@ public class GrupeObjektiView extends OpstiView implements OpstiViewInterface{
 				}
 			}
 		}
+	}
+
+	@Override
+	public void osveziFilter() {
+		dataProvider.setFilter(filterPredicate);
+		dataProvider.refreshAll();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void dodajFilter() {
 		dataProvider = (ListDataProvider<Objekti>)tabela.getDataProvider();
 		filterPredicate = new SerializablePredicate<Objekti>() {
 			private static final long serialVersionUID = 1L;
@@ -151,12 +164,6 @@ public class GrupeObjektiView extends OpstiView implements OpstiViewInterface{
 			}
 		};
 		filter.addValueChangeListener(e -> {osveziFilter();});
-	}
-
-	@Override
-	public void osveziFilter() {
-		dataProvider.setFilter(filterPredicate);
-		dataProvider.refreshAll();
 	}
 	
 	

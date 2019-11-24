@@ -80,10 +80,13 @@ public class SimOperateriView extends OpstiView implements OpstiViewInterface{
 	@Override
 	public void buildTable() {
 		tabela = new Grid<SistemOperateri>();
+		pocetno = new ArrayList<SistemOperateri>();
 		updateTable();
+		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
+		
 		tabela.addColumn(SistemOperateri::getNaziv).setCaption("назив");
 		tabela.addComponentColumn(sistemOperateri -> {CheckBox chb = new CheckBox(); if(sistemOperateri.isIzbrisan()) {chb.setValue(true);}return chb;}).setCaption("избрисан").setStyleGenerator(uredjaji -> "v-align-right");
 	}
@@ -137,7 +140,6 @@ public class SimOperateriView extends OpstiView implements OpstiViewInterface{
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void updateTable() {
 		filter.clear();
@@ -147,6 +149,17 @@ public class SimOperateriView extends OpstiView implements OpstiViewInterface{
 		}else {
 			tabela.setItems(pocetno);
 		}
+	}
+
+	@Override
+	public void osveziFilter() {
+		dataProvider.setFilter(filterPredicate);
+		dataProvider.refreshAll();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void dodajFilter() {
 		dataProvider = (ListDataProvider<SistemOperateri>)tabela.getDataProvider();
 		filterPredicate = new SerializablePredicate<SistemOperateri>() {
 			private static final long serialVersionUID = 1L;
@@ -156,12 +169,6 @@ public class SimOperateriView extends OpstiView implements OpstiViewInterface{
 			}
 		};
 		filter.addValueChangeListener(e -> {osveziFilter();});
-	}
-
-	@Override
-	public void osveziFilter() {
-		dataProvider.setFilter(filterPredicate);
-		dataProvider.refreshAll();
 	}
 
 }

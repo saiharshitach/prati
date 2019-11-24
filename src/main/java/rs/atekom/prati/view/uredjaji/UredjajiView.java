@@ -81,10 +81,13 @@ public class UredjajiView extends OpstiView implements OpstiViewInterface{
 	@Override
 	public void buildTable() {
 		tabela = new Grid<Uredjaji>();
+		pocetno = new ArrayList<Uredjaji>();
 		updateTable();
+		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
+		
 		if(isSistem()) {
 			tabela.addColumn(uredjaji -> uredjaji.getSistemPretplatnici() == null ? "" : uredjaji.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
@@ -154,17 +157,25 @@ public class UredjajiView extends OpstiView implements OpstiViewInterface{
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void updateTable() {
 		filter.clear();
-		pocetno = new ArrayList<Uredjaji>();
 		lista = Servis.uredjajServis.nadjiSveUredjaje(korisnik, false);
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {
 			tabela.setItems(pocetno);
 		}
+	}
+
+	@Override
+	public void osveziFilter() {
+		dataProvider.setFilter(filterPredicate);
+		dataProvider.refreshAll();
+	}
+
+	@Override
+	public void dodajFilter() {
 		dataProvider = (ListDataProvider<Uredjaji>)tabela.getDataProvider();
 		filterPredicate = new SerializablePredicate<Uredjaji>() {
 			private static final long serialVersionUID = 1L;
@@ -179,12 +190,6 @@ public class UredjajiView extends OpstiView implements OpstiViewInterface{
 			}
 		};
 		filter.addValueChangeListener(e -> {osveziFilter();});
-	}
-
-	@Override
-	public void osveziFilter() {
-		dataProvider.setFilter(filterPredicate);
-		dataProvider.refreshAll();
 	}
 
 }

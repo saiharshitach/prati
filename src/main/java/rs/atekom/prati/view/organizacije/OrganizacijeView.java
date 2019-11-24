@@ -81,10 +81,13 @@ public class OrganizacijeView extends OpstiView implements OpstiViewInterface{
 	@Override
 	public void buildTable() {
 		tabela = new Grid<Organizacije>();
+		pocetno = new ArrayList<Organizacije>();
 		updateTable();
+		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
+		
 		if(isSistem()) {
 			tabela.addColumn(organizacije -> organizacije.getSistemPretplatnici() == null ? "" : organizacije.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
@@ -147,17 +150,26 @@ public class OrganizacijeView extends OpstiView implements OpstiViewInterface{
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void updateTable() {
 		filter.clear();
-		pocetno = new ArrayList<Organizacije>();
 		lista = Servis.organizacijaServis.nadjiSveOrganizacije(korisnik, false);
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {
 			tabela.setItems(pocetno);
 		}
+	}
+
+	@Override
+	public void osveziFilter() {
+		dataProvider.setFilter(filterPredicate);
+		dataProvider.refreshAll();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void dodajFilter() {
 		dataProvider = (ListDataProvider<Organizacije>)tabela.getDataProvider();
 		filterPredicate = new SerializablePredicate<Organizacije>() {
 			private static final long serialVersionUID = 1L;
@@ -168,12 +180,6 @@ public class OrganizacijeView extends OpstiView implements OpstiViewInterface{
 			}
 		};
 		filter.addValueChangeListener(e -> {osveziFilter();});
-	}
-
-	@Override
-	public void osveziFilter() {
-		dataProvider.setFilter(filterPredicate);
-		dataProvider.refreshAll();
 	}
 
 }

@@ -46,12 +46,15 @@ import rs.atekom.prati.view.vozaci.licenca.VozaciLicencaView;
 import rs.atekom.prati.view.vozaci.licna.VozaciLicnaView;
 import rs.atekom.prati.view.vozaci.pasosi.VozaciPasosiView;
 import rs.atekom.prati.view.vozila.VozilaView;
+import rs.atekom.prati.view.vozila.izvestaji.IzvestajiVozilaView;
 import rs.atekom.prati.view.vozila.saobracajna.VozilaSaobracajnaView;
 import rs.atekom.prati.view.vozila.saobracajna2.VozilaSaobracajna2View;
 import rs.atekom.prati.view.vozilo.nalozi.VozilaNaloziView;
 import rs.atekom.prati.view.vozilo.oprema.VozilaOpremaView;
 import rs.atekom.prati.view.vozilo.primoPredaje.VozilaPrimoPredajeView;
 import rs.atekom.prati.view.zone.ZoneView;
+import rs.atekom.view.troskoviOdrzavanje.OdrzavanjaView;
+import rs.atekom.view.troskoviPotrosnja.PotrosnjaView;
 
 public class PratiMeniKorisnik{
 	
@@ -104,12 +107,12 @@ public class PratiMeniKorisnik{
         		//.add(NivoGorivaView.class)
         		//.build())
         .add(SubmenuBuilder.get("Објекти", VaadinIcons.LOCATION_ARROW_CIRCLE)
+        		.add(ObjektiView.class)
+        		.add(UredjajiView.class)
+                .add(SimView.class)
+                .add(ObjekatZoneView.class)
         		.add(GrupeView.class)
         		.add(GrupeObjektiView.class)
-        		.add(ObjektiView.class)
-                .add(ObjekatZoneView.class)
-                .add(SimView.class)
-                .add(UredjajiView.class)
                 .build())
         .add(SubmenuBuilder.get("Администрација", VaadinIcons.COG)
         		.add(KorisniciView.class)
@@ -120,13 +123,16 @@ public class PratiMeniKorisnik{
                 .add(ZoneView.class)
                 .build())
         .add(SubmenuBuilder.get("Возила", VaadinIcons.CAR)
-        		.add(VozilaView.class)
-        		.add(KalendarView.class)
+        		.add(PotrosnjaView.class)
+        		.add(OdrzavanjaView.class)
+        		.add(IzvestajiVozilaView.class)
         		.add(VozilaNaloziView.class)
-        		.add(VozilaOpremaView.class)
+        		.add(KalendarView.class)
         		.add(VozilaPrimoPredajeView.class)
+        		.add(VozilaView.class)
         		.add(VozilaSaobracajnaView.class)
-        		//.add(VozilaSaobracajna2View.class)
+        		.add(VozilaSaobracajna2View.class)
+        		.add(VozilaOpremaView.class)
         		.build())
         .add(SubmenuBuilder.get("Возачи", VaadinIcons.USER_CHECK)
         		.add(VozaciView.class)
@@ -160,12 +166,12 @@ public class PratiMeniKorisnik{
 		        		//.add(NivoGorivaView.class)
 		        		//.build())
 		        .add(SubmenuBuilder.get("Објекти", VaadinIcons.LOCATION_ARROW_CIRCLE)
+		        		.add(ObjektiView.class)
+		        		.add(UredjajiView.class)
+		                .add(SimView.class)
+		                .add(ObjekatZoneView.class)
 		        		.add(GrupeView.class)
 		        		.add(GrupeObjektiView.class)
-		        		.add(ObjektiView.class)
-		                .add(ObjekatZoneView.class)
-		                .add(SimView.class)
-		                .add(UredjajiView.class)
 		                .build())
 		        .add(SubmenuBuilder.get("Администрација", VaadinIcons.COG)
 		        		.add(KorisniciView.class)
@@ -176,13 +182,16 @@ public class PratiMeniKorisnik{
 		                .add(ZoneView.class)
 		                .build())
 		        .add(SubmenuBuilder.get("Возила", VaadinIcons.CAR)
-		        		.add(VozilaView.class)
-		        		.add(KalendarView.class)
+		        		.add(PotrosnjaView.class)
+		        		.add(OdrzavanjaView.class)
+		        		.add(IzvestajiVozilaView.class)
 		        		.add(VozilaNaloziView.class)
-		        		.add(VozilaOpremaView.class)
+		        		.add(KalendarView.class)
 		        		.add(VozilaPrimoPredajeView.class)
+		        		.add(VozilaView.class)
 		        		.add(VozilaSaobracajnaView.class)
-		        		//.add(VozilaSaobracajna2View.class)
+		        		.add(VozilaSaobracajna2View.class)
+		        		.add(VozilaOpremaView.class)
 		        		.build())
                 .add(SubmenuBuilder.get("Возачи", VaadinIcons.USER_CHECK)
                 		.add(VozaciView.class)

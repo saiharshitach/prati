@@ -153,11 +153,12 @@ public class VozaciDozvoleForma extends OpstaForma implements OpstaFormaInterfac
 		layout.addComponent(broj);
 		layout.addComponent(izdao);
 		layout.addComponent(vaziDo);
-		if(logika.view.isSistem())  {
-			niz.add(izbrisan);
-		}
+
 		kategorije.setItems(niz);
 		layout.addComponent(kategorije);
+		if(logika.view.isSistem())  {
+			layout.addComponent(izbrisan);
+		}
 		dodajExpanderButton();
 		
 		addComponent(layout);
@@ -195,23 +196,93 @@ public class VozaciDozvoleForma extends OpstaForma implements OpstaFormaInterfac
 		}catch (Exception e) {
 			dozvola.setVaziDo(null);
 		}
-		dozvola.setAM(AM.getValue());
-		dozvola.setAM(A1.getValue());
-		dozvola.setAM(A2.getValue());
-		dozvola.setAM(A.getValue());
-		dozvola.setAM(B1.getValue());
-		dozvola.setAM(B.getValue());
-		dozvola.setAM(BE.getValue());
-		dozvola.setAM(C1.getValue());
-		dozvola.setAM(C1E.getValue());
-		dozvola.setAM(C.getValue());
-		dozvola.setAM(CE.getValue());
-		dozvola.setAM(D1.getValue());
-		dozvola.setAM(D1E.getValue());
-		dozvola.setAM(D.getValue());
-		dozvola.setAM(DE.getValue());
-		dozvola.setAM(F.getValue());
-		dozvola.setAM(M.getValue());
+		
+		if(kategorije.isSelected(niz.get(0))) {
+			dozvola.setAM(true);
+		}else {
+			dozvola.setAM(false);
+		}
+		if(kategorije.isSelected(niz.get(1))) {
+			dozvola.setA1(true);
+		}else {
+			dozvola.setA1(false);
+		}
+		if(kategorije.isSelected(niz.get(2))){
+			dozvola.setA2(true);
+		}else {
+			dozvola.setA2(false);
+		}
+		if(kategorije.isSelected(niz.get(3))){
+			dozvola.setA(true);
+		}else {
+			dozvola.setA(false);
+		}
+		if(kategorije.isSelected(niz.get(4))){
+			dozvola.setB1(true);
+		}else {
+			dozvola.setB1(false);
+		}
+		if(kategorije.isSelected(niz.get(5))){
+			dozvola.setB(true);
+		}else {
+			dozvola.setB(false);
+		}
+		if(kategorije.isSelected(niz.get(6))){
+			dozvola.setBE(true);
+		}else {
+			dozvola.setBE(false);
+		}
+		if(kategorije.isSelected(niz.get(7))){
+			dozvola.setC1(true);
+		}else {
+			dozvola.setC1(false);
+		}
+		if(kategorije.isSelected(niz.get(8))){
+			dozvola.setC1E(true);
+		}else {
+			dozvola.setC1E(false);
+		}
+		if(kategorije.isSelected(niz.get(9))){
+			dozvola.setC(true);
+		}else {
+			dozvola.setC(false);
+		}
+		if(kategorije.isSelected(niz.get(10))){
+			dozvola.setCE(true);
+		}else {
+			dozvola.setCE(false);
+		}
+		if(kategorije.isSelected(niz.get(11))){
+			dozvola.setD1(true);
+		}else {
+			dozvola.setD1(false);
+		}
+		if(kategorije.isSelected(niz.get(12))){
+			dozvola.setD1E(true);
+		}else {
+			dozvola.setD1E(false);
+		}
+		if(kategorije.isSelected(niz.get(13))){
+			dozvola.setD(true);
+		}else {
+			dozvola.setD(false);
+		}
+		if(kategorije.isSelected(niz.get(14))){
+			dozvola.setDE(true);
+		}else {
+			dozvola.setDE(false);
+		}
+		if(kategorije.isSelected(niz.get(15))){
+			dozvola.setF(true);
+		}else {
+			dozvola.setF(false);
+		}
+		if(kategorije.isSelected(niz.get(16))){
+			dozvola.setM(true);
+		}else {
+			dozvola.setM(false);
+		}
+		
 		dozvola.setIzbrisan(izbrisan.getValue());
 		return dozvola;
 	}
@@ -233,23 +304,8 @@ public class VozaciDozvoleForma extends OpstaForma implements OpstaFormaInterfac
 		broj.clear();
 		izdao.clear();
 		vaziDo.clear();
-		AM.setValue(false);
-		A1.setValue(false);
-		A2.setValue(false);
-		A.setValue(false);
-		B1.setValue(false);
-		B.setValue(false);
-		BE.setValue(false);
-		C1.setValue(false);
-		C1E.setValue(false);
-		C.setValue(false);
-		CE.setValue(false);
-		D1.setValue(false);
-		D1E.setValue(false);
-		D.setValue(false);
-		DE.setValue(false);
-		F.setValue(false);
-		M.setValue(false);
+		kategorije.deselectAll();
+		
 		izbrisan.setValue(false);
 	}
 
@@ -276,23 +332,58 @@ public class VozaciDozvoleForma extends OpstaForma implements OpstaFormaInterfac
 			}else {
 				vaziDo.setValue(null);
 			}
-			AM.setValue(dozvola.isAM());
-			A1.setValue(dozvola.isA1());
-			A2.setValue(dozvola.isA2());
-			A.setValue(dozvola.isA());
-			B1.setValue(dozvola.isB1());
-			B.setValue(dozvola.isB());
-			BE.setValue(dozvola.isBE());
-			C1.setValue(dozvola.isC1());
-			C1E.setValue(dozvola.isC1E());
-			C.setValue(dozvola.isC());
-			CE.setValue(dozvola.isCE());
-			D1.setValue(dozvola.isD1());
-			D1E.setValue(dozvola.isD1E());
-			D.setValue(dozvola.isD());
-			DE.setValue(dozvola.isDE());
-			F.setValue(dozvola.isF());
-			M.setValue(dozvola.isM());
+			if(dozvola.isAM()) {
+				kategorije.select(niz.get(0));
+				}
+			if(dozvola.isA1()) {
+				kategorije.select(niz.get(1));
+				}
+			if(dozvola.isA2()) {
+				kategorije.select(niz.get(2));
+				}
+			if(dozvola.isA()) {
+				kategorije.select(niz.get(3));
+				}
+			if(dozvola.isB1()) {
+				kategorije.select(niz.get(4));
+				}
+			if(dozvola.isB()) {
+				kategorije.select(niz.get(5));
+				}
+			if(dozvola.isBE()) {
+				kategorije.select(niz.get(6));
+				}
+			if(dozvola.isC1()) {
+				kategorije.select(niz.get(7));
+				}
+			if(dozvola.isC1E()) {
+				kategorije.select(niz.get(8));
+				}
+			if(dozvola.isC()) {
+				kategorije.select(niz.get(9));
+				}
+			if(dozvola.isCE()) {
+				kategorije.select(niz.get(10));
+				}
+			if(dozvola.isD1()) {
+				kategorije.select(niz.get(11));
+				}
+			if(dozvola.isD1E()) {
+				kategorije.select(niz.get(12));
+				}
+			if(dozvola.isD()) {
+				kategorije.select(niz.get(13));
+				}
+			if(dozvola.isDE()) {
+				kategorije.select(niz.get(14));
+				}
+			if(dozvola.isF()) {
+				kategorije.select(niz.get(15));
+				}
+			if(dozvola.isM()) {
+				kategorije.select(niz.get(16));
+				}
+			
 			izbrisan.setValue(dozvola.isIzbrisan());
 		}
 	}

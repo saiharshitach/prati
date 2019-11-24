@@ -79,10 +79,13 @@ public class VozaciDozvoleView extends OpstiView implements OpstiViewInterface{
 	@Override
 	public void buildTable() {
 		tabela = new Grid<VozaciDozvole>();
+		pocetno = new ArrayList<VozaciDozvole>();
 		updateTable();
+		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
+		
 		if(isSistem()) {
 			tabela.addColumn(vozaciDozvola -> vozaciDozvola.getSistemPretplatnici() == null ? "" : vozaciDozvola.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
 		}
@@ -150,17 +153,26 @@ public class VozaciDozvoleView extends OpstiView implements OpstiViewInterface{
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void updateTable() {
 		filter.clear();
-		pocetno = new ArrayList<VozaciDozvole>();
 		lista = Servis.dozvolaServis.nadjiSveVozacDozvole(korisnik);
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {
 			tabela.setItems(pocetno);
 		}
+	}
+
+	@Override
+	public void osveziFilter() {
+		dataProvider.setFilter(filterPredicate);
+		dataProvider.refreshAll();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void dodajFilter() {
 		dataProvider = (ListDataProvider<VozaciDozvole>)tabela.getDataProvider();
 		filterPredicate = new SerializablePredicate<VozaciDozvole>() {
 			private static final long serialVersionUID = 1L;
@@ -170,12 +182,6 @@ public class VozaciDozvoleView extends OpstiView implements OpstiViewInterface{
 			}
 		};
 		filter.addValueChangeListener(e -> {osveziFilter();});
-	}
-
-	@Override
-	public void osveziFilter() {
-		dataProvider.setFilter(filterPredicate);
-		dataProvider.refreshAll();
 	}
 
 }

@@ -245,7 +245,7 @@ public abstract class OpstiPanelView extends Panel implements View, Serializable
 		mapa = new Gmap(Servis.apiGoogle, null, "serbian");
 		mapa.centriraj();
 		String slot = "dupli-panel-slot";
-		return createContentWraper(mapa, slot, true);
+		return createContentWraper(mapa, slot, true, null);
 	}
 	
 	//generisanje TextField za pretragu
@@ -280,7 +280,7 @@ public abstract class OpstiPanelView extends Panel implements View, Serializable
 		return (korisnik.isSistem() && korisnik.getSistemPretplatnici().isSistem());
 	}
 	
-	public Component createContentWraper(final Component content, String slotStyle, Boolean maxSize) {
+	public Component createContentWraper(final Component content, String slotStyle, Boolean maxSize, String naziv) {
 		final CssLayout slot = new CssLayout();
 		slot.setWidth("100%");
 		slot.addStyleName(slotStyle);
@@ -300,11 +300,13 @@ public abstract class OpstiPanelView extends Panel implements View, Serializable
 		
 		toolbar.setWidth("100%");
 
-		Label caption = new Label();
+		Label caption = new Label(naziv);
 		caption.addStyleName(ValoTheme.LABEL_H4);
 		caption.addStyleName(ValoTheme.LABEL_COLORED);
 		caption.addStyleName(ValoTheme.LABEL_NO_MARGIN);
-		content.setCaption(null);
+		if(naziv == null) {
+			caption.setCaption(null);
+		}
 
 		MenuBar tools = new MenuBar();
 		tools.addStyleName(ValoTheme.MENUBAR_BORDERLESS);

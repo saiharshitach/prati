@@ -22,6 +22,7 @@ import pratiBaza.tabele.Sistem;
 import rs.atekom.prati.server.Servis;
 import rs.atekom.prati.view.OpstiView;
 import rs.atekom.prati.view.OpstiViewInterface;
+import rs.atekom.prati.view.pocetna.PocetnaView;
 
 @NavigatorViewName("sistem") // an empty view name will also be the default view
 @MenuCaption("Систем")
@@ -81,9 +82,11 @@ public class SistemView extends OpstiView implements OpstiViewInterface{
 	public void buildTable() {
 		tabela = new Grid<Sistem>();
 		updateTable();
+		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
+		
 		tabela.addColumn(Sistem::getVlasnik).setCaption("власник");
 		tabela.addColumn(Sistem::getAdresaVlasnika).setCaption("адреса");
 		tabela.addColumn(Sistem::getTelVlasnika).setCaption("телефон");
@@ -146,7 +149,6 @@ public class SistemView extends OpstiView implements OpstiViewInterface{
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void updateTable() {
 		filter.clear();
@@ -156,6 +158,17 @@ public class SistemView extends OpstiView implements OpstiViewInterface{
 			lista.add(sistem);
 		}
 		tabela.setItems(lista);
+	}
+
+	@Override
+	public void osveziFilter() {
+		dataProvider.setFilter(filterPredicate);
+		dataProvider.refreshAll();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void dodajFilter() {
 		dataProvider = (ListDataProvider<Sistem>)tabela.getDataProvider();
 		filterPredicate = new SerializablePredicate<Sistem>() {
 			private static final long serialVersionUID = 1L;
@@ -166,12 +179,6 @@ public class SistemView extends OpstiView implements OpstiViewInterface{
 			}
 		};
 		filter.addValueChangeListener(e -> {osveziFilter();});
-	}
-
-	@Override
-	public void osveziFilter() {
-		dataProvider.setFilter(filterPredicate);
-		dataProvider.refreshAll();
 	}
 
 }

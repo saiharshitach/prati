@@ -63,54 +63,24 @@ public class VozilaSaobracajnaLogika implements LogikaInterface{
 
 	@Override
 	public void sacuvajPodatak(Object podatak) {
-		VozilaSaobracajne saobracajna = (VozilaSaobracajne)podatak;
+		setFragmentParametar("");
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
-		setFragmentParametar("");
+		VozilaSaobracajne saobracajna = (VozilaSaobracajne)podatak;
+		Vozila vozilo = saobracajna.getVozilo();
 		if(saobracajna.getId() != null) {
-			Vozila vozilo = Servis.voziloServis.vratiVoziloPoSaobracajnoj(saobracajna);
-			if(vozilo != null) {
-				if(vozilo.equals(saobracajna.getVozilo())) {
-					Servis.saobracajnaServis.izmeniSaobracajnu(saobracajna);
-				}else {
-					vozilo.setSaobracajna(null);
-					Servis.voziloServis.azurirajVozilo(vozilo);
-					Servis.saobracajnaServis.izmeniSaobracajnu(saobracajna);
-					saobracajna.getVozilo().setSaobracajna(saobracajna);
-					Servis.voziloServis.azurirajVozilo(saobracajna.getVozilo());
-				}
-			}else {
-				Servis.saobracajnaServis.izmeniSaobracajnu(saobracajna);
-				saobracajna.getVozilo().setSaobracajna(saobracajna);
-				Servis.voziloServis.azurirajVozilo(saobracajna.getVozilo());
-			}
+			Servis.saobracajnaServis.izmeniSaobracajnu(saobracajna);
 			view.pokaziPorukuUspesno("подаци саобраћајне измењени");
 		}else{
-			try {
-				ArrayList<VozilaSaobracajne> lista = new ArrayList<VozilaSaobracajne>();
-				if(lista.isEmpty() || lista == null) {
-					Servis.saobracajnaServis.unesiSaobracajnu(saobracajna);
-					saobracajna.getVozilo().setSaobracajna(saobracajna);
-					Servis.voziloServis.azurirajVozilo(saobracajna.getVozilo());
-					view.pokaziPorukuUspesno("подаци саобраћајне сачувани");
-				}else {
-					boolean unet = false;
-					for(VozilaSaobracajne saob: lista) {
-						if(saob.getDatumIzdavanja().after(saobracajna.getDatumIzdavanja())) {
-							unet = true;
-						}
+			try {				
+				Servis.saobracajnaServis.unesiSaobracajnu(saobracajna);
+				if(vozilo != null) {
+					vozilo.setSaobracajna(saobracajna);
+					Servis.voziloServis.azurirajVozilo(vozilo);
 					}
-					if(!unet) {
-						Servis.saobracajnaServis.unesiSaobracajnu(saobracajna);
-						saobracajna.getVozilo().setSaobracajna(saobracajna);
-						Servis.voziloServis.azurirajVozilo(saobracajna.getVozilo());
-						view.pokaziPorukuUspesno("подаци саобраћајне сачувани");
-					}else {
-						view.pokaziPorukuGreska("подаци за о саобраћајнон већ унети, проверите унос броја и датума");
-					}
-				}
+				view.pokaziPorukuUspesno("подаци саобраћајне сачувани");
 			}catch (Exception e) {
-				view.pokaziPorukuGreska("подаци saobraćajne због грешке нису сачувани!");
+				view.pokaziPorukuGreska("подаци саобраћајне због грешке нису сачувани!");
 			}
 		}
 		view.updateTable();
@@ -129,18 +99,18 @@ public class VozilaSaobracajnaLogika implements LogikaInterface{
 
 	@Override
 	public void noviPodatak() {
-		view.ocistiIzbor();
 		setFragmentParametar("new");
+		view.ocistiIzbor();
 		view.izmeniPodatak(new VozilaSaobracajne());
 	}
 
 	@Override
 	public void ukloniPodatak() {
+		setFragmentParametar("");
 		view.ukloniPodatak();
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
 		view.updateTable();
-		setFragmentParametar("");
 	}
 
 	@Override

@@ -186,4 +186,10 @@ public class RutaView extends OpstiView implements OpstiViewInterface{
 		}
 		
 	}
+
+	@Override
+	public void dodajFilter() {
+		// TODO Auto-generated method stub
+		
+	}
 }

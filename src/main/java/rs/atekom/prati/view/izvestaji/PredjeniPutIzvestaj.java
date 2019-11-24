@@ -100,7 +100,6 @@ public class PredjeniPutIzvestaj extends PrintPreviewReport<PredjeniPut>{
 	private List<PredjeniPut> obracun(ArrayList<Objekti> objekti, Timestamp datumVremeOd, Timestamp datumVremeDo){
 		lista.clear();
 		lista = Servis.javljanjeServis.vratiPredjeniPut(objekti, datumVremeOd, datumVremeDo);
-		//lista = Servis.javljanjeServis.nadjiPredjeniPut(objekti, datumVremeOd, datumVremeDo);
 		return lista;
 	}
 }

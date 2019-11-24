@@ -81,7 +81,9 @@ public class VozilaPrimoPredajeView extends OpstiView implements OpstiViewInterf
 	@Override
 	public void buildTable() {
 		tabela = new Grid<VozilaPrimoPredaje>();
+		pocetno = new ArrayList<VozilaPrimoPredaje>();
 		updateTable();
+		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
@@ -157,17 +159,26 @@ public class VozilaPrimoPredajeView extends OpstiView implements OpstiViewInterf
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void updateTable() {
 		filter.clear();
-		pocetno = new ArrayList<VozilaPrimoPredaje>();
 		lista = Servis.primoPredajaServis.nadjiSveVozilaPrimoPredaje(korisnik);
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {
 			tabela.setItems(pocetno);
 		}
+	}
+
+	@Override
+	public void osveziFilter() {
+		dataProvider.setFilter(filterPredicate);
+		dataProvider.refreshAll();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void dodajFilter() {
 		dataProvider = (ListDataProvider<VozilaPrimoPredaje>)tabela.getDataProvider();
 		filterPredicate = new SerializablePredicate<VozilaPrimoPredaje>() {
 			private static final long serialVersionUID = 1L;
@@ -180,12 +191,6 @@ public class VozilaPrimoPredajeView extends OpstiView implements OpstiViewInterf
 			}
 		};
 		filter.addValueChangeListener(e -> {osveziFilter();});
-	}
-
-	@Override
-	public void osveziFilter() {
-		dataProvider.setFilter(filterPredicate);
-		dataProvider.refreshAll();
 	}
 
 }

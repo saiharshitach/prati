@@ -145,7 +145,7 @@ public class PracenjeView extends OpstiPanelView{
 		
 		mapa = new Gmap(apKey, null, "serbian");
 		
-		Component content = buildContent(createContentWraper(mapa, slot, true), createContentWraper(buildTable(true), slot, true));
+		Component content = buildContent(createContentWraper(mapa, slot, true, "мапа"), createContentWraper(buildTable(true), slot, true, "објекти и догађаји"));
 
 		mapa.dodavanjeMarkera();
 		mapa.osvezavanja();

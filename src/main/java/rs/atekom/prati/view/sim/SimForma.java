@@ -124,7 +124,7 @@ public class SimForma extends OpstaForma implements OpstaFormaInterface{
 
 	@Override
 	public void ocistiPodatak() {
-		if(logika.view.korisnik.getSistemPretplatnici() != null) {
+		if(!logika.view.korisnik.getSistemPretplatnici().isSistem()) {
 			pretplatnici.setValue(logika.view.korisnik.getSistemPretplatnici());
 		}else {
 			pretplatnici.clear();

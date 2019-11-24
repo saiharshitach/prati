@@ -58,10 +58,10 @@ public class PartneriLogika implements LogikaInterface{
 
 	@Override
 	public void sacuvajPodatak(Object podatak) {
-		Partneri partner = (Partneri)podatak;
+		setFragmentParametar("");
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
-		setFragmentParametar("");
+		Partneri partner = (Partneri)podatak;
 		if(partner.getId() != null) {
 			Servis.partnerServis.izmeniPartnera(partner);
 			view.pokaziPorukuUspesno("партнер измењен");
@@ -94,18 +94,18 @@ public class PartneriLogika implements LogikaInterface{
 
 	@Override
 	public void noviPodatak() {
-		view.ocistiIzbor();
 		setFragmentParametar("new");
+		view.ocistiIzbor();
 		view.izmeniPodatak(new Partneri());
 	}
 
 	@Override
 	public void ukloniPodatak() {
+		setFragmentParametar("");
 		view.ukloniPodatak();
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
 		view.updateTable();
-		setFragmentParametar("");
 	}
 
 	@Override

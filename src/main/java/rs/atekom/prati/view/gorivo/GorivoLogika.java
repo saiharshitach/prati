@@ -59,10 +59,10 @@ public class GorivoLogika implements LogikaInterface{
 
 	@Override
 	public void sacuvajPodatak(Object podatak) {
-		SistemGoriva gorivo = (SistemGoriva)podatak;
+		setFragmentParametar("");
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
-		setFragmentParametar("");
+		SistemGoriva gorivo = (SistemGoriva)podatak;
 		if(gorivo.getId() != null) {
 			Servis.sistemGorivoServis.azurirajGorivo(gorivo);
 			view.pokaziPorukuUspesno("врста горива измењена");
@@ -86,18 +86,18 @@ public class GorivoLogika implements LogikaInterface{
 
 	@Override
 	public void noviPodatak() {
-		view.ocistiIzbor();
 		setFragmentParametar("new");
+		view.ocistiIzbor();
 		view.izmeniPodatak(new SistemGoriva());
 	}
 
 	@Override
 	public void ukloniPodatak() {
+		setFragmentParametar("");
 		view.ukloniPodatak();
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
 		view.updateTable();
-		setFragmentParametar("");
 	}
 
 	@Override

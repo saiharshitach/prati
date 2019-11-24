@@ -24,7 +24,7 @@ import rs.atekom.prati.view.OpstiViewInterface;
 
 @NavigatorViewName("uredjajiProizvodjaci") // an empty view name will also be the default view
 @MenuCaption("Уређаји произвођачи")
-@MenuIcon(VaadinIcons.AUTOMATION)
+@MenuIcon(VaadinIcons.FACTORY)
 public class UredjajiProizvodjaciView extends OpstiView implements OpstiViewInterface{
 
 	private static final long serialVersionUID = 1L;
@@ -80,10 +80,13 @@ public class UredjajiProizvodjaciView extends OpstiView implements OpstiViewInte
 	@Override
 	public void buildTable() {
 		tabela = new Grid<SistemUredjajiProizvodjac>();
+		pocetno = new ArrayList<SistemUredjajiProizvodjac>();
 		updateTable();
+		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
+		
 		tabela.addColumn(SistemUredjajiProizvodjac::getNaziv).setCaption("naziv");
 		tabela.addColumn(SistemUredjajiProizvodjac::getOpis).setCaption("опис");
 		tabela.addColumn(SistemUredjajiProizvodjac::getAdresa).setCaption("адреса");
@@ -139,17 +142,26 @@ public class UredjajiProizvodjaciView extends OpstiView implements OpstiViewInte
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void updateTable() {
 		filter.clear();
-		pocetno = new ArrayList<SistemUredjajiProizvodjac>();
 		lista = Servis.sistemUredjajProizvodjacServis.nadjiSveSistemUredjajeProizvodjace();
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {
 			tabela.setItems(pocetno);
 		}
+	}
+
+	@Override
+	public void osveziFilter() {
+		dataProvider.setFilter(filterPredicate);
+		dataProvider.refreshAll();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void dodajFilter() {
 		dataProvider = (ListDataProvider<SistemUredjajiProizvodjac>)tabela.getDataProvider();
 		filterPredicate = new SerializablePredicate<SistemUredjajiProizvodjac>() {
 			private static final long serialVersionUID = 1L;
@@ -159,12 +171,6 @@ public class UredjajiProizvodjaciView extends OpstiView implements OpstiViewInte
 			}
 		};
 		filter.addValueChangeListener(e -> {osveziFilter();});
-	}
-
-	@Override
-	public void osveziFilter() {
-		dataProvider.setFilter(filterPredicate);
-		dataProvider.refreshAll();
 	}
 
 }

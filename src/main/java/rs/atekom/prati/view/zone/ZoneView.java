@@ -83,7 +83,7 @@ public class ZoneView extends OpstiPanelView implements OpstiViewInterface{
 		String slot = "dupli-panel-slot";
 		mapa = new Gmap(Servis.apiGoogle, null, "serbian");
 		mapa.centriraj();
-		Component content = buildContent(createContentWraper(mapa, slot, true), createContentWraper(tabela, slot, true));
+		Component content = buildContent(createContentWraper(mapa, slot, true, "мапа"), createContentWraper(tabela, slot, true, "зоне"));
 		
 		root.addComponent(topLayout);
 		root.addComponent(content);
@@ -111,7 +111,9 @@ public class ZoneView extends OpstiPanelView implements OpstiViewInterface{
 	@Override
 	public void buildTable() {
 		tabela = new Grid<Zone>();
+		pocetno = new ArrayList<Zone>();
 		updateTable();
+		dodajFilter();
 		tabela.setSizeFull();
 		//tabela.setStyleName("list");
 		tabela.addStyleName(ValoTheme.TABLE_BORDERLESS);
@@ -189,17 +191,26 @@ public class ZoneView extends OpstiPanelView implements OpstiViewInterface{
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void updateTable() {
 		filter.clear();
-		pocetno = new ArrayList<Zone>();
 		lista = Servis.zonaServis.nadjiSveZone(korisnik, false);
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {
 			tabela.setItems(pocetno);
 		}
+	}
+
+	@Override
+	public void osveziFilter() {
+		dataProvider.setFilter(filterPredicate);
+		dataProvider.refreshAll();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void dodajFilter() {
 		dataProvider = (ListDataProvider<Zone>)tabela.getDataProvider();
 		filterPredicate = new SerializablePredicate<Zone>() {
 			private static final long serialVersionUID = 1L;
@@ -211,11 +222,5 @@ public class ZoneView extends OpstiPanelView implements OpstiViewInterface{
 			}
 		};
 		filter.addValueChangeListener(e -> {osveziFilter();});
-	}
-
-	@Override
-	public void osveziFilter() {
-		dataProvider.setFilter(filterPredicate);
-		dataProvider.refreshAll();
 	}
 }

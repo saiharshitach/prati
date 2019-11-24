@@ -61,12 +61,11 @@ public class PretplatniciLogika implements LogikaInterface{
 
 	@Override
 	public void sacuvajPodatak(Object podatak) {
-		SistemPretplatnici pretplatnik = (SistemPretplatnici)podatak;
+		setFragmentParametar("");
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
-		setFragmentParametar("");
+		SistemPretplatnici pretplatnik = (SistemPretplatnici)podatak;
 		ArrayList<SistemPretplatnici> pretplatnici = Servis.sistemPretplatnikServis.nadjiSveAktivneSistemskePretplatnike();
-		
 		if(pretplatnik.getId() != null) {
 			if(pretplatnici.size() > 0 && pretplatnik.isSistem()) {
 				boolean ima = false;
@@ -108,18 +107,18 @@ public class PretplatniciLogika implements LogikaInterface{
 
 	@Override
 	public void noviPodatak() {
-		view.ocistiIzbor();
 		setFragmentParametar("new");
+		view.ocistiIzbor();
 		view.izmeniPodatak(new SistemPretplatnici());
 	}
 
 	@Override
 	public void ukloniPodatak() {
+		setFragmentParametar("");
 		view.ukloniPodatak();
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
-		view.updateTable();
-		setFragmentParametar("");
+		view.updateTable();	
 	}
 
 	@Override

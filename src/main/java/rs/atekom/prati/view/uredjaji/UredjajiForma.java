@@ -1,5 +1,7 @@
 package rs.atekom.prati.view.uredjaji;
 
+import java.util.ArrayList;
+
 import org.vaadin.dialogs.ConfirmDialog;
 import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.HasValue.ValueChangeListener;
@@ -43,7 +45,17 @@ public class UredjajiForma extends OpstaForma implements OpstaFormaInterface{
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void valueChange(ValueChangeEvent<SistemPretplatnici> event) {
-				
+				if(logika.view.korisnik.getSistemPretplatnici().isSistem()) {
+					organizacije.clear();
+					sim.clear();
+					sim2.clear();
+					if(event.getValue() != null) {
+						organizacije.setItems(Servis.organizacijaServis.nadjiSveOrganizacije(event.getValue(), true));
+						ArrayList<Sim> lista = Servis.simServis.vratiSveSlobodneSim(logika.view.korisnik, event.getValue(), null, null);
+						sim.setItems(lista);
+						sim2.setItems(lista);
+					}
+				}
 			}
 		});
 		
@@ -51,7 +63,8 @@ public class UredjajiForma extends OpstaForma implements OpstaFormaInterface{
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void valueChange(ValueChangeEvent<Organizacije> event) {
-				
+				sim.setItems(Servis.simServis.vratiSveSlobodneSim(logika.view.korisnik, null, event.getValue(), null));
+				sim2.setItems(Servis.simServis.vratiSveSlobodneSim(logika.view.korisnik, null, event.getValue(), null));
 			}
 		});
 		
@@ -90,8 +103,9 @@ public class UredjajiForma extends OpstaForma implements OpstaFormaInterface{
 						public void onClose(ConfirmDialog dialog) {
 							if(dialog.isConfirmed()) {
 								logika.sacuvajPodatak(sacuvajPodatak(logika.view.dajIzabraniRed()));
-								sim.setItems(sim.lista(pretplatnici.getValue(), organizacije.getValue(), null));
-								sim2.setItems(sim2.lista(pretplatnici.getValue(), organizacije.getValue(), null));
+								ArrayList<Sim> lista = Servis.simServis.vratiSveSlobodneSim(logika.view.korisnik, pretplatnici.getValue(), organizacije.getValue(), null);
+								sim.setItems(lista);
+								sim2.setItems(lista);
 							}
 						}
 					});
@@ -119,8 +133,9 @@ public class UredjajiForma extends OpstaForma implements OpstaFormaInterface{
 					public void onClose(ConfirmDialog dialog) {
 						if(dialog.isConfirmed()) {
 							logika.ukloniPodatak();
-							sim.setItems(sim.lista(pretplatnici.getValue(), organizacije.getValue(), null));
-							sim2.setItems(sim2.lista(pretplatnici.getValue(), organizacije.getValue(), null));
+							ArrayList<Sim> lista = Servis.simServis.vratiSveSlobodneSim(logika.view.korisnik, pretplatnici.getValue(), organizacije.getValue(), null);
+							sim.setItems(lista);
+							sim2.setItems(lista);
 						}
 					}
 				});
@@ -197,11 +212,13 @@ public class UredjajiForma extends OpstaForma implements OpstaFormaInterface{
 		}else {
 			pretplatnici.clear();
 		}
+		pretplatnici.setEnabled(true);
 		modeli.clear();
 		kod.clear();
 		serBroj.clear();
 		objekat.clear();
 		sim.clear();
+		sim.setEnabled(true);
 		sim2.clear();
 		sim2.setEnabled(false);
 		opis.clear();
@@ -219,6 +236,9 @@ public class UredjajiForma extends OpstaForma implements OpstaFormaInterface{
 		Uredjaji uredjaj = (Uredjaji)podatak;
 		if(uredjaj.getId() != null) {
 			pretplatnici.setValue(uredjaj.getSistemPretplatnici());
+			organizacije.setItems(Servis.organizacijaServis.nadjiSveOrganizacije(uredjaj.getSistemPretplatnici(), true));
+			organizacije.setValue(uredjaj.getOrganizacija());
+			pretplatnici.setEnabled(false);
 			modeli.setValue(uredjaj.getSistemUredjajiModeli());
 			try {
 				kod.setValue(uredjaj.getKod());
@@ -237,17 +257,35 @@ public class UredjajiForma extends OpstaForma implements OpstaFormaInterface{
 			}
 			try {
 				Sim simKartica = uredjaj.getSim();
-				sim.setItems(Servis.simServis.vratiSveAktivneSimKartice(uredjaj.getSistemPretplatnici(), uredjaj.getOrganizacija(), simKartica));
+				sim.setItems(Servis.simServis.vratiSveSlobodneSim(logika.view.korisnik, uredjaj.getSistemPretplatnici(), uredjaj.getOrganizacija(), simKartica));
 				sim.setSelectedItem(simKartica);
+				if(!logika.view.korisnik.getSistemPretplatnici().isSistem() || !korisnik.isSistem()) {
+					if(simKartica.getSistemPretplatnici().isSistem()) {
+						sim.setEnabled(false);
+					}else {
+						sim.setEnabled(true);
+					}
+				}else {
+					sim.setEnabled(true);
+				}
 			}catch (Exception e) {
-				sim.setItems(Servis.simServis.vratiSveAktivneSimKartice(uredjaj.getSistemPretplatnici(), uredjaj.getOrganizacija(), null));
+				sim.setItems(Servis.simServis.vratiSveSlobodneSim(logika.view.korisnik, pretplatnici.getValue(), organizacije.getValue(), null));
 			}
 			try {
 				Sim simKartica = uredjaj.getSim2();
-				sim2.setItems(Servis.simServis.vratiSveAktivneSimKartice(uredjaj.getSistemPretplatnici(), uredjaj.getOrganizacija(), simKartica));
+				sim2.setItems(Servis.simServis.vratiSveSlobodneSim(logika.view.korisnik, uredjaj.getSistemPretplatnici(), uredjaj.getOrganizacija(), simKartica));
 				sim2.setSelectedItem(simKartica);
+				if(!logika.view.korisnik.getSistemPretplatnici().isSistem() || !korisnik.isSistem()) {
+					if(simKartica.getSistemPretplatnici().isSistem()) {
+						sim2.setEnabled(false);
+					}else {
+						sim.setEnabled(true);
+					}
+				}else {
+					sim.setEnabled(true);
+				}
 			}catch (Exception e) {
-				sim2.setItems(Servis.simServis.vratiSveAktivneSimKartice(uredjaj.getSistemPretplatnici(), uredjaj.getOrganizacija(), null));
+				sim2.setItems(Servis.simServis.vratiSveSlobodneSim(logika.view.korisnik, pretplatnici.getValue(), organizacije.getValue(), null));
 			}
 			if(uredjaj.getSistemUredjajiModeli().isSim2()) {
 				sim2.setEnabled(true);
@@ -260,7 +298,6 @@ public class UredjajiForma extends OpstaForma implements OpstaFormaInterface{
 				opis.setValue("");
 			}
 			aktivan.setValue(uredjaj.isAktivno());
-			organizacije.setValue(uredjaj.getOrganizacija());
 			izbrisan.setValue(uredjaj.isIzbrisan());
 		}
 	}
@@ -279,6 +316,11 @@ public class UredjajiForma extends OpstaForma implements OpstaFormaInterface{
 		}
 		if(serBroj.isEmpty() || serBroj.getValue() == "") {
 			sveIma = false;
+		}
+		if(sim.getValue() != null && sim2.getValue() != null) {
+			if(sim.getValue().getId().equals(sim2.getValue().getId())){
+				sveIma = false;
+			}
 		}
 		return sveIma;
 	}

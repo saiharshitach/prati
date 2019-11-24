@@ -79,10 +79,13 @@ public class AlarmiView extends OpstiView implements OpstiViewInterface{
 	@Override
 	public void buildTable() {
 		tabela = new Grid<SistemAlarmi>();
+		pocetno = new ArrayList<SistemAlarmi>();
 		updateTable();
+		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
+		
 		tabela.addColumn(SistemAlarmi::getSifra).setCaption("шифра");
 		tabela.addColumn(SistemAlarmi::getNaziv).setCaption("назив");
 		tabela.addColumn(SistemAlarmi::getOpis).setCaption("опис");
@@ -144,17 +147,26 @@ public class AlarmiView extends OpstiView implements OpstiViewInterface{
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void updateTable() {
 		filter.clear();
-		pocetno = new ArrayList<SistemAlarmi>();
 		lista = Servis.sistemAlarmServis.vratiSveAlarme();
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {
 			tabela.setItems(pocetno);
 		}
+	}
+
+	@Override
+	public void osveziFilter() {
+		dataProvider.setFilter(filterPredicate);
+		dataProvider.refreshAll();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void dodajFilter() {
 		dataProvider = (ListDataProvider<SistemAlarmi>)tabela.getDataProvider();
 		filterPredicate = new SerializablePredicate<SistemAlarmi>() {
 			private static final long serialVersionUID = 1L;
@@ -166,12 +178,6 @@ public class AlarmiView extends OpstiView implements OpstiViewInterface{
 			}
 		};
 		filter.addValueChangeListener(e -> {osveziFilter();});
-	}
-
-	@Override
-	public void osveziFilter() {
-		dataProvider.setFilter(filterPredicate);
-		dataProvider.refreshAll();
 	}
 
 }

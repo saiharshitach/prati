@@ -136,6 +136,7 @@ public class NeonProtokol {
 				if(objekat != null){
 					if(brzina < 200 && ispravnoVreme){
 						javljanje = new Javljanja();
+						javljanje.setVersion(0);
 						javljanje.setValid(valid);
 						javljanje.setObjekti(objekat);
 						javljanje.setDatumVreme(datumVreme);
@@ -148,7 +149,9 @@ public class NeonProtokol {
 						javljanje.setKontakt(kontakt);
 						javljanje.setVirtualOdo(virtualOdo);
 						javljanje.setEventData(eventData);
+						javljanje.setZona(null);
 						javljanje.setIbutton(iButton);
+						javljanje.setKorisnik(null);
 						javljanje.setKreirano(upis);
 						javljanje.setIzmenjeno(upis);
 						}

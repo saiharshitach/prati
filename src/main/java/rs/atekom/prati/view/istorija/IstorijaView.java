@@ -59,7 +59,7 @@ public class IstorijaView extends OpstiPanelView{
 		
 		mapa = new Gmap(apKey, null, "serbian");
 		
-		Component content = buildContent(createContentWraper(mapa, slot, true), createContentWraper(podaci, slot, true));
+		Component content = buildContent(createContentWraper(mapa, slot, true, "мапа"), createContentWraper(podaci, slot, true, "статистика"));
 		
 		grupeCombo.addValueChangeListener(new ValueChangeListener<Grupe>() {
 			private static final long serialVersionUID = 1L;

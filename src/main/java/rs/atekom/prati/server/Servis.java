@@ -30,6 +30,7 @@ import pratiBaza.servis.SistemServis;
 import pratiBaza.servis.SistemSesijeServis;
 import pratiBaza.servis.SistemUredjajiModeliServis;
 import pratiBaza.servis.SistemUredjajiProizvodjaciServis;
+import pratiBaza.servis.TroskoviServis;
 import pratiBaza.servis.UredjajiServis;
 import pratiBaza.servis.VozaciDozvoleServis;
 import pratiBaza.servis.VozaciLekarskoServis;
@@ -87,6 +88,7 @@ public class Servis implements ServletContextListener{
 	public static VozilaOpremaServis opremaServis;
 	public static VozilaOpremaPrijemServis opremaPrijemServis;
 	public static VozilaPrimoPredajeServis primoPredajaServis;
+	public static TroskoviServis trosakServis;
 	public static VozilaSaobracajneServis saobracajnaServis;
 	public static VozilaSaobracajne2Servis saobracajna2Servis;
 	
@@ -143,6 +145,7 @@ public class Servis implements ServletContextListener{
 		opremaServis = ApplicationContextProvider.getApplicationContext().getBean("voziloOpremaServis", VozilaOpremaServis.class);
 		opremaPrijemServis = ApplicationContextProvider.getApplicationContext().getBean("voziloOpremaPrijemServis", VozilaOpremaPrijemServis.class);
 		primoPredajaServis = ApplicationContextProvider.getApplicationContext().getBean("voziloPrimoPredajaServis", VozilaPrimoPredajeServis.class);
+		trosakServis = ApplicationContextProvider.getApplicationContext().getBean("trosakServis", TroskoviServis.class);
 		saobracajnaServis = ApplicationContextProvider.getApplicationContext().getBean("saobracajnaServis", VozilaSaobracajneServis.class);
 		saobracajna2Servis = ApplicationContextProvider.getApplicationContext().getBean("saobracajna2Servis", VozilaSaobracajne2Servis.class);
 		

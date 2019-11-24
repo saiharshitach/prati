@@ -61,10 +61,10 @@ public class VozaciLicnaLogika implements LogikaInterface{
 
 	@Override
 	public void sacuvajPodatak(Object podatak) {
-		VozaciLicna licna = (VozaciLicna)podatak;
+		setFragmentParametar("");
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
-		setFragmentParametar("");
+		VozaciLicna licna = (VozaciLicna)podatak;
 		if(licna.getId() != null) {
 			Servis.licnaServis.izmeniVozacLicna(licna);
 			view.pokaziPorukuUspesno("подаци за личну карту измењени");
@@ -109,18 +109,18 @@ public class VozaciLicnaLogika implements LogikaInterface{
 
 	@Override
 	public void noviPodatak() {
-		view.ocistiIzbor();
 		setFragmentParametar("new");
+		view.ocistiIzbor();
 		view.izmeniPodatak(new VozaciLicna());
 	}
 
 	@Override
 	public void ukloniPodatak() {
+		setFragmentParametar("");
 		view.ukloniPodatak();
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
 		view.updateTable();
-		setFragmentParametar("");
 	}
 
 	@Override

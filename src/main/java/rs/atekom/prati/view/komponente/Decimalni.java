@@ -15,4 +15,9 @@ public class Decimalni extends TextField{
 		setWidth("100%");
 		new NumeralFieldFormatter(",", ".", 2).extend(this);
 	}
+	
+	public String vratiIznos() {
+		String iznos = this.getValue().replace(",", "");
+		return iznos;
+	}
 }

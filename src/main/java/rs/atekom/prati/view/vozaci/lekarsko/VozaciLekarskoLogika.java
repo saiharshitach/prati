@@ -60,10 +60,10 @@ public class VozaciLekarskoLogika implements LogikaInterface{
 
 	@Override
 	public void sacuvajPodatak(Object podatak) {
-		VozaciLekarsko lekarsko = (VozaciLekarsko)podatak;
+		setFragmentParametar("");
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
-		setFragmentParametar("");
+		VozaciLekarsko lekarsko = (VozaciLekarsko)podatak;
 		if(lekarsko.getId() != null) {
 			Servis.lekarskoServis.izmeniVozacLekarsko(lekarsko);
 			view.pokaziPorukuUspesno("подаци за лекарско уверење измењени");
@@ -108,18 +108,19 @@ public class VozaciLekarskoLogika implements LogikaInterface{
 
 	@Override
 	public void noviPodatak() {
-		view.ocistiIzbor();
 		setFragmentParametar("new");
+		view.ocistiIzbor();
 		view.izmeniPodatak(new VozaciLekarsko());
 	}
 
 	@Override
 	public void ukloniPodatak() {
+		setFragmentParametar("");
 		view.ukloniPodatak();
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
 		view.updateTable();
-		setFragmentParametar("");
+		
 	}
 
 	@Override

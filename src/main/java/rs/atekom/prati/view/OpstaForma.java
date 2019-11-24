@@ -53,6 +53,7 @@ public class OpstaForma extends CssLayout{
 		decimalFormat = new DecimalFormat("#,##0.00", decimalFormatSymbols);
 		
 		layout = new VerticalLayout();
+		layout.setSizeUndefined();
 		layout.setHeight("100%");
 		if(!Prati.getCurrent().sirina()) {
 			layout.setWidth("100%");

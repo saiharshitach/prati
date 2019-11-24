@@ -2,6 +2,7 @@ package rs.atekom.prati.view.vozila;
 
 import com.vaadin.server.Page;
 
+import pratiBaza.tabele.Objekti;
 import pratiBaza.tabele.Vozila;
 import rs.atekom.prati.Prati;
 import rs.atekom.prati.server.Servis;
@@ -14,6 +15,7 @@ public class VozilaLogika implements LogikaInterface{
 	public VozilaLogika(VozilaView voziloView) {
 		view = voziloView;
 	}
+	
 	@Override
 	public void init() {
 		izmeniPodatak(null);
@@ -58,17 +60,21 @@ public class VozilaLogika implements LogikaInterface{
 
 	@Override
 	public void sacuvajPodatak(Object podatak) {
-		Vozila vozilo = (Vozila)podatak;
+		setFragmentParametar("");
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
-		setFragmentParametar("");
+		Vozila vozilo = (Vozila)podatak;
 		if(vozilo.getId() != null) {
 			Servis.voziloServis.azurirajVozilo(vozilo);
 			view.pokaziPorukuUspesno("подаци возила измењени");
 		}else {
 			try {
-				if(Servis.voziloServis.nadjiVoziloPoObjektu(vozilo.getObjekti()) == null) {
+				Vozila voz = Servis.voziloServis.nadjiVoziloPoObjektu(vozilo.getObjekti());
+				if(voz == null || voz.isIzbrisan()) {
 					Servis.voziloServis.unesiVozilo(vozilo);
+					Objekti objekat = vozilo.getObjekti();
+					objekat.setVozilo(vozilo);
+					Servis.objekatServis.azurirajObjekte(objekat);
 					view.pokaziPorukuUspesno("подаци возила сачувани");
 				}else {
 					view.pokaziPorukuGreska("подаци за изабрано возило су већ унети!");
@@ -93,18 +99,18 @@ public class VozilaLogika implements LogikaInterface{
 
 	@Override
 	public void noviPodatak() {
-		view.ocistiIzbor();
 		setFragmentParametar("new");
+		view.ocistiIzbor();
 		view.izmeniPodatak(new Vozila());
 	}
 
 	@Override
 	public void ukloniPodatak() {
+		setFragmentParametar("");
 		view.ukloniPodatak();
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
 		view.updateTable();
-		setFragmentParametar("");
 	}
 
 	@Override

@@ -58,10 +58,10 @@ public class AlarmKorisnikLogika implements LogikaInterface{
 
 	@Override
 	public void sacuvajPodatak(Object podatak) {
-		AlarmiKorisnik alarmKorisnik = (AlarmiKorisnik)podatak;
+		setFragmentParametar("");
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
-		setFragmentParametar("");
+		AlarmiKorisnik alarmKorisnik = (AlarmiKorisnik)podatak;
 		if(alarmKorisnik.getId() != null) {
 			Servis.alarmKorisnikServis.azurirajAlarmiKorisnik(alarmKorisnik);
 			view.pokaziPorukuUspesno("аларм корисника измењен");
@@ -93,18 +93,18 @@ public class AlarmKorisnikLogika implements LogikaInterface{
 
 	@Override
 	public void noviPodatak() {
-		view.ocistiIzbor();
 		setFragmentParametar("new");
+		view.ocistiIzbor();
 		view.izmeniPodatak(new AlarmiKorisnik());
 	}
 
 	@Override
 	public void ukloniPodatak() {
+		setFragmentParametar("");
 		view.ukloniPodatak();
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
 		view.updateTable();
-		setFragmentParametar("");
 	}
 
 	@Override

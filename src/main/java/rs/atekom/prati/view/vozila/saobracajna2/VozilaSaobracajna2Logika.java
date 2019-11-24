@@ -50,7 +50,8 @@ public class VozilaSaobracajna2Logika implements LogikaInterface{
 		}else {
 			try {
 				int id = Integer.parseInt(objectId);
-				VozilaSaobracajne2 saobracajna = Servis.saobracajna2Servis.nadjiSaobracajnu2PoId(id);
+				VozilaSaobracajne2 saobracajna2 = Servis.saobracajna2Servis.nadjiSaobracajnu2PoId(id);
+				view.izaberiRed(saobracajna2);
 			}catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -59,39 +60,54 @@ public class VozilaSaobracajna2Logika implements LogikaInterface{
 
 	@Override
 	public void sacuvajPodatak(Object podatak) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void izmeniPodatak(Object podatak) {
-		VozilaSaobracajne2 saobracajna = (VozilaSaobracajne2)podatak;
+		setFragmentParametar("");
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
-		setFragmentParametar("");
-		if(saobracajna.getId() != null) {
-			
-			view.pokaziPorukuUspesno("подаци саобраћајне 2 измењени");
+		VozilaSaobracajne2 saobracajna2 = (VozilaSaobracajne2)podatak;
+		VozilaSaobracajne saobracajna = saobracajna2.getSaobracajna();
+		if(saobracajna2.getId() != null) {
+			Servis.saobracajna2Servis.izmeniSaobracajnu2(saobracajna2);
+			view.pokaziPorukuUspesno("подаци саобраћајне2 измењени");
 		}else {
-			
+			try {
+				Servis.saobracajna2Servis.unesiSaobracajnu2(saobracajna2);
+				if(saobracajna != null) {
+					saobracajna.setSaobracajna2(saobracajna2);
+					Servis.saobracajnaServis.izmeniSaobracajnu(saobracajna);
+				}
+				view.pokaziPorukuUspesno("подаци саобраћајне2 сачувани");
+			}catch (Exception e) {
+				view.pokaziPorukuGreska("подаци саобраћајне2 због грешке нису сачувани!");
+			}
 		}
 		view.updateTable();
 	}
 
 	@Override
+	public void izmeniPodatak(Object podatak) {
+		VozilaSaobracajne2 saobracajna2 = (VozilaSaobracajne2)podatak;
+		if(saobracajna2 == null) {
+			setFragmentParametar("");
+		}else {
+			setFragmentParametar(saobracajna2.getId() + "");
+		}
+		view.izmeniPodatak(saobracajna2);
+	}
+
+	@Override
 	public void noviPodatak() {
-		view.ocistiIzbor();
 		setFragmentParametar("new");
-		view.izmeniPodatak(new VozilaSaobracajne());
+		view.ocistiIzbor();
+		view.izmeniPodatak(new VozilaSaobracajne2());
 	}
 
 	@Override
 	public void ukloniPodatak() {
+		setFragmentParametar("");
 		view.ukloniPodatak();
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
 		view.updateTable();
-		setFragmentParametar("");
 	}
 
 	@Override

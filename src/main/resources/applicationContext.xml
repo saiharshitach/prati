@@ -85,6 +85,7 @@
                <value>pratiBaza.tabele.SistemSesije</value>
                <value>pratiBaza.tabele.SistemUredjajiModeli</value>
                <value>pratiBaza.tabele.SistemUredjajiProizvodjac</value>
+               <value>pratiBaza.tabele.Troskovi</value>
                <value>pratiBaza.tabele.Uredjaji</value>
                <value>pratiBaza.tabele.Vozaci</value>
                <value>pratiBaza.tabele.VozaciDozvole</value>
@@ -215,7 +216,7 @@
   <bean id="saobracajnaServis" class="pratiBaza.servisImpl.VozilaSaobracajneServisImpl">
         <property name="saobracajnaDAO" ref="saobracajnaDAO"></property>
   </bean>
-    <bean id="saobracajna2DAO" class="pratiBaza.daoImpl.VozilaSaobracajne2DAOImpl">
+  <bean id="saobracajna2DAO" class="pratiBaza.daoImpl.VozilaSaobracajne2DAOImpl">
         <property name="sessionFactory" ref="sessionFactory" />
   </bean>
   <bean id="saobracajna2Servis" class="pratiBaza.servisImpl.VozilaSaobracajne2ServisImpl">
@@ -245,7 +246,7 @@
   <bean id="sistemGorivoServis" class="pratiBaza.servisImpl.SistemGorivoServisImpl">
         <property name="sistemGorivoDAO" ref="sistemGorivoDAO"></property>
   </bean>
-    <bean id="sistemOperaterDAO" class="pratiBaza.daoImpl.SistemOperateriDAOImpl">
+  <bean id="sistemOperaterDAO" class="pratiBaza.daoImpl.SistemOperateriDAOImpl">
         <property name="sessionFactory" ref="sessionFactory" />
   </bean>
   <bean id="sistemOperaterServis" class="pratiBaza.servisImpl.SistemOperateriServisImpl">
@@ -274,6 +275,12 @@
   </bean>
   <bean id="sistemUredjajProizvodjacServis" class="pratiBaza.servisImpl.SistemUredjajiProizvodjaciServisImpl">
         <property name="sistemUredjajProizvodjacDAO" ref="sistemUredjajProizvodjacDAO"></property>
+  </bean>
+  <bean id="trosakDAO" class="pratiBaza.daoImpl.TroskoviDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="trosakServis" class="pratiBaza.servisImpl.TroskoviServisImpl">
+        <property name="trosakDAO" ref="trosakDAO"></property>
   </bean>
   <bean id="uredjajDAO" class="pratiBaza.daoImpl.UredjajiDAOImpl">
         <property name="sessionFactory" ref="sessionFactory" />

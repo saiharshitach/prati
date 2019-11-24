@@ -59,10 +59,10 @@ public class GrupeLogika implements LogikaInterface{
 
 	@Override
 	public void sacuvajPodatak(Object podatak) {
-		Grupe grupa = (Grupe)podatak;
-		view.ocistiIzbor();
+	    setFragmentParametar("");
+	    view.ocistiIzbor();
 		view.izmeniPodatak(null);
-		setFragmentParametar("");
+		Grupe grupa = (Grupe)podatak;
 		if(grupa.getId() != null) {
 			Servis.grupeServis.azurirajGrupu(grupa);
 			view.pokaziPorukuUspesno("група измењена");
@@ -86,18 +86,18 @@ public class GrupeLogika implements LogikaInterface{
 
 	@Override
 	public void noviPodatak() {
-		view.ocistiIzbor();
 		setFragmentParametar("new");
+		view.ocistiIzbor();
 		view.izmeniPodatak(new Grupe());
 	}
 
 	@Override
 	public void ukloniPodatak() {
+		setFragmentParametar("");
 		view.ukloniPodatak();
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
 		view.updateTable();
-		setFragmentParametar("");
 	}
 
 	@Override

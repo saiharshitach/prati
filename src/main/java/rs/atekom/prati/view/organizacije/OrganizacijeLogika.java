@@ -58,10 +58,10 @@ public class OrganizacijeLogika implements LogikaInterface{
 
 	@Override
 	public void sacuvajPodatak(Object podatak) {
-		Organizacije organizacija = (Organizacije)podatak;
+		setFragmentParametar("");
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
-		setFragmentParametar("");
+		Organizacije organizacija = (Organizacije)podatak;
 		if(organizacija.getId() != null) {
 			Servis.organizacijaServis.azurirajOrganizacije(organizacija);
 			view.pokaziPorukuUspesno("организација измењена");
@@ -85,18 +85,18 @@ public class OrganizacijeLogika implements LogikaInterface{
 
 	@Override
 	public void noviPodatak() {
-		view.ocistiIzbor();
 		setFragmentParametar("new");
+		view.ocistiIzbor();
 		view.izmeniPodatak(new Organizacije());
 	}
 
 	@Override
 	public void ukloniPodatak() {
+		setFragmentParametar("");
 		view.ukloniPodatak();
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
 		view.updateTable();
-		setFragmentParametar("");
 	}
 
 	@Override

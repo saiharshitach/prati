@@ -80,8 +80,8 @@ public class VozilaOpremaForma extends OpstaForma implements OpstaFormaInterface
 
 	@Override
 	public void izmeniPodatak(Object podatak) {
-		VozilaOprema oprema;
 		ocistiPodatak();
+		VozilaOprema oprema;
 		if(podatak == null) {
 			oprema = new VozilaOprema();
 		}else {
@@ -121,7 +121,7 @@ public class VozilaOpremaForma extends OpstaForma implements OpstaFormaInterface
 
 	@Override
 	public void postaviPodatak(Object podatak) {
-		VozilaOprema oprema = new VozilaOprema();
+		VozilaOprema oprema = (VozilaOprema)podatak;
 		if(oprema.getId() != null) {
 			pretplatnici.setValue(oprema.getSistemPretplatnici());
 			try {

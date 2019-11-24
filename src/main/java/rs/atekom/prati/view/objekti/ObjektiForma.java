@@ -1,7 +1,5 @@
 package rs.atekom.prati.view.objekti;
 
-import java.util.ArrayList;
-
 import org.vaadin.dialogs.ConfirmDialog;
 import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.HasValue.ValueChangeListener;
@@ -45,19 +43,18 @@ public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 		prekoracenjeBrzine = new Celobrojni("прекорачење брзине км/ч - мин 80", false);
 		izbrisan = new CheckBox("избрисан");
 
-		uredjaji = new ComboUredjaji(pretplatnici.getValue(), organizacije.getValue(), "уређај", true, true, null);
+		uredjaji = new ComboUredjaji(pretplatnici.getValue(), organizacije.getValue(), "уређај", true, false, null);
 		
 		pretplatnici.addValueChangeListener(new ValueChangeListener<SistemPretplatnici>() {
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void valueChange(ValueChangeEvent<SistemPretplatnici> event) {
-				if(logika.view.korisnik.getSistemPretplatnici() == null) {
+				if(logika.view.korisnik.getSistemPretplatnici().isSistem()) {
+					organizacije.clear();
+					uredjaji.clear();
 					if(event.getValue() != null) {
 						organizacije.setItems(Servis.organizacijaServis.nadjiSveOrganizacije(event.getValue(), true));
-						uredjaji.setItems(Servis.uredjajServis.nadjiSveAktivneSlobodneUredjajePoPretplatniku(null, null, null));
-					}else {
-						organizacije.setItems(new ArrayList<Organizacije>());
-						uredjaji.setItems(new ArrayList<Uredjaji>());
+						uredjaji.setItems(Servis.uredjajServis.nadjiSveAktivneSlobodneUredjaje(logika.view.korisnik, event.getValue(), null));
 					}
 				}
 			}
@@ -67,13 +64,7 @@ public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void valueChange(ValueChangeEvent<Organizacije> event) {
-				if(logika.view.korisnik.getSistemPretplatnici() != null) {
-					if(event.getValue() != null) {
-						uredjaji.setItems(Servis.uredjajServis.nadjiSveAktivneSlobodneUredjajePoPretplatniku(pretplatnici.getValue(), event.getValue(), null));
-					}else {
-						uredjaji.setItems(Servis.uredjajServis.nadjiSveAktivneSlobodneUredjajePoPretplatniku(null, null, null));
-					}
-				}
+				uredjaji.setItems(Servis.uredjajServis.nadjiSveAktivneSlobodneUredjaje(logika.view.korisnik, pretplatnici.getValue(), event.getValue()));
 			}
 		});
 		
@@ -197,13 +188,15 @@ public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 
 	@Override
 	public void ocistiPodatak() {
-		if(logika.view.korisnik.getSistemPretplatnici() != null) {
+		if(!logika.view.korisnik.getSistemPretplatnici().isSistem()) {
 			pretplatnici.setValue(logika.view.korisnik.getSistemPretplatnici());
 		}else {
 			pretplatnici.clear();
 		}
+		pretplatnici.setEnabled(true);
 		oznaka.clear();
 		uredjaji.clear();
+		uredjaji.setEnabled(true);
 		sim.clear();
 		simBroj.clear();
 		vozilo.setValue(true);
@@ -230,16 +223,28 @@ public class ObjektiForma extends OpstaForma implements OpstaFormaInterface{
 			}
 			organizacije.setItems(Servis.organizacijaServis.nadjiSveOrganizacije(objekat.getSistemPretplatnici(), true));
 			organizacije.setValue(objekat.getOrganizacija());
+			pretplatnici.setEnabled(false);
 			try {
 				Uredjaji uredjaj = objekat.getUredjaji();
-				if(logika.view.korisnik.getSistemPretplatnici() != null) {
-					uredjaji.setItems(Servis.uredjajServis.nadjiSveAktivneSlobodneUredjajePoPretplatniku(objekat.getSistemPretplatnici(), objekat.getOrganizacija(), uredjaj));
+				/*if(logika.view.korisnik.getSistemPretplatnici().isSistem()) {
+					uredjaji.setItems(Servis.uredjajServis.nadjiSveAktivneSlobodneUredjajePoPretplatniku(objekat.getSistemPretplatnici(), objekat.getOrganizacija()));
 				}else {
-					uredjaji.setItems(Servis.uredjajServis.nadjiSveAktivneSlobodneUredjajePoPretplatniku(null, null, uredjaj));
-				}
+					uredjaji.setItems(Servis.uredjajServis.nadjiSveAktivneSlobodneUredjajePoPretplatniku(null, null));
+				}**/
+				uredjaji.clear();
+				uredjaji.setItems(Servis.uredjajServis.nadjiSveAktivneSlobodneUredjaje(logika.view.korisnik, objekat.getSistemPretplatnici(), objekat.getOrganizacija()));
 				uredjaji.setSelectedItem(uredjaj);
+				if(!logika.view.korisnik.getSistemPretplatnici().isSistem() || !korisnik.isSistem()) {
+					if(uredjaj.getSistemPretplatnici().isSistem()) {
+						uredjaji.setEnabled(false);
+					}else {
+						uredjaji.setEnabled(true);
+					}
+				}else {
+					uredjaji.setEnabled(true);
+				}
 			}catch (Exception e) {
-				uredjaji.setItems(Servis.uredjajServis.nadjiSveAktivneSlobodneUredjajePoPretplatniku(objekat.getSistemPretplatnici(), objekat.getOrganizacija(), null));
+				uredjaji.setItems(Servis.uredjajServis.nadjiSveAktivneSlobodneUredjajePoPretplatniku(objekat.getSistemPretplatnici(), objekat.getOrganizacija()));
 			}
 			try {
 				sim.setValue(objekat.getUredjaji().getSim().getIccid());

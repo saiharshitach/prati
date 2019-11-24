@@ -61,10 +61,10 @@ public class VozaciDozvoleLogika implements LogikaInterface{
 
 	@Override
 	public void sacuvajPodatak(Object podatak) {
-		VozaciDozvole dozvola = (VozaciDozvole)podatak;
+		setFragmentParametar("");
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
-		setFragmentParametar("");
+		VozaciDozvole dozvola = (VozaciDozvole)podatak;
 		if(dozvola.getId() != null) {
 			Servis.dozvolaServis.izmeniVozacDozvola(dozvola);
 			view.pokaziPorukuUspesno("подаци за возачку дозволу измењени");
@@ -109,18 +109,18 @@ public class VozaciDozvoleLogika implements LogikaInterface{
 
 	@Override
 	public void noviPodatak() {
-		view.ocistiIzbor();
 		setFragmentParametar("new");
+		view.ocistiIzbor();
 		view.izmeniPodatak(new VozaciDozvole());
 	}
 
 	@Override
 	public void ukloniPodatak() {
+		setFragmentParametar("");
 		view.ukloniPodatak();
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
 		view.updateTable();
-		setFragmentParametar("");
 	}
 
 	@Override

@@ -29,9 +29,9 @@ public class VozilaForma extends OpstaForma implements OpstaFormaInterface{
 	private CheckBox teretno, izbrisan;
 	private ComboObjekti objekti;
 	private ComboGorivo gorivo;
-	private Celobrojni godina, rezervoar;
-	private Decimalni potrosnja;
-	private Datum datumPrveRegistracije;
+	private Celobrojni godina, rezervoar, maliServisKm, maliServisMeseci, velikiServisKm, velikiServisMeseci, maliPoslednjiOBDkm, velikiPoslednjiOBDkm;
+	private Decimalni potrosnja, maliPoslednjiGPSkm, velikiPoslednjiGPSkm;
+	private Datum datumPrveRegistracije, datumPoslednjeRegistracije, maliPoslednjiDatum, velikiPoslednjiDatum;
 
 	public VozilaForma(VozilaLogika log) {
 		logika = log;
@@ -48,6 +48,26 @@ public class VozilaForma extends OpstaForma implements OpstaFormaInterface{
 		brojSaobracajne = new Tekst("број саобраћајне", false);
 		serijskiBroj = new Tekst("серијски број",false);
 		datumPrveRegistracije = new Datum("датум прве регистрације", false);
+		maliServisKm = new Celobrojni("мали сервис - км", false);
+		maliServisMeseci = new Celobrojni("мали сервис - месеци", false);
+		velikiServisKm = new Celobrojni("велики сервис - км", false);
+		velikiServisMeseci = new Celobrojni("велики сервис - месеци", false);
+		
+		datumPoslednjeRegistracije= new Datum("датум последње регистрације", false);
+		datumPoslednjeRegistracije.setEnabled(false);
+		maliPoslednjiDatum = new Datum("датум последњег МС", false);
+		maliPoslednjiDatum.setEnabled(false);
+		maliPoslednjiGPSkm = new Decimalni("гпс км последњи МС", false);
+		maliPoslednjiGPSkm.setEnabled(false);
+		maliPoslednjiOBDkm = new Celobrojni("обд км последњи МС", false);
+		maliPoslednjiOBDkm.setEnabled(false);
+		velikiPoslednjiDatum = new Datum("датум последњег ВС", false);
+		velikiPoslednjiDatum.setEnabled(false);
+		velikiPoslednjiGPSkm = new Decimalni("гпс км последњи ВС", false);
+		velikiPoslednjiGPSkm.setEnabled(false);
+		velikiPoslednjiOBDkm = new Celobrojni("обд км последњи ВС", false);
+		velikiPoslednjiOBDkm.setEnabled(false);
+		
 		izbrisan = new CheckBox("избрисан");
 		
 		pretplatnici.addValueChangeListener(new ValueChangeListener<SistemPretplatnici>() {
@@ -131,6 +151,17 @@ public class VozilaForma extends OpstaForma implements OpstaFormaInterface{
 		layout.addComponent(brojSaobracajne);
 		layout.addComponent(serijskiBroj);
 		layout.addComponent(datumPrveRegistracije);
+		layout.addComponent(maliServisKm);
+		layout.addComponent(maliServisMeseci);
+		layout.addComponent(velikiServisKm);
+		layout.addComponent(velikiServisMeseci);
+		layout.addComponent(datumPoslednjeRegistracije);
+		layout.addComponent(maliPoslednjiDatum);
+		layout.addComponent(maliPoslednjiGPSkm);
+		layout.addComponent(maliPoslednjiOBDkm);
+		layout.addComponent(velikiPoslednjiDatum);
+		layout.addComponent(velikiPoslednjiGPSkm);
+		layout.addComponent(velikiPoslednjiOBDkm);
 		layout.addComponent(teretno);
 		if(logika.view.isSistem())  {
 			layout.addComponent(izbrisan);
@@ -177,11 +208,10 @@ public class VozilaForma extends OpstaForma implements OpstaFormaInterface{
 			vozilo.setRezervoar(0);
 		}
 		try {
-			vozilo.setPotrosnja(Float.parseFloat(potrosnja.getValue()));
+			vozilo.setPotrosnja(Float.parseFloat(potrosnja.vratiIznos()));
 		}catch (Exception e) {
 			vozilo.setPotrosnja(0.0f);
 		}
-		vozilo.setTeretno(teretno.getValue());
 		vozilo.setBrojSaobracajne(brojSaobracajne.getValue());
 		vozilo.setSerijskiBroj(serijskiBroj.getValue());
 		try {
@@ -189,6 +219,30 @@ public class VozilaForma extends OpstaForma implements OpstaFormaInterface{
 		}catch (Exception e) {
 			vozilo.setDatumRegistracije(null);
 		}
+		vozilo.setMaliServisKm(Integer.parseInt(maliServisKm.getValue()));
+		vozilo.setMaliServisMeseci(Integer.parseInt(maliServisMeseci.getValue()));
+		vozilo.setVelikiServisKm(Integer.parseInt(velikiServisKm.getValue()));
+		vozilo.setVelikiServisMeseci(Integer.parseInt(velikiServisMeseci.getValue()));
+		/*try {
+			vozilo.setDatumPoslednjeRegistracije(dateDatum(datumPoslednjeRegistracije.getValue()));
+		}catch (Exception e) {
+			vozilo.setDatumRegistracije(null);
+		}
+		try {
+			vozilo.setMaliPoslednjiDatum(dateDatum(maliPoslednjiDatum.getValue()));
+		}catch (Exception e) {
+			vozilo.setMaliPoslednjiDatum(null);
+		}
+		vozilo.setMaliPoslednjiGPSkm(Float.parseFloat(maliPoslednjiGPSkm.getValue()));
+		vozilo.setMaliPoslednjiOBDkm(Integer.parseInt(maliPoslednjiOBDkm.getValue()));
+		try {
+			vozilo.setVelikiPoslednjiDatum(dateDatum(velikiPoslednjiDatum.getValue()));
+		}catch (Exception e) {
+			vozilo.setVelikiPoslednjiDatum(null);
+		}
+		vozilo.setVelikiPoslednjiGPSkm(Float.parseFloat(velikiPoslednjiGPSkm.getValue()));
+		vozilo.setVelikiPoslednjiOBDkm(Integer.parseInt(velikiPoslednjiOBDkm.getValue()));**/
+		vozilo.setTeretno(teretno.getValue());
 		vozilo.setIzbrisan(izbrisan.getValue());
 		return vozilo;
 	}
@@ -219,6 +273,18 @@ public class VozilaForma extends OpstaForma implements OpstaFormaInterface{
 		brojSaobracajne.clear();
 		serijskiBroj.clear();
 		datumPrveRegistracije.clear();
+		maliServisKm.setValue(String.valueOf(10000));
+		maliServisMeseci.setValue(String.valueOf(6));
+		velikiServisKm.setValue(String.valueOf(50000));
+		velikiServisMeseci.setValue(String.valueOf(24));
+		datumPoslednjeRegistracije.clear();
+		maliPoslednjiDatum.clear();
+		maliPoslednjiGPSkm.clear();
+		maliPoslednjiOBDkm.clear();
+		velikiPoslednjiDatum.clear();
+		velikiPoslednjiGPSkm.clear();
+		velikiPoslednjiOBDkm.clear();
+		
 		izbrisan.setValue(false);
 	}
 
@@ -231,6 +297,12 @@ public class VozilaForma extends OpstaForma implements OpstaFormaInterface{
 			organizacije.setEnabled(false);
 			try {
 				objekti.setValue(vozilo.getObjekti());
+				if(vozilo.getObjekti() != null) {
+					objekti.setEnabled(false);
+				}else {
+					objekti.setEnabled(true);
+				}
+				
 			}catch (Exception e) {
 				logika.view.pokaziPorukuGreska("грешка у преузимању објекта!");
 				objekti.setValue(null);
@@ -271,7 +343,6 @@ public class VozilaForma extends OpstaForma implements OpstaFormaInterface{
 			}catch (Exception e) {
 				potrosnja.setValue("");
 			}
-			teretno.setValue(vozilo.isTeretno());
 			try {
 				brojSaobracajne.setValue(vozilo.getBrojSaobracajne());
 			}catch (Exception e) {
@@ -282,14 +353,73 @@ public class VozilaForma extends OpstaForma implements OpstaFormaInterface{
 			}catch (Exception e) {
 				serijskiBroj.setValue("");
 			}
+			
 			if(vozilo.getDatumRegistracije() != null) {
 				datumPrveRegistracije.setValue(localDatum(vozilo.getDatumRegistracije()));
 			}else {
 				datumPrveRegistracije.setValue(null);
 			}
+			
+			try {
+				maliServisKm.setValue(String.valueOf(vozilo.getMaliServisKm()));
+			}catch (Exception e) {
+				maliServisKm.setValue("");
+			}
+			try {
+				maliServisMeseci.setValue(String.valueOf(vozilo.getMaliServisMeseci()));
+			}catch (Exception e) {
+				maliServisMeseci.setValue("");
+			}
+			try {
+				velikiServisKm.setValue(String.valueOf(vozilo.getVelikiServisKm()));
+			}catch (Exception e) {
+				velikiServisKm.setValue("");
+			}
+			try {
+				velikiServisMeseci.setValue(String.valueOf(vozilo.getVelikiServisMeseci()));
+			}catch (Exception e) {
+				velikiServisMeseci.setValue("");
+			}
+			
+			if(vozilo.getDatumPoslednjeRegistracije() != null) {
+				datumPoslednjeRegistracije.setValue(localDatum(vozilo.getDatumPoslednjeRegistracije()));
+			}else {
+				datumPoslednjeRegistracije.setValue(null);
+			}
+			if(vozilo.getMaliPoslednjiDatum() != null) {
+				maliPoslednjiDatum.setValue(localDatum(vozilo.getMaliPoslednjiDatum()));
+			}else {
+				maliPoslednjiDatum.setValue(null);
+			}
+			try {
+				maliPoslednjiGPSkm.setValue(String.valueOf(vozilo.getMaliPoslednjiGPSkm()));
+			}catch (Exception e) {
+				maliPoslednjiGPSkm.setValue("");
+			}
+			try {
+				maliPoslednjiOBDkm.setValue(String.valueOf(vozilo.getMaliPoslednjiOBDkm()));
+			}catch (Exception e) {
+				maliPoslednjiGPSkm.setValue("");
+			}
+			if(vozilo.getVelikiPoslednjiDatum() != null) {
+				velikiPoslednjiDatum.setValue(localDatum(vozilo.getVelikiPoslednjiDatum()));
+			}else {
+				velikiPoslednjiDatum.setValue(null);
+			}
+			try {
+				velikiPoslednjiGPSkm.setValue(String.valueOf(vozilo.getVelikiPoslednjiGPSkm()));
+			}catch (Exception e) {
+				velikiPoslednjiGPSkm.setValue("");
+			}
+			try {
+				velikiPoslednjiOBDkm.setValue(String.valueOf(vozilo.getVelikiPoslednjiOBDkm()));
+			}catch (Exception e) {
+				velikiPoslednjiGPSkm.setValue("");
+			}
+			
+			teretno.setValue(vozilo.isTeretno());
 			izbrisan.setValue(vozilo.isIzbrisan());
 		}
-		
 	}
 
 	@Override

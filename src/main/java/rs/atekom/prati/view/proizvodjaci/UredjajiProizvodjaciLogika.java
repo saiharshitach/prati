@@ -58,10 +58,10 @@ public class UredjajiProizvodjaciLogika implements LogikaInterface{
 
 	@Override
 	public void sacuvajPodatak(Object podatak) {
-		SistemUredjajiProizvodjac proizvodjac = (SistemUredjajiProizvodjac)podatak;
+		setFragmentParametar("");
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
-		setFragmentParametar("");
+		SistemUredjajiProizvodjac proizvodjac = (SistemUredjajiProizvodjac)podatak;
 		if(proizvodjac.getId() != null) {
 			Servis.sistemUredjajProizvodjacServis.izmeniSistemUredjajProizvodjaca(proizvodjac);
 			view.pokaziPorukuUspesno("произвођач измењен");
@@ -85,18 +85,18 @@ public class UredjajiProizvodjaciLogika implements LogikaInterface{
 
 	@Override
 	public void noviPodatak() {
-		view.ocistiIzbor();
 		setFragmentParametar("new");
+		view.ocistiIzbor();
 		view.izmeniPodatak(new SistemUredjajiProizvodjac());
 	}
 
 	@Override
 	public void ukloniPodatak() {
+		setFragmentParametar("");
 		view.ukloniPodatak();
 		view.ocistiIzbor();
 		view.izmeniPodatak(null);
 		view.updateTable();
-		setFragmentParametar("");
 	}
 
 	@Override
