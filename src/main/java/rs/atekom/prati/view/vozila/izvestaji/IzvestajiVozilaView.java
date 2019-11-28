@@ -3,9 +3,6 @@ package rs.atekom.prati.view.vozila.izvestaji;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import com.github.appreciated.app.layout.annotations.MenuCaption;
 import com.github.appreciated.app.layout.annotations.MenuIcon;
 import com.github.appreciated.app.layout.annotations.NavigatorViewName;
@@ -21,15 +18,16 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.themes.ValoTheme;
 import pratiBaza.pomocne.IzvestajTip;
+import pratiBaza.pomocne.TipServisa;
 import pratiBaza.tabele.Grupe;
 import pratiBaza.tabele.Objekti;
 import rs.atekom.prati.server.Servis;
 import rs.atekom.prati.view.OpstiPanelView;
+import rs.atekom.prati.view.komponente.Celobrojni;
 import rs.atekom.prati.view.komponente.ComboIzvestajiVozilo;
 import rs.atekom.prati.view.komponente.ComboObjektiSaVozilima;
 import rs.atekom.prati.view.komponente.ComboTipServisa;
 import rs.atekom.prati.view.komponente.DatumVreme;
-import rs.atekom.prati.view.komponente.TipServisa;
 
 @NavigatorViewName("izvestajiVozila") // an empty view name will also be the default view
 @MenuCaption("Извештаји")
@@ -45,6 +43,7 @@ public class IzvestajiVozilaView extends OpstiPanelView{
 	private NativeSelect<Integer> satiOd, satiDo;
 	private ClickListener prikaziClick;
 	private ComboTipServisa tipTroska;
+	private Celobrojni broj;
 	
 	public IzvestajiVozilaView() {
 		root.addComponent(buildToolBarIzvestaji());
@@ -105,7 +104,7 @@ public class IzvestajiVozilaView extends OpstiPanelView{
 				ukloniSve();
 			}
 		});
-		
+		broj = new Celobrojni(null, false);
 		dodajPodatke();
 		setContent(root);
 	}
@@ -116,7 +115,12 @@ public class IzvestajiVozilaView extends OpstiPanelView{
 			switch (tip.getRb()) {
 			case 1: postaviParametreUkupnoTroskovi();
 				break;
-
+			case 2: postaviParametreZaServise();
+			    break;
+			case 3: postaviParametreZaServise();
+		        break;
+			case 4: postaviParametreZaServise();
+	            break;
 			default:
 				break;
 			}
@@ -159,7 +163,6 @@ public class IzvestajiVozilaView extends OpstiPanelView{
 			@Override
 			public void buttonClick(ClickEvent event) {
 				if(pretplatniciCombo.getValue() != null) {
-
 					ArrayList<Objekti> objekti = new ArrayList<>();
 					if(preuzimanje != null) {
 						topLayout.removeComponent(preuzimanje);
@@ -176,16 +179,20 @@ public class IzvestajiVozilaView extends OpstiPanelView{
 							}
 						}else {
 							objekti.add(objektiCombo.getValue());
-						}
-						Integer tipTroskaInt = null;
+							}
+						if(!objekti.isEmpty()) {
+							Integer tipTroskaInt = null;
 						if(tipTroska.getValue() != null) {
 							tipTroskaInt = Integer.valueOf(tipTroska.getValue().getRb());
-						}
+							}
 						UkupniTroskoviLayout ukupniTroskovi = new UkupniTroskoviLayout(objekti, vremeOdTS, vremeDoTS, tipTroskaInt);
 						preuzimanje = ukupniTroskovi.vratiPreuzimanje();
 						topLayout.addComponent(preuzimanje);
 						podaci.setContent(ukupniTroskovi);
 						dodajPodatke();
+						}else {
+							pokaziPorukuGreska("нема дефинисаних возила!");
+						}
 					}else {
 						pokaziPorukuGreska("морате одабрати време у оба поља и и време до мора бити касније од времена од!");
 					}
@@ -195,8 +202,64 @@ public class IzvestajiVozilaView extends OpstiPanelView{
 			}
 		};
 		prikazi.addClickListener(prikaziClick);
-		dodajParametreDatum(false, true);
+		dodajParametreDatum(false, true, 0);
 	}
+	
+	public void postaviParametreZaServise() {
+		prikaziClick = new ClickListener() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void buttonClick(ClickEvent event) {
+				if(pretplatniciCombo.getValue() != null) {
+					ArrayList<Objekti> objekti = new ArrayList<>();
+					if(preuzimanje != null) {
+						topLayout.removeComponent(preuzimanje);
+						preuzimanje = null;
+					}
+					if(objektiCombo.getValue() == null) {
+						if(grupeCombo.getValue() == null) {
+							pokaziPorukuGreska("морате одабрати групу!");
+							//objekti.addAll(Servis.objekatServis.nadjiSveObjekteSavozilom(pretplatniciCombo.getValue(), organizacijeCombo.getValue()));
+						}else {
+							objekti.addAll(Servis.grupeObjekatServis.nadjiSveObjektePoGrupiSaVozilom(grupeCombo.getValue()));
+						}
+					}else {
+						objekti.add(objektiCombo.getValue());
+						}
+					if(!objekti.isEmpty()) {
+						switch(izvestajiCombo.getValue().getRb()) {
+						case 2: DoMalogServisaLayout doMalogServisa = new DoMalogServisaLayout(objekti, izvestajiCombo.getValue().getRb(), Integer.parseInt(broj.getValue()));
+						        preuzimanje = doMalogServisa.vratiPreuzimanje();
+						        topLayout.addComponent(preuzimanje);
+						        podaci.setContent(doMalogServisa);
+						      break;
+						case 3: DoVelikogServisaLayout doVelikogServisa = new DoVelikogServisaLayout(objekti, izvestajiCombo.getValue().getRb(), Integer.parseInt(broj.getValue()));
+						        preuzimanje = doVelikogServisa.vratiPreuzimanje();
+						        topLayout.addComponent(preuzimanje);
+						        podaci.setContent(doVelikogServisa);
+							break;
+						case 4: DoRegistracijeLayout doRegistracije = new DoRegistracijeLayout(objekti, izvestajiCombo.getValue().getRb(), Integer.parseInt(broj.getValue()));
+				                preuzimanje = doRegistracije.vratiPreuzimanje();
+				                topLayout.addComponent(preuzimanje);
+				                podaci.setContent(doRegistracije);
+							break;
+							default:
+								break;
+						}
+						dodajPodatke();
+						}else {
+							if(grupeCombo.getValue() != null) {
+								pokaziPorukuGreska("нема дефинисаних возила!");
+								}
+							}
+					}else {
+						pokaziPorukuGreska("морате одабрати претплатника!");
+						}
+				}
+			};
+			prikazi.addClickListener(prikaziClick);
+			dodajParametreDatum(true, false, izvestajiCombo.getValue().getRb());
+			}
 	
 	public ValueChangeListener<LocalDateTime> vremePromena = new ValueChangeListener<LocalDateTime>() {
 		private static final long serialVersionUID = 1L;
@@ -209,41 +272,7 @@ public class IzvestajiVozilaView extends OpstiPanelView{
 		}
 	};
 	
-	private void dodajParametreDatum(boolean dodajSate, boolean datumVremeOd) {
-        if(dodajSate) {
-            List<Integer> data = IntStream.range(0, 24).mapToObj(i -> i).collect(Collectors.toList());
-            satiOd = new NativeSelect<>(null, data);
-            satiOd.setEmptySelectionAllowed(false);
-            satiOd.setSelectedItem(data.get(7));
-            satiDo = new NativeSelect<>(null, data);
-            satiDo.setEmptySelectionAllowed(false);
-            satiDo.setSelectedItem(data.get(17));
-            satiOd.addValueChangeListener(new ValueChangeListener<Integer>() {
-				private static final long serialVersionUID = 1L;
-				@Override
-				public void valueChange(ValueChangeEvent<Integer> event) {
-					if(preuzimanje != null) {
-						topLayout.removeComponent(preuzimanje);
-						preuzimanje = null;
-					}
-				}
-			});
-            satiDo.addValueChangeListener(new ValueChangeListener<Integer>() {
-				private static final long serialVersionUID = 1L;
-				@Override
-				public void valueChange(ValueChangeEvent<Integer> event) {
-					if(preuzimanje != null) {
-						topLayout.removeComponent(preuzimanje);
-						preuzimanje = null;
-					}
-				}
-			});
-            
-            satiDo = new NativeSelect<>(null, data);
-            satiDo.setEmptySelectionAllowed(false);
-            satiDo.setSelectedItem(data.get(17));
-        }
-        
+	private void dodajParametreDatum(boolean servis, boolean datumVremeOd, int tipServisa) {
         if(isSistem()) {
         	parametri.addComponent(pretplatniciCombo);
         }else {
@@ -257,17 +286,28 @@ public class IzvestajiVozilaView extends OpstiPanelView{
         
         parametri.addComponent(grupeCombo);
         parametri.addComponent(objektiCombo);
-        parametri.addComponent(tipTroska);
+        if(servis) {
+        	switch (tipServisa) {
+			case 2: broj.setValue(String.valueOf(1000));
+				break;
+			case 3: broj.setValue(String.valueOf(1000));
+			    break;
+			case 4: broj.setValue(String.valueOf(30));
+		        break;
+			default:
+				break;
+			}
+        	parametri.addComponent(broj);
+        }else {
+        	parametri.addComponent(tipTroska);
+        }
+        
         if(datumVremeOd) {
         	parametri.addComponent(vremeOd);
+        	parametri.addComponent(vremeDo);
         }
-        parametri.addComponent(vremeDo);
-        if(dodajSate) {
-            parametri.addComponent(satiOd);
-            parametri.addComponent(satiDo);
-        }
-        parametri.addComponent(prikazi);
         
+        parametri.addComponent(prikazi);
         topLayout.addComponent(parametri);
 	}
 	

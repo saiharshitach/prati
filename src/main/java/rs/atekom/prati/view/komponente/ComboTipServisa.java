@@ -3,6 +3,8 @@ package rs.atekom.prati.view.komponente;
 import java.util.ArrayList;
 import com.vaadin.ui.ComboBox;
 
+import pratiBaza.pomocne.TipServisa;
+
 public class ComboTipServisa extends ComboBox<TipServisa>{
 
 	private static final long serialVersionUID = 1L;
@@ -28,7 +30,16 @@ public class ComboTipServisa extends ComboBox<TipServisa>{
 		lista.add(new TipServisa("мали сервис", 1));
 		lista.add(new TipServisa("велики сервис", 2));
 		lista.add(new TipServisa("регистрација", 3));
-		lista.add(new TipServisa("сервис", 4));
+		lista.add(new TipServisa("одржавање", 4));
+		lista.add(new TipServisa("остало", 5));
+		return lista;
+	}
+	
+	public ArrayList<TipServisa> listaServisa(){
+		ArrayList<TipServisa> lista = new ArrayList<TipServisa>();
+		lista.add(new TipServisa("мали сервис", 1));
+		lista.add(new TipServisa("велики сервис", 2));
+		lista.add(new TipServisa("регистрација", 3));
 		return lista;
 	}
 }

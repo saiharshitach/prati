@@ -108,10 +108,11 @@
                <value>pratiBaza.pomocne.PredjeniPut</value>
                <value>pratiBaza.pomocne.PredjeniPutGPS</value>
                <value>pratiBaza.pomocne.PredjeniPutOBD</value>
-               <value>pratiBaza.pomocne.StavkaPrijema</value>
                <value>pratiBaza.pomocne.RadnoVremePutGPS</value>
+               <value>pratiBaza.pomocne.StavkaPrijema</value>
                <value>pratiBaza.pomocne.StajanjeMirovanje</value>
                <value>pratiBaza.pomocne.StanjeOBD</value>
+               <value>pratiBaza.pomocne.TipServisa</value>
             </list>
         </property>
     <property name="hibernateProperties">

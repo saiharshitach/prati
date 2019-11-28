@@ -202,7 +202,7 @@ public class PotrosnjaForma extends OpstaForma implements OpstaFormaInterface{
 		gorivo.clear();
 		kolicina.setValue(String.valueOf(0));
 		cena.setValue(String.valueOf(0));
-		pdvProcenat.setValue(String.valueOf(20));
+		pdvProcenat.setValue(String.valueOf(0));
 		pdvIznos.setValue(String.valueOf(0));
 		ukupno.setValue(String.valueOf(0));
 		opis.setValue("");

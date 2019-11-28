@@ -25,7 +25,7 @@ import rs.atekom.prati.view.komponente.Datum;
 import rs.atekom.prati.view.komponente.Decimalni;
 import rs.atekom.prati.view.komponente.Tekst;
 import rs.atekom.prati.view.komponente.TekstArea;
-import rs.atekom.prati.view.komponente.TipServisa;
+import pratiBaza.pomocne.TipServisa;
 
 public class OdrzavanjaForma extends OpstaForma implements OpstaFormaInterface{
 
@@ -201,7 +201,7 @@ public class OdrzavanjaForma extends OpstaForma implements OpstaFormaInterface{
 		brojRacuna.clear();
 		tipServisa.clear();
 		cena.setValue(String.valueOf(0));
-		pdvProcenat.setValue(String.valueOf(20));
+		pdvProcenat.setValue(String.valueOf(0));
 		pdvIznos.setValue(String.valueOf(0));
 		ukupno.setValue(String.valueOf(0));
 		opis.setValue("");

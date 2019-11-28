@@ -1,38 +1,37 @@
 package rs.atekom.prati.view.vozila.izvestaji;
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.vaadin.reports.PrintPreviewReport;
+
 import com.vaadin.server.SerializableSupplier;
+
 import ar.com.fdvs.dj.domain.AutoText;
-import ar.com.fdvs.dj.domain.DJCalculation;
 import ar.com.fdvs.dj.domain.Style;
 import ar.com.fdvs.dj.domain.builders.ColumnBuilder;
 import ar.com.fdvs.dj.domain.builders.StyleBuilder;
 import ar.com.fdvs.dj.domain.constants.Font;
 import ar.com.fdvs.dj.domain.constants.HorizontalAlign;
 import ar.com.fdvs.dj.domain.constants.Page;
-import ar.com.fdvs.dj.domain.entities.columns.AbstractColumn;
 import pratiBaza.tabele.Objekti;
-import pratiBaza.tabele.Troskovi;
+import pratiBaza.tabele.Vozila;
 import rs.atekom.prati.server.Servis;
 
-public class UkupniTroskoviIzvestaj extends PrintPreviewReport<Troskovi>{
+public class DoVelikogServisaIzvestaj extends PrintPreviewReport<Vozila>{
 
 	private static final long serialVersionUID = 1L;
 	private String decimalFormat = "###,###,###.##";
 	private static final String DANFORMAT2 = "dd/MM/yyyy";
 	private static final String DATUMVREME = "dd/MM/yyyy HH:mm:ss";
-	private List<Troskovi> lista;
+	private List<Vozila> lista;
 
-	public UkupniTroskoviIzvestaj(ArrayList<Objekti> vozila, Timestamp datumVremeOd, Timestamp datumVremeDo, Integer tipTroska) {
-		lista = new ArrayList<Troskovi>();
+	public DoVelikogServisaIzvestaj(ArrayList<Objekti> objekti, int tipServisa, int doServisa) {
+		lista = new ArrayList<Vozila>();
 		setSizeUndefined();
 		SimpleDateFormat datumVreme = new SimpleDateFormat(DATUMVREME);
-		SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy");//"dd-MM-yyyy HH:mm:ss"
+		//SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy");
 		
 		Style headerStyle = new StyleBuilder(true).setFont(Font.ARIAL_MEDIUM).build();
 		headerStyle.setHorizontalAlign(HorizontalAlign.LEFT);
@@ -49,39 +48,27 @@ public class UkupniTroskoviIzvestaj extends PrintPreviewReport<Troskovi>{
 		
 		Style footerStyle = new StyleBuilder(true).setFont(Font.ARIAL_MEDIUM_BOLD).build();
 		
-		AbstractColumn ukupno = ColumnBuilder.getNew()
-				.setColumnProperty("ukupno", Float.class)
-				.setTitle("укупно")
-				.setWidth(25)
-				.setStyle(broj)
-				.build();
-		
 		getReportBuilder()
 		.setPageSizeAndOrientation(Page.Page_A4_Landscape())
 		.setMargins(20, 20, 40, 40)
 		.setDefaultEncoding(Font.PDF_ENCODING_Identity_H_Unicode_with_horizontal_writing)
-		.setTitle("Преглед трошкова")
+		.setTitle("Преглед возила за велики сервис")
 		.setGrandTotalLegend("укупно")
-		.addAutoText("Преглед трошкова за период: " + outputFormat.format(datumVremeOd) + " - " + outputFormat.format(datumVremeDo), AutoText.POSITION_HEADER, AutoText.ALIGMENT_LEFT, 450, headerStyle)
+		.addAutoText("Преглед возила за велики сервис за мање од " + doServisa + "км" , AutoText.POSITION_HEADER, AutoText.ALIGMENT_LEFT, 450, headerStyle)
 		.addAutoText("извештај урађен: " + datumVreme.format(new Date()), AutoText.POSITION_HEADER, AutoText.ALIGNMENT_RIGHT, 300, datum)
 		.addAutoText("Атеком доо               www.atekom.rs                    info@atekom.rs ", AutoText.POSITION_FOOTER, AutoText.ALIGMENT_CENTER, 800, footerStyle)
 		.addAutoText(AutoText.AUTOTEXT_PAGE_X, AutoText.POSITION_FOOTER, AutoText.ALIGMENT_RIGHT)
 		//.addField("objekti", Objekti.class)
 		.setPrintBackgroundOnOddRows(true)
 		.addColumn(ColumnBuilder.getNew()
-				.setColumnProperty("datumVreme", Timestamp.class)
-				.setTitle("датум")
-				.setStyle(datum)
-				.setWidth(25)
-				.build())
-		.addColumn(ColumnBuilder.getNew()
-				.setColumnProperty("objekatOznaka", String.class)
-				.setTitle("објекат")
-				.setStyle(tekst)
-				.build())
-		.addColumn(ColumnBuilder.getNew()
 				.setColumnProperty("registracija", String.class)
 				.setTitle("регистрација")
+				.setStyle(tekst)
+				.setWidth(30)
+				.build())
+		.addColumn(ColumnBuilder.getNew()
+				.setColumnProperty("model", String.class)
+				.setTitle("модел")
 				.setStyle(tekst)
 				.setWidth(25)
 				.build())
@@ -92,57 +79,57 @@ public class UkupniTroskoviIzvestaj extends PrintPreviewReport<Troskovi>{
 				.setWidth(25)
 				.build())
 		.addColumn(ColumnBuilder.getNew()
-				.setColumnProperty("model", String.class)
-				.setTitle("модел")
-				.setStyle(tekst)
+				.setColumnProperty("velikiPoslednjiDatum", Date.class)
+				.setTitle("датум")
+				.setStyle(datum)
 				.setWidth(25)
 				.build())
 		.addColumn(ColumnBuilder.getNew()
-				.setColumnProperty("partnerNaziv", String.class)
-				.setTitle("партнер")
-				.setStyle(tekst)
-				.build())
-		.addColumn(ColumnBuilder.getNew()
-				.setColumnProperty("tipServisaNaziv", String.class)
-				.setTitle("тип трошка")
-				.setStyle(tekst)
-				.setWidth(30)
-				.build())
-		.addColumn(ColumnBuilder.getNew()
-				.setColumnProperty("brojRacuna", String.class)
-				.setTitle("рачун")
+				.setColumnProperty("danaOdVs", Integer.class)
+				.setTitle("дана")
 				.setStyle(broj)
-				.setWidth(20)
+				.setWidth(12)
 				.build())
 		.addColumn(ColumnBuilder.getNew()
-				.setColumnProperty("kolicina", Float.class)
-				.setTitle("кол")
-				.setWidth(10)
+				.setColumnProperty("velikiPoslednjiGPSkm", Float.class)
+				.setTitle("урађен на ГПС км")
 				.setStyle(broj)
+				//.setWidth(30)
 				.build())
 		.addColumn(ColumnBuilder.getNew()
-				.setColumnProperty("cena", Float.class)
-				.setTitle("цена")
-				.setWidth(15)
+				.setColumnProperty("kmOdGpsVs", Float.class)
+				.setTitle("ГПС км од сервиса")
+				.setStyle(broj)
+				//.setWidth(20)
+				.build())
+		.addColumn(ColumnBuilder.getNew()
+				.setColumnProperty("velikiPoslednjiOBDkm", Integer.class)
+				.setTitle("урађен на ОБД км")
+				//.setWidth(10)
 				.setStyle(broj)
 				.build())
-		.addColumn(ukupno)
-		.addGlobalFooterVariable(ukupno, DJCalculation.SUM, broj);
-		setItems(vratiListu(vozila, datumVremeOd, datumVremeDo, tipTroska));
+		.addColumn(ColumnBuilder.getNew()
+				.setColumnProperty("kmOdObdVs", Integer.class)
+				.setTitle("ОБД км од сервиса")
+				//.setWidth(10)
+				.setStyle(broj)
+				.build());
+		setItems(vratiListu(objekti, tipServisa, doServisa));
 	}
 	
-	public List<Troskovi> vratiListu(ArrayList<Objekti> vozila, Timestamp datumVremeOd, Timestamp datumVremeDo, Integer tipTroska){
-		return obracun(vozila, datumVremeOd, datumVremeDo, tipTroska);
+	
+	public List<Vozila> vratiListu(ArrayList<Objekti> objekti, int tipServisa, int doServisa){
+		return obracun(objekti, tipServisa, doServisa);
 	}
 	
-	public SerializableSupplier<List<? extends Troskovi>> vratiSeriju(ArrayList<Objekti> vozila, Timestamp datumVremeOd, Timestamp datumVremeDo, Integer tipTroska){
-		SerializableSupplier<List<? extends Troskovi>> serija = () -> lista;
+	public SerializableSupplier<List<? extends Vozila>> vratiSeriju(ArrayList<Objekti> objekti, int tipServisa, int doServisa){
+		SerializableSupplier<List<? extends Vozila>> serija = () ->lista;
 		return serija;
 	}
 	
-	private List<Troskovi> obracun(ArrayList<Objekti> vozila, Timestamp datumVremeOd, Timestamp datumVremeDo, Integer tipTroska){
+	private List<Vozila> obracun(ArrayList<Objekti> objekti, int tipServisa, int doServisa){
 		lista.clear();
-		lista = Servis.trosakServis.nadjiSveTroskoveUkupno(vozila, datumVremeOd, datumVremeDo, tipTroska);
+		lista = Servis.javljanjeServis.vratiVozilaZaServise(objekti, tipServisa, doServisa);
 		return lista;
 	}
 }
