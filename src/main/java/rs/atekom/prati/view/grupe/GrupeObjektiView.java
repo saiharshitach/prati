@@ -55,7 +55,8 @@ public class GrupeObjektiView extends OpstiView implements OpstiViewInterface{
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void buttonClick(ClickEvent event) {
-				ConfirmDialog.show(view.getUI(), "Провера", "Сачувај унете податке?", "да", "не", new ConfirmDialog.Listener() {
+				if(grupeCombo.getValue() != null) {
+					ConfirmDialog.show(view.getUI(), "Провера", "Сачувај унете податке?", "да", "не", new ConfirmDialog.Listener() {
 					private static final long serialVersionUID = 1L;
 					@Override
 					public void onClose(ConfirmDialog dialog) {
@@ -68,12 +69,16 @@ public class GrupeObjektiView extends OpstiView implements OpstiViewInterface{
 								grupaObjekat.setGrupe(grupeCombo.getValue());
 								grupaObjekat.setObjekti(objekat);
 								Servis.grupeObjekatServis.unesiGrupaObjekat(grupaObjekat);
+								}
+							pokaziPorukuUspesno("подаци сачувани");
 							}
 						}
+					});
+					}else {
+						pokaziPorukuGreska("морате одабрати групу!");
 					}
-				});
-			}
-		});
+				}
+			});
 		
 		addComponent(barGrid);
 	}
