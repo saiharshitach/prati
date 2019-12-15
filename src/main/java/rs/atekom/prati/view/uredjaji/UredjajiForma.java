@@ -1,6 +1,7 @@
 package rs.atekom.prati.view.uredjaji;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.vaadin.dialogs.ConfirmDialog;
 import com.vaadin.data.HasValue.ValueChangeEvent;
@@ -197,8 +198,13 @@ public class UredjajiForma extends OpstaForma implements OpstaFormaInterface{
 		uredjaj.setSistemUredjajiModeli(modeli.getValue());
 		uredjaj.setKod(kod.getValue());
 		uredjaj.setSerijskiBr(serBroj.getValue());
-		uredjaj.setSim(sim.getValue());
-		uredjaj.setSim2(sim2.getValue());
+		uredjaj.setSims(new ArrayList<Sim>());
+		if(sim.getValue() != null) {
+			uredjaj.setSim(sim.getValue());
+		}
+		if(sim2.getValue() != null) {
+			uredjaj.setSim2(sim2.getValue());
+		}
 		uredjaj.setOpis(opis.getValue());
 		uredjaj.setAktivno(aktivan.getValue());
 		uredjaj.setIzbrisan(izbrisan.getValue());

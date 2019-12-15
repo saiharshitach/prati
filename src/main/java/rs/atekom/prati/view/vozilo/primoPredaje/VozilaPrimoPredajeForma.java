@@ -107,7 +107,14 @@ public class VozilaPrimoPredajeForma extends OpstaForma implements OpstaFormaInt
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void valueChange(ValueChangeEvent<SistemPretplatnici> event) {
-				//organizacije.setItems(Servis.organizacijaServis.nadjiSveOrganizacije(pretplatnici.getValue(), true));
+				organizacije.clear();
+				vozila.clear();
+				vozacPrijem.clear();
+				vozacPredaja.clear();
+				organizacije.setItems(Servis.organizacijaServis.nadjiSveOrganizacije(pretplatnici.getValue(), true));
+				vozila.setItems(Servis.voziloServis.nadjisvaVozilaPoPretplatniku(event.getValue()));
+				vozacPrijem.setItems(Servis.korisnikServis.nadjiSveKorisnikeVozace(event.getValue(), null, true));
+				vozacPredaja.setItems(Servis.korisnikServis.nadjiSveKorisnikeVozace(event.getValue(), null, true));
 			}
 		});
 		
@@ -115,7 +122,14 @@ public class VozilaPrimoPredajeForma extends OpstaForma implements OpstaFormaInt
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void valueChange(ValueChangeEvent<Organizacije> event) {
-				
+				vozila.clear();
+				if(event.getValue() != null) {
+					vozila.setItems(Servis.voziloServis.nadjisvaVozilaPoOrganizaciji(event.getValue()));
+				}else {
+					vozila.setItems(Servis.voziloServis.nadjisvaVozilaPoPretplatniku(pretplatnici.getValue()));
+				}
+				vozacPrijem.setItems(Servis.korisnikServis.nadjiSveKorisnikeVozace(pretplatnici.getValue(), event.getValue(), true));
+				vozacPredaja.setItems(Servis.korisnikServis.nadjiSveKorisnikeVozace(pretplatnici.getValue(), event.getValue(), true));
 			}
 		});
 		

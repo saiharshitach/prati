@@ -81,7 +81,6 @@ public class PotrosnjaView extends OpstiView implements OpstiViewInterface{
 		tabela = new Grid<Troskovi>();
 		pocetno = new ArrayList<Troskovi>();
 		updateTable();
-		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
@@ -152,7 +151,6 @@ public class PotrosnjaView extends OpstiView implements OpstiViewInterface{
 				pokaziPorukuGreska("одржавање већ избрисано!");
 			}
 		}
-		
 	}
 
 	@Override
@@ -164,6 +162,7 @@ public class PotrosnjaView extends OpstiView implements OpstiViewInterface{
 		}else {
 			tabela.setItems(pocetno);
 		}
+		dodajFilter();
 	}
 
 	@Override

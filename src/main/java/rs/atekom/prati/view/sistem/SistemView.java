@@ -2,7 +2,6 @@ package rs.atekom.prati.view.sistem;
 
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
-
 import com.github.appreciated.app.layout.annotations.MenuCaption;
 import com.github.appreciated.app.layout.annotations.MenuIcon;
 import com.github.appreciated.app.layout.annotations.NavigatorViewName;
@@ -17,12 +16,10 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Grid.SelectionMode;
-
 import pratiBaza.tabele.Sistem;
 import rs.atekom.prati.server.Servis;
 import rs.atekom.prati.view.OpstiView;
 import rs.atekom.prati.view.OpstiViewInterface;
-import rs.atekom.prati.view.pocetna.PocetnaView;
 
 @NavigatorViewName("sistem") // an empty view name will also be the default view
 @MenuCaption("Систем")
@@ -82,7 +79,6 @@ public class SistemView extends OpstiView implements OpstiViewInterface{
 	public void buildTable() {
 		tabela = new Grid<Sistem>();
 		updateTable();
-		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
@@ -158,6 +154,7 @@ public class SistemView extends OpstiView implements OpstiViewInterface{
 			lista.add(sistem);
 		}
 		tabela.setItems(lista);
+		dodajFilter();
 	}
 
 	@Override

@@ -84,7 +84,6 @@ public class GorivoView extends OpstiView implements OpstiViewInterface{
 		tabela = new Grid<SistemGoriva>();
 		pocetno = new ArrayList<SistemGoriva>();
 		updateTable();
-		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
@@ -151,6 +150,7 @@ public class GorivoView extends OpstiView implements OpstiViewInterface{
 		}else {
 			tabela.setItems(pocetno);
 		}
+		dodajFilter();
 	}
 
 	@Override

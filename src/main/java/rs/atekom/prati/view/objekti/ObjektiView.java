@@ -82,7 +82,6 @@ public class ObjektiView extends OpstiView implements OpstiViewInterface{
 		tabela = new Grid<Objekti>();
 		pocetno = new ArrayList<Objekti>();
 		updateTable();
-		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
@@ -171,6 +170,7 @@ public class ObjektiView extends OpstiView implements OpstiViewInterface{
 		}else {
 			tabela.setItems(pocetno);
 		}
+		dodajFilter();
 	}
 
 	@Override

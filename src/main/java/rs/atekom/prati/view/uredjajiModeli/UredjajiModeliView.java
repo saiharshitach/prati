@@ -81,7 +81,6 @@ public class UredjajiModeliView extends OpstiView implements OpstiViewInterface{
 		tabela = new Grid<SistemUredjajiModeli>();
 		pocetno = new ArrayList<SistemUredjajiModeli>();
 		updateTable();
-		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
@@ -151,6 +150,7 @@ public class UredjajiModeliView extends OpstiView implements OpstiViewInterface{
 		}else {
 			tabela.setItems(pocetno);
 		}
+		dodajFilter();
 	}
 
 	@Override

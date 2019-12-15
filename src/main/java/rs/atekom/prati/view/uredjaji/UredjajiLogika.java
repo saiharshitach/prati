@@ -89,13 +89,16 @@ public class UredjajiLogika implements LogikaInterface{
 					Servis.simServis.azurirajSim(sim);
 				}
 				Sim sim2 = uredjaj.getSim2();
-				if(uredjaj.getSim2() != null) {
+				if(sim2 != null) {
 					sim2.setUredjaji(uredjaj);
 					sim2.setZauzet(true);
 					Servis.simServis.azurirajSim(sim2);
 				}
+				System.out.print("br kartica " + uredjaj.getSims().size());
+				System.out.print("prva kartica " + uredjaj.getSims().get(0).getBroj());
 				view.pokaziPorukuUspesno("уређај сачуван");
 			}catch (Exception e) {
+				e.printStackTrace();
 				view.pokaziPorukuGreska("уређај са унетим кодом већ постоји!");
 			}
 		}

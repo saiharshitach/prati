@@ -83,7 +83,6 @@ public class UredjajiView extends OpstiView implements OpstiViewInterface{
 		tabela = new Grid<Uredjaji>();
 		pocetno = new ArrayList<Uredjaji>();
 		updateTable();
-		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
@@ -166,6 +165,7 @@ public class UredjajiView extends OpstiView implements OpstiViewInterface{
 		}else {
 			tabela.setItems(pocetno);
 		}
+		dodajFilter();
 	}
 
 	@Override
@@ -174,6 +174,7 @@ public class UredjajiView extends OpstiView implements OpstiViewInterface{
 		dataProvider.refreshAll();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void dodajFilter() {
 		dataProvider = (ListDataProvider<Uredjaji>)tabela.getDataProvider();

@@ -82,7 +82,6 @@ public class PretplatniciView extends OpstiView implements OpstiViewInterface{
 		tabela = new Grid<SistemPretplatnici>();
 		pocetno = new ArrayList<SistemPretplatnici>();
 		updateTable();
-		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
@@ -156,6 +155,7 @@ public class PretplatniciView extends OpstiView implements OpstiViewInterface{
 		}else {
 			tabela.setItems(pocetno);
 		}
+		dodajFilter();
 	}
 
 	@Override

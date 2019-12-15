@@ -82,7 +82,6 @@ public class UredjajiProizvodjaciView extends OpstiView implements OpstiViewInte
 		tabela = new Grid<SistemUredjajiProizvodjac>();
 		pocetno = new ArrayList<SistemUredjajiProizvodjac>();
 		updateTable();
-		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
@@ -151,6 +150,7 @@ public class UredjajiProizvodjaciView extends OpstiView implements OpstiViewInte
 		}else {
 			tabela.setItems(pocetno);
 		}
+		dodajFilter();
 	}
 
 	@Override

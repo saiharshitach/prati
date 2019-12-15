@@ -32,7 +32,9 @@ import rs.atekom.prati.view.partneri.PartneriView;
 import rs.atekom.prati.view.pocetna.PocetnaView;
 import rs.atekom.prati.view.pretplatnici.PretplatniciView;
 import rs.atekom.prati.view.proizvodjaci.UredjajiProizvodjaciView;
+import rs.atekom.prati.view.projekti.ProjektiView;
 import rs.atekom.prati.view.ruta.RutaView;
+import rs.atekom.prati.view.sifre.SifreView;
 import rs.atekom.prati.view.sim.SimView;
 import rs.atekom.prati.view.simSistemOperateri.SimOperateriView;
 import rs.atekom.prati.view.sistem.SistemView;
@@ -121,6 +123,8 @@ public class PratiMeniKorisnik{
                 .add(RutaView.class)
                 .add(SistemSesijeView.class)
                 .add(ZoneView.class)
+                .add(ProjektiView.class)
+                .add(SifreView.class)
                 .build())
         .add(SubmenuBuilder.get("Возила", VaadinIcons.CAR)
         		.add(PotrosnjaView.class)
@@ -180,6 +184,8 @@ public class PratiMeniKorisnik{
 		                .add(RutaView.class)
 		                .add(SistemSesijeView.class)
 		                .add(ZoneView.class)
+		                .add(ProjektiView.class)
+		                .add(SifreView.class)
 		                .build())
 		        .add(SubmenuBuilder.get("Возила", VaadinIcons.CAR)
 		        		.add(PotrosnjaView.class)

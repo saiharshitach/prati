@@ -13,7 +13,7 @@ public class ComboKorisniciVozaci extends ComboBox<Korisnici>{
 		setCaption(naziv);
 		setPlaceholder("корисници...");
 		setItemCaptionGenerator(korisnici -> korisnici.toString());
-		//setItems(lista(korisnik));
+		setItems(lista(korisnik));
 		setEmptySelectionAllowed(prazno);
 		setRequiredIndicatorVisible(indicator);
 		setWidth("100%");

@@ -82,7 +82,6 @@ public class PartneriView extends OpstiView implements OpstiViewInterface{
 		tabela = new Grid<Partneri>();
 		pocetno = new ArrayList<Partneri>();
 		updateTable();
-		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
@@ -160,6 +159,7 @@ public class PartneriView extends OpstiView implements OpstiViewInterface{
 		}else {
 			tabela.setItems(pocetno);
 		}
+		dodajFilter();
 	}
 
 	@Override

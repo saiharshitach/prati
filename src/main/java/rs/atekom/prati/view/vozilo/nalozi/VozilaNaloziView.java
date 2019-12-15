@@ -82,7 +82,6 @@ public class VozilaNaloziView extends OpstiView implements OpstiViewInterface{
 		tabela = new Grid<VozilaNalozi>();
 		pocetno = new ArrayList<VozilaNalozi>();
 		updateTable();
-		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
@@ -169,7 +168,7 @@ public class VozilaNaloziView extends OpstiView implements OpstiViewInterface{
 		}else {
 			tabela.setItems(pocetno);
 		}
-
+		dodajFilter();
 	}
 
 	@Override

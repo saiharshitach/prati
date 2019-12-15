@@ -91,7 +91,6 @@ public class VozilaSaobracajna2View extends OpstiView implements OpstiViewInterf
 		tabela = new Grid<VozilaSaobracajne2>();
 		pocetno = new ArrayList<VozilaSaobracajne2>();
 		updateTable();
-		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
@@ -189,6 +188,7 @@ public class VozilaSaobracajna2View extends OpstiView implements OpstiViewInterf
 		}else {
 			tabela.setItems(pocetno);
 		}
+		dodajFilter();
 	}
 
 	@Override

@@ -71,10 +71,15 @@
                <value>pratiBaza.tabele.JavljanjaPoslednja</value> 
                <value>pratiBaza.tabele.Korisnici</value> 
                <value>pratiBaza.tabele.Obd</value>
+                <value>pratiBaza.tabele.ObdPoslednji</value>
                <value>pratiBaza.tabele.Objekti</value>
                <value>pratiBaza.tabele.ObjektiPoslednje</value>
                <value>pratiBaza.tabele.Organizacije</value>
                <value>pratiBaza.tabele.Partneri</value>
+               <value>pratiBaza.tabele.Projekti</value>
+               <value>pratiBaza.tabele.Sifre</value>
+               <value>pratiBaza.tabele.Racuni</value>
+               <value>pratiBaza.tabele.RacuniRaspodela</value>
                <value>pratiBaza.tabele.Sim</value>
                <value>pratiBaza.tabele.Sistem</value>
                <value>pratiBaza.tabele.SistemAlarmi</value>
@@ -180,6 +185,12 @@
   <bean id="obdServis" class="pratiBaza.servisImpl.ObdServisImpl">
         <property name="obdDAO" ref="obdDAO"></property>
   </bean>
+   <bean id="obdPoslednjiDAO" class="pratiBaza.daoImpl.ObdPoslednjiDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="obdPoslednjiServis" class="pratiBaza.servisImpl.ObdPoslednjiServisImpl">
+        <property name="obdPoslednjiDAO" ref="obdPoslednjiDAO"></property>
+  </bean>
   <bean id="objekatDAO" class="pratiBaza.daoImpl.ObjektiDAOImpl">
         <property name="sessionFactory" ref="sessionFactory" />
   </bean>
@@ -204,6 +215,30 @@
   </bean>
   <bean id="partnerServis" class="pratiBaza.servisImpl.PartneriServisImpl">
         <property name="partnerDAO" ref="partnerDAO"></property>
+  </bean>
+  <bean id="projektDAO" class="pratiBaza.daoImpl.ProjektiDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="projektServis" class="pratiBaza.servisImpl.ProjektiServisImpl">
+        <property name="projektDAO" ref="projektDAO"></property>
+  </bean>
+  <bean id="racunDAO" class="pratiBaza.daoImpl.RacuniDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="racunServis" class="pratiBaza.servisImpl.RacuniServisImpl">
+        <property name="racunDAO" ref="racunDAO"></property>
+  </bean>
+    <bean id="racunRaspodelaDAO" class="pratiBaza.daoImpl.RacuniRaspodelaDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="racunRaspodelaServis" class="pratiBaza.servisImpl.RacuniRaspodelaServisImpl">
+        <property name="racunRaspodelaDAO" ref="racunRaspodelaDAO"></property>
+  </bean>
+  <bean id="sifraDAO" class="pratiBaza.daoImpl.SifreDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="sifraServis" class="pratiBaza.servisImpl.SifreServisImpl">
+        <property name="sifraDAO" ref="sifraDAO"></property>
   </bean>
   <bean id="proceduraDAO" class="pratiBaza.daoImpl.ProcedureDAOImpl">
         <property name="sessionFactory" ref="sessionFactory" />

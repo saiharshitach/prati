@@ -1,4 +1,4 @@
-package rs.atekom.prati.view.grupe;
+package rs.atekom.prati.view.projekti;
 
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
@@ -17,39 +17,39 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
-import pratiBaza.tabele.Grupe;
+import pratiBaza.tabele.Projekti;
 import rs.atekom.prati.server.Servis;
 import rs.atekom.prati.view.OpstiView;
 import rs.atekom.prati.view.OpstiViewInterface;
 
-@NavigatorViewName("grupe") // an empty view name will also be the default view
-@MenuCaption("Групе")
-@MenuIcon(VaadinIcons.GROUP)
-public class GrupeView extends OpstiView implements OpstiViewInterface{
+@NavigatorViewName("projekti") // an empty view name will also be the default view
+@MenuCaption("Пројекти")
+@MenuIcon(VaadinIcons.BOOK)
+public class ProjektiView extends OpstiView implements OpstiViewInterface{
 
 	private static final long serialVersionUID = 1L;
-	public final String VIEW_NAME = "grupe";
-	private Grid<Grupe> tabela;
-	private ListDataProvider<Grupe> dataProvider;
-	private SerializablePredicate<Grupe> filterPredicate;
-	private ArrayList<Grupe> pocetno, lista;
-	private GrupeLogika viewLogika;
-	private GrupeForma forma;
-	private Grupe izabrani;
-
-	public GrupeView() {
-		viewLogika = new GrupeLogika(this);
-		forma = new GrupeForma(viewLogika);
+	public final String VIEW_NAME = "projekti";
+	private Grid<Projekti> tabela;
+	private ListDataProvider<Projekti> dataProvider;
+	private SerializablePredicate<Projekti> filterPredicate;
+	private ArrayList<Projekti> pocetno, lista;
+	private ProjektiLogika viewLogika;
+	private ProjektiForma forma;
+	private Projekti izabrani;
+	
+	public ProjektiView() {
+		viewLogika = new ProjektiLogika(this);
+		forma = new ProjektiForma(viewLogika);
 		forma.removeStyleName("visible");
 		forma.setEnabled(false);
 		
 		buildToolbar();
 		buildTable();
 		
-		tabela.addSelectionListener(new SelectionListener<Grupe>() {
+		tabela.addSelectionListener(new SelectionListener<Projekti>() {
 			private static final long serialVersionUID = 1L;
 			@Override
-			public void selectionChange(SelectionEvent<Grupe> event) {
+			public void selectionChange(SelectionEvent<Projekti> event) {
 				if(event.getFirstSelectedItem().isPresent()) {
 					izabrani = event.getFirstSelectedItem().get();
 				}else {
@@ -76,31 +76,6 @@ public class GrupeView extends OpstiView implements OpstiViewInterface{
 		
 		viewLogika.init();
 	}
-	
-	@Override
-	public void buildTable() {
-		tabela = new Grid<Grupe>();
-		pocetno = new ArrayList<Grupe>();
-		updateTable();
-		tabela.setSizeFull();
-		tabela.setStyleName("list");
-		tabela.setSelectionMode(SelectionMode.SINGLE);
-		
-		if(isSistem()) {
-			tabela.addColumn(grupe -> grupe.getSistemPretplatnici() == null ? "" : grupe.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
-		}
-		tabela.addColumn(Grupe::getNaziv).setCaption("назив");
-		tabela.addColumn(Grupe::getOpis).setCaption("опис");
-		tabela.addComponentColumn(grupe -> {CheckBox chb = new CheckBox(); if(grupe.isAktivan()) {chb.setValue(true);} return chb;}).setCaption("активан").setStyleGenerator(uredjaji -> "v-align-right");
-		if(isSistem() || (korisnik.isAdmin() && korisnik.getOrganizacija() == null)) {
-			tabela.addColumn(grupe -> grupe.getOrganizacija() == null ? "" : grupe.getOrganizacija().getNaziv()).setCaption("организација");
-		}
-		if(isSistem()) {
-			tabela.addComponentColumn(grupe -> {CheckBox chb = new CheckBox(); if(grupe.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(uredjaji -> "v-align-right");
-		}
-		tabela.addColumn(Grupe::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(uredjaji -> "v-align-right");
-		tabela.addColumn(Grupe::getKreirano, new DateRenderer(DANSATFORMAT)).setCaption("креирано").setStyleGenerator(uredjaji -> "v-align-right");
-	}
 
 	@Override
 	public void enter(ViewChangeEvent event) {
@@ -108,13 +83,39 @@ public class GrupeView extends OpstiView implements OpstiViewInterface{
 	}
 	
 	@Override
+	public void buildTable() {
+		tabela = new Grid<Projekti>();
+		pocetno = new ArrayList<Projekti>();
+		updateTable();
+		tabela.setSizeFull();
+		tabela.setStyleName("list");
+		tabela.setSelectionMode(SelectionMode.SINGLE);
+		
+		if(isSistem()) {
+			tabela.addColumn(projekti -> projekti.getSistemPretplatnici() == null ? "" : projekti.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
+		}
+		tabela.addColumn(Projekti::getNaziv).setCaption("назив");
+		tabela.addColumn(Projekti::getSifra).setCaption("шифра");
+		tabela.addColumn(projekti -> projekti.getPartner() == null ? "" : projekti.getPartner().getNaziv()).setCaption("партнер");
+		tabela.addColumn(Projekti::getOpis).setCaption("опис");
+		if(isSistem() || (korisnik.isAdmin() && korisnik.getOrganizacija() == null)) {
+			tabela.addColumn(projekti -> projekti.getOrganizacija() == null ? "" : projekti.getOrganizacija().getNaziv()).setCaption("организација");
+		}
+		if(isSistem()) {
+			tabela.addComponentColumn(projekti -> {CheckBox chb = new CheckBox(); if(projekti.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("izbrisan").setStyleGenerator(objekti -> "v-align-right");
+		}
+		tabela.addColumn(Projekti::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(objekti -> "v-align-right");
+		tabela.addColumn(Projekti::getKreirano, new DateRenderer(DANSATFORMAT)).setCaption("креирано").setStyleGenerator(objekti -> "v-align-right");
+	}
+
+	@Override
 	public void ocistiIzbor() {
 		tabela.getSelectionModel().deselectAll();
 	}
 
 	@Override
 	public void izaberiRed(Object red) {
-		tabela.getSelectionModel().select((Grupe)red);
+		tabela.getSelectionModel().select((Projekti)red);
 	}
 
 	@Override
@@ -128,26 +129,25 @@ public class GrupeView extends OpstiView implements OpstiViewInterface{
 
 	@Override
 	public void izmeniPodatak(Object podatak) {
-		Grupe grupa = (Grupe)podatak;
-		if(grupa != null) {
+		Projekti projekt = (Projekti)podatak;
+		if(projekt != null) {
 			forma.addStyleName("visible");
 			forma.setEnabled(true);
 		}else {
 			forma.removeStyleName("visible");
 			forma.setEnabled(false);
 		}
-		forma.izmeniPodatak(grupa);
+		forma.izmeniPodatak(projekt);
 	}
 
 	@Override
 	public void ukloniPodatak() {
 		if(izabrani != null) {
 			if(!izabrani.isIzbrisan()) {
-				Servis.grupeObjekatServis.izbrisiSveGrupaObjekti(izabrani);//brišem sve kombinacije grupaObjekat po izabranoj grupi
-				Servis.grupeServis.izbrisiGrupu(izabrani);
-				pokaziPorukuUspesno("група " + izabrani.getNaziv() + " је избрисана");
+				Servis.projektServis.izbrisiProjekat(izabrani);
+				pokaziPorukuUspesno("пројект избрисан");
 			}else {
-				pokaziPorukuGreska("група је већ избрисана!");
+				pokaziPorukuGreska("пројект већ избрисан!");
 			}
 		}
 	}
@@ -155,7 +155,7 @@ public class GrupeView extends OpstiView implements OpstiViewInterface{
 	@Override
 	public void updateTable() {
 		filter.clear();
-		lista = Servis.grupeServis.vratiGrupe(korisnik);
+		lista = Servis.projektServis.nadjiSveProjekte(korisnik);
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {
@@ -173,13 +173,14 @@ public class GrupeView extends OpstiView implements OpstiViewInterface{
 	@SuppressWarnings("unchecked")
 	@Override
 	public void dodajFilter() {
-		dataProvider = (ListDataProvider<Grupe>)tabela.getDataProvider();
-		filterPredicate = new SerializablePredicate<Grupe>() {
+		dataProvider = (ListDataProvider<Projekti>)tabela.getDataProvider();
+		filterPredicate = new SerializablePredicate<Projekti>() {
 			private static final long serialVersionUID = 1L;
 			@Override
-			public boolean test(Grupe t) {
-				return ((t.getNaziv() == null ? "" : t.getNaziv()).toLowerCase().contains(filter.getValue().toLowerCase()) ||
-						(t.getSistemPretplatnici() == null ? "" : t.getSistemPretplatnici().getNaziv()).toLowerCase().contains(filter.getValue().toLowerCase()));
+			public boolean test(Projekti t) {
+				return ((t.getSistemPretplatnici() == null ? "" : t.getSistemPretplatnici().getNaziv()).toLowerCase().contains(filter.getValue().toLowerCase()) ||
+						(t.getSifra() == null ? "" : t.getSifra()).toLowerCase().contains(filter.getValue().toLowerCase()) ||
+						(t.getPartner() == null ? "" : t.getPartner().getNaziv()).toLowerCase().contains(filter.getValue().toLowerCase()));
 			}
 		};
 		filter.addValueChangeListener(e -> {osveziFilter();});

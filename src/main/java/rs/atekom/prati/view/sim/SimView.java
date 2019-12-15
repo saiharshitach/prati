@@ -82,7 +82,6 @@ public class SimView extends OpstiView implements OpstiViewInterface{
 		tabela = new Grid<Sim>();
 		pocetno = new ArrayList<Sim>();
 		updateTable();
-		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
@@ -168,6 +167,7 @@ public class SimView extends OpstiView implements OpstiViewInterface{
 		}else {
 			tabela.setItems(pocetno);
 		}
+		dodajFilter();
 	}
 
 	@Override

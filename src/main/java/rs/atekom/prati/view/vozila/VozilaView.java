@@ -19,7 +19,10 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
 
+import pratiBaza.tabele.Objekti;
 import pratiBaza.tabele.Vozila;
+import pratiBaza.tabele.VozilaSaobracajne;
+import pratiBaza.tabele.VozilaSaobracajne2;
 import rs.atekom.prati.server.Servis;
 import rs.atekom.prati.view.OpstiView;
 import rs.atekom.prati.view.OpstiViewInterface;
@@ -89,7 +92,6 @@ public class VozilaView extends OpstiView implements OpstiViewInterface{
 		tabela = new Grid<Vozila>();
 		pocetno = new ArrayList<Vozila>();
 		updateTable();
-		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
@@ -166,7 +168,16 @@ public class VozilaView extends OpstiView implements OpstiViewInterface{
 	public void ukloniPodatak() {
 		if(izabrani != null) {
 			if(!izabrani.isIzbrisan()) {
+				Objekti objekat = izabrani.getObjekti();
+				VozilaSaobracajne saobr = Servis.saobracajnaServis.nadjiSaobracajnuPoVozilu(izabrani);
+				VozilaSaobracajne2 saobr2 = Servis.saobracajna2Servis.nadjiSaobracajnu2PoBroju(saobr);
+				Servis.saobracajna2Servis.izbrisiSaobracajnu2(saobr2);
+				Servis.saobracajnaServis.izbrisiSaobracajnu(saobr);
 				Servis.voziloServis.izbrisiVozilo(izabrani);
+				if(objekat != null) {
+					objekat.setVozilo(null);
+					Servis.objekatServis.azurirajObjekte(objekat);
+				}
 				pokaziPorukuUspesno("возило избрисано");
 			}else {
 				pokaziPorukuGreska("возило већ избрисано!");
@@ -183,6 +194,7 @@ public class VozilaView extends OpstiView implements OpstiViewInterface{
 		}else {
 			tabela.setItems(pocetno);
 		}
+		dodajFilter();
 	}
 
 	@Override

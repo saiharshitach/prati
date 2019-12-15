@@ -45,7 +45,6 @@ public class SistemSesijeView extends OpstiView implements OpstiViewInterface{
 		tabela = new Grid<SistemSesije>();
 		pocetno = new ArrayList<SistemSesije>();
 		updateTable();
-		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
@@ -99,6 +98,7 @@ public class SistemSesijeView extends OpstiView implements OpstiViewInterface{
 		}else {
 			tabela.setItems(pocetno);
 		}
+		dodajFilter();
 	}
 
 	@Override

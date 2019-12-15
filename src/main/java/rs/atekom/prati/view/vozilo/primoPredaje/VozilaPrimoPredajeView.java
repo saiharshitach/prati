@@ -83,7 +83,6 @@ public class VozilaPrimoPredajeView extends OpstiView implements OpstiViewInterf
 		tabela = new Grid<VozilaPrimoPredaje>();
 		pocetno = new ArrayList<VozilaPrimoPredaje>();
 		updateTable();
-		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
@@ -168,6 +167,7 @@ public class VozilaPrimoPredajeView extends OpstiView implements OpstiViewInterf
 		}else {
 			tabela.setItems(pocetno);
 		}
+		dodajFilter();
 	}
 
 	@Override

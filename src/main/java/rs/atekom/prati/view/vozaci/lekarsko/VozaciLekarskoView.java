@@ -158,6 +158,7 @@ public class VozaciLekarskoView extends OpstiView implements OpstiViewInterface{
 		}else {
 			tabela.setItems(pocetno);
 		}
+		dodajFilter();
 	}
 	
 	@Override

@@ -113,7 +113,6 @@ public class ZoneView extends OpstiPanelView implements OpstiViewInterface{
 		tabela = new Grid<Zone>();
 		pocetno = new ArrayList<Zone>();
 		updateTable();
-		dodajFilter();
 		tabela.setSizeFull();
 		//tabela.setStyleName("list");
 		tabela.addStyleName(ValoTheme.TABLE_BORDERLESS);
@@ -200,6 +199,7 @@ public class ZoneView extends OpstiPanelView implements OpstiViewInterface{
 		}else {
 			tabela.setItems(pocetno);
 		}
+		dodajFilter();
 	}
 
 	@Override

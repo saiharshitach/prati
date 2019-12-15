@@ -15,7 +15,7 @@ import ar.com.fdvs.dj.domain.constants.Font;
 import ar.com.fdvs.dj.domain.constants.HorizontalAlign;
 import ar.com.fdvs.dj.domain.constants.Page;
 import pratiBaza.pomocne.StanjeOBD;
-import pratiBaza.tabele.Obd;
+import pratiBaza.tabele.ObdPoslednji;
 import pratiBaza.tabele.Objekti;
 import rs.atekom.prati.server.Servis;
 
@@ -140,8 +140,9 @@ public class StanjeOBDIzvestaj extends PrintPreviewReport<StanjeOBD>{
 	
 	private List<StanjeOBD> obracun(ArrayList<Objekti> objekti, Timestamp datumVremeDo){
 		lista.clear();
-		ArrayList<Obd> obdLista = Servis.obdServis.nadjiObdPoslednji(objekti, datumVremeDo);
-		for(Obd obd : obdLista) {
+		//ArrayList<Obd> obdLista = Servis.obdServis.nadjiObdPoslednji(objekti, datumVremeDo);
+		ArrayList<ObdPoslednji> obdLista = Servis.obdPoslednjiServis.vratiListuObdPoslednjih(objekti);
+		for(ObdPoslednji obd : obdLista) {
 			StanjeOBD stanje = new StanjeOBD(obd.getObjekti().getOznaka(), obd.getUkupnoKm(), obd.getUkupnoGorivo(), obd.getUkupnoVreme());
 			lista.add(stanje);
 		}

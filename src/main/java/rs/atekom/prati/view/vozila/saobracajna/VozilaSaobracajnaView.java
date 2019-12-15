@@ -20,6 +20,7 @@ import com.vaadin.ui.renderers.DateRenderer;
 
 import pratiBaza.tabele.Vozila;
 import pratiBaza.tabele.VozilaSaobracajne;
+import pratiBaza.tabele.VozilaSaobracajne2;
 import rs.atekom.prati.server.Servis;
 import rs.atekom.prati.view.OpstiView;
 import rs.atekom.prati.view.OpstiViewInterface;
@@ -89,7 +90,6 @@ public class VozilaSaobracajnaView extends OpstiView implements OpstiViewInterfa
 		tabela = new Grid<VozilaSaobracajne>();
 		pocetno = new ArrayList<VozilaSaobracajne>();
 		updateTable();
-		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
@@ -166,6 +166,8 @@ public class VozilaSaobracajnaView extends OpstiView implements OpstiViewInterfa
 			if(!izabrani.isIzbrisan()) {
 				Vozila izabrano = izabrani.getVozilo();
 				izabrano.setSaobracajna(null);
+				VozilaSaobracajne2 saobr2 = Servis.saobracajna2Servis.nadjiSaobracajnu2PoBroju(izabrani);
+				Servis.saobracajna2Servis.izbrisiSaobracajnu2(saobr2);
 				Servis.saobracajnaServis.izbrisiSaobracajnu(izabrani);
 				Servis.voziloServis.azurirajVozilo(izabrano);
 				pokaziPorukuUspesno("саобраћајна избрисана");
@@ -185,6 +187,7 @@ public class VozilaSaobracajnaView extends OpstiView implements OpstiViewInterfa
 		}else {
 			tabela.setItems(pocetno);
 		}
+		dodajFilter();
 	}
 
 	@Override

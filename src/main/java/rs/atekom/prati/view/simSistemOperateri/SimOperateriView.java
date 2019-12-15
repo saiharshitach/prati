@@ -82,7 +82,6 @@ public class SimOperateriView extends OpstiView implements OpstiViewInterface{
 		tabela = new Grid<SistemOperateri>();
 		pocetno = new ArrayList<SistemOperateri>();
 		updateTable();
-		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
@@ -149,6 +148,7 @@ public class SimOperateriView extends OpstiView implements OpstiViewInterface{
 		}else {
 			tabela.setItems(pocetno);
 		}
+		dodajFilter();
 	}
 
 	@Override

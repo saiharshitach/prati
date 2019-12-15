@@ -78,7 +78,7 @@ public class VozilaForma extends OpstaForma implements OpstaFormaInterface{
 				objekti.clear();
 				if(event.getValue() != null) {
 					organizacije.setItems(Servis.organizacijaServis.nadjiSveOrganizacije(event.getValue(), true));
-					objekti.setItems(Servis.objekatServis.vratiObjektePoPretplatniku(event.getValue(), organizacije.getValue(), true));
+					objekti.setItems(Servis.objekatServis.nadjiSveObjekteBezVozila(event.getValue(), null));
 				}
 			}
 		});
@@ -88,11 +88,7 @@ public class VozilaForma extends OpstaForma implements OpstaFormaInterface{
 			@Override
 			public void valueChange(ValueChangeEvent<Organizacije> event) {
 				objekti.clear();
-				if(event.getValue() != null) {
-					objekti.setItems(Servis.objekatServis.vratiObjektePoPretplatniku(pretplatnici.getValue(), event.getValue(),true));
-				}else {
-					objekti.setItems(Servis.objekatServis.vratiObjektePoPretplatniku(pretplatnici.getValue(), null, true));
-				}
+				objekti.setItems(Servis.objekatServis.nadjiSveObjekteBezVozila(pretplatnici.getValue(), event.getValue()));
 			}
 		});
 		
@@ -223,25 +219,6 @@ public class VozilaForma extends OpstaForma implements OpstaFormaInterface{
 		vozilo.setMaliServisMeseci(Integer.parseInt(maliServisMeseci.getValue()));
 		vozilo.setVelikiServisKm(Integer.parseInt(velikiServisKm.getValue()));
 		vozilo.setVelikiServisMeseci(Integer.parseInt(velikiServisMeseci.getValue()));
-		/*try {
-			vozilo.setDatumPoslednjeRegistracije(dateDatum(datumPoslednjeRegistracije.getValue()));
-		}catch (Exception e) {
-			vozilo.setDatumRegistracije(null);
-		}
-		try {
-			vozilo.setMaliPoslednjiDatum(dateDatum(maliPoslednjiDatum.getValue()));
-		}catch (Exception e) {
-			vozilo.setMaliPoslednjiDatum(null);
-		}
-		vozilo.setMaliPoslednjiGPSkm(Float.parseFloat(maliPoslednjiGPSkm.getValue()));
-		vozilo.setMaliPoslednjiOBDkm(Integer.parseInt(maliPoslednjiOBDkm.getValue()));
-		try {
-			vozilo.setVelikiPoslednjiDatum(dateDatum(velikiPoslednjiDatum.getValue()));
-		}catch (Exception e) {
-			vozilo.setVelikiPoslednjiDatum(null);
-		}
-		vozilo.setVelikiPoslednjiGPSkm(Float.parseFloat(velikiPoslednjiGPSkm.getValue()));
-		vozilo.setVelikiPoslednjiOBDkm(Integer.parseInt(velikiPoslednjiOBDkm.getValue()));**/
 		vozilo.setTeretno(teretno.getValue());
 		vozilo.setIzbrisan(izbrisan.getValue());
 		return vozilo;
@@ -260,7 +237,10 @@ public class VozilaForma extends OpstaForma implements OpstaFormaInterface{
 			organizacije.clear();
 			organizacije.setEnabled(true);
 		}
+		
 		objekti.clear();
+		objekti.setEnabled(true);
+		
 		registracija.clear();
 		marka.clear();
 		model.clear();

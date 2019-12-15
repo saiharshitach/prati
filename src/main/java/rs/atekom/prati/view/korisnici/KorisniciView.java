@@ -84,7 +84,6 @@ public class KorisniciView extends OpstiView implements OpstiViewInterface{
 		tabela = new Grid<Korisnici>();
 		pocetno = new ArrayList<Korisnici>();
 		updateTable();
-		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
@@ -176,6 +175,7 @@ public class KorisniciView extends OpstiView implements OpstiViewInterface{
 		}else {
 			tabela.setItems(pocetno);
 		}
+		dodajFilter();
 	}
 
 	@Override

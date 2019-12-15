@@ -83,7 +83,6 @@ public class OrganizacijeView extends OpstiView implements OpstiViewInterface{
 		tabela = new Grid<Organizacije>();
 		pocetno = new ArrayList<Organizacije>();
 		updateTable();
-		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
@@ -159,6 +158,7 @@ public class OrganizacijeView extends OpstiView implements OpstiViewInterface{
 		}else {
 			tabela.setItems(pocetno);
 		}
+		dodajFilter();
 	}
 
 	@Override

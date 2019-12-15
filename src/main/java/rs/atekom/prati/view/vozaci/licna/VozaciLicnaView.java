@@ -81,7 +81,6 @@ public class VozaciLicnaView extends OpstiView implements OpstiViewInterface{
 		tabela = new Grid<VozaciLicna>();
 		pocetno = new ArrayList<VozaciLicna>();
 		updateTable();
-		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
@@ -163,6 +162,7 @@ public class VozaciLicnaView extends OpstiView implements OpstiViewInterface{
 		}else {
 			tabela.setItems(pocetno);
 		}
+		dodajFilter();
 	}
 
 	@Override

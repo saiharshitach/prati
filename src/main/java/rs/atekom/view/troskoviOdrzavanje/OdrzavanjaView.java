@@ -91,7 +91,6 @@ public class OdrzavanjaView extends OpstiView implements OpstiViewInterface{
 		tabela = new Grid<Troskovi>();
 		pocetno = new ArrayList<Troskovi>();
 		updateTable();
-		dodajFilter();
 		tabela.setSizeFull();
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
@@ -229,6 +228,7 @@ public class OdrzavanjaView extends OpstiView implements OpstiViewInterface{
 		}else {
 			tabela.setItems(pocetno);
 		}
+		dodajFilter();
 	}
 
 	@Override
