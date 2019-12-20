@@ -286,7 +286,11 @@ public class RuptelaProtokol {
 			obd.setTemperatura(rezultat - 40);
 		}
 		    break;
-		case 207: obd.setNivoGoriva((float)(rezultat * 0.4));//nivo goriva u %
+		case 207: if(rezultat < 251) {
+			obd.setNivoGoriva((float)(rezultat * 0.4));//nivo goriva u %
+		}else {
+			obd.setNivoGoriva(0.0f);
+		}
 		    break;
 		case 251: if(rezultat == 1) {    //stanje kontakta - virtual ignition
 			javljanje.setKontakt(true);

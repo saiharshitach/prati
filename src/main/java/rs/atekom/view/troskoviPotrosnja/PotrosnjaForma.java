@@ -20,6 +20,7 @@ import rs.atekom.prati.view.komponente.Celobrojni;
 import rs.atekom.prati.view.komponente.ComboGorivo;
 import rs.atekom.prati.view.komponente.ComboObjektiSaVozilima;
 import rs.atekom.prati.view.komponente.ComboPartneri;
+import rs.atekom.prati.view.komponente.ComboRacuni;
 import rs.atekom.prati.view.komponente.Datum;
 import rs.atekom.prati.view.komponente.Decimalni;
 import rs.atekom.prati.view.komponente.Tekst;
@@ -38,10 +39,14 @@ public class PotrosnjaForma extends OpstaForma implements OpstaFormaInterface{
 	private Decimalni cena, pdvIznos, ukupno, kolicina;
 	private Celobrojni pdvProcenat;
 	private ComboObjektiSaVozilima objekti;
+	private ComboRacuni racuni;
 	
 	public PotrosnjaForma(PotrosnjaLogika log) {
 		logika = log;
 		partneri = new ComboPartneri(logika.view.korisnik, "партнери", true, true);
+		if(logika.view.zbirni != null) {
+			racuni = new ComboRacuni(pretplatnici.getValue(), organizacije.getValue(), "рачуни", false, true);
+		}
 		datum = new Datum("датум", true);
 		objekti = new ComboObjektiSaVozilima(pretplatnici.getValue(), organizacije.getValue(), "објекти", true, true);
 		brojRacuna = new Tekst("број рачуна", false);
@@ -123,6 +128,9 @@ public class PotrosnjaForma extends OpstaForma implements OpstaFormaInterface{
 		});
 		
 		layout.addComponent(partneri);
+		if(logika.view.zbirni != null) {
+			layout.addComponent(racuni);
+		}
 		layout.addComponent(datum);
 		layout.addComponent(objekti);
 		layout.addComponent(brojRacuna);
@@ -165,11 +173,12 @@ public class PotrosnjaForma extends OpstaForma implements OpstaFormaInterface{
 		}else {
 			trosak = (Troskovi)podatak;
 		}
+		trosak.setObjekti(objekti.getValue());
 		trosak.setSistemPretplatnici(pretplatnici.getValue());
 		trosak.setOrganizacija(null);
 		trosak.setPartner(partneri.getValue());
+		trosak.setRacun(null);
 		trosak.setDatumVreme(new Timestamp(dateDatum(datum.getValue()).getTime()));
-		trosak.setObjekti(objekti.getValue());
 		trosak.setBrojRacuna(brojRacuna.getValue());
 		trosak.setTipServisa(0);
 		trosak.setSistemGoriva(gorivo.getValue());
@@ -179,6 +188,7 @@ public class PotrosnjaForma extends OpstaForma implements OpstaFormaInterface{
 		trosak.setPdvIznos((trosak.getKolicina() * trosak.getCena() * trosak.getPdvProcenat())/100);
 		trosak.setUkupno(trosak.getKolicina() * trosak.getCena() + trosak.getPdvIznos());
 		trosak.setOpis(opis.getValue());
+		trosak.setIzbrisan(izbrisan.getValue());
 		return trosak;
 	}
 
@@ -186,19 +196,19 @@ public class PotrosnjaForma extends OpstaForma implements OpstaFormaInterface{
 	public void ocistiPodatak() {
 		if(logika.view.korisnik.getSistemPretplatnici() != null) {
 			pretplatnici.setValue(logika.view.korisnik.getSistemPretplatnici());
-		}else {
-			pretplatnici.clear();
-		}
+			}else {
+				pretplatnici.clear();
+				}
 		if(logika.view.korisnik.getOrganizacija() != null) {
 			organizacije.setValue(logika.view.korisnik.getOrganizacija());
-		}else {
-			organizacije.clear();
-			organizacije.setEnabled(true);
-		}
+			}else {
+				organizacije.clear();
+				organizacije.setEnabled(true);
+				}
 		partneri.clear();
 		datum.clear();
-		objekti.clear();
 		brojRacuna.clear();
+		objekti.clear();
 		gorivo.clear();
 		kolicina.setValue(String.valueOf(0));
 		cena.setValue(String.valueOf(0));
@@ -222,6 +232,13 @@ public class PotrosnjaForma extends OpstaForma implements OpstaFormaInterface{
 			}catch (Exception e) {
 				logika.view.pokaziPorukuGreska("грешка у преузимању партнера!");
 				partneri.setValue(null);
+			}
+			if(logika.view.zbirni != null) {
+				try {
+					racuni.setValue(trosak.getRacun());
+				}catch (Exception e) {
+					racuni.setValue(null);
+				}
 			}
 			if(trosak.getDatumVreme() != null) {
 				datum.setValue(localDatum(new Date(trosak.getDatumVreme().getTime())));
@@ -288,6 +305,11 @@ public class PotrosnjaForma extends OpstaForma implements OpstaFormaInterface{
 		}
 		if(gorivo.getValue() == null) {
 			sveIma = false;
+		}
+		if(logika.view.zbirni != null) {
+			if(racuni.getValue() == null) {
+				sveIma = false;
+			}
 		}
 		if(cena.getValue() == null || pdvProcenat.getValue() == null || datum.getValue() == null || kolicina.getValue() == null) {
 			sveIma = false;

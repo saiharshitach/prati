@@ -90,7 +90,7 @@ public class ZoneIzvestaj extends PrintPreviewReport<Javljanja>{
 	}
 	
 	public SerializableSupplier<List<? extends Javljanja>> vratiSeriju(ArrayList<Objekti> objekti, Timestamp datumVremeOd, Timestamp datumVremeDo, ArrayList<SistemAlarmi> alarmi){
-		SerializableSupplier<List<? extends Javljanja>> serija = () -> obracun(objekti, datumVremeOd, datumVremeDo, alarmi);;
+		SerializableSupplier<List<? extends Javljanja>> serija = () -> lista;
 		return serija;
 	}
 	
@@ -98,7 +98,7 @@ public class ZoneIzvestaj extends PrintPreviewReport<Javljanja>{
 		lista.clear();
 		for(Objekti objekat : objekti) {
 			ArrayList<Javljanja> javljanja = Servis.javljanjeServis.vratiJavljanjaObjektaOdDoSaAlarmimaZona(objekat, datumVremeOd, datumVremeDo, alarmi);
-			Collections.sort(javljanja, (o1, o2) -> o1.getDatumVreme().compareTo(o2.getDatumVreme()));
+			//Collections.sort(javljanja, (o1, o2) -> o1.getDatumVreme().compareTo(o2.getDatumVreme()));
 			lista.addAll(javljanja);
 		}
 		return lista;

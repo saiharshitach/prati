@@ -1,9 +1,7 @@
 package rs.atekom.prati.view.vozila.zbirni;
 
 import com.vaadin.server.Page;
-
 import pratiBaza.tabele.Racuni;
-import pratiBaza.tabele.Troskovi;
 import rs.atekom.prati.Prati;
 import rs.atekom.prati.server.Servis;
 import rs.atekom.prati.view.LogikaInterface;
@@ -60,8 +58,22 @@ public class RacuniLogika implements LogikaInterface{
 
 	@Override
 	public void sacuvajPodatak(Object podatak) {
-		// TODO Auto-generated method stub
-		
+		Racuni racun = (Racuni)podatak;
+		view.ocistiIzbor();
+		view.izmeniPodatak(null);
+		setFragmentParametar("");
+		if(racun.getId() != null) {
+			Servis.racunServis.izmeniRacun(racun);
+			view.pokaziPorukuUspesno("подаци рачуна измењени");
+		}else {
+			try {
+				Servis.racunServis.unesiRacun(racun);
+				view.pokaziPorukuUspesno("подаци рачуна сачувани");
+			}catch (Exception e) {
+				view.pokaziPorukuGreska("подаци рачуна због грешке нису сачувани!");
+			}
+		}
+		view.updateTable();
 	}
 
 	@Override
@@ -79,7 +91,7 @@ public class RacuniLogika implements LogikaInterface{
 	public void noviPodatak() {
 		view.ocistiIzbor();
 		setFragmentParametar("new");
-		view.izmeniPodatak(new Troskovi());
+		view.izmeniPodatak(new Racuni());
 	}
 
 	@Override

@@ -11,11 +11,11 @@ public class ComboGorivo extends ComboBox<SistemGoriva>{
 
 	public ComboGorivo(String naziv, boolean prazno, boolean indicator) {
 		setCaption(naziv);
-		setPlaceholder("објекти...");
+		setPlaceholder("гориво...");
 		setItemCaptionGenerator(SistemGoriva::getNaziv);
 		setItems(lista());
 		setEmptySelectionAllowed(prazno);
-		setRequiredIndicatorVisible(true);
+		setRequiredIndicatorVisible(indicator);
 		setWidth("100%");
 	}
 	

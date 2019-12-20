@@ -56,25 +56,29 @@ public class GrupeObjektiView extends OpstiView implements OpstiViewInterface{
 			@Override
 			public void buttonClick(ClickEvent event) {
 				if(grupeCombo.getValue() != null) {
-					ConfirmDialog.show(view.getUI(), "Провера", "Сачувај унете податке?", "да", "не", new ConfirmDialog.Listener() {
-					private static final long serialVersionUID = 1L;
-					@Override
-					public void onClose(ConfirmDialog dialog) {
-						if(dialog.isConfirmed()) {
-							Servis.grupeObjekatServis.izbrisiSveGrupaObjekti(grupeCombo.getValue());
-							for(Objekti objekat: tabela.getSelectedItems()) {
-								GrupeObjekti grupaObjekat = new GrupeObjekti();
-								grupaObjekat.setSistemPretplatnici(pretplatniciCombo.getValue());
-								grupaObjekat.setOrganizacija(organizacijeCombo.getValue());
-								grupaObjekat.setGrupe(grupeCombo.getValue());
-								grupaObjekat.setObjekti(objekat);
-								Servis.grupeObjekatServis.unesiGrupaObjekat(grupaObjekat);
-								}
-							pokaziPorukuUspesno("подаци сачувани");
-							}
-						}
-					});
+					if(tabela.getSelectedItems().size() > 50) {
+						pokaziPorukuGreska("број возила у групи не може бити већи од 50!");
 					}else {
+						ConfirmDialog.show(view.getUI(), "Провера", "Сачувај унете податке?", "да", "не", new ConfirmDialog.Listener() {
+						private static final long serialVersionUID = 1L;
+						@Override
+						public void onClose(ConfirmDialog dialog) {
+							if(dialog.isConfirmed()) {
+								Servis.grupeObjekatServis.izbrisiSveGrupaObjekti(grupeCombo.getValue());
+								for(Objekti objekat: tabela.getSelectedItems()) {
+									GrupeObjekti grupaObjekat = new GrupeObjekti();
+									grupaObjekat.setSistemPretplatnici(pretplatniciCombo.getValue());
+									grupaObjekat.setOrganizacija(organizacijeCombo.getValue());
+									grupaObjekat.setGrupe(grupeCombo.getValue());
+									grupaObjekat.setObjekti(objekat);
+									Servis.grupeObjekatServis.unesiGrupaObjekat(grupaObjekat);
+									}
+								pokaziPorukuUspesno("подаци сачувани");
+								}
+							}
+						});
+						}
+				}else {
 						pokaziPorukuGreska("морате одабрати групу!");
 					}
 				}

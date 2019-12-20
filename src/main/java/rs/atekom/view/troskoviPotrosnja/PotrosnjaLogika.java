@@ -9,9 +9,9 @@ import rs.atekom.prati.view.LogikaInterface;
 
 public class PotrosnjaLogika implements LogikaInterface{
 
-	public PotrosnjaView view;
+	public PotrosnjaOpstiView view;
 	
-	public PotrosnjaLogika(PotrosnjaView potrosnjaView) {
+	public PotrosnjaLogika(PotrosnjaOpstiView potrosnjaView) {
 		view = potrosnjaView;
 	}
 

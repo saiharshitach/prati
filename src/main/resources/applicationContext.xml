@@ -62,6 +62,7 @@
     <property name="dataSource" ref="dataSource"></property>
      <property name="annotatedClasses">
             <list>
+               <value>pratiBaza.tabele.EvidencijaVoznji</value>
                <value>pratiBaza.tabele.AlarmiKorisnik</value>
                <value>pratiBaza.tabele.Grupe</value>
                <value>pratiBaza.tabele.GrupeKorisnici</value>
@@ -142,6 +143,12 @@
   </bean>
   <bean id="alarmKorisnikServis" class="pratiBaza.servisImpl.AlarmiKorisnikServisImpl">
         <property name="alarmKorisnikDAO" ref="alarmKorisnikDAO"></property>
+  </bean>
+    <bean id="evidencijaDAO" class="pratiBaza.daoImpl.EvidencijaVoznjiDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="evidencijaServis" class="pratiBaza.servisImpl.EvidencijaVoznjiServisImpl">
+        <property name="evidencijaDAO" ref="evidencijaDAO"></property>
   </bean>
   <bean id="grupaDAO" class="pratiBaza.daoImpl.GrupeDAOImpl">
         <property name="sessionFactory" ref="sessionFactory" />

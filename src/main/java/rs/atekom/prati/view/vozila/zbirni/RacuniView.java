@@ -1,27 +1,23 @@
 package rs.atekom.prati.view.vozila.zbirni;
 
 import java.util.ArrayList;
-import com.github.appreciated.app.layout.annotations.MenuCaption;
-import com.github.appreciated.app.layout.annotations.MenuIcon;
-import com.github.appreciated.app.layout.annotations.NavigatorViewName;
+import java.util.NoSuchElementException;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.event.selection.SelectionEvent;
 import com.vaadin.event.selection.SelectionListener;
-import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.SerializablePredicate;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Grid.SelectionMode;
+import com.vaadin.ui.renderers.DateRenderer;
 import pratiBaza.tabele.Racuni;
-import pratiBaza.tabele.RacuniRaspodela;
-import pratiBaza.tabele.Troskovi;
+import rs.atekom.prati.server.Servis;
 import rs.atekom.prati.view.Opsti;
 import rs.atekom.prati.view.OpstiViewInterface;
 
-@NavigatorViewName("zbirni")
-@MenuCaption("Збирни")
-@MenuIcon(VaadinIcons.WALLET)
+
 public class RacuniView extends Opsti implements OpstiViewInterface{
 	
 	private static final long serialVersionUID = 1L;
@@ -30,14 +26,15 @@ public class RacuniView extends Opsti implements OpstiViewInterface{
 	private ListDataProvider<Racuni> dataProvider;
 	private SerializablePredicate<Racuni> filterPredicate;
 	private ArrayList<Racuni> pocetno, lista;
-	private RacuniLogika viewLogika;
-	private RacuniForma forma;
-	private Racuni izabrani;
+	public RacuniLogika viewLogika;
+	public RacuniForma forma;
+	public Racuni izabrani;
+	public ZbirniRacuniView zbirni;
 	
-	private Grid<RacuniRaspodela> raspodela;
-	private Grid<Troskovi> troskovi;
-	
-	public RacuniView() {
+	public RacuniView(ZbirniRacuniView zbirni) {
+		if(zbirni != null) {
+			this.zbirni = zbirni;
+		}
 		viewLogika = new RacuniLogika(this);
 		forma = new RacuniForma(viewLogika);
 		forma.removeStyleName("visible");
@@ -72,7 +69,7 @@ public class RacuniView extends Opsti implements OpstiViewInterface{
 		barGrid.setExpandRatio(tabela, 1);
 		
 		addComponent(barGrid);
-		addComponent(forma);
+		//addComponent(forma);
 		
 		viewLogika.init();
 	}
@@ -83,56 +80,105 @@ public class RacuniView extends Opsti implements OpstiViewInterface{
 		pocetno = new ArrayList<Racuni>();
 		updateTable();
 		tabela.setSizeFull();
-		tabela.setHeight("25%");
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
+		
+		if(isSistem()) {
+			tabela.addColumn(racuni -> racuni.getSistemPretplatnici() == null ? "" : racuni.getSistemPretplatnici().getNaziv()).setCaption("претплатник");
+		}
+		tabela.addColumn(Racuni::getDatum, new DateRenderer(DANFORMAT)).setCaption("датум").setStyleGenerator(objekti -> "v-align-right");
+		tabela.addColumn(racuni -> racuni.getPartner() == null ? "" : racuni.getPartner().getNaziv()).setCaption("партнер");
+		tabela.addColumn(Racuni::getBrojRacuna).setCaption("број рачуна");
+		tabela.addColumn(racuni -> racuni.getOpis() == null ? "" : racuni.getOpis()).setCaption("опис");
+		tabela.addColumn(racuni -> racuni.getUradio() == null ? "" : racuni.getUradio().toString()).setCaption("урадио");
+		if(isSistem() || (korisnik.isAdmin() && korisnik.getOrganizacija() == null)) {
+			tabela.addColumn(racuni -> racuni.getOrganizacija() == null ? "" : racuni.getOrganizacija() == null ? "" : racuni.getOrganizacija().getNaziv()).setCaption("организација");
+		}
+		if(isSistem()) {
+			tabela.addComponentColumn(racuni -> {CheckBox chb = new CheckBox(); if(racuni.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(objekti -> "v-align-right");
+		}
+		tabela.addColumn(Racuni::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(objekti -> "v-align-right");
+		tabela.addColumn(Racuni::getKreirano, new DateRenderer(DANSATFORMAT)).setCaption("креирано").setStyleGenerator(objekti -> "v-align-right");
 	}
 
 	@Override
 	public void ocistiIzbor() {
-		
+		tabela.getSelectionModel().deselectAll();
 	}
 
 	@Override
 	public void izaberiRed(Object red) {
-		// TODO Auto-generated method stub
-		
+		tabela.getSelectionModel().select((Racuni)red);
 	}
 
 	@Override
 	public Object dajIzabraniRed() {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			return tabela.getSelectionModel().getFirstSelectedItem().get();
+		}catch (NoSuchElementException e) {
+			return null;
+		}
 	}
 
 	@Override
 	public void izmeniPodatak(Object podatak) {
-		// TODO Auto-generated method stub
-		
+		Racuni racun = (Racuni)podatak;
+		if(racun != null) {
+			forma.addStyleName("visible");
+			forma.setEnabled(true);
+		}else {
+			forma.removeStyleName("visible");
+			forma.setEnabled(false);
+		}
+		forma.izmeniPodatak(racun);
 	}
 
 	@Override
 	public void ukloniPodatak() {
-		// TODO Auto-generated method stub
+		if(izabrani != null) {
+			if(!izabrani.isIzbrisan()) {
+				Servis.racunServis.izbrisiRacun(izabrani);
+				pokaziPorukuUspesno("рачун избрисан");
+			}else {
+				pokaziPorukuGreska("рачун већ избрисан!");
+			}
+		}
 		
 	}
 
 	@Override
 	public void updateTable() {
-		// TODO Auto-generated method stub
-		
+		filter.clear();
+		lista = Servis.racunServis.nadjiRacunePoPretplatniku(korisnik.getSistemPretplatnici(), korisnik.getOrganizacija(), true, null, null, null);
+		if(lista != null) {
+			tabela.setItems(lista);
+		}else {
+			tabela.setItems(pocetno);
+		}
+		dodajFilter();
 	}
 
 	@Override
 	public void osveziFilter() {
-		// TODO Auto-generated method stub
-		
+		dataProvider.setFilter(filterPredicate);
+		dataProvider.refreshAll();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void dodajFilter() {
-		// TODO Auto-generated method stub
-		
+		dataProvider = (ListDataProvider<Racuni>)tabela.getDataProvider();
+		filterPredicate = new SerializablePredicate<Racuni>() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public boolean test(Racuni t) {
+				return ((t.getSistemPretplatnici() == null ? "" : t.getSistemPretplatnici().getNaziv()).toLowerCase().contains(filter.getValue().toLowerCase()) ||
+						(t.getBrojRacuna() == null ? "" : t.getBrojRacuna()).toLowerCase().contains(filter.getValue().toLowerCase()) ||
+						(t.getPartner() == null ? "" : t.getPartner().getNaziv()).toLowerCase().contains(filter.getValue().toLowerCase()));
+			}
+		};
+		filter.addValueChangeListener(e -> {osveziFilter();});
 	}
 
 }
