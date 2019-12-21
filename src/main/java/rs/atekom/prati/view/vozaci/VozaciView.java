@@ -91,8 +91,8 @@ public class VozaciView extends OpstiView implements OpstiViewInterface{
 		tabela.addColumn(vozaci -> vozaci.getKorisnici() == null ? "" : vozaci.getKorisnici().toString()).setCaption("корисник");
 		tabela.addColumn(Vozaci::getJmbg).setCaption("јмбг");
 		tabela.addColumn(Vozaci::getPrebivaliste).setCaption("пребивалиште");
-		tabela.addColumn(Vozaci::getZaposlenOd, new DateRenderer(DANFORMAT)).setCaption("запослен од").setStyleGenerator(objekti -> "v-align-right");
-		tabela.addColumn(Vozaci::getZaposlenDo, new DateRenderer(DANFORMAT)).setCaption("запослен до").setStyleGenerator(objekti -> "v-align-right");
+		tabela.addColumn(Vozaci::getZaposlenOd, new DateRenderer(DANFORMAT)).setCaption("запослен од").setStyleGenerator(vozaci -> "v-align-right");
+		tabela.addColumn(Vozaci::getZaposlenDo, new DateRenderer(DANFORMAT)).setCaption("запослен до").setStyleGenerator(vozaci -> "v-align-right");
 		if(isSistem() || (korisnik.isAdmin() && korisnik.getOrganizacija() == null)) {
 			tabela.addColumn(vozaci -> vozaci.getKorisnici() == null ? "" : vozaci.getKorisnici().getOrganizacija() == null ? "" : 
 			vozaci.getKorisnici().getOrganizacija().getNaziv()).setCaption("организација");

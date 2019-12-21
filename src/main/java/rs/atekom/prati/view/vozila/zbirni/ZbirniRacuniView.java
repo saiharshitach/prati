@@ -286,8 +286,8 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 		racuniHorizontal.addComponent(opis);
 		
 		racuniHorizontal.addComponent(dodajRacun);
-		racuniHorizontal.addComponent(izbrisiRacun);
 		racuniHorizontal.addComponent(sacuvajRacun);
+		racuniHorizontal.addComponent(izbrisiRacun);
 		racuniHorizontal.setComponentAlignment(racuniFilter, Alignment.MIDDLE_LEFT);
 		
 		

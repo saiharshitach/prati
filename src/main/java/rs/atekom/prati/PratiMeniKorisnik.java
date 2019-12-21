@@ -48,6 +48,7 @@ import rs.atekom.prati.view.vozaci.licenca.VozaciLicencaView;
 import rs.atekom.prati.view.vozaci.licna.VozaciLicnaView;
 import rs.atekom.prati.view.vozaci.pasosi.VozaciPasosiView;
 import rs.atekom.prati.view.vozila.VozilaView;
+import rs.atekom.prati.view.vozila.evidencija.EvidencijaVoznjiView;
 import rs.atekom.prati.view.vozila.izvestaji.IzvestajiVozilaView;
 import rs.atekom.prati.view.vozila.saobracajna.VozilaSaobracajnaView;
 import rs.atekom.prati.view.vozila.saobracajna2.VozilaSaobracajna2View;
@@ -139,6 +140,7 @@ public class PratiMeniKorisnik{
         		.add(VozilaSaobracajnaView.class)
         		.add(VozilaSaobracajna2View.class)
         		.add(VozilaOpremaView.class)
+        		.add(EvidencijaVoznjiView.class)
         		.build())
         .add(SubmenuBuilder.get("Возачи", VaadinIcons.USER_CHECK)
         		.add(VozaciView.class)
@@ -201,6 +203,7 @@ public class PratiMeniKorisnik{
 		        		.add(VozilaSaobracajnaView.class)
 		        		.add(VozilaSaobracajna2View.class)
 		        		.add(VozilaOpremaView.class)
+		        		.add(EvidencijaVoznjiView.class)
 		        		.build())
                 .add(SubmenuBuilder.get("Возачи", VaadinIcons.USER_CHECK)
                 		.add(VozaciView.class)

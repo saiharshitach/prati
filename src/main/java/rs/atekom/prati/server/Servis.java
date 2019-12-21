@@ -9,6 +9,7 @@ import com.google.maps.GeoApiContext;
 import pratiBaza.pomocne.Mail;
 import pratiBaza.pomocne.Obracuni;
 import pratiBaza.servis.AlarmiKorisnikServis;
+import pratiBaza.servis.EvidencijaVoznjiServis;
 import pratiBaza.servis.GrupeKorisniciServis;
 import pratiBaza.servis.GrupeObjektiServis;
 import pratiBaza.servis.GrupeServis;
@@ -59,6 +60,7 @@ public class Servis implements ServletContextListener{
 	@SuppressWarnings("unused")
 	private ApplicationContext context;
 	public static AlarmiKorisnikServis alarmKorisnikServis;
+	public static EvidencijaVoznjiServis evidencijaServis;
 	public static GrupeKorisniciServis grupeKorisnikServis;
 	public static GrupeObjektiServis grupeObjekatServis;
 	public static GrupeServis grupeServis;
@@ -121,6 +123,7 @@ public class Servis implements ServletContextListener{
 	public void contextInitialized(ServletContextEvent sce) {
 		context = new ClassPathXmlApplicationContext("applicationContext.xml");
 		alarmKorisnikServis = ApplicationContextProvider.getApplicationContext().getBean("alarmKorisnikServis", AlarmiKorisnikServis.class);
+		evidencijaServis = ApplicationContextProvider.getApplicationContext().getBean("evidencijaServis", EvidencijaVoznjiServis.class);
 		grupeKorisnikServis = ApplicationContextProvider.getApplicationContext().getBean("grupaKorisnikServis", GrupeKorisniciServis.class);
 		grupeObjekatServis = ApplicationContextProvider.getApplicationContext().getBean("grupaObjekatServis", GrupeObjektiServis.class);
 		grupeServis = ApplicationContextProvider.getApplicationContext().getBean("grupaServis", GrupeServis.class);
