@@ -145,7 +145,7 @@ public class ProjektiForma extends OpstaForma implements OpstaFormaInterface{
 
 	@Override
 	public void ocistiPodatak() {
-		if(logika.view.korisnik.getSistemPretplatnici() != null) {
+		if(!logika.view.korisnik.getSistemPretplatnici().isSistem()) {
 			pretplatnici.setValue(logika.view.korisnik.getSistemPretplatnici());
 		}else {
 			pretplatnici.clear();
@@ -165,29 +165,31 @@ public class ProjektiForma extends OpstaForma implements OpstaFormaInterface{
 	@Override
 	public void postaviPodatak(Object podatak) {
 		Projekti projekt = (Projekti)podatak;
-		pretplatnici.setValue(projekt.getSistemPretplatnici());
-		organizacije.setValue(projekt.getOrganizacija());
-		try {
-			naziv.setValue(projekt.getNaziv());
-		}catch (Exception e) {
-			naziv.setValue("");
+		if(projekt.getId() != null) {
+			pretplatnici.setValue(projekt.getSistemPretplatnici());
+			organizacije.setValue(projekt.getOrganizacija());
+			try {
+				naziv.setValue(projekt.getNaziv());
+			}catch (Exception e) {
+				naziv.setValue("");
+			}
+			try {
+				sifra.setValue(projekt.getSifra());
+			}catch (Exception e) {
+				sifra.setValue("");
+			}
+			try {
+				partneri.setValue(projekt.getPartner());
+			}catch (Exception e) {
+				partneri.setValue(null);
+			}
+			try {
+				opis.setValue(projekt.getOpis());
+			}catch (Exception e) {
+				opis.setValue("");
+			}
+			izbrisan.setValue(projekt.isIzbrisan());
 		}
-		try {
-			sifra.setValue(projekt.getSifra());
-		}catch (Exception e) {
-			sifra.setValue("");
-		}
-		try {
-			partneri.setValue(projekt.getPartner());
-		}catch (Exception e) {
-			partneri.setValue(null);
-		}
-		try {
-			opis.setValue(projekt.getOpis());
-		}catch (Exception e) {
-			opis.setValue("");
-		}
-		izbrisan.setValue(projekt.isIzbrisan());
 	}
 
 	@Override
@@ -195,9 +197,11 @@ public class ProjektiForma extends OpstaForma implements OpstaFormaInterface{
 		boolean sveIma = true;
 		if(pretplatnici.getValue() == null) {
 			sveIma = false;
+			System.out.println("pretplatnik");
 		}
 		if(naziv.getValue() == null || naziv.getValue().isEmpty() || naziv.getValue().equals("")) {
 			sveIma = false;
+			System.out.println("naziv");
 		}
 		return sveIma;
 	}

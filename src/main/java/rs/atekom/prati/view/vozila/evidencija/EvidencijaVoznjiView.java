@@ -86,7 +86,7 @@ public class EvidencijaVoznjiView  extends OpstiView implements OpstiViewInterfa
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
 		
-		tabela.addColumn(evidencija -> evidencija.getVoziloNalog() == null ? "" : evidencija.getVoziloNalog()).setCaption("налог");
+		tabela.addColumn(evidencija -> evidencija.getVoziloNalog() == null ? "" : evidencija.getVoziloNalog().getBrojNaloga()).setCaption("налог");
 		tabela.addColumn(evidencija -> evidencija.getVozac() == null ? "" : evidencija.getVozac()).setCaption("возач");
 		tabela.addColumn(evidencija -> evidencija.getRegistracijaVozila() == null ? "" : evidencija.getRegistracijaVozila()).setCaption("регистрација");
 		tabela.addColumn(evidencija -> evidencija.getRelacija() == null ? "" : evidencija.getRelacija()).setCaption("релација");
@@ -192,8 +192,8 @@ public class EvidencijaVoznjiView  extends OpstiView implements OpstiViewInterfa
 			private static final long serialVersionUID = 1L;
 			@Override
 			public boolean test(EvidencijaVoznji t) {
-				return ((t.getVoziloNalog() == null ? "" : t.getVoziloNalog().toLowerCase()).contains(filter.getValue().toLowerCase()) ||
-						(t.getVoziloNalog() == null ? "" : t.getVoziloNalog().toLowerCase()).contains(filter.getValue().toLowerCase()));
+				return ((t.getVoziloNalog() == null ? "" : t.getVoziloNalog().getBrojNaloga().toLowerCase()).contains(filter.getValue().toLowerCase()) ||
+						(t.getVoziloNalog() == null ? "" : t.getVoziloNalog().getBrojNaloga().toLowerCase()).contains(filter.getValue().toLowerCase()));
 			}
 		};
 		filter.addValueChangeListener(e -> {osveziFilter();});

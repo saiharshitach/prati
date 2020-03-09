@@ -37,7 +37,6 @@ public class VozilaSaobracajnaForma extends OpstaForma implements OpstaFormaInte
 		brojSaobracajne = new Tekst("број саобраћајне", true);
 		datumIzdavanja = new Datum("датум издавања", true);
 		izdao = new Tekst("издао", true);
-		homologacija = new Tekst("хомологација", true);
 		sasija = new Tekst("број шасије", true);
 		brojMotora = new Tekst("број мотора", true);
 		snagaMotora = new Decimalni("снага мотора", false);
@@ -50,6 +49,7 @@ public class VozilaSaobracajnaForma extends OpstaForma implements OpstaFormaInte
 		kategorija = new Tekst("категорија", false);
 		nosivost = new Tekst("носивост", false);
 		mestaSedenja = new Celobrojni("места за седење", false);
+		homologacija = new Tekst("хомологација", false);
 		izbrisan = new CheckBox("избрисан");
 		
 		pretplatnici.addValueChangeListener(new ValueChangeListener<SistemPretplatnici>() {
@@ -376,9 +376,6 @@ public class VozilaSaobracajnaForma extends OpstaForma implements OpstaFormaInte
 			sveIma = false;
 		}
 		if(izdao.getValue() == null || izdao.getValue().isEmpty()) {
-			sveIma = false;
-		}
-		if(homologacija.getValue() == null || homologacija.getValue().isEmpty()) {
 			sveIma = false;
 		}
 		if(sasija.getValue() == null || sasija.getValue().isEmpty()) {

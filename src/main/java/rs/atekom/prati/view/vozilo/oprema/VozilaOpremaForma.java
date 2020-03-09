@@ -130,7 +130,7 @@ public class VozilaOpremaForma extends OpstaForma implements OpstaFormaInterface
 				naziv.setValue("");
 			}
 			try {
-				opis.setValue(oprema.getNaziv());
+				opis.setValue(oprema.getOpis());
 			}catch (Exception e) {
 				opis.setValue("");
 			}

@@ -21,7 +21,7 @@ public class DatumVreme extends DateTimeField{
 		podesiVreme(sat, minut, dan);
 	}
 	
-	private void podesiVreme(int sat, int minut, int dan) {
+	public void podesiVreme(int sat, int minut, int dan) {
 		Date datum = new Date();
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.DATE, LocalDate.now().getDayOfMonth() + dan);

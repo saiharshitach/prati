@@ -321,7 +321,7 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 		dodajStavku = new Button();
 		dodajStavku.addStyleName(ValoTheme.BUTTON_PRIMARY);
 		dodajStavku.setIcon(VaadinIcons.PLUS_CIRCLE);
-		dodajStavku.setDescription("додај нови рачун");
+		dodajStavku.setDescription("додај нову ставку");
 		dodajStavku.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
 			@Override
@@ -343,7 +343,7 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 					if(objekti.getValue() == null || gorivo.getValue() == null || 
 							kolicina.getValue() == null || kolicina.getValue().isEmpty() || kolicina.getValue().equals("") ||
 							cena.getValue() == null || cena.getValue().isEmpty() || cena.getValue().equals("") || 
-							pdvProcenat.getValue() == null || pdvProcenat.isEmpty() || pdvProcenat.equals("")) {
+							pdvProcenat.getValue() == null || pdvProcenat.getValue().isEmpty() || pdvProcenat.getValue().equals("")) {
 						pokaziPorukuGreska("поља објекат, гориво, количина и цена морају бити попуњена!");
 						}else {
 							ConfirmDialog.show(getUI(), "Провера", "Сачувај унете податке?", "да", "не", new ConfirmDialog.Listener() {
@@ -406,7 +406,7 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 		izbrisiStavku = new Button();
 		izbrisiStavku.addStyleName(ValoTheme.BUTTON_DANGER);
 		izbrisiStavku.setIcon(VaadinIcons.MINUS_CIRCLE);
-		izbrisiStavku.setDescription("избриши изабрани рачун");
+		izbrisiStavku.setDescription("избриши изабрану ставку");
 		izbrisiStavku.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
 			@Override
@@ -568,7 +568,7 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 			racuni.addColumn(racuni -> racuni.getOrganizacija() == null ? "" : racuni.getOrganizacija() == null ? "" : racuni.getOrganizacija().getNaziv()).setCaption("организација");
 		}
 		if(isSistem()) {
-			racuni.addComponentColumn(racuni -> {CheckBox chb = new CheckBox(); if(racuni.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(objekti -> "v-align-right");
+			racuni.addComponentColumn(racuni -> {CheckBox chb = new CheckBox(); if(racuni.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(racuni -> "v-align-right");
 		}
 		racuni.addColumn(Racuni::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(objekti -> "v-align-right");
 		racuni.addColumn(Racuni::getKreirano, new DateRenderer(DANSATFORMAT)).setCaption("креирано").setStyleGenerator(objekti -> "v-align-right");
@@ -644,7 +644,6 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 						ukupno.setValue(String.valueOf(0));
 					}
 				}
-				
 			}
 		});
 	}
@@ -691,7 +690,6 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 		dataProviderRacuni = (ListDataProvider<Racuni>)racuni.getDataProvider();
 		filterPredicateRacuni = new SerializablePredicate<Racuni>() {
 			private static final long serialVersionUID = 1L;
-
 			@Override
 			public boolean test(Racuni t) {
 				return ((t.getSistemPretplatnici() == null ? "" : t.getSistemPretplatnici().getNaziv()).toLowerCase().contains(racuniFilter.getValue().toLowerCase()) ||

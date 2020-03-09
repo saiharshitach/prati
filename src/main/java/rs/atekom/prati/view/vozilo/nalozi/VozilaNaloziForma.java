@@ -39,7 +39,7 @@ public class VozilaNaloziForma extends OpstaForma implements OpstaFormaInterface
 		polazak = new DatumVreme(true, "очекивани полазак", 0, 0, 0);
 		polazak.setWidth("100%");
 		polazak.setRequiredIndicatorVisible(true);
-		dolazak = new DatumVreme(true, "очекивани долазак", 0, 0, 1);
+		dolazak = new DatumVreme(true, "очекивани долазак", 0, 0, 0);
 		dolazak.setWidth("100%");
 		dolazak.setRequiredIndicatorVisible(true);
 		vozaci = new ComboKorisnici(logika.view.korisnik, "возач", true, false);
@@ -202,9 +202,12 @@ public class VozilaNaloziForma extends OpstaForma implements OpstaFormaInterface
 		medjuTacke.clear();
 		doMesta.clear();
 		polazak.clear();
+		polazak.podesiVreme(0,0,0);
 		dolazak.clear();
+		dolazak.podesiVreme(23, 59, 0);
 		vozaci.clear();
 		komentar.clear();
+		komentar.setValue("превоз стручног сарадника");
 		izbrisan.setValue(false);
 	}
 

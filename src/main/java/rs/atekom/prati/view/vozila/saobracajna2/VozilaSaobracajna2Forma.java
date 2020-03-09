@@ -36,7 +36,7 @@ public class VozilaSaobracajna2Forma extends OpstaForma implements OpstaFormaInt
 		adresaKorisnika = new Tekst("адреса корисник", false);
 		dimenzijeGuma = new Tekst("димензије гуме", false);
 		pritisakGume = new Tekst("притисак", false);
-		dimenzijeTovara = new Tekst("димензије товара", false);
+		dimenzijeTovara = new Tekst("товарни простор", false);
 		odnosSnagaMasa = new Tekst("однос снага/маса", false);
 		mestaStajanje = new Tekst("места за стајање", false);
 		kupljenoDoniranoOd = new Tekst("купљено/донирано од", false);

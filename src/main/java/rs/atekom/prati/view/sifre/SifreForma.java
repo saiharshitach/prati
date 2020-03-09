@@ -142,7 +142,7 @@ public class SifreForma extends OpstaForma implements OpstaFormaInterface{
 
 	@Override
 	public void ocistiPodatak() {
-		if(logika.view.korisnik.getSistemPretplatnici() != null) {
+		if(!logika.view.korisnik.getSistemPretplatnici().isSistem()) {
 			pretplatnici.setValue(logika.view.korisnik.getSistemPretplatnici());
 		}else {
 			pretplatnici.clear();
@@ -161,24 +161,26 @@ public class SifreForma extends OpstaForma implements OpstaFormaInterface{
 	@Override
 	public void postaviPodatak(Object podatak) {
 		Sifre sifra = (Sifre)podatak;
-		pretplatnici.setValue(sifra.getSistemPretplatnici());
-		organizacije.setValue(sifra.getOrganizacija());
-		try {
-			partneri.setValue(sifra.getPartner());
-		}catch (Exception e) {
-			partneri.setValue(null);
+		if(sifra.getId() != null) {
+			pretplatnici.setValue(sifra.getSistemPretplatnici());
+			organizacije.setValue(sifra.getOrganizacija());
+			try {
+				partneri.setValue(sifra.getPartner());
+			}catch (Exception e) {
+				partneri.setValue(null);
+			}
+			try {
+				sifraPolje.setValue(sifra.getSifra());
+			}catch (Exception e) {
+				sifraPolje.setValue("");
+			}
+			try {
+				opis.setValue(sifra.getOpis());
+			}catch (Exception e) {
+				opis.setValue("");
+			}
+			izbrisan.setValue(sifra.isIzbrisan());
 		}
-		try {
-			sifraPolje.setValue(sifra.getSifra());
-		}catch (Exception e) {
-			sifraPolje.setValue("");
-		}
-		try {
-			opis.setValue(sifra.getOpis());
-		}catch (Exception e) {
-			opis.setValue("");
-		}
-		izbrisan.setValue(sifra.isIzbrisan());
 	}
 
 	@Override
