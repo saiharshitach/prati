@@ -14,8 +14,8 @@ import rs.atekom.prati.server.Servis;
 import rs.atekom.prati.view.OpstaForma;
 import rs.atekom.prati.view.OpstaFormaInterface;
 import rs.atekom.prati.view.OpstiView;
-import rs.atekom.prati.view.komponente.ComboSaobracajna;
 import rs.atekom.prati.view.komponente.Tekst;
+import rs.atekom.prati.view.komponente.combo.ComboSaobracajna;
 
 public class VozilaSaobracajna2Forma extends OpstaForma implements OpstaFormaInterface{
 

@@ -12,7 +12,7 @@ public class DogadjajStavka extends BasicItem{
 	private final Dogadjaj meeting;
 
 	public DogadjajStavka(Dogadjaj meeting) {
-        super(meeting.getName(), null, meeting.getStart(), meeting.getEnd());
+        super(meeting.getDetails(), meeting.getName(), meeting.getStart(), meeting.getEnd());
         this.meeting = meeting;
 	}
 

@@ -1,21 +1,19 @@
-package rs.atekom.prati.view.komponente;
+package rs.atekom.prati.view.komponente.combo;
 
 import java.util.List;
 
 import com.vaadin.ui.ComboBox;
-
 import pratiBaza.tabele.Korisnici;
-import pratiBaza.tabele.Zone;
 import rs.atekom.prati.server.Servis;
 
-public class ComboZone extends ComboBox<Zone>{
-
+public class ComboKorisnici extends ComboBox<Korisnici>{
+	
 	private static final long serialVersionUID = 1L;
 
-	public ComboZone(Korisnici korisnik, String naziv, boolean prazno, boolean indicator) {
+	public ComboKorisnici(Korisnici korisnik, String naziv, boolean prazno, boolean indicator) {
 		setCaption(naziv);
 		setPlaceholder("корисници...");
-		setItemCaptionGenerator(Zone::getNaziv);
+		setItemCaptionGenerator(Korisnici::toString);
 		if(korisnik != null && korisnik.getSistemPretplatnici() != null) {
 			setItems(lista(korisnik));
 		}
@@ -24,7 +22,7 @@ public class ComboZone extends ComboBox<Zone>{
 		setWidth("100%");
 	}
 	
-	private List<Zone> lista(Korisnici korisnik){
-		return Servis.zonaServis.nadjiSveZone(korisnik, true);
+	private List<Korisnici> lista(Korisnici korisnik){
+		return Servis.korisnikServis.nadjiSveKorisnike(korisnik, true);
 	}
 }

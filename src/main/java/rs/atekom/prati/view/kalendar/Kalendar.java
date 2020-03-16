@@ -178,7 +178,7 @@ public class Kalendar extends CustomComponent{
         		dog.setStart(ZonedDateTime.ofInstant(nalog.getOcekivaniPolazak().toInstant(), ZoneId.systemDefault()));
         		dog.setEnd(ZonedDateTime.ofInstant(nalog.getOcekivaniDolazak().toInstant(), ZoneId.systemDefault()));
         		dog.setName(nalog.getVozilo().getOznaka() + " " + nalog.getVozac().toString() + " " + nalog.getBrojNaloga());
-        		dog.setDetails(nalog.getDoMesta() + " полазак: " + nalog.getOcekivaniPolazak() + " долазак: " + nalog.getOcekivaniDolazak() + " " + nalog.getKomentar());
+        		dog.setDetails(nalog.getOdMesta() + " - " + nalog.getDoMesta() + " полазак: " + nalog.getOcekivaniPolazak() + " долазак: " + nalog.getOcekivaniDolazak() + " " + nalog.getKomentar());
         		eventProvider.addItem(new DogadjajStavka(dog));
         	}
     	}

@@ -14,10 +14,10 @@ import rs.atekom.prati.server.Servis;
 import rs.atekom.prati.view.OpstaForma;
 import rs.atekom.prati.view.OpstaFormaInterface;
 import rs.atekom.prati.view.OpstiView;
-import rs.atekom.prati.view.komponente.ComboKorisnici;
-import rs.atekom.prati.view.komponente.ComboObjekti;
 import rs.atekom.prati.view.komponente.DatumVreme;
 import rs.atekom.prati.view.komponente.Tekst;
+import rs.atekom.prati.view.komponente.combo.ComboKorisnici;
+import rs.atekom.prati.view.komponente.combo.ComboObjekti;
 
 public class VozilaNaloziForma extends OpstaForma implements OpstaFormaInterface{
 
@@ -31,7 +31,7 @@ public class VozilaNaloziForma extends OpstaForma implements OpstaFormaInterface
 
 	public VozilaNaloziForma(VozilaNaloziLogika log) {
 		logika = log;
-		brojNaloga = new Tekst("број", false);
+		brojNaloga = new Tekst("број", true);
 		vozila = new ComboObjekti(logika.view.korisnik, "возила", true, true);
 		odMesta = new Tekst("од", true);
 		medjuTacke = new Tekst("преко", false);
@@ -253,6 +253,9 @@ public class VozilaNaloziForma extends OpstaForma implements OpstaFormaInterface
 	@Override
 	public boolean proveraPodataka() {
 		boolean sveIma = true;
+		if(brojNaloga.getValue() == null || brojNaloga.getValue().equals("")) {
+			sveIma = false;
+		}
 		if(pretplatnici.getValue() == null) {
 			sveIma = false;
 		}

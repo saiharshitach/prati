@@ -86,12 +86,13 @@ public class EvidencijaVoznjiView  extends OpstiView implements OpstiViewInterfa
 		tabela.setStyleName("list");
 		tabela.setSelectionMode(SelectionMode.SINGLE);
 		
-		tabela.addColumn(evidencija -> evidencija.getVoziloNalog() == null ? "" : evidencija.getVoziloNalog().getBrojNaloga()).setCaption("налог");
-		tabela.addColumn(evidencija -> evidencija.getVozac() == null ? "" : evidencija.getVozac()).setCaption("возач");
+		//tabela.addColumn(evidencija -> evidencija.getVoziloNalog() == null ? "" : evidencija.getVoziloNalog().getBrojNaloga()).setCaption("налог");
+		tabela.addColumn(evidencija -> evidencija.getBrojPutnogNaloga() == null ? "" : evidencija.getBrojPutnogNaloga()).setCaption("бр путног налога");
+		tabela.addColumn(evidencija -> evidencija.getVozac() == null ? "" : evidencija.getVozac().toString()).setCaption("возач");
 		tabela.addColumn(evidencija -> evidencija.getRegistracijaVozila() == null ? "" : evidencija.getRegistracijaVozila()).setCaption("регистрација");
 		tabela.addColumn(evidencija -> evidencija.getRelacija() == null ? "" : evidencija.getRelacija()).setCaption("релација");
-		tabela.addColumn(evidencija -> evidencija.getDatumVremePolaska() == null ? "" : new DateRenderer(DANSATFORMAT)).setCaption("полазак").setStyleGenerator(objekti -> "v-align-right");
-		tabela.addColumn(evidencija -> evidencija.getDatumVremeDolaska() == null ? "" : new DateRenderer(DANSATFORMAT)).setCaption("долазак").setStyleGenerator(objekti -> "v-align-right");
+		tabela.addColumn(EvidencijaVoznji::getDatumVremePolaska, new DateRenderer(DANSATFORMAT)).setCaption("полазак").setStyleGenerator(evidencija -> "v-align-right");
+		tabela.addColumn(EvidencijaVoznji::getDatumVremeDolaska, new DateRenderer(DANSATFORMAT)).setCaption("долазак").setStyleGenerator(evidencija -> "v-align-right");
 		tabela.addColumn(EvidencijaVoznji::getPocetnaKm).setCaption("почетна км").setStyleGenerator(evidencija -> "v-align-right");
 		tabela.addColumn(EvidencijaVoznji::getZavrsnaKm).setCaption("завршна км").setStyleGenerator(evidencija -> "v-align-right");
 		tabela.addColumn(EvidencijaVoznji::getRazlikaKm).setCaption("разлика км").setStyleGenerator(evidencija -> "v-align-right");
@@ -99,7 +100,7 @@ public class EvidencijaVoznjiView  extends OpstiView implements OpstiViewInterfa
 		tabela.addColumn(EvidencijaVoznji::getGorivoCena).setCaption("цена горива дин/лит").setStyleGenerator(evidencija -> "v-align-right");
 		tabela.addColumn(EvidencijaVoznji::getPrevozCena).setCaption("превоз дин/км").setStyleGenerator(evidencija -> "v-align-right");
 		tabela.addColumn(EvidencijaVoznji::getPutniTroskovi).setCaption("путни трошкови").setStyleGenerator(evidencija -> "v-align-right");
-		tabela.addColumn(evidencija -> evidencija.getBrojPutnogNaloga() == null ? "" : evidencija.getBrojPutnogNaloga()).setCaption("бр путног налога");
+		
 		tabela.addColumn(EvidencijaVoznji::getDana).setCaption("дана").setStyleGenerator(evidencija -> "v-align-right");
 		tabela.addColumn(EvidencijaVoznji::getSati).setCaption("сати").setStyleGenerator(evidencija -> "v-align-right");
 		tabela.addColumn(EvidencijaVoznji::getTroskoviGoriva).setCaption("трошак горива").setStyleGenerator(evidencija -> "v-align-right");
@@ -114,6 +115,7 @@ public class EvidencijaVoznjiView  extends OpstiView implements OpstiViewInterfa
 		tabela.addColumn(evidencija -> evidencija.getSifraPrograma() == null ? "" : evidencija.getSifraPrograma()).setCaption("шифра програма");
 		tabela.addColumn(evidencija -> evidencija.getProgram() == null ? "" : evidencija.getProgram()).setCaption("назив програма");
 		tabela.addColumn(EvidencijaVoznji::getUtrosenoLitara).setCaption("утрошено литара").setStyleGenerator(evidencija -> "v-align-right");
+		tabela.addColumn(evidencija -> evidencija.getUradio() == null ? "" : evidencija.getUradio().toString()).setCaption("урадио");
 	}
 
 	@Override

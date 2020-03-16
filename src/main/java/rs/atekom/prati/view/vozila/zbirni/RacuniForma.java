@@ -15,11 +15,11 @@ import rs.atekom.prati.server.Servis;
 import rs.atekom.prati.view.OpstaForma;
 import rs.atekom.prati.view.OpstaFormaInterface;
 import rs.atekom.prati.view.OpstiView;
-import rs.atekom.prati.view.komponente.ComboKorisnici;
-import rs.atekom.prati.view.komponente.ComboPartneri;
 import rs.atekom.prati.view.komponente.Datum;
 import rs.atekom.prati.view.komponente.Tekst;
 import rs.atekom.prati.view.komponente.TekstArea;
+import rs.atekom.prati.view.komponente.combo.ComboKorisnici;
+import rs.atekom.prati.view.komponente.combo.ComboPartneri;
 
 public class RacuniForma extends OpstaForma implements OpstaFormaInterface{
 

@@ -32,12 +32,12 @@ import pratiBaza.tabele.SistemPretplatnici;
 import rs.atekom.prati.Prati;
 import rs.atekom.prati.mape.Gmap;
 import rs.atekom.prati.server.Servis;
-import rs.atekom.prati.view.komponente.ComboAlarmi;
-import rs.atekom.prati.view.komponente.ComboGrupe;
-import rs.atekom.prati.view.komponente.ComboObjekti;
-import rs.atekom.prati.view.komponente.ComboOrganizacije;
-import rs.atekom.prati.view.komponente.ComboPretplatnici;
 import rs.atekom.prati.view.komponente.DatumVreme;
+import rs.atekom.prati.view.komponente.combo.ComboAlarmi;
+import rs.atekom.prati.view.komponente.combo.ComboGrupe;
+import rs.atekom.prati.view.komponente.combo.ComboObjekti;
+import rs.atekom.prati.view.komponente.combo.ComboOrganizacije;
+import rs.atekom.prati.view.komponente.combo.ComboPretplatnici;
 
 public abstract class OpstiPanelView extends Panel implements View, Serializable{
 

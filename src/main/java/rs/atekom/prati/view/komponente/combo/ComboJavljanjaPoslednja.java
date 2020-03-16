@@ -1,4 +1,4 @@
-package rs.atekom.prati.view.komponente;
+package rs.atekom.prati.view.komponente.combo;
 
 import com.vaadin.ui.ComboBox;
 

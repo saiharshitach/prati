@@ -24,10 +24,10 @@ import pratiBaza.tabele.Objekti;
 import rs.atekom.prati.server.Servis;
 import rs.atekom.prati.view.OpstiPanelView;
 import rs.atekom.prati.view.komponente.Celobrojni;
-import rs.atekom.prati.view.komponente.ComboIzvestajiVozilo;
-import rs.atekom.prati.view.komponente.ComboObjektiSaVozilima;
-import rs.atekom.prati.view.komponente.ComboTipServisa;
 import rs.atekom.prati.view.komponente.DatumVreme;
+import rs.atekom.prati.view.komponente.combo.ComboIzvestajiVozilo;
+import rs.atekom.prati.view.komponente.combo.ComboObjektiSaVozilima;
+import rs.atekom.prati.view.komponente.combo.ComboTipServisa;
 
 @NavigatorViewName("izvestajiVozila") // an empty view name will also be the default view
 @MenuCaption("Извештаји")

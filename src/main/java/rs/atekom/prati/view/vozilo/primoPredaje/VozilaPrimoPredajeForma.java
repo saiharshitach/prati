@@ -25,11 +25,11 @@ import rs.atekom.prati.view.OpstaForma;
 import rs.atekom.prati.view.OpstaFormaInterface;
 import rs.atekom.prati.view.OpstiView;
 import rs.atekom.prati.view.komponente.Celobrojni;
-import rs.atekom.prati.view.komponente.ComboKorisniciVozaci;
-import rs.atekom.prati.view.komponente.ComboOprema;
-import rs.atekom.prati.view.komponente.ComboVozila;
 import rs.atekom.prati.view.komponente.Datum;
 import rs.atekom.prati.view.komponente.Tekst;
+import rs.atekom.prati.view.komponente.combo.ComboKorisniciVozaci;
+import rs.atekom.prati.view.komponente.combo.ComboOprema;
+import rs.atekom.prati.view.komponente.combo.ComboVozila;
 
 public class VozilaPrimoPredajeForma extends OpstaForma implements OpstaFormaInterface{
 

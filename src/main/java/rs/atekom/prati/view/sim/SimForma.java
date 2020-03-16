@@ -9,8 +9,8 @@ import com.vaadin.ui.Button.ClickListener;
 import rs.atekom.prati.view.OpstaForma;
 import rs.atekom.prati.view.OpstaFormaInterface;
 import rs.atekom.prati.view.OpstiView;
-import rs.atekom.prati.view.komponente.ComboOperateri;
 import rs.atekom.prati.view.komponente.Tekst;
+import rs.atekom.prati.view.komponente.combo.ComboOperateri;
 
 public class SimForma extends OpstaForma implements OpstaFormaInterface{
 

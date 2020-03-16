@@ -25,9 +25,9 @@ import pratiBaza.tabele.SistemPretplatnici;
 import rs.atekom.prati.Prati;
 import rs.atekom.prati.mape.Gmap;
 import rs.atekom.prati.server.Servis;
-import rs.atekom.prati.view.komponente.ComboGrupe;
-import rs.atekom.prati.view.komponente.ComboOrganizacije;
-import rs.atekom.prati.view.komponente.ComboPretplatnici;
+import rs.atekom.prati.view.komponente.combo.ComboGrupe;
+import rs.atekom.prati.view.komponente.combo.ComboOrganizacije;
+import rs.atekom.prati.view.komponente.combo.ComboPretplatnici;
 
 public class Opsti extends CssLayout{
 	private static final long serialVersionUID = 1L;

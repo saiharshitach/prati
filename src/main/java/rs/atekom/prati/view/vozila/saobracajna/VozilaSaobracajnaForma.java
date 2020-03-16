@@ -15,10 +15,10 @@ import rs.atekom.prati.view.OpstaForma;
 import rs.atekom.prati.view.OpstaFormaInterface;
 import rs.atekom.prati.view.OpstiView;
 import rs.atekom.prati.view.komponente.Celobrojni;
-import rs.atekom.prati.view.komponente.ComboVozila;
 import rs.atekom.prati.view.komponente.Datum;
 import rs.atekom.prati.view.komponente.Decimalni;
 import rs.atekom.prati.view.komponente.Tekst;
+import rs.atekom.prati.view.komponente.combo.ComboVozila;
 
 public class VozilaSaobracajnaForma extends OpstaForma implements OpstaFormaInterface{
 

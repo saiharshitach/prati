@@ -9,8 +9,8 @@ import com.vaadin.ui.Button.ClickListener;
 import rs.atekom.prati.view.OpstaForma;
 import rs.atekom.prati.view.OpstaFormaInterface;
 import rs.atekom.prati.view.OpstiView;
-import rs.atekom.prati.view.komponente.ComboObjekti;
-import rs.atekom.prati.view.komponente.ComboZone;
+import rs.atekom.prati.view.komponente.combo.ComboObjekti;
+import rs.atekom.prati.view.komponente.combo.ComboZone;
 
 public class ObjekatZoneForma extends OpstaForma implements OpstaFormaInterface{
 

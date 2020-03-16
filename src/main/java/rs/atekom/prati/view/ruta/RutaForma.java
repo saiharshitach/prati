@@ -15,11 +15,11 @@ import rs.atekom.prati.server.Servis;
 import rs.atekom.prati.view.OpstaForma;
 import rs.atekom.prati.view.OpstaFormaInterface;
 import rs.atekom.prati.view.OpstiView;
-import rs.atekom.prati.view.komponente.ComboGrupe;
-import rs.atekom.prati.view.komponente.ComboJavljanjaPoslednja;
-import rs.atekom.prati.view.komponente.ComboOrganizacije;
-import rs.atekom.prati.view.komponente.ComboPretplatnici;
 import rs.atekom.prati.view.komponente.Tekst;
+import rs.atekom.prati.view.komponente.combo.ComboGrupe;
+import rs.atekom.prati.view.komponente.combo.ComboJavljanjaPoslednja;
+import rs.atekom.prati.view.komponente.combo.ComboOrganizacije;
+import rs.atekom.prati.view.komponente.combo.ComboPretplatnici;
 
 public class RutaForma extends OpstaForma implements OpstaFormaInterface{
 

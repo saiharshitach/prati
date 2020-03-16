@@ -17,10 +17,10 @@ import com.vaadin.ui.VerticalLayout;
 import pratiBaza.tabele.Korisnici;
 import rs.atekom.prati.Prati;
 import rs.atekom.prati.view.komponente.Celobrojni;
-import rs.atekom.prati.view.komponente.ComboOrganizacije;
-import rs.atekom.prati.view.komponente.ComboPretplatnici;
 import rs.atekom.prati.view.komponente.Decimalni;
 import rs.atekom.prati.view.komponente.Tekst;
+import rs.atekom.prati.view.komponente.combo.ComboOrganizacije;
+import rs.atekom.prati.view.komponente.combo.ComboPretplatnici;
 
 public class OpstaForma extends CssLayout{
 

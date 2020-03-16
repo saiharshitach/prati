@@ -19,9 +19,9 @@ import rs.atekom.prati.server.Servis;
 import rs.atekom.prati.view.OpstaForma;
 import rs.atekom.prati.view.OpstaFormaInterface;
 import rs.atekom.prati.view.OpstiView;
-import rs.atekom.prati.view.komponente.ComboSim;
-import rs.atekom.prati.view.komponente.ComboUredjajiModeli;
 import rs.atekom.prati.view.komponente.Tekst;
+import rs.atekom.prati.view.komponente.combo.ComboSim;
+import rs.atekom.prati.view.komponente.combo.ComboUredjajiModeli;
 
 public class UredjajiForma extends OpstaForma implements OpstaFormaInterface{
 

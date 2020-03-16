@@ -17,9 +17,9 @@ import rs.atekom.prati.server.Servis;
 import rs.atekom.prati.view.OpstaForma;
 import rs.atekom.prati.view.OpstaFormaInterface;
 import rs.atekom.prati.view.OpstiView;
-import rs.atekom.prati.view.komponente.ComboAlarmi;
-import rs.atekom.prati.view.komponente.ComboKorisnici;
-import rs.atekom.prati.view.komponente.ComboObjekti;
+import rs.atekom.prati.view.komponente.combo.ComboAlarmi;
+import rs.atekom.prati.view.komponente.combo.ComboKorisnici;
+import rs.atekom.prati.view.komponente.combo.ComboObjekti;
 
 public class AlarmKorisnikForma extends OpstaForma implements OpstaFormaInterface{
 

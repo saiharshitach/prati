@@ -18,13 +18,13 @@ import rs.atekom.prati.view.OpstaForma;
 import rs.atekom.prati.view.OpstaFormaInterface;
 import rs.atekom.prati.view.OpstiView;
 import rs.atekom.prati.view.komponente.Celobrojni;
-import rs.atekom.prati.view.komponente.ComboObjektiSaVozilima;
-import rs.atekom.prati.view.komponente.ComboPartneri;
-import rs.atekom.prati.view.komponente.ComboTipServisa;
 import rs.atekom.prati.view.komponente.Datum;
 import rs.atekom.prati.view.komponente.Decimalni;
 import rs.atekom.prati.view.komponente.Tekst;
 import rs.atekom.prati.view.komponente.TekstArea;
+import rs.atekom.prati.view.komponente.combo.ComboObjektiSaVozilima;
+import rs.atekom.prati.view.komponente.combo.ComboPartneri;
+import rs.atekom.prati.view.komponente.combo.ComboTipServisa;
 import pratiBaza.pomocne.TipServisa;
 
 public class OdrzavanjaForma extends OpstaForma implements OpstaFormaInterface{

@@ -17,9 +17,9 @@ import pratiBaza.tabele.Grupe;
 import pratiBaza.tabele.Objekti;
 import rs.atekom.prati.server.Servis;
 import rs.atekom.prati.view.OpstiPanelView;
-import rs.atekom.prati.view.komponente.ComboIzvestaji;
-import rs.atekom.prati.view.komponente.ComboObjekti;
 import rs.atekom.prati.view.komponente.DatumVreme;
+import rs.atekom.prati.view.komponente.combo.ComboIzvestaji;
+import rs.atekom.prati.view.komponente.combo.ComboObjekti;
 
 @NavigatorViewName("nivoGoriva") // an empty view name will also be the default view
 @MenuCaption("Ниво горива")

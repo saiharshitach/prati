@@ -1,4 +1,4 @@
-package rs.atekom.prati.view.komponente;
+package rs.atekom.prati.view.komponente.combo;
 
 import java.util.List;
 import com.vaadin.ui.ComboBox;
@@ -16,7 +16,7 @@ public class ComboNalozi extends ComboBox<VozilaNalozi>{
 		setItemCaptionGenerator(VozilaNalozi::getBrojNaloga);
 		setItems(lista(korisnik));
 		setEmptySelectionAllowed(prazno);
-		setRequiredIndicatorVisible(true);
+		setRequiredIndicatorVisible(indicator);
 		setWidth("100%");
 	}
 	

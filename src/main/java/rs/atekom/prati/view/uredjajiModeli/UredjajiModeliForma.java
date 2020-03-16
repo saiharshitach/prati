@@ -9,8 +9,8 @@ import pratiBaza.tabele.SistemUredjajiModeli;
 import rs.atekom.prati.view.OpstaForma;
 import rs.atekom.prati.view.OpstaFormaInterface;
 import rs.atekom.prati.view.OpstiView;
-import rs.atekom.prati.view.komponente.ComboProizvodjaci;
 import rs.atekom.prati.view.komponente.Tekst;
+import rs.atekom.prati.view.komponente.combo.ComboProizvodjaci;
 
 public class UredjajiModeliForma extends OpstaForma implements OpstaFormaInterface{
 	
