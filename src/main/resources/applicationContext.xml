@@ -72,7 +72,7 @@
                <value>pratiBaza.tabele.JavljanjaPoslednja</value> 
                <value>pratiBaza.tabele.Korisnici</value> 
                <value>pratiBaza.tabele.Obd</value>
-                <value>pratiBaza.tabele.ObdPoslednji</value>
+               <value>pratiBaza.tabele.ObdPoslednji</value>
                <value>pratiBaza.tabele.Objekti</value>
                <value>pratiBaza.tabele.ObjektiPoslednje</value>
                <value>pratiBaza.tabele.Organizacije</value>
@@ -110,7 +110,7 @@
                <value>pratiBaza.tabele.ObjekatZone</value>
                <value>pratiBaza.pomocne.IzvestajTip</value>
                <value>pratiBaza.pomocne.Mail</value>
-               <value>pratiBaza.pomocne.Obracuni</value>
+         <!--  <value>pratiBaza.pomocne.Obracuni</value> -->
                <value>pratiBaza.pomocne.PredjeniPut</value>
                <value>pratiBaza.pomocne.PredjeniPutGPS</value>
                <value>pratiBaza.pomocne.PredjeniPutOBD</value>

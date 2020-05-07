@@ -45,6 +45,7 @@ import pratiBaza.tabele.Korisnici;
 import pratiBaza.tabele.Objekti;
 import pratiBaza.tabele.Racuni;
 import pratiBaza.tabele.RacuniRaspodela;
+import pratiBaza.tabele.SistemGoriva;
 import pratiBaza.tabele.SistemPretplatnici;
 import pratiBaza.tabele.Troskovi;
 import pratiBaza.tabele.Vozila;
@@ -66,7 +67,7 @@ import rs.atekom.prati.view.komponente.combo.ComboPartneri;
 import rs.atekom.prati.view.komponente.combo.ComboPretplatnici;
 
 @NavigatorViewName("zbirni")
-@MenuCaption("Збирни")
+@MenuCaption("Збирни гориво")
 @MenuIcon(VaadinIcons.WALLET)
 public class ZbirniRacuniView extends Panel implements View, Serializable{
 
@@ -855,6 +856,7 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 								Objekti objekat = Servis.objekatServis.nadjiObjekatSadrzi(izabraniRacun.getSistemPretplatnici(), broj);
 								Troskovi trosak = new Troskovi();
 								trosak.setSistemPretplatnici(izabraniRacun.getSistemPretplatnici());
+								trosak.setOrganizacija(izabraniRacun.getOrganizacija());
 								if(objekat != null) {
 									trosak.setObjekti(objekat);
 									}else {
@@ -868,6 +870,13 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 									trosak.setPartner(izabraniRacun.getPartner());
 									trosak.setBrojRacuna(izabraniRacun.getBrojRacuna());
 									trosak.setObjekti(objekat);
+									try {
+										SistemGoriva gorivo = Servis.sistemGorivoServis.nadjiGorivoPoNazivu(lukOil.get(i).getDerivat());
+										trosak.setSistemGoriva(gorivo);
+									}catch (Exception e) {
+										trosak.setSistemGoriva(null);
+										System.out.println("greška gorivo " + e.getMessage());
+									}
 									try {
 										SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy. hh:mm:ss");
 										Date parsedDate = dateFormat.parse(lukOil.get(i).getDatumBs());

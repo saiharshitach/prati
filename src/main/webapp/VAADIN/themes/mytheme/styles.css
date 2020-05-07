@@ -1077,7 +1077,7 @@
  */
 
 .v-vaadin-version:after {
-	content: "8.9.4";
+	content: "8.10.3";
 }
 
 .v-widget {
@@ -5894,6 +5894,26 @@ div.v-layout.v-horizontal.v-widget {
 	display: none;
 }
 
+.mytheme .v-filterselect.v-readonly.borderless [class*="input"] {
+	border: none;
+	border-radius: 0;
+	background: transparent;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	color: inherit;
+}
+
+.mytheme .v-filterselect.v-readonly.borderless [class*="input"]:focus {
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
+.mytheme .v-filterselect.v-readonly.borderless [class*="input"][class*="prompt"] {
+	color: inherit;
+	opacity: 0.5;
+	filter: alpha(opacity=50) ;
+}
+
 .mytheme .v-filterselect .v-icon {
 	position: absolute;
 	pointer-events: none;
@@ -6363,6 +6383,26 @@ div.v-layout.v-horizontal.v-widget {
 	display: none;
 }
 
+.mytheme .v-filterselect-tiny.v-readonly.borderless [class*="input"] {
+	border: none;
+	border-radius: 0;
+	background: transparent;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	color: inherit;
+}
+
+.mytheme .v-filterselect-tiny.v-readonly.borderless [class*="input"]:focus {
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
+.mytheme .v-filterselect-tiny.v-readonly.borderless [class*="input"][class*="prompt"] {
+	color: inherit;
+	opacity: 0.5;
+	filter: alpha(opacity=50) ;
+}
+
 .mytheme .v-filterselect-compact, .mytheme .v-filterselect-small {
 	height: 27px;
 	
@@ -6481,6 +6521,26 @@ div.v-layout.v-horizontal.v-widget {
 
 .mytheme .v-filterselect-compact.v-readonly [class$="button"]:active:after, .mytheme .v-filterselect-small.v-readonly [class$="button"]:active:after {
 	display: none;
+}
+
+.mytheme .v-filterselect-compact.v-readonly.borderless [class*="input"], .mytheme .v-filterselect-small.v-readonly.borderless [class*="input"] {
+	border: none;
+	border-radius: 0;
+	background: transparent;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	color: inherit;
+}
+
+.mytheme .v-filterselect-compact.v-readonly.borderless [class*="input"]:focus, .mytheme .v-filterselect-small.v-readonly.borderless [class*="input"]:focus {
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
+.mytheme .v-filterselect-compact.v-readonly.borderless [class*="input"][class*="prompt"], .mytheme .v-filterselect-small.v-readonly.borderless [class*="input"][class*="prompt"] {
+	color: inherit;
+	opacity: 0.5;
+	filter: alpha(opacity=50) ;
 }
 
 .mytheme .v-filterselect-small {
@@ -6608,6 +6668,26 @@ div.v-layout.v-horizontal.v-widget {
 	display: none;
 }
 
+.mytheme .v-filterselect-large.v-readonly.borderless [class*="input"] {
+	border: none;
+	border-radius: 0;
+	background: transparent;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	color: inherit;
+}
+
+.mytheme .v-filterselect-large.v-readonly.borderless [class*="input"]:focus {
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
+.mytheme .v-filterselect-large.v-readonly.borderless [class*="input"][class*="prompt"] {
+	color: inherit;
+	opacity: 0.5;
+	filter: alpha(opacity=50) ;
+}
+
 .mytheme .v-filterselect-huge {
 	height: 51px;
 	
@@ -6727,6 +6807,26 @@ div.v-layout.v-horizontal.v-widget {
 
 .mytheme .v-filterselect-huge.v-readonly [class$="button"]:active:after {
 	display: none;
+}
+
+.mytheme .v-filterselect-huge.v-readonly.borderless [class*="input"] {
+	border: none;
+	border-radius: 0;
+	background: transparent;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	color: inherit;
+}
+
+.mytheme .v-filterselect-huge.v-readonly.borderless [class*="input"]:focus {
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
+.mytheme .v-filterselect-huge.v-readonly.borderless [class*="input"][class*="prompt"] {
+	color: inherit;
+	opacity: 0.5;
+	filter: alpha(opacity=50) ;
 }
 
 .mytheme .v-csslayout-well {
@@ -8770,6 +8870,26 @@ div.v-layout.v-horizontal.v-widget {
 	display: none;
 }
 
+.mytheme .v-datefield.v-readonly.borderless [class*="textfield"] {
+	border: none;
+	border-radius: 0;
+	background: transparent;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	color: inherit;
+}
+
+.mytheme .v-datefield.v-readonly.borderless [class*="textfield"]:focus {
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
+.mytheme .v-datefield.v-readonly.borderless [class*="textfield"][class*="prompt"] {
+	color: inherit;
+	opacity: 0.5;
+	filter: alpha(opacity=50) ;
+}
+
 .mytheme .v-datefield-error .v-datefield-textfield {
 	border-color: #eb2977 !important;
 	background: #fffbfc;
@@ -9415,6 +9535,26 @@ div.v-layout.v-horizontal.v-widget {
 	display: none;
 }
 
+.mytheme .v-datefield-tiny.v-readonly.borderless [class*="textfield"] {
+	border: none;
+	border-radius: 0;
+	background: transparent;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	color: inherit;
+}
+
+.mytheme .v-datefield-tiny.v-readonly.borderless [class*="textfield"]:focus {
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
+.mytheme .v-datefield-tiny.v-readonly.borderless [class*="textfield"][class*="prompt"] {
+	color: inherit;
+	opacity: 0.5;
+	filter: alpha(opacity=50) ;
+}
+
 .mytheme .v-datefield-compact, .mytheme .v-datefield-small {
 	height: 27px;
 	border-radius: 4px;
@@ -9520,6 +9660,26 @@ div.v-layout.v-horizontal.v-widget {
 
 .mytheme .v-datefield-compact.v-readonly [class*="button"]:active:after, .mytheme .v-datefield-small.v-readonly [class*="button"]:active:after {
 	display: none;
+}
+
+.mytheme .v-datefield-compact.v-readonly.borderless [class*="textfield"], .mytheme .v-datefield-small.v-readonly.borderless [class*="textfield"] {
+	border: none;
+	border-radius: 0;
+	background: transparent;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	color: inherit;
+}
+
+.mytheme .v-datefield-compact.v-readonly.borderless [class*="textfield"]:focus, .mytheme .v-datefield-small.v-readonly.borderless [class*="textfield"]:focus {
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
+.mytheme .v-datefield-compact.v-readonly.borderless [class*="textfield"][class*="prompt"], .mytheme .v-datefield-small.v-readonly.borderless [class*="textfield"][class*="prompt"] {
+	color: inherit;
+	opacity: 0.5;
+	filter: alpha(opacity=50) ;
 }
 
 .mytheme .v-datefield-small {
@@ -9634,6 +9794,26 @@ div.v-layout.v-horizontal.v-widget {
 	display: none;
 }
 
+.mytheme .v-datefield-large.v-readonly.borderless [class*="textfield"] {
+	border: none;
+	border-radius: 0;
+	background: transparent;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	color: inherit;
+}
+
+.mytheme .v-datefield-large.v-readonly.borderless [class*="textfield"]:focus {
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
+.mytheme .v-datefield-large.v-readonly.borderless [class*="textfield"][class*="prompt"] {
+	color: inherit;
+	opacity: 0.5;
+	filter: alpha(opacity=50) ;
+}
+
 .mytheme .v-datefield-huge {
 	height: 51px;
 	border-radius: 4px;
@@ -9740,6 +9920,26 @@ div.v-layout.v-horizontal.v-widget {
 
 .mytheme .v-datefield-huge.v-readonly [class*="button"]:active:after {
 	display: none;
+}
+
+.mytheme .v-datefield-huge.v-readonly.borderless [class*="textfield"] {
+	border: none;
+	border-radius: 0;
+	background: transparent;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	color: inherit;
+}
+
+.mytheme .v-datefield-huge.v-readonly.borderless [class*="textfield"]:focus {
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
+.mytheme .v-datefield-huge.v-readonly.borderless [class*="textfield"][class*="prompt"] {
+	color: inherit;
+	opacity: 0.5;
+	filter: alpha(opacity=50) ;
 }
 
 .mytheme .v-inline-datefield-calendarpanel {
@@ -19999,6 +20199,26 @@ div.v-layout.v-horizontal.v-widget {
 
 .mytheme .product-form-wrapper .v-filterselect.v-readonly [class$="button"]:active:after {
 	display: none;
+}
+
+.mytheme .product-form-wrapper .v-filterselect.v-readonly.borderless [class*="input"] {
+	border: none;
+	border-radius: 0;
+	background: transparent;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	color: inherit;
+}
+
+.mytheme .product-form-wrapper .v-filterselect.v-readonly.borderless [class*="input"]:focus {
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
+.mytheme .product-form-wrapper .v-filterselect.v-readonly.borderless [class*="input"][class*="prompt"] {
+	color: inherit;
+	opacity: 0.5;
+	filter: alpha(opacity=50) ;
 }
 
 .mytheme .product-form-wrapper .v-button {
