@@ -19,7 +19,7 @@
   <context:component-scan base-package="pratiBaza.*" />
   <import resource="classpath*:baza.xml" /> <!-- /jpgzCrud/src/main/resources/ -->
   
-    <bean id="applicationContextProvider" class="rs.atekom.prati.ApplicationContextProvider"/>
+  <bean id="applicationContextProvider" class="rs.atekom.prati.ApplicationContextProvider"/>
     
     <!-- <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> -->
        <!-- <property name="driverClassName" value="com.mysql.jdbc.Driver" />    -->
@@ -34,30 +34,32 @@
 	   <!-- <property name="removeAbandonedOnMaintenance" value="true" /> -->
 	   
        <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
-       <property name="driverClass" value="com.mysql.jdbc.Driver" /> 
-       <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/prati?characterEncoding=UTF-8&amp;useSSL=false" /> 
+       <property name="driverClass" value="com.mysql.cj.jdbc.Driver" /> 
+       <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/prati?characterEncoding=UTF-8&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Belgrade&amp;useSSL=false" />
+<!--   <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/prati?characterEncoding=UTF-8&amp;useSSL=false" />    --> 
        <property name="user" value="pracenje" /> 
        <property name="password" value="pracenje" /> 
- 
-	   <property name="initialPoolSize" value="3" />
-	   <property name="minPoolSize" value="6" />
-	   <property name="maxPoolSize" value="30" />
-	   <property name="acquireIncrement" value="3" /> 
 
+	   <property name="initialPoolSize" value="5" />
+	   <property name="minPoolSize" value="3" />
+	   <property name="maxPoolSize" value="50" />
+	   <property name="acquireIncrement" value="3" /> 
+	   <property name="maxIdleTime" value="720" /> 
+<!-- 
+       <property name="testConnectionOnCheckin" value="true" />
+	   <property name="idleConnectionTestPeriod" value="300" /> 
+	   <property name="maxIdleTimeExcessConnections" value="240" /> 
+	   <property name="maxConnectionAge" value="0" /> 
 	   <property name="acquireRetryAttempts" value="10" /> 
 	   <property name="acquireRetryDelay" value="1000" /> 
 	   <property name="breakAfterAcquireFailure" value="false" />
-
-	   <property name="maxConnectionAge" value="0" /> 
-
-	   <property name="checkoutTimeout" value="5000" /> 
-	   <property name="idleConnectionTestPeriod" value="300" /> 
+	   <property name="checkoutTimeout" value="1800" /> 
+	  
 	   <property name="testConnectionOnCheckout" value="true" />
 	   <property name="preferredTestQuery" value="SELECT 1" />
-       <property name="testConnectionOnCheckin" value="true" />
-       <property name="maxIdleTimeExcessConnections" value="240" />
-  </bean> 
-  
+-->      
+       </bean> 
+ 
     <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
     <property name="dataSource" ref="dataSource"></property>
      <property name="annotatedClasses">
@@ -129,6 +131,7 @@
         <prop key="hibernate.connection.autoReconnectForPools">true</prop> 
         <prop key="connection.is-connection-validation-required">true</prop>
         <prop key="hibernate.temp.use_jdbc_metadata_defaults">false</prop>
+        <prop key="spring.jpa.show-sql">false</prop>
       </props>
     </property>
   </bean>

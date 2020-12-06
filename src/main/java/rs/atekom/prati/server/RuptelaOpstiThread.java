@@ -22,7 +22,7 @@ public class RuptelaOpstiThread extends OpstiThread{
 			out = socket.getOutputStream();
 			int br = 0;
 			while(!isStopped && !socket.isClosed()) {
-				socket.setSoTimeout(720000);
+				socket.setSoTimeout(vreme);
 				br = input.read(data, 0, data.length);
 				if (br <= 0) {
 					break;

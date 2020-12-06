@@ -102,7 +102,11 @@ public class OpstiServer implements Runnable{
 	    			 }**/
 	    			 
 	    			 if(rb == 1 || rb % 1000 == 0) {
-	    				 System.out.println(server + rb + " STARTOVAN" + " od " + ((ThreadPoolExecutor) pool).getActiveCount() + " " + getVreme());
+	    				 System.out.println();
+	    				 System.out.println("************************************************************");
+	    				 System.out.println(server + rb + " STARTOVAN" + " od " + ((ThreadPoolExecutor) pool).getActiveCount() + " " + getVreme() + " *****");
+	    				 System.out.println("************************************************************");
+	    				 System.out.println();
 	    				 }
 	    			 rb++;
 	    			 } catch (Throwable e){

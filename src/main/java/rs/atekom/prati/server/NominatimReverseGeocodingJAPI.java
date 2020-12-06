@@ -31,8 +31,8 @@ public class NominatimReverseGeocodingJAPI {
 		try {
 			result = new Address(getJSON(urlString), zoomLevel);
 		} catch (IOException e) {
-			System.err.println("Can't connect to server.");
-			e.printStackTrace();
+			System.err.println("Can't connect to server - nominatim getAdress.");
+			//e.printStackTrace();
 		}		
 		return result;
 	}
@@ -51,4 +51,5 @@ public class NominatimReverseGeocodingJAPI {
 			result.append(text);
 		in.close();
 		return result.toString();
+
 	}}

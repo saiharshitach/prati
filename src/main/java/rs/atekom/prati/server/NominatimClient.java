@@ -24,15 +24,14 @@ public class NominatimClient {
 	}
 	
 	public String getAddress(Double lat, Double lon){
-		String adresa = "";
 		try{
 			final Address  address = nominatimClient.getAddress(lon, lat);
 			//elementi = address.getAddressElements();
-			adresa = address.getDisplayName();
+			return address.getDisplayName();
 		}catch(Exception e){
 			System.out.println("Problem sa Nominatim klijentom");
+			return "";
 		}
-		return adresa;
 	}
 
 

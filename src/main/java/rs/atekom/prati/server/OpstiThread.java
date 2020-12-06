@@ -49,6 +49,7 @@ public class OpstiThread implements Runnable{
     public int brojIspodNivoa;//koliko puta je nivo goriva manji za više od 1%
     public Date pocetak;
     public String test;
+    public static int vreme = 600*1000;
 	
 	public OpstiThread(LinkedBlockingQueue<Socket> queue, OpstiServer srv) {
 		socketQueue = queue;

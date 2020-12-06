@@ -53,7 +53,6 @@ import pratiBaza.servis.VozilaSaobracajneServis;
 import pratiBaza.servis.ObjekatZoneServis;
 import pratiBaza.servis.ZoneServis;
 import rs.atekom.prati.ApplicationContextProvider;
-import rs.atekom.prati.server.NominatimReverseGeocodingJAPI;
 
 @WebListener
 public class Servis implements ServletContextListener{
@@ -175,13 +174,14 @@ public class Servis implements ServletContextListener{
 		nClient = new NominatimClient(sistemServis.vratiSistem().getEmailVlasnika(), sistemServis.vratiSistem().getNominatimAdresa());
 		nominatim = new NominatimReverseGeocodingJAPI(sistemServis.vratiSistem().getNominatimAdresa());
 		obracun = new Obracuni();
-		posta = new Mail();
+		posta = new Mail(sistemServis.vratiSistem().getEmailServer(), String.valueOf(sistemServis.vratiSistem().getEmailServerPort()), 
+				sistemServis.vratiSistem().getEmailKorisnik(), sistemServis.vratiSistem().getEmailLozinka());
 		
 		try {
-			neon = new OpstiServer(9000, 300);
+			neon = new OpstiServer(9000, 150);
 			nyitech = new NyitechServer(9010, 10);
 			geneko = new OpstiServer(9030, 30);
-			ruptela = new OpstiServer(9040, 30);
+			ruptela = new OpstiServer(9040, 150);
 			
 			neonServer = new Thread(neon);
 			nyitechServer = new Thread(nyitech);

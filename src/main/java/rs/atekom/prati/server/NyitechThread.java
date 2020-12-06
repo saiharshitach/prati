@@ -63,7 +63,7 @@ public class NyitechThread implements Runnable{
         	String uredjaj = "";
         	String event = "";
 			while(!isStopped() && !socket.isClosed()){
-				socket.setSoTimeout(720000);
+				socket.setSoTimeout(600*1000);
 				br = input.read(data, 0, data.length);
 				if (br <= 0) {
 					break;

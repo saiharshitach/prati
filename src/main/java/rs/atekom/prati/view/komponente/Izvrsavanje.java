@@ -73,9 +73,14 @@ public class Izvrsavanje {
 							if(!adressa.getCountry().equals(""))
 								adresa = adresa + adressa.getCountry();
 							}else{
-								pozicija = new LatLng(javljanje.getLat(), javljanje.getLon());
-								GeocodingResult[] adresaTrazena= GeocodingApi.reverseGeocode(Servis.gContext, pozicija).await();
-								adresa = adresaTrazena[0].formattedAddress;
+								try {
+									pozicija = new LatLng(javljanje.getLat(), javljanje.getLon());
+									GeocodingResult[] adresaTrazena = GeocodingApi.reverseGeocode(Servis.gContext, pozicija).await();
+									adresa = adresaTrazena[0].formattedAddress;
+									}catch (Exception e) {
+										adresa = "";
+										System.err.println("google adrese grešaka - komponente.izvrsavanje klasa");
+										}
 								}
 						if(javljanje.getEventData().equals("0")){
 							javljanje.setEventData(adresa);
