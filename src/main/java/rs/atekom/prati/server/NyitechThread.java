@@ -236,7 +236,8 @@ public class NyitechThread implements Runnable{
 				javljanje.setVirtualOdo(0.0f);
 			}
 			objekatZone = Servis.zonaObjekatServis.nadjiZoneObjektePoObjektu(objekat);
-			alarmiKorisnici = Servis.alarmKorisnikServis.nadjiSveAlarmeKorisnikePoObjektu(objekat);
+			alarmiKorisnici = new ArrayList<AlarmiKorisnik>();
+			alarmiKorisnici.addAll(Servis.alarmKorisnikServis.nadjiSveAlarmeKorisnikePoObjektu(objekat));
 			//alarm stajanje
 			if(stop != null) {
 				long vremeRazlika = javljanje.getDatumVreme().getTime() - stop.getDatumVreme().getTime();

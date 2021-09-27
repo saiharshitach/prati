@@ -153,7 +153,8 @@ public class AlarmKorisnikView extends OpstiView implements OpstiViewInterface{
 	@Override
 	public void updateTable() {
 		filter.clear();
-		lista = Servis.alarmKorisnikServis.nadjiSveAlarmePoKorisniku(korisnik, false, false, false);
+		lista = new ArrayList<AlarmiKorisnik>();
+		lista.addAll(Servis.alarmKorisnikServis.nadjiSveAlarmePoKorisniku(korisnik, false, false, false));
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {

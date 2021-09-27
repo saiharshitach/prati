@@ -56,8 +56,8 @@ public class GrupeObjektiView extends OpstiView implements OpstiViewInterface{
 			@Override
 			public void buttonClick(ClickEvent event) {
 				if(grupeCombo.getValue() != null) {
-					if(tabela.getSelectedItems().size() > 50) {
-						pokaziPorukuGreska("број возила у групи не може бити већи од 50!");
+					if(tabela.getSelectedItems().size() > 60) {
+						pokaziPorukuGreska("број возила у групи не може бити већи од 60!");
 					}else {
 						ConfirmDialog.show(view.getUI(), "Провера", "Сачувај унете податке?", "да", "не", new ConfirmDialog.Listener() {
 						private static final long serialVersionUID = 1L;
@@ -136,13 +136,15 @@ public class GrupeObjektiView extends OpstiView implements OpstiViewInterface{
 	@Override
 	public void updateTable() {
 		filter.clear();
-		lista = Servis.objekatServis.vratiSveObjekte(pretplatniciCombo.getValue(), organizacijeCombo.getValue());
+		lista = new ArrayList<Objekti>();
+		lista.addAll(Servis.objekatServis.vratiSveObjekte(pretplatniciCombo.getValue(), organizacijeCombo.getValue()));
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {
 			tabela.setItems(pocetno);
 		}
-		ArrayList<GrupeObjekti> uGrupi = Servis.grupeObjekatServis.nadjiSveGrupaObjektePoGrupi(grupeCombo.getValue());
+		ArrayList<GrupeObjekti> uGrupi = new ArrayList<GrupeObjekti>();
+		uGrupi.addAll(Servis.grupeObjekatServis.nadjiSveGrupaObjektePoGrupi(grupeCombo.getValue()));
 		for(GrupeObjekti grupaObjekat : uGrupi) {
 			for(Objekti objekat : lista) {
 				if(grupaObjekat.getObjekti().getId().equals(objekat.getId())) {

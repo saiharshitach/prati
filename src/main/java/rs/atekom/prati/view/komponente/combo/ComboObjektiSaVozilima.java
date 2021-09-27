@@ -1,6 +1,7 @@
 package rs.atekom.prati.view.komponente.combo;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.vaadin.ui.ComboBox;
 
@@ -24,11 +25,13 @@ public class ComboObjektiSaVozilima extends ComboBox<Objekti>{
 		setWidth("100%");
 	}
 	
-	public ArrayList<Objekti> lista(SistemPretplatnici pretplatnik, Organizacije organizacija){
+	public List<Objekti> lista(SistemPretplatnici pretplatnik, Organizacije organizacija){
 		return Servis.objekatServis.nadjiSveObjekteSavozilom(pretplatnik, organizacija);
 	}
 	
 	public ArrayList<Objekti> lista(Grupe grupa){
-		return Servis.grupeObjekatServis.nadjiSveObjektePoGrupiSaVozilom(grupa);
+		ArrayList<Objekti> objekti = new ArrayList<Objekti>();
+		objekti.addAll(Servis.grupeObjekatServis.nadjiSveObjektePoGrupiSaVozilom(grupa));
+		return objekti;
 	}
 }

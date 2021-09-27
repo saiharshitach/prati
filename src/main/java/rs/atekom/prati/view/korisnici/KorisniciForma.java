@@ -274,7 +274,8 @@ public class KorisniciForma extends OpstaForma implements OpstaFormaInterface{
 			organizacije.setValue(korisnik.getOrganizacija());
 			sistem.setValue(korisnik.isSistem());
 			izbrisan.setValue(korisnik.isIzbrisan());
-			ArrayList<GrupeKorisnici> grupeKorisnik = Servis.grupeKorisnikServis.vratiSveGrupeKorisnikPoKorisniku(korisnik);
+			ArrayList<GrupeKorisnici> grupeKorisnik = new ArrayList<GrupeKorisnici>();
+			grupeKorisnik.addAll(Servis.grupeKorisnikServis.vratiSveGrupeKorisnikPoKorisniku(korisnik));
 			for(GrupeKorisnici grKorisnik: grupeKorisnik) {
 				for(Grupe grupa: lista) {
 					if(grKorisnik.getGrupe().getId().equals(grupa.getId())) {
@@ -287,7 +288,7 @@ public class KorisniciForma extends OpstaForma implements OpstaFormaInterface{
 	
 	private void popuniTabeluGrupe() {
 		lista = new ArrayList<Grupe>();
-		lista = Servis.grupeServis.vratiGrupeAktivne(pretplatnici.getValue(), organizacije.getValue());
+		lista.addAll(Servis.grupeServis.vratiGrupeAktivne(pretplatnici.getValue(), organizacije.getValue()));
 		grupeTabela.setItems(lista);
 	}
 

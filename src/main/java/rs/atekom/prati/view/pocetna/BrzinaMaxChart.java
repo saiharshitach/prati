@@ -1,8 +1,8 @@
 package rs.atekom.prati.view.pocetna;
 
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.AxisLocation;
@@ -25,8 +25,8 @@ public class BrzinaMaxChart {
 	}
 	
 	@SuppressWarnings("deprecation")
-	public JFreeChart kreirajChart(ArrayList<Javljanja> javljanja) {
-		CategoryDataset dataset1 = createDataSet1(javljanja);
+	public JFreeChart kreirajChart(List<Javljanja> list) {
+		CategoryDataset dataset1 = createDataSet1(list);
 		JFreeChart chart = ChartFactory.createBarChart(
 	            "Највеће брзине",        // chart title
 	            "Објекат",               // domain axis label
@@ -60,13 +60,13 @@ public class BrzinaMaxChart {
 		return chart;
 	}
 	
-	private CategoryDataset createDataSet1(ArrayList<Javljanja> javljanja) {
+	private CategoryDataset createDataSet1(List<Javljanja> list) {
 		try {
-			if(javljanja != null && !javljanja.isEmpty()) {
-				javljanja.sort(Comparator.comparing(Javljanja::getBrzina).reversed());
+			if(list != null && !list.isEmpty()) {
+				list.sort(Comparator.comparing(Javljanja::getBrzina).reversed());
 				final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 				final String brzina = "брзина";
-				for(Javljanja javljanje : javljanja) {
+				for(Javljanja javljanje : list) {
 					dataset.addValue(javljanje.getBrzina(), brzina, javljanje.getObjekti().getOznaka());
 				}
 				return dataset;

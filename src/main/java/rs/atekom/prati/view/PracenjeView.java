@@ -105,7 +105,9 @@ public class PracenjeView extends OpstiPanelView{
 			@Override
 			public void valueChange(ValueChangeEvent<Grupe> event) {
 				if(event.getValue() != null && Servis.grupeObjekatServis.nadjiSveObjektePoGrupi(event.getValue()) != null) {
-					Prati.getCurrent().poslednjaJavljanja.setItems(Servis.javljanjePoslednjeServis.vratiListuJavljanjaPoslednjih(Servis.grupeObjekatServis.nadjiSveObjektePoGrupi(event.getValue())));
+					ArrayList<Objekti> objekti = new ArrayList<Objekti>();
+					objekti.addAll(Servis.grupeObjekatServis.nadjiSveObjektePoGrupi(event.getValue()));
+					Prati.getCurrent().poslednjaJavljanja.setItems(Servis.javljanjePoslednjeServis.vratiListuJavljanjaPoslednjih(objekti));
 				}else {
 					Prati.getCurrent().poslednjaJavljanja.setItems(new ArrayList<JavljanjaPoslednja>());
 					//updateTable();
@@ -153,7 +155,8 @@ public class PracenjeView extends OpstiPanelView{
 		root.addComponent(content);
 		root.setExpandRatio(content, 1);
 		Prati.getCurrent().pracenjeView = this;
-		Prati.getCurrent().alarmiKorisnika = Servis.alarmKorisnikServis.vratiAlarmePoKorisniku(korisnik, true, false, true);
+		Prati.getCurrent().alarmiKorisnika.clear();
+		Prati.getCurrent().alarmiKorisnika .addAll(Servis.alarmKorisnikServis.vratiAlarmePoKorisniku(korisnik, true, false, true));
 		setContent(root);
 	}
 	
@@ -193,7 +196,9 @@ public class PracenjeView extends OpstiPanelView{
 			@Override
 			public void valueChange(ValueChangeEvent<Grupe> event) {
 				if(event.getValue() != null) {
-					Prati.getCurrent().poslednjaJavljanja.setItems(Servis.javljanjePoslednjeServis.vratiListuJavljanjaPoslednjih(Servis.grupeObjekatServis.nadjiSveObjektePoGrupi(event.getValue())));
+					ArrayList<Objekti> objekti = new ArrayList<Objekti>();
+					objekti.addAll(Servis.grupeObjekatServis.nadjiSveObjektePoGrupi(event.getValue()));//Servis.grupeObjekatServis.nadjiSveObjektePoGrupi(event.getValue())
+					Prati.getCurrent().poslednjaJavljanja.setItems(Servis.javljanjePoslednjeServis.vratiListuJavljanjaPoslednjih(objekti));
 				}else {
 					//updateTable();
 				}
@@ -243,14 +248,16 @@ public class PracenjeView extends OpstiPanelView{
 	public void updateTable() {
 		Prati.getCurrent().poslednjaJavljanja.setItems(new ArrayList<JavljanjaPoslednja>());
 		if(!korisnik.isAdmin()) {
-			ArrayList<Grupe> grupe = Servis.grupeKorisnikServis.vratiSveGrupePoKorisniku(korisnik);
+			ArrayList<Grupe> grupe = new ArrayList<Grupe>();
+			grupe.addAll(Servis.grupeKorisnikServis.vratiSveGrupePoKorisniku(korisnik));
 			ArrayList<Objekti> objekti = Servis.grupeObjekatServis.nadjiSveObjektePoGrupama(grupe);
 			if(objekti != null && !objekti.isEmpty()) {
 				Prati.getCurrent().poslednjaJavljanja.setItems(Servis.javljanjePoslednjeServis.vratiListuJavljanjaPoslednjih(objekti));
 			}
 		}else {
 			if(korisnik.getSistemPretplatnici() != null) {
-				ArrayList<Objekti> objekti = Servis.objekatServis.vratiSveObjekte(korisnik, true);
+				ArrayList<Objekti> objekti = new ArrayList<Objekti>();
+				objekti.addAll(Servis.objekatServis.vratiSveObjekte(korisnik, true));
 				if(objekti != null && !objekti.isEmpty()) {
 					Prati.getCurrent().poslednjaJavljanja.setItems(Servis.javljanjePoslednjeServis.vratiListuJavljanjaPoslednjih(objekti));
 				}

@@ -286,10 +286,11 @@ public class PocetnaView extends OpstiPanelView{
 	private ArrayList<Objekti> vratiObjekte() {
 		ArrayList<Objekti> objekti = new ArrayList<Objekti>();
 		if(!korisnik.isAdmin()) {
-			ArrayList<Grupe> grupe = Servis.grupeKorisnikServis.vratiSveGrupePoKorisniku(korisnik);
+			ArrayList<Grupe> grupe = new ArrayList<Grupe>();
+			grupe.addAll(Servis.grupeKorisnikServis.vratiSveGrupePoKorisniku(korisnik));
 			objekti = Servis.grupeObjekatServis.nadjiSveObjektePoGrupama(grupe);
 		}else {
-			objekti = Servis.objekatServis.vratiSveObjekte(korisnik.getSistemPretplatnici(), korisnik.getOrganizacija());
+			objekti.addAll(Servis.objekatServis.vratiSveObjekte(korisnik.getSistemPretplatnici(), korisnik.getOrganizacija()));
 			/*if(korisnik.getSistemPretplatnici().isSistem()) {
 				objekti = Servis.objekatServis.vratiSveObjekte(korisnik, true);
 			}else {

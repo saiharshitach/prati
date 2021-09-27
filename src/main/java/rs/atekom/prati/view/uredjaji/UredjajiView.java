@@ -159,7 +159,8 @@ public class UredjajiView extends OpstiView implements OpstiViewInterface{
 	@Override
 	public void updateTable() {
 		filter.clear();
-		lista = Servis.uredjajServis.nadjiSveUredjaje(korisnik, false);
+		lista = new ArrayList<Uredjaji>();
+		lista.addAll(Servis.uredjajServis.nadjiSveUredjaje(korisnik, false));
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {

@@ -116,7 +116,8 @@ public class KorisniciLogika implements LogikaInterface{
 	}
 	
 	private void sacuvajGrupeKorisnik(Korisnici korisnik) {
-		ArrayList<GrupeKorisnici> grupeKorisnik = Servis.grupeKorisnikServis.vratiSveGrupeKorisnikPoKorisniku(korisnik);
+		ArrayList<GrupeKorisnici> grupeKorisnik = new ArrayList<GrupeKorisnici>();
+		grupeKorisnik.addAll(Servis.grupeKorisnikServis.vratiSveGrupeKorisnikPoKorisniku(korisnik));
 		for(GrupeKorisnici grKorisnik: grupeKorisnik) {
 			Servis.grupeKorisnikServis.izbrisiGrupaZaposleni(grKorisnik);
 			}

@@ -8,6 +8,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import pratiBaza.tabele.Grupe;
 import pratiBaza.tabele.JavljanjaPoslednja;
+import pratiBaza.tabele.Objekti;
 import pratiBaza.tabele.Organizacije;
 import pratiBaza.tabele.SistemPretplatnici;
 import rs.atekom.prati.Prati;
@@ -76,7 +77,9 @@ public class RutaForma extends OpstaForma implements OpstaFormaInterface{
 			@Override
 			public void valueChange(ValueChangeEvent<Grupe> event) {
 				if(event.getValue() != null) {
-					javljanjaPoslednjaCombo.setItems(Servis.javljanjePoslednjeServis.vratiListuJavljanjaPoslednjih(Servis.grupeObjekatServis.nadjiSveObjektePoGrupi(event.getValue())));
+					ArrayList<Objekti> objekti = new ArrayList<Objekti>();
+					objekti.addAll(Servis.grupeObjekatServis.nadjiSveObjektePoGrupi(event.getValue()));
+					javljanjaPoslednjaCombo.setItems(Servis.javljanjePoslednjeServis.vratiListuJavljanjaPoslednjih(objekti));
 				}else {
 					javljanjaPoslednjaCombo.setItems(new ArrayList<JavljanjaPoslednja>());
 				}

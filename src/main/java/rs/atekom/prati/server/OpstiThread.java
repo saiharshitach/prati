@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.concurrent.LinkedBlockingQueue;
 import pratiBaza.tabele.AlarmiKorisnik;
 import pratiBaza.tabele.Javljanja;
+import pratiBaza.tabele.JavljanjaMirovanja;
 import pratiBaza.tabele.JavljanjaPoslednja;
 import pratiBaza.tabele.Obd;
 import pratiBaza.tabele.ObjekatZone;
@@ -39,7 +40,7 @@ public class OpstiThread implements Runnable{
     public Date date;
     public JavljanjeObd javljanjeObd;
     public Obd obdStop;
-    public Javljanja javljanjeTrenutno, javljanjePoslednje, javljanjeStop;
+    public Javljanja javljanjeTrenutno,/* javljanjePoslednje,*/ javljanjeStop;
     public Objekti objekat;
     public Uredjaji uredjaj;
     public String ulaz;
@@ -50,6 +51,7 @@ public class OpstiThread implements Runnable{
     public Date pocetak;
     public String test;
     public static int vreme = 600*1000;
+    public JavljanjaPoslednja poslednje;
 	
 	public OpstiThread(LinkedBlockingQueue<Socket> queue, OpstiServer srv) {
 		socketQueue = queue;
@@ -76,35 +78,38 @@ public class OpstiThread implements Runnable{
 	}
 	
 	public void pronadjiPostavi(String kodUredjaja) {
-		
-		if(kodUredjaja != null && !kodUredjaja.isEmpty() && !kodUredjaja.equals("")) {
-			uredjaj = Servis.uredjajServis.nadjiUredjajPoKodu(kodUredjaja);
-			
-			if(uredjaj != null) {
-				//objekat = Servis.objekatServis.nadjiObjekatPoUredjaju(uredjaj);						
-				objekat = uredjaj.getObjekti();
+		poslednje = null;
+		try {
+			if(kodUredjaja != null && !kodUredjaja.isEmpty() && !kodUredjaja.equals("")) {
+				uredjaj = Servis.uredjajServis.nadjiUredjajPoKodu(kodUredjaja);
 				
-				if(objekat != null) {
-					objekatZone = Servis.zonaObjekatServis.nadjiZoneObjektePoObjektu(objekat);
-					alarmiKorisnici = Servis.alarmKorisnikServis.nadjiSveAlarmeKorisnikePoObjektu(objekat);
-					javljanjePoslednje = Servis.javljanjeServis.nadjiPoslednjeJavljanjePoObjektu(objekat);
-					
-					boolean vremeStarijeOdStajanja = false;
-					if(javljanjePoslednje != null) {
-						long vreme  = pocetak.getTime() - javljanjePoslednje.getDatumVreme().getTime();
-						if(objekat.getVremeStajanja() > 0 && (vreme/1000 > objekat.getVremeStajanja())) {
-							vremeStarijeOdStajanja = true;
+				if(uredjaj != null) {
+					//objekat = Servis.objekatServis.nadjiObjekatPoUredjaju(uredjaj);						
+					objekat = uredjaj.getObjekti();
+				
+					if(objekat != null) {
+						objekatZone = Servis.zonaObjekatServis.nadjiZoneObjektePoObjektu(objekat);
+						alarmiKorisnici = new ArrayList<AlarmiKorisnik>();
+						alarmiKorisnici.addAll(Servis.alarmKorisnikServis.nadjiSveAlarmeKorisnikePoObjektu(objekat));
+						JavljanjaPoslednja poslednje = Servis.javljanjePoslednjeServis.nadjiJavljanjaPoslednjaPoObjektu(objekat);
+						//javljanjePoslednje// = Servis.javljanjeServis.nadjiPoslednjeJavljanjePoObjektu(objekat);
+						boolean vremeStarijeOdStajanja = false;
+						if(poslednje != null) {
+							long vreme  = pocetak.getTime() - poslednje.getDatumVreme().getTime();
+							if(objekat.getVremeStajanja() > 0 && (vreme/1000 > objekat.getVremeStajanja())) {
+								vremeStarijeOdStajanja = true;
+								}
+						
+						if(poslednje != null && poslednje.getBrzina() < 6 && 
+								!poslednje.getSistemAlarmi().getSifra().equals("1095") && !vremeStarijeOdStajanja) {
+							javljanjeStop = new Javljanja();
+							javljanjeStop.setDatumVreme(poslednje.getDatumVreme());
+							obdStop = Servis.obdServis.nadjiObdPoslednji(objekat, null);
+							}else {
+								javljanjeStop = null;
+	            				obdStop = null;
+	            				}
 						}
-					}
-					
-					if(javljanjePoslednje != null && javljanjePoslednje.getBrzina() < 6 && 
-							!javljanjePoslednje.getSistemAlarmi().getSifra().equals("1095") && !vremeStarijeOdStajanja) {
-						javljanjeStop = javljanjePoslednje;
-						obdStop = Servis.obdServis.nadjiObdPoslednji(objekat, null);
-						}else {
-							javljanjeStop = null;
-            				obdStop = null;
-            				}
 					}else {
 						System.out.println("uređaj nema objekta: " + kodUredjaja);
 						}
@@ -113,8 +118,13 @@ public class OpstiThread implements Runnable{
 					System.out.println("nema uredjaja: " + kodUredjaja);
 					}
 			}
+			}catch (Exception e) {
+				System.out.print("greška za uredjaj" + kodUredjaja + " ");
+				e.printStackTrace();
+				stop();
+				}
 		//System.out.println("broj uzimanja objekta: " + broj);
-	}
+		}
 	
 	public void obradaJavljanja(Javljanja javljanjeTrenutno, Obd obdTrenutni) {
 		test = "ulaz";
@@ -124,7 +134,7 @@ public class OpstiThread implements Runnable{
 			mladje = javljanjeTrenutno.getDatumVreme().after(poslednje.getDatumVreme());
 		}
 		test = " 1 ";
-		if(javljanjeTrenutno != null  && javljanjeTrenutno.getBrzina() < 200 &&  javljanjeTrenutno.getDatumVreme().after(date)) {
+		if(javljanjeTrenutno != null  && javljanjeTrenutno.getBrzina() < 250 &&  javljanjeTrenutno.getDatumVreme().after(date)) {
 			test = " obračun ";
 			//obracun km
 			if(poslednje != null) {
@@ -194,8 +204,15 @@ public class OpstiThread implements Runnable{
     		//alarm gorivo
 			test = " gorivo ";
     		if(obdTrenutni != null && mladje && javljanjeTrenutno.getBrzina() < 6) {
-    			//System.out.println(test);
-    			Javljanja poslednjeSaBrzinom = Servis.javljanjeServis.vratiJavljanjeZaStajanje(objekat);
+    			JavljanjaMirovanja poslednjeSaBrzinom = null;
+    			try {
+        			//System.out.println(test);
+        			poslednjeSaBrzinom = Servis.javljanjeMirovanjeServis.nadjiJavljanjaMirovanjaPoObjektu(objekat);//ovde je problem
+        			} catch (Exception e) {
+        				System.out.println("greška gorivo " + e);
+        				e.printStackTrace();
+        				//poslednjeSaBrzinom = (JavljanjaMirovanja)Servis.javljanjeServis.nadjiPoslednjeJavljanjePoObjektu(objekat);
+        				}
     			if(!gorivo && poslednjeSaBrzinom != null) {
     				//System.out.println(test += " false");
         			ArrayList<Obd> poslednjiObdUMirovanju = Servis.obdServis.nadjiObdPoslednjaStajanja(objekat, new Timestamp(poslednjeSaBrzinom.getDatumVreme().getTime()));
@@ -209,7 +226,7 @@ public class OpstiThread implements Runnable{
         					}
         				server.postaviAlarmIstakanje(javljanjeTrenutno);
 						gorivo = true;
-        			}
+						}
         			/*if(obdStop != null) {
         				if(!gorivo) {
         					if(obdTrenutni.getNivoGoriva() - obdStop.getNivoGoriva() > 1 && brojIspodNivoa > 10) {
@@ -230,8 +247,8 @@ public class OpstiThread implements Runnable{
             					brojIspodNivoa = 0;
             					}
         				}**/
-        			Servis.obdServis.unesiObd(obdTrenutni);
         			}
+    			Servis.obdServis.unesiObd(obdTrenutni);
     			}else {
     				gorivo = false;
     				}
@@ -292,13 +309,13 @@ public class OpstiThread implements Runnable{
     		server.izvrsavanje.obradaAlarma(javljanjeTrenutno, alarmiKorisnici);
     		}else {
     			System.out.println("javljanje null: " + ulaz);
-    		}
-	}
+    			}
+		}
 	
 	
 	public synchronized boolean isStopped(){
 		return this.isStopped;
-	}
+		}
 	
 	public synchronized void stop(){
     	try{
@@ -308,15 +325,16 @@ public class OpstiThread implements Runnable{
 				if(out != null) {
 		    		out.flush();
 					out.close();
-				}
+					}
 				socket.close();
 				isStopped = true;
 				//server.removeClientSocket(socket);
 				//System.out.println("coban stream connection closed ");
-			}
-		}catch(IOException e){
-			System.out.println("ruptela stream connection closed problem...");
-		}
+				}
+			}catch(IOException e){
+				System.out.println("ruptela stream connection closed problem...");
+				}
 		return;
+		}
+	
 	}
-}

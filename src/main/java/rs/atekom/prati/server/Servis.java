@@ -13,6 +13,7 @@ import pratiBaza.servis.EvidencijaVoznjiServis;
 import pratiBaza.servis.GrupeKorisniciServis;
 import pratiBaza.servis.GrupeObjektiServis;
 import pratiBaza.servis.GrupeServis;
+import pratiBaza.servis.JavljanjaMirovanjaServis;
 import pratiBaza.servis.JavljanjaPoslednjaServis;
 import pratiBaza.servis.JavljanjaServis;
 import pratiBaza.servis.KorisniciServis;
@@ -64,6 +65,7 @@ public class Servis implements ServletContextListener{
 	public static GrupeObjektiServis grupeObjekatServis;
 	public static GrupeServis grupeServis;
 	public static JavljanjaPoslednjaServis javljanjePoslednjeServis;
+	public static JavljanjaMirovanjaServis javljanjeMirovanjeServis;
 	public static JavljanjaServis javljanjeServis;
 	public static KorisniciServis korisnikServis;
 	public static ObdServis obdServis;
@@ -127,6 +129,7 @@ public class Servis implements ServletContextListener{
 		grupeObjekatServis = ApplicationContextProvider.getApplicationContext().getBean("grupaObjekatServis", GrupeObjektiServis.class);
 		grupeServis = ApplicationContextProvider.getApplicationContext().getBean("grupaServis", GrupeServis.class);
 		javljanjePoslednjeServis = ApplicationContextProvider.getApplicationContext().getBean("javljanjePoslednjeServis", JavljanjaPoslednjaServis.class);
+		javljanjeMirovanjeServis = ApplicationContextProvider.getApplicationContext().getBean("javljanjeMirovanjeServis", JavljanjaMirovanjaServis.class);
 		javljanjeServis = ApplicationContextProvider.getApplicationContext().getBean("javljanjeServis", JavljanjaServis.class);
 		korisnikServis = ApplicationContextProvider.getApplicationContext().getBean("korisnikServis", KorisniciServis.class);
 		obdServis = ApplicationContextProvider.getApplicationContext().getBean("obdServis", ObdServis.class);
@@ -178,10 +181,10 @@ public class Servis implements ServletContextListener{
 				sistemServis.vratiSistem().getEmailKorisnik(), sistemServis.vratiSistem().getEmailLozinka());
 		
 		try {
-			neon = new OpstiServer(9000, 150);
-			nyitech = new NyitechServer(9010, 10);
-			geneko = new OpstiServer(9030, 30);
-			ruptela = new OpstiServer(9040, 150);
+			neon = new OpstiServer(9000, 100);//76 aktivnih 2021-01-08
+			nyitech = new NyitechServer(9010, 20);//7 aktivnih 2021-01-08
+			geneko = new OpstiServer(9030, 20);//12 aktivnih 2021-01-08
+			ruptela = new OpstiServer(9040, 200);//58 aktivnih 2021-01-08
 			
 			neonServer = new Thread(neon);
 			nyitechServer = new Thread(nyitech);
@@ -192,11 +195,11 @@ public class Servis implements ServletContextListener{
 			nyitechServer.start();
 			genekoServer.start();
 			ruptelaServer.start();
-		} catch (Throwable e) {
-			System.out.println("error starting servers " + e.getMessage());
-			return;
+			} catch (Throwable e) {
+				System.out.println("error starting servers " + e.getMessage());
+				return;
+				}
 		}
-	}
 
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {

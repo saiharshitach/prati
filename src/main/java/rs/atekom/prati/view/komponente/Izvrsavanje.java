@@ -25,7 +25,7 @@ public class Izvrsavanje {
 	
 	public void obradaAlarma(Javljanja javljanje, ArrayList<AlarmiKorisnik> alarmiKorisnici) {
 		alarmAdresa(javljanje);
-		Servis.javljanjeServis.unesiJavljanja(javljanje);
+		Servis.javljanjeServis.unesiJavljanja(javljanje);//ovde negde problem??
         Broadcaster.broadcast(javljanje);
         for(AlarmiKorisnik alarmKorisnik : alarmiKorisnici) {
         	if(alarmKorisnik.getSistemAlarmi().getId().equals(javljanje.getSistemAlarmi().getId()) && alarmKorisnik.isEmail()) {
@@ -38,7 +38,7 @@ public class Izvrsavanje {
         		         , "Порука је аутоматски генерисана, немојте одговарати."
         		         , "Атеком доо, www.atekom.rs info@atekom.rs"
         		);
-        		Servis.posta.posaljiMail("prati@atekom.rs", alarmKorisnik.getKorisnik().getEmail(), zaglavlje, poruka);
+        		Servis.posta.posaljiMail(alarmKorisnik.getKorisnik().getEmail(), zaglavlje, poruka);
         	}
         }
 	}

@@ -168,7 +168,8 @@ public class Kalendar extends CustomComponent{
     	Grupe grupa = view.grupeCombo.getValue();
     	//System.out.println(" grupa " + grupa.getNaziv());
     	if(grupa != null) {
-    		ArrayList<Objekti> objekti = Servis.grupeObjekatServis.nadjiSveObjektePoGrupi(grupa);//Servis.objekatServis.vratiObjektePoGrupi(grupa);
+    		ArrayList<Objekti> objekti = new ArrayList<Objekti>();//Servis.objekatServis.vratiObjektePoGrupi(grupa);
+    		objekti.addAll(Servis.grupeObjekatServis.nadjiSveObjektePoGrupi(grupa));
     		//System.out.println(" objekti " + objekti.size());
         	ArrayList<VozilaNalozi> nalozi = Servis.nalogServis.nadjiNalogeZaGrupuUPeriodu(objekti, 
         			Timestamp.valueOf(calendar.getStartDate().toLocalDateTime()), Timestamp.valueOf(calendar.getEndDate().toLocalDateTime()));

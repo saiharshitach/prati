@@ -155,7 +155,8 @@ public class GrupeView extends OpstiView implements OpstiViewInterface{
 	@Override
 	public void updateTable() {
 		filter.clear();
-		lista = Servis.grupeServis.vratiGrupe(korisnik);
+		lista = new ArrayList<Grupe>();
+		lista.addAll(Servis.grupeServis.vratiGrupe(korisnik));
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {

@@ -2,7 +2,6 @@ package rs.atekom.prati.view.izvestaji;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import org.vaadin.reports.PrintPreviewReport;
@@ -97,7 +96,7 @@ public class ZoneIzvestaj extends PrintPreviewReport<Javljanja>{
 	private List<Javljanja> obracun(ArrayList<Objekti> objekti, Timestamp datumVremeOd, Timestamp datumVremeDo, ArrayList<SistemAlarmi> alarmi){
 		lista.clear();
 		for(Objekti objekat : objekti) {
-			ArrayList<Javljanja> javljanja = Servis.javljanjeServis.vratiJavljanjaObjektaOdDoSaAlarmimaZona(objekat, datumVremeOd, datumVremeDo, alarmi);
+			List<Javljanja> javljanja = Servis.javljanjeServis.vratiJavljanjaObjektaOdDoSaAlarmimaZona(objekat, datumVremeOd, datumVremeDo, alarmi);
 			//Collections.sort(javljanja, (o1, o2) -> o1.getDatumVreme().compareTo(o2.getDatumVreme()));
 			lista.addAll(javljanja);
 		}

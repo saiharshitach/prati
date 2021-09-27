@@ -164,7 +164,8 @@ public class ObjektiView extends OpstiView implements OpstiViewInterface{
 	@Override
 	public void updateTable() {
 		filter.clear();
-		lista = Servis.objekatServis.vratiSveObjekte(korisnik, false);
+		lista = new ArrayList<Objekti>();
+		lista.addAll(Servis.objekatServis.vratiSveObjekte(korisnik, false));
 		if(lista != null) {
 			tabela.setItems(lista);
 		}else {

@@ -1,6 +1,8 @@
 package rs.atekom.prati.view.izvestaji.nivoGoriva;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.time.RegularTimePeriod;
@@ -17,14 +19,14 @@ public class NivoGorivaChart {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public JFreeChart kreirajChart(ArrayList<Javljanja> javljanja, ArrayList<Obd> obd) {
+	public JFreeChart kreirajChart(List<Javljanja> javljanja, ArrayList<Obd> obd) {
 		final XYDataset dataset = createDataSet(javljanja, obd);
 		final JFreeChart chart = ChartFactory.createTimeSeriesChart("Преглед нивоа горива и брзине", "Време", "Ниво/Брзина", dataset, true, true, false);
 		
 		return chart;
 	}
 	
-	private XYDataset createDataSet(ArrayList<Javljanja> javljanja, ArrayList<Obd> obd) {
+	private XYDataset createDataSet(List<Javljanja> javljanja, ArrayList<Obd> obd) {
 	    TimeSeriesCollection dataset = new TimeSeriesCollection();
 	    
 	    TimeSeries nivo = new TimeSeries("ниво");

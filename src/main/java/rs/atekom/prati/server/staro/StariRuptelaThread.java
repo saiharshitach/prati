@@ -102,7 +102,8 @@ public class StariRuptelaThread implements Runnable{
 						
 						if(objekat != null) {
 							objekatZone = Servis.zonaObjekatServis.nadjiZoneObjektePoObjektu(objekat);
-							alarmiKorisnici = Servis.alarmKorisnikServis.nadjiSveAlarmeKorisnikePoObjektu(objekat);
+							alarmiKorisnici = new ArrayList<AlarmiKorisnik>();
+							alarmiKorisnici.addAll(Servis.alarmKorisnikServis.nadjiSveAlarmeKorisnikePoObjektu(objekat));
 							javljanjePoslednje = Servis.javljanjeServis.nadjiPoslednjeJavljanjePoObjektu(objekat);
 							
 							boolean vremeStarijeOdStajanja = false;

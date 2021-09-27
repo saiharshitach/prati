@@ -3,6 +3,8 @@ package rs.atekom.prati.view.istorija;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+
 import com.github.appreciated.app.layout.annotations.MenuCaption;
 import com.github.appreciated.app.layout.annotations.MenuIcon;
 import com.github.appreciated.app.layout.annotations.NavigatorViewName;
@@ -130,7 +132,7 @@ public class IstorijaView extends OpstiPanelView{
 					ArrayList<Double> lat = new ArrayList<Double>();
 					ArrayList<Double> lon = new ArrayList<Double>();
 					
-					ArrayList<Javljanja> javljanja = Servis.javljanjeServis.vratiJavljanjaObjektaOdDo(objekat, datumVremeOd, datumVremeDo);
+					List<Javljanja> javljanja = Servis.javljanjeServis.vratiJavljanjaObjektaOdDo(objekat, datumVremeOd, datumVremeDo);
 					if(javljanja != null && !javljanja.isEmpty()) {
 						if(prikaziMarkere.getValue()) {
 							for(Javljanja javljanje : javljanja) {

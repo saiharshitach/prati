@@ -42,13 +42,14 @@
 
 	   <property name="initialPoolSize" value="5" />
 	   <property name="minPoolSize" value="3" />
-	   <property name="maxPoolSize" value="50" />
-	   <property name="acquireIncrement" value="3" /> 
-	   <property name="maxIdleTime" value="720" /> 
-<!-- 
-       <property name="testConnectionOnCheckin" value="true" />
-	   <property name="idleConnectionTestPeriod" value="300" /> 
+	   <property name="maxPoolSize" value="20" />
+	   <property name="acquireIncrement" value="1" /> 
+	   <property name="testConnectionOnCheckin" value="true" />
+	   <property name="idleConnectionTestPeriod" value="150" /> 
 	   <property name="maxIdleTimeExcessConnections" value="240" /> 
+	   <property name="unreturnedConnectionTimeout" value="30" />
+<!-- 
+       <property name="maxIdleTime" value="720" /> 
 	   <property name="maxConnectionAge" value="0" /> 
 	   <property name="acquireRetryAttempts" value="10" /> 
 	   <property name="acquireRetryDelay" value="1000" /> 
@@ -62,7 +63,7 @@
  
     <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
     <property name="dataSource" ref="dataSource"></property>
-     <property name="annotatedClasses">
+    <property name="annotatedClasses">
             <list>
                <value>pratiBaza.tabele.EvidencijaVoznji</value>
                <value>pratiBaza.tabele.AlarmiKorisnik</value>
@@ -71,7 +72,8 @@
                <value>pratiBaza.tabele.GrupeObjekti</value> 
                <value>pratiBaza.tabele.GrupeObjektiPK</value>
                <value>pratiBaza.tabele.Javljanja</value>
-               <value>pratiBaza.tabele.JavljanjaPoslednja</value> 
+               <value>pratiBaza.tabele.JavljanjaPoslednja</value>
+               <value>pratiBaza.tabele.JavljanjaMirovanja</value>  
                <value>pratiBaza.tabele.Korisnici</value> 
                <value>pratiBaza.tabele.Obd</value>
                <value>pratiBaza.tabele.ObdPoslednji</value>
@@ -122,7 +124,7 @@
                <value>pratiBaza.pomocne.StanjeOBD</value>
                <value>pratiBaza.pomocne.TipServisa</value>
             </list>
-        </property>
+    </property>
     <property name="hibernateProperties">
       <props>
         <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
@@ -131,7 +133,12 @@
         <prop key="hibernate.connection.autoReconnectForPools">true</prop> 
         <prop key="connection.is-connection-validation-required">true</prop>
         <prop key="hibernate.temp.use_jdbc_metadata_defaults">false</prop>
+        <prop key="hibernate.jdbc.log.warnings">false</prop>
+        
+        <!-- 
         <prop key="spring.jpa.show-sql">false</prop>
+        <prop key="spring.jpa.properties.hibernate.show_sql">false</prop>
+         -->
       </props>
     </property>
   </bean>
@@ -182,6 +189,12 @@
   </bean>
   <bean id="javljanjePoslednjeServis" class="pratiBaza.servisImpl.JavljanjaPoslednjaServisImpl">
         <property name="javljanjePoslednjeDAO" ref="javljanjePoslednjeDAO"></property>
+  </bean>
+    <bean id="javljanjeMirovanjeDAO" class="pratiBaza.daoImpl.JavljanjaMirovanjaDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+  <bean id="javljanjeMirovanjeServis" class="pratiBaza.servisImpl.JavljanjaMirovanjaServisImpl">
+        <property name="javljanjeMirovanjeDAO" ref="javljanjeMirovanjeDAO"></property>
   </bean>
   <bean id="korisnikDAO" class="pratiBaza.daoImpl.KorisniciDAOImpl">
         <property name="sessionFactory" ref="sessionFactory" />

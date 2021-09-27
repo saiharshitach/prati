@@ -41,7 +41,7 @@ public class IstorijaIzvestaj extends PrintPreviewReport<Javljanja>{
 		int brojProsPotr = 1;
 		float prosPotros = 0.0f;
 
-		ArrayList<Javljanja> javljanja = Servis.javljanjeServis.vratiJavljanjaObjektaOdDo(objekat, datumVremeOd, datumVremeDo);
+		List<Javljanja> javljanja = Servis.javljanjeServis.vratiJavljanjaObjektaOdDo(objekat, datumVremeOd, datumVremeDo);
 		ArrayList<Obd> obd = Servis.obdServis.nadjiObdPoObjektuOdDo(objekat, datumVremeOd, datumVremeDo);
 
 		Date vremeMaxBrzine = new Date();

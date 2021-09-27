@@ -94,7 +94,7 @@ public class OpstiServer implements Runnable{
 	    			    break;
 	    			 default:
 						break;
-					}
+						}
 	    			 queue.put(soket);
 	    			 
 	    			 /*if(clientSockets.size() % 100 == 0) {

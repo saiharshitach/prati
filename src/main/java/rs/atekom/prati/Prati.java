@@ -226,9 +226,11 @@ public class Prati extends UI implements BroadcastListener{
 			//Servis.sistemSesijaServis.izmeniSesiju(sesija);
 			
 			if(korisnik.isAdmin() || korisnik.getSistemPretplatnici().isSistem()) {
-				sviObjekti = Servis.objekatServis.vratiSveObjekte(korisnik, true);
+				sviObjekti = new ArrayList<Objekti>();
+				sviObjekti.addAll(Servis.objekatServis.vratiSveObjekte(korisnik, true));
 			}else {
-				ArrayList<Grupe> grupe = Servis.grupeKorisnikServis.vratiSveGrupePoKorisniku(korisnik);
+				ArrayList<Grupe> grupe = new ArrayList<Grupe>();
+				grupe.addAll(Servis.grupeKorisnikServis.vratiSveGrupePoKorisniku(korisnik));
 				sviObjekti = Servis.grupeObjekatServis.nadjiSveObjektePoGrupama(grupe);
 			}
 		}else {

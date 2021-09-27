@@ -154,7 +154,8 @@ public class KorisniciView extends OpstiView implements OpstiViewInterface{
 	public void ukloniPodatak() {
 		if(izabrani != null) {
 			if(!izabrani.isIzbrisan()) {
-				ArrayList<GrupeKorisnici> grupeKorisnik = Servis.grupeKorisnikServis.vratiSveGrupeKorisnikPoKorisniku(izabrani);
+				ArrayList<GrupeKorisnici> grupeKorisnik = new ArrayList<GrupeKorisnici>();
+				grupeKorisnik.addAll(Servis.grupeKorisnikServis.vratiSveGrupeKorisnikPoKorisniku(izabrani));
 				for(GrupeKorisnici grKorisnik: grupeKorisnik) {
 					Servis.grupeKorisnikServis.izbrisiGrupaZaposleni(grKorisnik);
 				}

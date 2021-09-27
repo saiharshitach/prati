@@ -164,7 +164,7 @@ public class IzvestajiView extends OpstiPanelView{
 						pokaziPorukuGreska("морате одабрати групу!");
 					}else {//ako ima ili objekat ili grupaObjekata
 						if(objektiCombo.getValue() == null) {
-							objekti = Servis.grupeObjekatServis.nadjiSveObjektePoGrupi(grupeCombo.getValue());
+							objekti.addAll(Servis.grupeObjekatServis.nadjiSveObjektePoGrupi(grupeCombo.getValue()));
 							}else {
 								objekti.add(objektiCombo.getValue());
 							}
@@ -221,7 +221,7 @@ public class IzvestajiView extends OpstiPanelView{
 						pokaziPorukuGreska("морате одабрати групу!");
 					}else {
 						if(objektiCombo.getValue() == null) {
-							objekti = Servis.grupeObjekatServis.nadjiSveObjektePoGrupi(grupeCombo.getValue());
+							objekti.addAll(Servis.grupeObjekatServis.nadjiSveObjektePoGrupi(grupeCombo.getValue()));
 							}else {
 								objekti.add(objektiCombo.getValue());
 							}
@@ -258,7 +258,7 @@ public class IzvestajiView extends OpstiPanelView{
 						pokaziPorukuGreska("морате одабрати групу или објекат!");
 					}else {//ako ima ili objekat ili grupaObjekata
 						if(objektiCombo.getValue() == null) {
-							objekti = Servis.grupeObjekatServis.nadjiSveObjektePoGrupi(grupeCombo.getValue());
+							objekti.addAll(Servis.grupeObjekatServis.nadjiSveObjektePoGrupi(grupeCombo.getValue()));
 							}else {
 								objekti.add(objektiCombo.getValue());
 							}
@@ -301,7 +301,7 @@ public class IzvestajiView extends OpstiPanelView{
 						pokaziPorukuGreska("морате одабрати групу!");
 					}else {//ako ima ili objekat ili grupaObjekata
 						if(objektiCombo.getValue() == null) {
-							objekti = Servis.grupeObjekatServis.nadjiSveObjektePoGrupi(grupeCombo.getValue());
+							objekti.addAll(Servis.grupeObjekatServis.nadjiSveObjektePoGrupi(grupeCombo.getValue()));
 							}else {
 								objekti.add(objektiCombo.getValue());
 							}
@@ -336,7 +336,7 @@ public class IzvestajiView extends OpstiPanelView{
 					topLayout.removeComponent(preuzimanje);
 					preuzimanje = null;
 				}
-				if(vremeOd.getValue() != null && vremeDo.getValue() != null && ((Timestamp.valueOf(vremeDo.getValue()).getTime() - Timestamp.valueOf(vremeOd.getValue()).getTime())/1000 < 8*86400)) {
+				if(vremeOd.getValue() != null && vremeDo.getValue() != null && ((Timestamp.valueOf(vremeDo.getValue()).getTime() - Timestamp.valueOf(vremeOd.getValue()).getTime())/1000 < 32*86400)) {
 					if(objektiCombo.getValue() != null) {
 						RadnoVremeGPSLayout rv = new RadnoVremeGPSLayout(objektiCombo.getValue(), 
 								Timestamp.valueOf(vremeOd.getValue()), Timestamp.valueOf(vremeDo.getValue()), satiOd.getValue(), satiDo.getValue());
@@ -348,7 +348,7 @@ public class IzvestajiView extends OpstiPanelView{
 						pokaziPorukuGreska("морате изабрати објекат!");
 					}
 				}else {
-					pokaziPorukuGreska("морате одабрати време у оба поља и период може бити највише 7 дан!");
+					pokaziPorukuGreska("морате одабрати време у оба поља и период може бити највише 31 дан!");
 				}
 			}
 		});
@@ -376,7 +376,7 @@ public class IzvestajiView extends OpstiPanelView{
 						NivoGorivaLayout gorivo = new NivoGorivaLayout(objektiCombo.getValue(), Timestamp.valueOf(vremeOd.getValue()), Timestamp.valueOf(vremeDo.getValue()));
 						preuzimanje = gorivo.vratiPreuzimanje();
 						topLayout.addComponent(preuzimanje);
-						ArrayList<Javljanja> javljanja = Servis.javljanjeServis.vratiJavljanjaObjektaOdDo(objektiCombo.getValue(), Timestamp.valueOf(vremeOd.getValue()), Timestamp.valueOf(vremeDo.getValue()));
+						List<Javljanja> javljanja = Servis.javljanjeServis.vratiJavljanjaObjektaOdDo(objektiCombo.getValue(), Timestamp.valueOf(vremeOd.getValue()), Timestamp.valueOf(vremeDo.getValue()));
 						ArrayList<Obd> obd = Servis.obdServis.nadjiObdPoObjektuOdDo(objektiCombo.getValue(), Timestamp.valueOf(vremeOd.getValue()), Timestamp.valueOf(vremeDo.getValue()));
 						PregledNoviGoriva nivoGoriva = new PregledNoviGoriva(javljanja, obd);
 						podaci.setContent(nivoGoriva);

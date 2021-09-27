@@ -1,9 +1,6 @@
 package rs.atekom.prati.view.vozila.saobracajna;
 
-import java.util.ArrayList;
-
 import com.vaadin.server.Page;
-
 import pratiBaza.tabele.Vozila;
 import pratiBaza.tabele.VozilaSaobracajne;
 import rs.atekom.prati.Prati;
