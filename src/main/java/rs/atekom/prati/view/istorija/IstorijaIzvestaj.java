@@ -19,10 +19,12 @@ import pratiBaza.tabele.Obd;
 import pratiBaza.tabele.Objekti;
 import rs.atekom.prati.server.Servis;
 
+@SuppressWarnings("deprecation")
 public class IstorijaIzvestaj extends PrintPreviewReport<Javljanja>{
 
 	private static final long serialVersionUID = 1L;
 	private static final String DATUMVREME = "dd/MM/yyyy HH:mm:ss";
+	private List<Javljanja> lista = new ArrayList<Javljanja>();
 
 	public IstorijaIzvestaj(Objekti objekat, Timestamp datumVremeOd, Timestamp datumVremeDo) {
 		//setImageServletPathPattern("izvestaj-istorija?image={0}");
@@ -83,7 +85,7 @@ public class IstorijaIzvestaj extends PrintPreviewReport<Javljanja>{
 			}
 			prosPotros = prosPotrosUk/brojProsPotr;
 		}else {
-			satUkupno = 1;
+			satUkupno = 0;
 		}
 		//setFont(new Font(Font.MEDIUM, "Arial Unicode MS", false));
 		//Font slova = new Font(10, Font._FONT_ARIAL, Font._FONT_ARIAL, Font.PDF_ENCODING_Identity_H_Unicode_with_horizontal_writing, true);
@@ -114,7 +116,8 @@ public class IstorijaIzvestaj extends PrintPreviewReport<Javljanja>{
 		.addAutoText("одометар - почетак: " + String.format("%,d", satPocetak) + "км;      крај: " + String.format("%,d", satKraj) + "км;      разлика: " + String.format("%,d", satUkupno) + "км", 
 				AutoText.POSITION_HEADER, AutoText.ALIGMENT_LEFT, 800, headerStyle)
 		.addAutoText("ук. пот. горива: " + ukPotrosnja + " лит;      прос. потр. по гпс: " + String.format("%.2f", ukPotrosnja/(predjeniPutGPS/100)) + "лит/100км;      прос. потр. по одометру: "
-				+ String.format("%.2f", ukPotrosnja/((float)satUkupno/100)) + "лит/100км;      потрошња по радном сату: " + String.format("%.2f", prosPotros) + "лит", AutoText.POSITION_HEADER, AutoText.ALIGMENT_LEFT, 800, headerStyle)
+				+ String.format("%.2f", ukPotrosnja == 0 ? 0 : ukPotrosnja/((float)(satUkupno == 0 ? 0 : (float)satUkupno/100))) + "лит/100км;      потрошња по радном сату: "
+						+ String.format("%.2f", prosPotros) + "лит", AutoText.POSITION_HEADER, AutoText.ALIGMENT_LEFT, 800, headerStyle)
 		.addAutoText(" ", AutoText.POSITION_HEADER, AutoText.ALIGNMENT_LEFT, 300, datum)
 		.addAutoText("Атеком доо               www.atekom.rs                    info@atekom.rs ", AutoText.POSITION_FOOTER, AutoText.ALIGMENT_CENTER, 800, footerStyle)
 		.addAutoText(AutoText.AUTOTEXT_PAGE_X, AutoText.POSITION_FOOTER, AutoText.ALIGMENT_RIGHT)
@@ -140,11 +143,13 @@ public class IstorijaIzvestaj extends PrintPreviewReport<Javljanja>{
 	}
 	
 	public List<Javljanja> vratiListu(Objekti objekat, Timestamp datumVremeOd, Timestamp datumVremeDo){
-		return Servis.javljanjeServis.vratiJavljanjaObjektaOdDoSaAlarmima(objekat, datumVremeOd, datumVremeDo);
+		lista.clear();
+		lista = Servis.javljanjeServis.vratiJavljanjaObjektaOdDoSaAlarmima(objekat, datumVremeOd, datumVremeDo);
+		return lista;
 	}
 	
-	public SerializableSupplier<List<? extends Javljanja>> vratiSeriju(Objekti objekat, Timestamp datumVremeOd, Timestamp datumVremeDo){
-		SerializableSupplier<List<? extends Javljanja>> serija = () -> Servis.javljanjeServis.vratiJavljanjaObjektaOdDoSaAlarmima(objekat, datumVremeOd, datumVremeDo);
+	public SerializableSupplier<List<? extends Javljanja>> vratiSeriju(){
+		SerializableSupplier<List<? extends Javljanja>> serija = () -> lista;
 		return serija;
 	}
 

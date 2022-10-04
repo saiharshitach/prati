@@ -2,12 +2,12 @@ package rs.atekom.prati.view.pocetna;
 
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
 import com.github.appreciated.app.layout.annotations.MenuCaption;
 import com.github.appreciated.app.layout.annotations.MenuIcon;
 import com.github.appreciated.app.layout.annotations.NavigatorViewName;
@@ -21,10 +21,9 @@ import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.renderers.DateRenderer;
 import com.vaadin.ui.renderers.NumberRenderer;
 import com.vaadin.ui.themes.ValoTheme;
-import pratiBaza.pomocne.PredjeniPut;
 import pratiBaza.tabele.Grupe;
-import pratiBaza.tabele.Javljanja;
-import pratiBaza.tabele.Obd;
+import pratiBaza.tabele.JavljanjaPoslednja;
+import pratiBaza.tabele.ObdPoslednji;
 import pratiBaza.tabele.Objekti;
 import pratiBaza.tabele.Troskovi;
 import pratiBaza.tabele.Vozila;
@@ -37,35 +36,43 @@ import rs.atekom.prati.view.OpstiPanelView;
 public class PocetnaView extends OpstiPanelView{
 	
 	private static final long serialVersionUID = 1L;
-	private Grid<Javljanja> javljanjaAlarmi;
+	//private Grid<Javljanja> javljanjaAlarmi;
 	private Grid<Vozila> mali, veliki, registracija;
 	private Grid<Troskovi> troskoviTabela;
 	private String slotStyle = "dashboard-panel-slot";
 	private boolean maxSize = true;
-	private Date datumDo, datumOd, datumOdSedam;
+	private Date /*datumDo, datumOd,*/ datumOdSedam;
 	private Calendar cal;
-	private ArrayList<Vozila> vozila;
+	private ArrayList<Vozila> vozila, vozilaObr;
 	private ArrayList<Objekti> objekti;
-	private NumberRenderer decimalni2;
+	private NumberRenderer decimalni2, gpsKmOdMS, gpsKmOdVS;
 	private ArrayList<Troskovi> troskovi;
+	private ArrayList<JavljanjaPoslednja> javljanjaPoslednja;
+	private ArrayList<ObdPoslednji> obdPoslednji;
 
 	public PocetnaView() {
 		root.removeStyleName("dupli-view");
 		root.addStyleName("dashboard-view");
-		decimalni2  = new NumberRenderer(new DecimalFormat(DECIMALNI));
-		datumDo = new Date();
+		decimalni2 = new NumberRenderer(new DecimalFormat(DECIMALNI));
+		gpsKmOdMS = new NumberRenderer(new DecimalFormat(DECIMALNI));
+		gpsKmOdVS = new NumberRenderer(new DecimalFormat(DECIMALNI));
+		//datumDo = new Date();
 		objekti = vratiObjekte();
 		vozila = Servis.voziloServis.nadjisvaVozilaPoObjektima(objekti);
+		javljanjaPoslednja = new ArrayList<JavljanjaPoslednja>();
+		obdPoslednji = new ArrayList<ObdPoslednji>();
+		javljanjaPoslednja.addAll( Servis.javljanjePoslednjeServis.vratiListuJavljanjaPoslednjih(objekti));
+		obdPoslednji.addAll(Servis.obdPoslednjiServis.vratiListuObdPoslednjih(objekti));
 		
 		cal = Calendar.getInstance();
 	    cal.set(Calendar.HOUR_OF_DAY, 0);
 	    cal.set(Calendar.MINUTE, 0);
 	    cal.set(Calendar.SECOND, 0);
-	    datumDo = cal.getTime();
-	    datumOd = new Date();
+	    //datumDo = cal.getTime();
+	    //datumOd = new Date();
 	    cal.set(Calendar.DATE, LocalDate.now().getDayOfMonth() - 1);
-	    datumOd = cal.getTime();
-	    cal.set(Calendar.DATE, LocalDate.now().getDayOfMonth() - 7);
+	    //datumOd = cal.getTime();
+	    cal.set(Calendar.DATE, LocalDate.now().getDayOfMonth() - 31);
 	    datumOdSedam = cal.getTime();
 	    troskovi = Servis.trosakServis.nadjiSveTroskoveOd(new Timestamp(datumOdSedam.getTime()), korisnik.getSistemPretplatnici(), korisnik.getOrganizacija());
 		root.addComponentsAndExpand(buildSadrzaj());
@@ -73,6 +80,31 @@ public class PocetnaView extends OpstiPanelView{
 	}
 	
 	private Component buildSadrzaj() {
+		vozilaObr = new ArrayList<Vozila>();
+		for(Vozila v : vozila) {
+			JavljanjaPoslednja jp = javljanjaPoslednja.stream().filter(j -> j.getObjekti().getId().equals(v.getObjekti().getId())).findFirst().orElse(null);
+			if(jp != null) {
+				v.setKmOdGpsMs(jp.getVirtualOdo() - v.getMaliPoslednjiGPSkm());
+				v.setKmOdGpsVs(jp.getVirtualOdo() - v.getVelikiPoslednjiGPSkm());
+			}
+			ObdPoslednji op = obdPoslednji.stream().filter(o -> o.getObjekti().getId().equals(v.getObjekti().getId())).findFirst().orElse(null);
+			if(op != null) {
+				v.setKmOdObdMs(op.getUkupnoKm() - v.getMaliPoslednjiOBDkm());
+				v.setKmOdObdVs(op.getUkupnoKm() - v.getVelikiPoslednjiOBDkm());
+			}
+			if(v.getMaliPoslednjiDatum() != null)
+				v.setDanaOdMs((int)Duration.between(v.getMaliPoslednjiDatum().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), 
+						(new Date()).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()).toDays());
+			if(v.getVelikiPoslednjiDatum() != null)
+				v.setDanaOdVs((int)Duration.between(v.getVelikiPoslednjiDatum().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), 
+						(new Date()).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()).toDays());
+			if(v.getDatumPoslednjeRegistracije() != null)
+				v.setDanaOdRegistracije((int)Duration.between(v.getDatumPoslednjeRegistracije().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), 
+						(new Date()).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()).toDays());
+			
+			vozilaObr.add(v);
+		}
+		
 		paneli = new CssLayout();
 		paneli.addStyleName("dashboard-panels");
 		Responsive.makeResponsive(paneli);
@@ -119,8 +151,10 @@ public class PocetnaView extends OpstiPanelView{
 		mali.addColumn(vozila -> vozila.getObjekti() == null ? "" : vozila.getObjekti().getOznaka()).setCaption("возило");
 		mali.addColumn(Vozila::getRegistracija).setCaption("регистрација");
 		mali.addColumn(Vozila::getMaliPoslednjiDatum, new DateRenderer(DANFORMAT)).setId("datum").setCaption("МС датум последњег").setStyleGenerator(vozilo -> "v-align-right");
-		mali.addColumn(Vozila::getMaliPoslednjiGPSkm, decimalni).setCaption("МС последњи ГПС км").setStyleGenerator(vozilo -> "v-align-right");
-		mali.addColumn(Vozila::getMaliPoslednjiOBDkm).setCaption("МС последњи ОБД км").setStyleGenerator(vozilo -> "v-align-right");
+		mali.addColumn(Vozila::getMaliPoslednjiGPSkm, decimalni).setCaption("последњи ГПС км").setStyleGenerator(vozilo -> "v-align-right");
+		mali.addColumn(Vozila::getKmOdGpsMs, gpsKmOdMS).setCaption("ГПС км од последњег").setStyleGenerator(vozilo -> "v-align-right");
+		mali.addColumn(Vozila::getMaliPoslednjiOBDkm).setCaption("последњи ОБД км").setStyleGenerator(vozilo -> "v-align-right");
+		mali.addColumn(Vozila::getKmOdObdMs).setCaption("ОБД км од последњег").setStyleGenerator(vozilo -> "v-align-right");
 		if(objekti != null) {
 			mali.setItems(vozila);
 			mali.sort("datum",  SortDirection.ASCENDING);
@@ -140,8 +174,10 @@ public class PocetnaView extends OpstiPanelView{
 		veliki.addColumn(vozila -> vozila.getObjekti() == null ? "" : vozila.getObjekti().getOznaka()).setCaption("возило");
 		veliki.addColumn(Vozila::getRegistracija).setCaption("регистрација");
 		veliki.addColumn(Vozila::getVelikiPoslednjiDatum, new DateRenderer(DANFORMAT)).setId("datum").setCaption("ВС датум последњег").setStyleGenerator(vozilo -> "v-align-right");
-		veliki.addColumn(Vozila::getVelikiPoslednjiGPSkm, decimalni2).setCaption("ВС последњи ГПС км").setStyleGenerator(vozilo -> "v-align-right");
-		veliki.addColumn(Vozila::getVelikiPoslednjiOBDkm).setCaption("ВС последњи ОБД км").setStyleGenerator(vozilo -> "v-align-right");
+		veliki.addColumn(Vozila::getVelikiPoslednjiGPSkm, decimalni2).setCaption("последњи ГПС км").setStyleGenerator(vozilo -> "v-align-right");
+		veliki.addColumn(Vozila::getKmOdGpsVs, gpsKmOdVS).setCaption("ГПС км од последњег").setStyleGenerator(vozilo -> "v-align-right");
+		veliki.addColumn(Vozila::getVelikiPoslednjiOBDkm).setCaption("последњи ОБД км").setStyleGenerator(vozilo -> "v-align-right");
+		veliki.addColumn(Vozila::getKmOdObdVs).setCaption("ОБД км од последњег").setStyleGenerator(vozilo -> "v-align-right");
 		if(objekti != null) {
 			veliki.setItems(vozila);
 			veliki.sort("datum",  SortDirection.ASCENDING);
@@ -161,6 +197,7 @@ public class PocetnaView extends OpstiPanelView{
 		registracija.addColumn(vozila -> vozila.getObjekti() == null ? "" : vozila.getObjekti().getOznaka()).setCaption("возило");
 		registracija.addColumn(Vozila::getRegistracija).setCaption("регистрација");
 		registracija.addColumn(Vozila::getDatumPoslednjeRegistracije, new DateRenderer(DANFORMAT)).setId("datum").setCaption("датум последње регистрације").setStyleGenerator(vozilo -> "v-align-right");
+		registracija.addColumn(Vozila::getDanaOdRegistracije).setCaption("дана од последње").setStyleGenerator(vozilo -> "v-align-right");
 		if(objekti != null) {
 			registracija.setItems(vozila);
 			registracija.sort("datum",  SortDirection.ASCENDING);
@@ -206,7 +243,7 @@ public class PocetnaView extends OpstiPanelView{
 			return null;
 		}
 	}
-	
+	/*
 	private Component buildAlarmi() {
 		javljanjaAlarmi = new Grid<Javljanja>();
 		javljanjaAlarmi.setSizeFull();
@@ -281,7 +318,7 @@ public class PocetnaView extends OpstiPanelView{
 		}else {
 			return null;
 		}
-	}
+	}*/
 	
 	private ArrayList<Objekti> vratiObjekte() {
 		ArrayList<Objekti> objekti = new ArrayList<Objekti>();
@@ -291,11 +328,6 @@ public class PocetnaView extends OpstiPanelView{
 			objekti = Servis.grupeObjekatServis.nadjiSveObjektePoGrupama(grupe);
 		}else {
 			objekti.addAll(Servis.objekatServis.vratiSveObjekte(korisnik.getSistemPretplatnici(), korisnik.getOrganizacija()));
-			/*if(korisnik.getSistemPretplatnici().isSistem()) {
-				objekti = Servis.objekatServis.vratiSveObjekte(korisnik, true);
-			}else {
-				
-			}**/
 		}
 		return objekti;
 	}

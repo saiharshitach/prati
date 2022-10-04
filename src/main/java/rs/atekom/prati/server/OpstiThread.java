@@ -100,8 +100,7 @@ public class OpstiThread implements Runnable{
 								vremeStarijeOdStajanja = true;
 								}
 						
-						if(poslednje != null && poslednje.getBrzina() < 6 && 
-								!poslednje.getSistemAlarmi().getSifra().equals("1095") && !vremeStarijeOdStajanja) {
+						if(poslednje.getBrzina() < 6 && !poslednje.getSistemAlarmi().getSifra().equals("1095") && !vremeStarijeOdStajanja) {
 							javljanjeStop = new Javljanja();
 							javljanjeStop.setDatumVreme(poslednje.getDatumVreme());
 							obdStop = Servis.obdServis.nadjiObdPoslednji(objekat, null);
@@ -134,7 +133,8 @@ public class OpstiThread implements Runnable{
 			mladje = javljanjeTrenutno.getDatumVreme().after(poslednje.getDatumVreme());
 		}
 		test = " 1 ";
-		if(javljanjeTrenutno != null  && javljanjeTrenutno.getBrzina() < 250 &&  javljanjeTrenutno.getDatumVreme().after(date)) {
+		if(javljanjeTrenutno != null && javljanjeTrenutno.getBrzina() < 250 
+				&& javljanjeTrenutno.getDatumVreme().after(date) && !javljanjeTrenutno.getDatumVreme().after(new Date())) {
 			test = " obračun ";
 			//obracun km
 			if(poslednje != null) {

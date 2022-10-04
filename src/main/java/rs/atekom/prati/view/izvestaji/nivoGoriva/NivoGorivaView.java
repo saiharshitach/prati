@@ -90,7 +90,7 @@ public class NivoGorivaView extends OpstiPanelView{
 					preuzimanje = null;
 				}
 				if(vremeOd.getValue() != null && vremeDo.getValue() != null && 
-						((Timestamp.valueOf(vremeDo.getValue()).getTime() - Timestamp.valueOf(vremeOd.getValue()).getTime())/1000 < 1*86401)) {
+						((Timestamp.valueOf(vremeDo.getValue()).getTime() - Timestamp.valueOf(vremeOd.getValue()).getTime())/1000 < 1*24*60*60*31)) {
 					if(objektiCombo.getValue() != null) {
 						NivoGorivaLayout gorivo = new NivoGorivaLayout(objektiCombo.getValue(), Timestamp.valueOf(vremeOd.getValue()), Timestamp.valueOf(vremeDo.getValue()));
 						preuzimanje = gorivo.vratiPreuzimanje();
@@ -100,7 +100,7 @@ public class NivoGorivaView extends OpstiPanelView{
 						pokaziPorukuGreska("морате изабрати објекат!");
 					}
 				}else {
-					pokaziPorukuGreska("морате одабрати време у оба поља и период може бити највише 1 дан!");
+					pokaziPorukuGreska("морате одабрати време у оба поља и период може бити највише 31 дан!");
 				}
 			}
 		});

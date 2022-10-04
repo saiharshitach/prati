@@ -20,6 +20,9 @@ public class ComboIzvestaji extends ComboBox<IzvestajTip>{
 	
 	private List<IzvestajTip> lista(){
 		ArrayList<IzvestajTip> izvestaji = new ArrayList<IzvestajTip>();
+		izvestaji.add(new IzvestajTip(9, "контрола горива"));
+		izvestaji.add(new IzvestajTip(10, "гориво са ценом"));
+		izvestaji.add(new IzvestajTip(11, "контрола точења"));
 		izvestaji.add(new IzvestajTip(7, "обд пређени пут"));
 		izvestaji.add(new IzvestajTip(8, "обд стање"));
 		izvestaji.add(new IzvestajTip(6, "гпс пређени пут"));

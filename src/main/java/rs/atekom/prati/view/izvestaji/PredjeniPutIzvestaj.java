@@ -18,6 +18,7 @@ import pratiBaza.pomocne.PredjeniPut;
 import pratiBaza.tabele.Objekti;
 import rs.atekom.prati.server.Servis;
 
+@SuppressWarnings("deprecation")
 public class PredjeniPutIzvestaj extends PrintPreviewReport<PredjeniPut>{
 
 	private static final long serialVersionUID = 1L;
@@ -89,17 +90,13 @@ public class PredjeniPutIzvestaj extends PrintPreviewReport<PredjeniPut>{
 	}
 	
 	public List<PredjeniPut> vratilistu(ArrayList<Objekti> objekti, Timestamp datumVremeOd, Timestamp datumVremeDo){
-		return obracun(objekti, datumVremeOd, datumVremeDo);
-	}
-	
-	public SerializableSupplier<List<? extends PredjeniPut>> vratiSeriju(ArrayList<Objekti> objekti, Timestamp datumVremeOd, Timestamp datumVremeDo){
-		SerializableSupplier<List<? extends PredjeniPut>> serija = () -> lista;//obracun(objekti, datumVremeOd, datumVremeDo);
-		return serija;
-	}
-	
-	private List<PredjeniPut> obracun(ArrayList<Objekti> objekti, Timestamp datumVremeOd, Timestamp datumVremeDo){
 		lista.clear();
 		lista = Servis.javljanjeServis.vratiPredjeniPut(objekti, datumVremeOd, datumVremeDo);
 		return lista;
+	}
+	
+	public SerializableSupplier<List<? extends PredjeniPut>> vratiSeriju(){
+		SerializableSupplier<List<? extends PredjeniPut>> serija = () -> lista;//obracun(objekti, datumVremeOd, datumVremeDo);
+		return serija;
 	}
 }

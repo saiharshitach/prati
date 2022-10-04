@@ -98,10 +98,10 @@ public class IstorijaView extends OpstiPanelView{
 			@Override
 			public void buttonClick(ClickEvent event) {
 				if(vremeOd.getValue() != null && vremeDo.getValue() != null && 
-						((Timestamp.valueOf(vremeDo.getValue()).getTime() - Timestamp.valueOf(vremeOd.getValue()).getTime())/1000 < 8*86400)) {
+						((Timestamp.valueOf(vremeDo.getValue()).getTime() - Timestamp.valueOf(vremeOd.getValue()).getTime())/1000 <= 31*24*60*60)) {
 					prikaziIstoriju(objektiCombo.getValue(), Timestamp.valueOf(vremeOd.getValue()), Timestamp.valueOf(vremeDo.getValue()), alarmiCombo.getValue());
 				}else {
-					pokaziPorukuGreska("морате одабрати време у оба поља и период може бити највише 7 данa!");
+					pokaziPorukuGreska("морате одабрати време у оба поља и период може бити највише 31 данa!");
 				}
 			}
 		});

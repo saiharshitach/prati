@@ -22,22 +22,23 @@ public class PredjeniPutLayout extends VerticalLayout{
 		setMargin(new MarginInfo(false, false, true, false));
 		SimpleDateFormat datumVreme = new SimpleDateFormat(DATUMVREME);
 		Button pdf = new Button("PDF");
-		//Button doc = new Button("doc");
-		//Button xls = new Button("xls");
+		Button doc = new Button("doc");
+		Button xls = new Button("xls");
 		//Label prazno = new Label("");
 		hLayout = new HorizontalLayout();
 		hLayout.setSpacing(true);
 		hLayout.setMargin(new MarginInfo(false, false, false, false));
 		//hLayout.addComponentsAndExpand(prazno);
 		hLayout.addComponent(pdf);
-		//hLayout.addComponent(doc);
-		//hLayout.addComponent(xls);
+		hLayout.addComponent(xls);
+		hLayout.addComponent(doc);
+		
 		Panel panel = new Panel();
 		panel.setHeight("100%");
 		PredjeniPutIzvestaj izvestaj = new PredjeniPutIzvestaj(objekti, datumVremeOd, datumVremeDo);
-		izvestaj.downloadPdfOnClick(pdf, "predjeni_put_" + datumVreme.format(new Date()) + ".pdf", izvestaj.vratiSeriju(objekti, datumVremeOd, datumVremeDo));
-		//izvestaj.downloadDocxOnClick(doc, "predjeni_put_"" + datumVreme.format(new Date()) + ".doc", izvestaj.vratiSeriju(objekat, datumVremeOd, datumVremeDo));
-		//izvestaj.downloadXlsOnClick(xls, "predjeni_put_"" + datumVreme.format(new Date()) + ".xlsx", izvestaj.vratiSeriju(objekat, datumVremeOd, datumVremeDo));
+		izvestaj.downloadPdfOnClick(pdf, "predjeni_put_" + datumVreme.format(new Date()) + ".pdf", izvestaj.vratiSeriju());
+		izvestaj.downloadDocxOnClick(doc, "predjeni_put_" + datumVreme.format(new Date()) + ".doc", izvestaj.vratiSeriju());
+		izvestaj.downloadXlsOnClick(xls, "predjeni_put_" + datumVreme.format(new Date()) + ".xlsx", izvestaj.vratiSeriju());
 		panel.setContent(izvestaj);
 		addComponentsAndExpand(panel);
 	}

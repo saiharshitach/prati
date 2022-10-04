@@ -21,6 +21,7 @@ import pratiBaza.pomocne.StajanjeMirovanje;
 import pratiBaza.tabele.Objekti;
 import rs.atekom.prati.server.Servis;
 
+@SuppressWarnings("deprecation")
 public class StajanjeIzvestaj extends PrintPreviewReport<StajanjeMirovanje>{
 
 	private static final long serialVersionUID = 1L;
@@ -107,8 +108,9 @@ public class StajanjeIzvestaj extends PrintPreviewReport<StajanjeMirovanje>{
 		return lista;
 	}
 	
-	public SerializableSupplier<List<? extends StajanjeMirovanje>> vratiSeriju(ArrayList<Objekti> objekti, Timestamp vremeOd, Timestamp vremeDo, int duzina){
-		SerializableSupplier<List<? extends StajanjeMirovanje>> serija = () -> lista; //Servis.javljanjeServis.vratiStajanjaMirovanja(objekti, vremeOd, vremeDo, duzina);
+	public SerializableSupplier<List<? extends StajanjeMirovanje>> vratiSeriju(){
+		SerializableSupplier<List<? extends StajanjeMirovanje>> serija = () -> lista; 
+		//Servis.javljanjeServis.vratiStajanjaMirovanja(objekti, vremeOd, vremeDo, duzina);
 		return serija;
 	}
 }

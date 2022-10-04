@@ -79,16 +79,19 @@ public class OdrzavanjaLogika implements LogikaInterface{
 				if(vozilo != null) {
 					switch (trosak.getTipServisa()) {
 					case 1: if(vozilo.getMaliPoslednjiDatum() == null || trosak.getDatumVreme().after(new Timestamp(vozilo.getMaliPoslednjiDatum().getTime()))) {
+						//System.out.println("mali... gps start...");
 						vozilo.setMaliPoslednjiDatum(new Date(trosak.getDatumVreme().getTime()));
 						Javljanja gpsKm = Servis.javljanjeServis.vratiJavljanjeObjektaDoIliOd(vozilo.getObjekti(), trosak.getDatumVreme(), true);
 						if(gpsKm != null) {
 							vozilo.setMaliPoslednjiGPSkm(gpsKm.getVirtualOdo());
 						}
+						//System.out.println("mali... obd start...");
 						Obd obdKm = Servis.obdServis.nadjiObdPoslednji(vozilo.getObjekti(), trosak.getDatumVreme());
 						if(obdKm != null) {
 							vozilo.setMaliPoslednjiOBDkm(obdKm.getUkupnoKm());
 							}
 						}
+					//System.out.println("mali... kraj...");
 					Servis.voziloServis.azurirajVozilo(vozilo);
 						break;
 						

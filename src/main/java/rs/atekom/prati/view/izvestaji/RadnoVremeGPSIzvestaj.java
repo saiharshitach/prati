@@ -95,8 +95,9 @@ public class RadnoVremeGPSIzvestaj extends PrintPreviewReport<RadnoVremePutGPS>{
 		return lista;
 	}
 	
-	public SerializableSupplier<List<? extends RadnoVremePutGPS>> vratiSeriju(Objekti objekat, Timestamp datumVremeOd, Timestamp datumVremeDo, int satiOd, int satiDo){
-		SerializableSupplier<List<? extends RadnoVremePutGPS>> serija = () -> lista;//Servis.proceduraServis.radnoVremePutGPS(objekat.getId().intValue(), datumVremeOd, datumVremeDo, satiOd, satiDo);
+	public SerializableSupplier<List<? extends RadnoVremePutGPS>> vratiSeriju(){
+		SerializableSupplier<List<? extends RadnoVremePutGPS>> serija = () -> lista;
+		//Servis.proceduraServis.radnoVremePutGPS(objekat.getId().intValue(), datumVremeOd, datumVremeDo, satiOd, satiDo);
 		return serija;
 	}
 }

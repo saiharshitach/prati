@@ -29,7 +29,7 @@ import pratiBaza.tabele.SistemAlarmi;
 import rs.atekom.prati.server.Servis;
 import rs.atekom.prati.view.OpstiPanelView;
 import rs.atekom.prati.view.izvestaji.nivoGoriva.NivoGorivaLayout;
-import rs.atekom.prati.view.izvestaji.nivoGoriva.PregledNoviGoriva;
+import rs.atekom.prati.view.izvestaji.nivoGoriva.PregledNivoGoriva;
 import rs.atekom.prati.view.komponente.DatumVreme;
 import rs.atekom.prati.view.komponente.combo.ComboIzvestaji;
 import rs.atekom.prati.view.komponente.combo.ComboObjekti;
@@ -137,6 +137,12 @@ public class IzvestajiView extends OpstiPanelView{
 	            break;
 			case 8: postaviParametreStanje();
                 break;
+			case 9: postaviParametrePredjeniPut(tip.getRb());
+			    break;
+			case 10: postaviParametrePredjeniPut(tip.getRb());
+			    break;
+			case 11: postaviParametrePredjeniPut(tip.getRb());
+		        break;
 			default:
 				break;
 			}
@@ -159,7 +165,7 @@ public class IzvestajiView extends OpstiPanelView{
 					preuzimanje = null;
 				}
 				if(vremeOd.getValue() != null && vremeDo.getValue() != null && 
-						((Timestamp.valueOf(vremeDo.getValue()).getTime() - Timestamp.valueOf(vremeOd.getValue()).getTime())/1000 < 32*86400)) {
+						((Timestamp.valueOf(vremeDo.getValue()).getTime() - Timestamp.valueOf(vremeOd.getValue()).getTime())/1000 <= 61*24*60*60)) {
 					if(grupeCombo.getValue() == null && objektiCombo.getValue() == null) {
 						pokaziPorukuGreska("морате одабрати групу!");
 					}else {//ako ima ili objekat ili grupaObjekata
@@ -168,29 +174,45 @@ public class IzvestajiView extends OpstiPanelView{
 							}else {
 								objekti.add(objektiCombo.getValue());
 							}
-						if(izvestaj == 1) {
-							if(objektiCombo.getValue() != null) {
-								PredjeniPutLayout predjeniPut = new PredjeniPutLayout(objekti, Timestamp.valueOf(vremeOd.getValue()), Timestamp.valueOf(vremeDo.getValue()));
-								preuzimanje = predjeniPut.vratiPreuzimanje();
-								topLayout.addComponent(preuzimanje);
-								podaci.setContent(predjeniPut);
-							}else {
+						switch(izvestaj) {
+						case 1: PredjeniPutLayout predjeniPut = new PredjeniPutLayout(objekti, Timestamp.valueOf(vremeOd.getValue()), Timestamp.valueOf(vremeDo.getValue()));
+						        preuzimanje = predjeniPut.vratiPreuzimanje();
+						        topLayout.addComponent(preuzimanje);
+						        podaci.setContent(predjeniPut);
+							
+							/*if(objektiCombo.getValue() != null) {}else {
 								pokaziPorukuGreska("морате одабрати објекат!");
-							}
+								}*/
+						    break;
+						case 6: PredjeniPutGPSLayout predjeniPutGPS = new PredjeniPutGPSLayout(objekti, Timestamp.valueOf(vremeOd.getValue()), Timestamp.valueOf(vremeDo.getValue()));
+						        preuzimanje = predjeniPutGPS.vratiPreuzimanje();
+						        topLayout.addComponent(preuzimanje);
+						        podaci.setContent(predjeniPutGPS);
+						    break;
+						case 7: PredjeniPutOBDLayout predjeniPut2 = new PredjeniPutOBDLayout(objekti, Timestamp.valueOf(vremeOd.getValue()), Timestamp.valueOf(vremeDo.getValue()));
+						        preuzimanje = predjeniPut2.vratiPreuzimanje();
+						        topLayout.addComponent(preuzimanje);
+						        podaci.setContent(predjeniPut2);
+							break;
+						case 9: KontrolaGorivaLayout kontrolaGoriva = new KontrolaGorivaLayout(objekti, Timestamp.valueOf(vremeOd.getValue()), Timestamp.valueOf(vremeDo.getValue()));
+						        preuzimanje = kontrolaGoriva.vratiPreuzimanje();
+						        topLayout.addComponent(preuzimanje);
+						        podaci.setContent(kontrolaGoriva);
+							break;
+						case 10:GorivoSaCenamaLayout gorivoSaCenama = new GorivoSaCenamaLayout(objekti, Timestamp.valueOf(vremeOd.getValue()), Timestamp.valueOf(vremeDo.getValue()));
+						        preuzimanje = gorivoSaCenama.vratiPreuzimanje();
+						        topLayout.addComponent(preuzimanje);
+						        podaci.setContent(gorivoSaCenama);
+						    break;
+						case 11:KontrolaTocenjaLayout kontrolaTocenja = new KontrolaTocenjaLayout(objekti, Timestamp.valueOf(vremeOd.getValue()), Timestamp.valueOf(vremeDo.getValue()));
+						        preuzimanje = kontrolaTocenja.vratiPreuzimanje();
+						        topLayout.addComponent(preuzimanje);
+						        podaci.setContent(kontrolaTocenja);
+						     break;
+						default:
 							
 						}
-						if(izvestaj == 6) {
-							PredjeniPutGPSLayout predjeniPut = new PredjeniPutGPSLayout(objekti, Timestamp.valueOf(vremeOd.getValue()), Timestamp.valueOf(vremeDo.getValue()));
-							preuzimanje = predjeniPut.vratiPreuzimanje();
-							topLayout.addComponent(preuzimanje);
-							podaci.setContent(predjeniPut);
-						}
-						if(izvestaj == 7) {
-							PredjeniPutOBDLayout predjeniPut = new PredjeniPutOBDLayout(objekti, Timestamp.valueOf(vremeOd.getValue()), Timestamp.valueOf(vremeDo.getValue()));
-							preuzimanje = predjeniPut.vratiPreuzimanje();
-							topLayout.addComponent(preuzimanje);
-							podaci.setContent(predjeniPut);
-						}
+
 						dodajPodatke();
 					}
 				}else {
@@ -371,21 +393,21 @@ public class IzvestajiView extends OpstiPanelView{
 					preuzimanje = null;
 				}
 				if(vremeOd.getValue() != null && vremeDo.getValue() != null && 
-						((Timestamp.valueOf(vremeDo.getValue()).getTime() - Timestamp.valueOf(vremeOd.getValue()).getTime())/1000 < 1*86401)) {
+						((Timestamp.valueOf(vremeDo.getValue()).getTime() - Timestamp.valueOf(vremeOd.getValue()).getTime())/1000 <= 1*24*60*60*31)) {
 					if(objektiCombo.getValue() != null) {
 						NivoGorivaLayout gorivo = new NivoGorivaLayout(objektiCombo.getValue(), Timestamp.valueOf(vremeOd.getValue()), Timestamp.valueOf(vremeDo.getValue()));
 						preuzimanje = gorivo.vratiPreuzimanje();
 						topLayout.addComponent(preuzimanje);
 						List<Javljanja> javljanja = Servis.javljanjeServis.vratiJavljanjaObjektaOdDo(objektiCombo.getValue(), Timestamp.valueOf(vremeOd.getValue()), Timestamp.valueOf(vremeDo.getValue()));
 						ArrayList<Obd> obd = Servis.obdServis.nadjiObdPoObjektuOdDo(objektiCombo.getValue(), Timestamp.valueOf(vremeOd.getValue()), Timestamp.valueOf(vremeDo.getValue()));
-						PregledNoviGoriva nivoGoriva = new PregledNoviGoriva(javljanja, obd);
+						PregledNivoGoriva nivoGoriva = new PregledNivoGoriva(javljanja, obd);
 						podaci.setContent(nivoGoriva);
 						dodajPodatke();
 					}else {
 						pokaziPorukuGreska("морате изабрати објекат!");
 					}
 				}else {
-					pokaziPorukuGreska("морате одабрати време у оба поља и период може бити највише 1 дан!");
+					pokaziPorukuGreska("морате одабрати време у оба поља и период може бити највише 31 дан!");
 				}
 			}
 		});

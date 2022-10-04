@@ -4,9 +4,11 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import org.vaadin.reports.PrintPreviewReport;
 import com.ibm.icu.text.SimpleDateFormat;
 import com.vaadin.server.SerializableSupplier;
+
 import ar.com.fdvs.dj.domain.AutoText;
 import ar.com.fdvs.dj.domain.Style;
 import ar.com.fdvs.dj.domain.builders.ColumnBuilder;
@@ -14,22 +16,24 @@ import ar.com.fdvs.dj.domain.builders.StyleBuilder;
 import ar.com.fdvs.dj.domain.constants.Font;
 import ar.com.fdvs.dj.domain.constants.HorizontalAlign;
 import ar.com.fdvs.dj.domain.constants.Page;
-import pratiBaza.pomocne.PredjeniPutOBD;
+import pratiBaza.pomocne.GorivoSaCenama;
 import pratiBaza.tabele.Objekti;
 import rs.atekom.prati.server.Servis;
 
 @SuppressWarnings("deprecation")
-public class PredjeniPutObdIzvestaj extends PrintPreviewReport<PredjeniPutOBD>{
+public class GorivoSaCenamaIzvestaj extends PrintPreviewReport<GorivoSaCenama>{
 
 	private static final long serialVersionUID = 1L;
 	private String decimalFormat = "###,###,###.##";
 	private static final String DATUMVREME = "dd/MM/yyyy HH:mm:ss";
-	private List<PredjeniPutOBD> lista = new ArrayList<PredjeniPutOBD>();
+	private List<GorivoSaCenama> lista = new ArrayList<GorivoSaCenama>();
 	
-	public PredjeniPutObdIzvestaj(ArrayList<Objekti> objekti, Timestamp datumVremeOd, Timestamp datumVremeDo) {
+	public GorivoSaCenamaIzvestaj(ArrayList<Objekti> objekti, Timestamp datumVremeOd, Timestamp datumVremeDo) {
 		setSizeUndefined();
 		SimpleDateFormat datumVreme = new SimpleDateFormat(DATUMVREME);
 		SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+		int sirina = 30;
+		
 		Style headerStyle = new StyleBuilder(true).setFont(Font.ARIAL_MEDIUM).build();
 		headerStyle.setHorizontalAlign(HorizontalAlign.LEFT);
 		
@@ -45,70 +49,103 @@ public class PredjeniPutObdIzvestaj extends PrintPreviewReport<PredjeniPutOBD>{
 		.setPageSizeAndOrientation(Page.Page_A4_Landscape())
 		.setMargins(20, 20, 40, 40)
 		.setDefaultEncoding(Font.PDF_ENCODING_Identity_H_Unicode_with_horizontal_writing)
-		.setTitle("Преглед пређеног пута по ОБД")
+		.setTitle("Потрошња горива са ценама")
 		.addAutoText("Преглед података за период: " + outputFormat.format(datumVremeOd) + " - " + outputFormat.format(datumVremeDo), AutoText.POSITION_HEADER, AutoText.ALIGMENT_LEFT, 450, headerStyle)
 		.addAutoText("извештај урађен: " + datumVreme.format(new Date()), AutoText.POSITION_HEADER, AutoText.ALIGNMENT_RIGHT, 300, datum)
 		.addAutoText("Атеком доо               www.atekom.rs                    info@atekom.rs ", AutoText.POSITION_FOOTER, AutoText.ALIGMENT_CENTER, 800, footerStyle)
 		.addAutoText(AutoText.AUTOTEXT_PAGE_X, AutoText.POSITION_FOOTER, AutoText.ALIGMENT_RIGHT)
 		.setPrintBackgroundOnOddRows(true)
 		.addColumn(ColumnBuilder.getNew()
-				.setColumnProperty("objekatNaziv", String.class)
-				.setTitle("објекат")
+				.setColumnProperty("objekatGb", String.class)
+				.setTitle("ГБ")
 				.setStyle(headerStyle)
 				.build())
 		.addColumn(ColumnBuilder.getNew()
-				.setColumnProperty("pocetakKm", Integer.class)
-				.setTitle("почетак км")
-				.setWidth(20)
+				.setColumnProperty("mesto", String.class)
+				.setTitle("Место")
+				.setStyle(headerStyle)
+				.build())
+		.addColumn(ColumnBuilder.getNew()
+				.setColumnProperty("markaTip", String.class)
+				.setTitle("Марка и тип")
+				.setStyle(headerStyle)
+				.build())
+		.addColumn(ColumnBuilder.getNew()
+				.setColumnProperty("registracija", String.class)
+				.setTitle("Регистрација")
+				.setStyle(headerStyle)
+				.build())
+		.addColumn(ColumnBuilder.getNew()
+				.setColumnProperty("potrosnja", Float.class)
+				.setTitle("Потр.")
+				.setWidth(sirina)
 				.setStyle(broj)
 				.build())
 		.addColumn(ColumnBuilder.getNew()
-				.setColumnProperty("krajKm", Integer.class)
-				.setTitle("крај км")
-				.setWidth(20)
+				.setColumnProperty("dozvoljenaProsPotrosnja", Float.class)
+				.setTitle("Дозв. потр.")
+				.setWidth(sirina)
 				.setStyle(broj)
 				.build())
 		.addColumn(ColumnBuilder.getNew()
-				.setColumnProperty("pocetakGorivo", Float.class)
-				.setTitle("почетак гориво")
-				.setWidth(20)
+				.setColumnProperty("razlikaProsPotrosnje", Float.class)
+				.setTitle("Разлика на 100км")
+				.setWidth(sirina)
+				.setStyle(broj)
+				.build())
+		/*.addColumn(ColumnBuilder.getNew()
+				.setColumnProperty("predjeniKmGPS", Float.class)
+				.setTitle("ГПС пут")
+				.setWidth(sirina)
+				.setStyle(broj)
+				.build())*/
+		.addColumn(ColumnBuilder.getNew()
+				.setColumnProperty("predjeniKmObd", Integer.class)
+				.setTitle("Пређени пут")
+				.setWidth(sirina)
 				.setStyle(broj)
 				.build())
 		.addColumn(ColumnBuilder.getNew()
-				.setColumnProperty("krajGorivo", Float.class)
-				.setTitle("крај гориво")
-				.setWidth(20)
+				.setColumnProperty("cenaGoriva", Float.class)
+				.setTitle("Цена горива")
+				.setWidth(sirina)
 				.setStyle(broj)
 				.build())
 		.addColumn(ColumnBuilder.getNew()
-				.setColumnProperty("razlikaKm", Integer.class)
-				.setTitle("разлика км")
-				.setWidth(20)
+				.setColumnProperty("kolicinaPotrosenogGoriva", Float.class)
+				.setTitle("Потрошено литара")
+				.setWidth(sirina)
 				.setStyle(broj)
 				.build())
 		.addColumn(ColumnBuilder.getNew()
-				.setColumnProperty("razlikaGorivo", Float.class)
-				.setTitle("потрошено гориво")
-				.setWidth(20)
+				.setColumnProperty("cenaUkupnoPotrosenogGoriva", Float.class)
+				.setTitle("Цена потр. горива")
+				.setWidth(sirina)
 				.setStyle(broj)
 				.build())
 		.addColumn(ColumnBuilder.getNew()
-				.setColumnProperty("prosPotrosnja", Float.class)
-				.setTitle("просечна потрошња")
-				.setWidth(20)
+				.setColumnProperty("kolicinaVisePotrosenogGoriva", Float.class)
+				.setTitle("Потр. више горива")
+				.setWidth(sirina)
+				.setStyle(broj)
+				.build())
+		.addColumn(ColumnBuilder.getNew()
+				.setColumnProperty("cenaVisePotrosenogGoriva", Float.class)
+				.setTitle("Цена више потр. горива")
+				.setWidth(sirina)
 				.setStyle(broj)
 				.build());
 		setItems(vratiListu(objekti, datumVremeOd, datumVremeDo));
 	}
 	
-	public List<PredjeniPutOBD> vratiListu(ArrayList<Objekti> objekti, Timestamp datumVremeOd, Timestamp datumVremeDo){
+	public List<GorivoSaCenama> vratiListu(ArrayList<Objekti> objekti, Timestamp datumVremeOd, Timestamp datumVremeDo){
 		lista.clear();
-		lista =  Servis.obdServis.nadjiPredjeniPutOBD(objekti, datumVremeOd, datumVremeDo);
+		lista = Servis.javljanjeServis.vratiGorivoSaCenama(objekti, datumVremeOd, datumVremeDo);
 		return lista;
 	}
 	
-	public SerializableSupplier<List<? extends PredjeniPutOBD>> vratiSeriju(){
-		SerializableSupplier<List<? extends PredjeniPutOBD>> serija = () -> lista;
+	public SerializableSupplier<List<? extends GorivoSaCenama>> vratiSeriju(){
+		SerializableSupplier<List<? extends GorivoSaCenama>> serija = () -> lista;
 		return serija;
 	}
 

@@ -18,6 +18,7 @@ import pratiBaza.pomocne.PredjeniPutGPS;
 import pratiBaza.tabele.Objekti;
 import rs.atekom.prati.server.Servis;
 
+@SuppressWarnings("deprecation")
 public class PredjeniPutGPSIzvestaj extends PrintPreviewReport<PredjeniPutGPS>{
 
 	private static final long serialVersionUID = 1L;
@@ -77,17 +78,13 @@ public class PredjeniPutGPSIzvestaj extends PrintPreviewReport<PredjeniPutGPS>{
 	}
 	
 	public List<PredjeniPutGPS> vratiListu(ArrayList<Objekti> objekti, Timestamp datumVremeOd, Timestamp datumVremeDo){
-		return obracun(objekti, datumVremeOd, datumVremeDo);
-	}
-	
-	public SerializableSupplier<List<? extends PredjeniPutGPS>> vratiSeriju(ArrayList<Objekti> objekti, Timestamp datumVremeOd, Timestamp datumVremeDo){
-		SerializableSupplier<List<? extends PredjeniPutGPS>> serija = () -> lista;
-		return serija;
-	}
-	
-	private List<PredjeniPutGPS> obracun(ArrayList<Objekti> objekti, Timestamp datumVremeOd, Timestamp datumVremeDo){
 		lista.clear();
 		lista =  Servis.javljanjeServis.nadjiPredjeniPutGPS(objekti, datumVremeOd, datumVremeDo);
 		return lista;
+	}
+	
+	public SerializableSupplier<List<? extends PredjeniPutGPS>> vratiSeriju(){
+		SerializableSupplier<List<? extends PredjeniPutGPS>> serija = () -> lista;
+		return serija;
 	}
 }

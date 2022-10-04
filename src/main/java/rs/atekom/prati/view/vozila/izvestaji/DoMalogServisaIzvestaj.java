@@ -17,6 +17,7 @@ import pratiBaza.tabele.Objekti;
 import pratiBaza.tabele.Vozila;
 import rs.atekom.prati.server.Servis;
 
+@SuppressWarnings("deprecation")
 public class DoMalogServisaIzvestaj extends PrintPreviewReport<Vozila>{
 
 	private static final long serialVersionUID = 1L;
@@ -116,17 +117,14 @@ public class DoMalogServisaIzvestaj extends PrintPreviewReport<Vozila>{
 	}
 	
 	public List<Vozila> vratiListu(ArrayList<Objekti> objekti, int tipServisa, int doServisa){
-		return obracun(objekti, tipServisa, doServisa);
-	}
-	
-	public SerializableSupplier<List<? extends Vozila>> vratiSeriju(ArrayList<Objekti> objekti, int tipServisa, int doServisa){
-		SerializableSupplier<List<? extends Vozila>> serija = () ->lista;
-		return serija;
-	}
-	
-	private List<Vozila> obracun(ArrayList<Objekti> objekti, int tipServisa, int doServisa){
 		lista.clear();
 		lista = Servis.javljanjeServis.vratiVozilaZaServise(objekti, tipServisa, doServisa);
 		return lista;
 	}
+	
+	public SerializableSupplier<List<? extends Vozila>> vratiSeriju(){
+		SerializableSupplier<List<? extends Vozila>> serija = () -> lista;
+		return serija;
+	}
+
 }

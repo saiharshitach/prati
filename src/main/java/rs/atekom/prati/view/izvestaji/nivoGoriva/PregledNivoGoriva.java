@@ -10,13 +10,13 @@ import com.vaadin.ui.Panel;
 import pratiBaza.tabele.Javljanja;
 import pratiBaza.tabele.Obd;
 
-public class PregledNoviGoriva extends Panel{
+public class PregledNivoGoriva extends Panel{
 
 	private static final long serialVersionUID = 1L;
 	private FormLayout noseci;
 	private JFreeChartWrapper nivoChart;
 
-	public PregledNoviGoriva(List<Javljanja> javljanja, ArrayList<Obd> obd) {
+	public PregledNivoGoriva(List<Javljanja> javljanja, ArrayList<Obd> obd) {
 		noseci = new FormLayout();
 		setHeight("100%");
 		noseci.setMargin(new MarginInfo(false, true, false, true));

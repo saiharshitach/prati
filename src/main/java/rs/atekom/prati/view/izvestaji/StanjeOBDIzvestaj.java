@@ -19,6 +19,7 @@ import pratiBaza.tabele.ObdPoslednji;
 import pratiBaza.tabele.Objekti;
 import rs.atekom.prati.server.Servis;
 
+@SuppressWarnings("deprecation")
 public class StanjeOBDIzvestaj extends PrintPreviewReport<StanjeOBD>{
 
 	private static final long serialVersionUID = 1L;
@@ -130,15 +131,6 @@ public class StanjeOBDIzvestaj extends PrintPreviewReport<StanjeOBD>{
 	}
 	
 	public List<StanjeOBD> vratiListu(ArrayList<Objekti> objekti, Timestamp datumVremeDo){
-		return obracun(objekti, datumVremeDo);
-	}
-	
-	public SerializableSupplier<List<? extends StanjeOBD>> vratiSeriju(ArrayList<Objekti> objekti, Timestamp datumVremeDo){
-		SerializableSupplier<List<? extends StanjeOBD>> serija = () -> lista;
-		return serija;
-	}
-	
-	private List<StanjeOBD> obracun(ArrayList<Objekti> objekti, Timestamp datumVremeDo){
 		lista.clear();
 		//ArrayList<Obd> obdLista = Servis.obdServis.nadjiObdPoslednji(objekti, datumVremeDo);
 		ArrayList<ObdPoslednji> obdLista = Servis.obdPoslednjiServis.vratiListuObdPoslednjih(objekti);
@@ -148,4 +140,10 @@ public class StanjeOBDIzvestaj extends PrintPreviewReport<StanjeOBD>{
 		}
 		return lista;
 	}
+	
+	public SerializableSupplier<List<? extends StanjeOBD>> vratiSeriju(){
+		SerializableSupplier<List<? extends StanjeOBD>> serija = () -> lista;
+		return serija;
+	}
+
 }

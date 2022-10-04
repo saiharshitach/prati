@@ -2,12 +2,14 @@ package rs.atekom.prati.view.vozila.zbirni;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import org.vaadin.dialogs.ConfirmDialog;
 import com.github.appreciated.app.layout.annotations.MenuCaption;
 import com.github.appreciated.app.layout.annotations.MenuIcon;
@@ -44,7 +46,6 @@ import com.vaadin.ui.themes.ValoTheme;
 import pratiBaza.tabele.Korisnici;
 import pratiBaza.tabele.Objekti;
 import pratiBaza.tabele.Racuni;
-import pratiBaza.tabele.RacuniRaspodela;
 import pratiBaza.tabele.SistemGoriva;
 import pratiBaza.tabele.SistemPretplatnici;
 import pratiBaza.tabele.Troskovi;
@@ -53,7 +54,9 @@ import rs.atekom.prati.Prati;
 import rs.atekom.prati.server.Servis;
 import rs.atekom.prati.view.komponente.Celobrojni;
 import rs.atekom.prati.view.komponente.Datum;
+import rs.atekom.prati.view.komponente.DatumVreme;
 import rs.atekom.prati.view.komponente.Decimalni;
+import rs.atekom.prati.view.komponente.EkoGorivo;
 import rs.atekom.prati.view.komponente.Filter;
 import rs.atekom.prati.view.komponente.Horizontalni;
 import rs.atekom.prati.view.komponente.LukOilGorivo;
@@ -76,37 +79,47 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 	private static final String DANSATFORMAT = "%1$td/%1$tm/%1$tY %1$tH:%1$tM:%1$tS";
 	private Korisnici korisnik;
 	private Racuni izabraniRacun;
-	private Paneli racuniPanel, stavkePanel, raspodelaPanel;
-	private Horizontalni racuniHorizontal, stavkeHorizontal, raspodelaHorizontal;
+	private Paneli racuniPanel, stavkePanel/*, raspodelaPanel*/;
+	private Horizontalni racuniHorizontal, stavkeHorizontal/*, raspodelaHorizontal*/;
 	private Filter racuniFilter, stavkeFilter;
 	private Grid<Racuni> racuni;
 	private Grid<Troskovi> troskovi;
-	private Grid<RacuniRaspodela> raspodela;
-	private Button dodajRacun, dodajStavku, dodajRaspodelu, izbrisiRacun, izbrisiStavku, izbrisiRaspodelu, sacuvajRacun, sacuvajStavku, sacuvajRaspodelu, dugmeUpload, dodajUcitaneStavke;
+	//private Grid<RacuniRaspodela> raspodela;
+	private Button dodajRacun, dodajStavku,/* dodajRaspodelu,*/ izbrisiRacun, izbrisiStavku,/* izbrisiRaspodelu,*/ sacuvajRacun, sacuvajStavku,/* sacuvajRaspodelu,*/ dugmeUpload, dodajUcitaneStavke;
 	private VerticalLayout root;
 	private ArrayList<Racuni> pocetnoRacuni, listaRacuni;
 	private ArrayList<Troskovi> pocetnoStavke, listaStavke;
-	private ArrayList<RacuniRaspodela> pocetnoRaspodela, listaRaspodela;
+	//private ArrayList<RacuniRaspodela> pocetnoRaspodela, listaRaspodela;
 	private ListDataProvider<Racuni> dataProviderRacuni;
 	private SerializablePredicate<Racuni> filterPredicateRacuni;
 	private ListDataProvider<Troskovi> dataProviderTroskovi;
 	private SerializablePredicate<Troskovi> filterPredicateTroskovi;
 	private ComboPretplatnici pretplatnici;
 	private ComboOrganizacije organizacije;
-	private ComboPartneri partneri, partneriRaspodela;
+	private ComboPartneri partneri/*, partneriRaspodela*/;
 	private Datum datum;
+	private DatumVreme datumVreme;
 	private Tekst brojRacuna, opis;
 	private ComboObjektiSaVozilima objekti;
 	private ComboGorivo gorivo;
-	private Decimalni cena, pdvIznos, ukupno, kolicina, iznosRaspodele;
+	private Decimalni cena, pdvIznos, ukupno, kolicina/*, iznosRaspodele*/;
 	private Celobrojni pdvProcenat;
 	private Troskovi izabranaStavka;
-	private RacuniRaspodela izabranaRaspodela;
+	//private RacuniRaspodela izabranaRaspodela;
+	private ArrayList<SistemGoriva> vrsteGoriva;
 	//private Window prozorUcitavanje;
 	//private ComboBox<VrstaDatoteke> vrsteDatoteka;
 	//private Upload up;
+	//private DecimalFormatSymbols symbols;
+	//private DecimalFormat decimalFormat;
 
 	public ZbirniRacuniView() {
+		/*symbols = new DecimalFormatSymbols();
+		symbols.setDecimalSeparator(',');
+		symbols.setGroupingSeparator('.');
+		decimalFormat = new DecimalFormat("#.000");
+		decimalFormat.setDecimalFormatSymbols(symbols);*/
+		
 		setSizeFull();
 		addStyleName("crud-view");
 		addStyleName(ValoTheme.PANEL_BORDERLESS);
@@ -117,17 +130,16 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
         postaviPanele();
         postaviTabeluRacuna();
         postaviTabeluTroskova();
-        postaviTabeluRaspodela();
+        //postaviTabeluRaspodela();
         
         root = new VerticalLayout();
         root.addComponent(racuniPanel);
         root.addComponent(racuni);
         root.addComponent(stavkePanel);
         root.addComponent(troskovi);
-        root.addComponent(raspodelaPanel);
-        root.addComponent(raspodela);
-        
-        
+        //root.addComponent(raspodelaPanel);
+        //root.addComponent(raspodela);
+        vrsteGoriva = Servis.sistemGorivoServis.vratiSvaGoriva(false);
         
         setContent(root);
 	}
@@ -140,8 +152,8 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 		stavkePanel = new Paneli();
 		stavkePanel.setContent(stavkeHorizontal);
 		
-		raspodelaPanel = new Paneli();
-		raspodelaPanel.setContent(raspodelaHorizontal);
+		//raspodelaPanel = new Paneli();
+		//raspodelaPanel.setContent(raspodelaHorizontal);
 	}
 	
 	private void postaviElemente() {
@@ -246,6 +258,7 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 							updateTableRacuni();
 							ocistiRacun();
 							racuni.deselectAll();
+							updateTableTroskovi();
 						}
 					}
 				});
@@ -292,9 +305,11 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 		
 		stavkeHorizontal = new Horizontalni();
 		stavkeFilter = new Filter("ставке...");
-		stavkeHorizontal.addComponent(stavkeFilter);
-		stavkeHorizontal.setComponentAlignment(stavkeFilter, Alignment.MIDDLE_LEFT);
+		//stavkeHorizontal.addComponent(stavkeFilter);
+		//stavkeHorizontal.setComponentAlignment(stavkeFilter, Alignment.MIDDLE_LEFT);
+		
 		objekti = new ComboObjektiSaVozilima(pretplatnici.getValue(), organizacije.getValue(), null, true, false);
+		datumVreme = new DatumVreme(false, "", 0, 0, 0);
 		gorivo = new ComboGorivo(null, true, false);
 		kolicina = new Decimalni(null, false);
 		kolicina.setPlaceholder("количина...");
@@ -355,7 +370,7 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 											izabranaStavka.setOrganizacija(izabraniRacun.getOrganizacija());
 											izabranaStavka.setRacun(izabraniRacun);
 											izabranaStavka.setPartner(izabraniRacun.getPartner());
-											izabranaStavka.setDatumVreme(new Timestamp(izabraniRacun.getDatum().getTime()));
+											izabranaStavka.setDatumVreme(Timestamp.valueOf(datumVreme.getValue()));
 											izabranaStavka.setObjekti(objekti.getValue());
 											izabranaStavka.setSistemGoriva(gorivo.getValue());
 											izabranaStavka.setTipServisa(0);
@@ -364,13 +379,14 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 											izabranaStavka.setPdvProcenat(Integer.parseInt(pdvProcenat.getValue()));
 											izabranaStavka.setPdvIznos((izabranaStavka.getKolicina() * izabranaStavka.getCena() * izabranaStavka.getPdvProcenat())/100);
 											izabranaStavka.setUkupno(izabranaStavka.getKolicina() * izabranaStavka.getCena() + izabranaStavka.getPdvIznos());
-											izabranaStavka.setOpis("");
+											//izabranaStavka.setOpis("");
 											izabranaStavka.setIzbrisan(false);
 											Servis.trosakServis.izmeniTrosak(izabranaStavka);
 											izabranaStavka = null;
 											pokaziPorukuUspesno("подаци измењени");
 											}else {
 												if(izabranaStavka != null && izabranaStavka.getId() == null) {
+													izabranaStavka.setDatumVreme(Timestamp.valueOf(datumVreme.getValue()));
 													izabranaStavka.setSistemGoriva(gorivo.getValue());
 													izabranaStavka.setKolicina(Float.parseFloat(kolicina.getValue()));
 													izabranaStavka.setCena(Float.parseFloat(cena.getValue()));
@@ -386,7 +402,7 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 													trosak.setRacun(izabraniRacun);
 													trosak.setBrojRacuna(izabraniRacun.getBrojRacuna());
 													trosak.setPartner(izabraniRacun.getPartner());
-													trosak.setDatumVreme(new Timestamp(izabraniRacun.getDatum().getTime()));
+													trosak.setDatumVreme(Timestamp.valueOf(datumVreme.getValue()));
 													trosak.setObjekti(objekti.getValue());
 													trosak.setTipServisa(0);
 													trosak.setSistemGoriva(gorivo.getValue());
@@ -395,7 +411,7 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 													trosak.setPdvProcenat(Integer.parseInt(pdvProcenat.getValue()));
 													trosak.setPdvIznos((trosak.getKolicina() * trosak.getCena() * trosak.getPdvProcenat())/100);
 													trosak.setUkupno(trosak.getKolicina() * trosak.getCena() + trosak.getPdvIznos());
-													trosak.setOpis("");
+													//trosak.setOpis("");
 													trosak.setIzbrisan(false);
 													Servis.trosakServis.unesiTrosak(trosak);
 													pokaziPorukuUspesno("подаци сачувани");
@@ -421,18 +437,29 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void buttonClick(ClickEvent event) {
-				ConfirmDialog.show(getUI(), "Провера", "Избриши изабрани ставку?", "да", "не", new ConfirmDialog.Listener() {
-					private static final long serialVersionUID = 1L;
-					@Override
-					public void onClose(ConfirmDialog dialog) {
-						if(dialog.isConfirmed()) {
-							Servis.trosakServis.izbrisiTrosak(izabranaStavka);
-							updateTableTroskovi();
-							ocistiStavku();
-							troskovi.deselectAll();
+				if(izabranaStavka != null) {
+					ConfirmDialog.show(getUI(), "Провера", "Избриши изабрани ставку?", "да", "не", new ConfirmDialog.Listener() {
+						private static final long serialVersionUID = 1L;
+						@Override
+						public void onClose(ConfirmDialog dialog) {
+							if(dialog.isConfirmed()) {
+								if(izabranaStavka.getId() != null) {
+									Servis.trosakServis.izbrisiTrosak(izabranaStavka);
+									updateTableTroskovi();
+									ocistiStavku();
+									troskovi.deselectAll();
+								}else {
+									dataProviderTroskovi.getItems().remove(izabranaStavka);
+									troskovi.getDataProvider().refreshAll();
+								}
+								
+							}
 						}
-					}
-				});
+					});
+				}else {
+					pokaziPorukuGreska("морате изабрати ставку!");
+				}
+
 			}
 		});
 		dodajUcitaneStavke = new Button();
@@ -459,11 +486,13 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 						updateTableTroskovi();
 						ocistiStavku();
 						troskovi.deselectAll();
+						pokaziPorukuUspesno("подаци сачувани");
 						}
 					});
 				}
 		});
 		stavkeHorizontal.addComponent(objekti);
+		stavkeHorizontal.addComponent(datumVreme);
 		stavkeHorizontal.addComponent(gorivo);
 		stavkeHorizontal.addComponent(kolicina);
 		stavkeHorizontal.addComponent(cena);
@@ -475,7 +504,7 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 		stavkeHorizontal.addComponent(dugmeUpload);
 		stavkeHorizontal.addComponent(dodajUcitaneStavke);
 		
-		raspodelaHorizontal = new Horizontalni();
+		/*raspodelaHorizontal = new Horizontalni();
 		partneriRaspodela = new ComboPartneri(korisnik, null, true, false);
 		iznosRaspodele = new Decimalni(null, false);
 		iznosRaspodele.setDescription("износ расподеле");
@@ -584,7 +613,7 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 		raspodelaHorizontal.addComponent(iznosRaspodele);
 		raspodelaHorizontal.addComponent(dodajRaspodelu);
 		raspodelaHorizontal.addComponent(sacuvajRaspodelu);
-		raspodelaHorizontal.addComponent(izbrisiRaspodelu);
+		raspodelaHorizontal.addComponent(izbrisiRaspodelu);*/
 	}
 	
 	private void postaviTabeluRacuna() {
@@ -609,8 +638,8 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 		if(isSistem()) {
 			racuni.addComponentColumn(racuni -> {CheckBox chb = new CheckBox(); if(racuni.isIzbrisan()) {chb.setValue(true);} return chb;}).setCaption("избрисан").setStyleGenerator(racuni -> "v-align-right");
 		}
-		racuni.addColumn(Racuni::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(objekti -> "v-align-right");
-		racuni.addColumn(Racuni::getKreirano, new DateRenderer(DANSATFORMAT)).setCaption("креирано").setStyleGenerator(objekti -> "v-align-right");
+		//racuni.addColumn(Racuni::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(objekti -> "v-align-right");
+		//racuni.addColumn(Racuni::getKreirano, new DateRenderer(DANSATFORMAT)).setCaption("креирано").setStyleGenerator(objekti -> "v-align-right");
 		
 		racuni.addSelectionListener(new SelectionListener<Racuni>() {
 			private static final long serialVersionUID = 1L;
@@ -627,7 +656,7 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 						opis.setValue("");
 					}
 					updateTableTroskovi();
-					updateTableRaspodela();
+					//updateTableRaspodela();
 				}
 			}
 		});
@@ -639,7 +668,7 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 		troskovi.setSizeFull();
 		troskovi.setStyleName("list");
 		troskovi.setSelectionMode(SelectionMode.SINGLE);
-		troskovi.addColumn(troskovi -> troskovi.getId() == null ? "" : troskovi.getId()).setCaption("ид").setStyleGenerator(troskovi -> "v-align-left");
+		//troskovi.addColumn(troskovi -> troskovi.getId() == null ? "" : troskovi.getId()).setCaption("ид").setStyleGenerator(troskovi -> "v-align-left");
 		troskovi.addColumn(troskovi -> troskovi.getObjekti() == null ? "" : troskovi.getObjekti().getOznaka()).setCaption("објекат");
 		troskovi.addColumn(Troskovi::getDatumVreme, new DateRenderer(DANSATFORMAT)).setCaption("датум").setStyleGenerator(troskovi -> "v-align-right");
 		troskovi.addColumn(troskovi -> troskovi.getSistemGoriva() == null ? "" : troskovi.getSistemGoriva().getNaziv()).setCaption("врста горива").setStyleGenerator(objekti -> "v-align-right");
@@ -649,8 +678,8 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 		troskovi.addColumn(Troskovi::getPdvIznos).setCaption("ПДВ").setStyleGenerator(troskovi -> "v-align-right");
 		troskovi.addColumn(Troskovi::getUkupno).setCaption("укупно").setStyleGenerator(troskovi -> "v-align-right");
 		troskovi.addColumn(Troskovi::getOpis).setCaption("опис").setStyleGenerator(troskovi -> "v-align-right");
-		troskovi.addColumn(Troskovi::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(troskovi -> "v-align-right");
-		troskovi.addColumn(Troskovi::getKreirano, new DateRenderer(DANSATFORMAT)).setCaption("креирано").setStyleGenerator(troskovi -> "v-align-right");
+		//troskovi.addColumn(Troskovi::getIzmenjeno, new DateRenderer(DANSATFORMAT)).setCaption("измењено").setStyleGenerator(troskovi -> "v-align-right");
+		//troskovi.addColumn(Troskovi::getKreirano, new DateRenderer(DANSATFORMAT)).setCaption("креирано").setStyleGenerator(troskovi -> "v-align-right");
 		troskovi.addSelectionListener(new SelectionListener<Troskovi>() {
 			private static final long serialVersionUID = 1L;
 			@Override
@@ -658,6 +687,7 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 				if(event.getFirstSelectedItem().isPresent()) {
 					izabranaStavka = event.getFirstSelectedItem().get();
 					objekti.setValue(izabranaStavka.getObjekti());
+					datumVreme.setValue(izabranaStavka.getDatumVreme().toLocalDateTime());
 					gorivo.setValue(izabranaStavka.getSistemGoriva());
 					try {
 						kolicina.setValue(String.valueOf(izabranaStavka.getKolicina()));
@@ -689,7 +719,7 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 		});
 	}
 	
-	public void postaviTabeluRaspodela() {
+	/*public void postaviTabeluRaspodela() {
 		raspodela = new Grid<RacuniRaspodela>();
 		pocetnoRaspodela = new ArrayList<RacuniRaspodela>();
 		raspodela.setSizeFull();
@@ -708,7 +738,7 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 				}
 			}
 		});
-	}
+	}*/
 	
 	public void updateTableRacuni() {
 		racuniFilter.clear();
@@ -746,11 +776,14 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 		partneri.clear();
 		brojRacuna.clear();
 		opis.clear();
+		izabraniRacun = null;
 	}
 	
 	private void updateTableTroskovi() {
 		stavkeFilter.clear();
-		listaStavke = Servis.trosakServis.nadjiSvuPotrosnjuPoRacunu(izabraniRacun);
+		listaStavke = null;
+		if(izabraniRacun != null)
+			listaStavke = Servis.trosakServis.nadjiSvuPotrosnjuPoRacunu(izabraniRacun);
 		if(listaStavke != null) {
 			troskovi.setItems(listaStavke);
 		}else {
@@ -779,6 +812,7 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 
 	private void ocistiStavku() {
 		objekti.clear();
+		datumVreme.setValue((new Date()).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
 		gorivo.clear();
 		kolicina.setValue("0");
 		cena.setValue("0");
@@ -787,14 +821,14 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 		ukupno.setValue("0");
 	}
 	
-	private void updateTableRaspodela() {
+	/*private void updateTableRaspodela() {
 		listaRaspodela = Servis.racunRaspodelaServis.nadjiRacuneRaspodelePoRacunu(izabraniRacun);
 		if(listaRaspodela != null) {
 			raspodela.setItems(listaRaspodela);
 		}else {
 			raspodela.setItems(pocetnoRaspodela);
 		}
-	}
+	}*/
 	
 	@SuppressWarnings("unchecked")
 	private void postaviExcelUploader() {
@@ -809,8 +843,11 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 		
 		ComboBox<VrstaDatoteke> vrsteDatoteka = new ComboBox<>();
         vrsteDatoteka.setSizeFull();
+        
         ArrayList<VrstaDatoteke> datoteke = new ArrayList<>();
         datoteke.add(new VrstaDatoteke("LukOil", 1));
+        datoteke.add(new VrstaDatoteke("EKO", 2));
+        
         vrsteDatoteka.setItemCaptionGenerator(VrstaDatoteke::getNaziv);
         vrsteDatoteka.setItems(datoteke);
         
@@ -833,12 +870,13 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 			@Override
 			public void uploadFailed(FailedEvent event) {
 				pokaziPorukuGreska("није успело учитавање!");
+				System.out.println(event.getComponent());
 			}
 		};
 		
-		ExcelUploader<LukOilGorivo> excelUploader = new ExcelUploader<>(LukOilGorivo.class);
-		excelUploader.setFirstRow(2);
-		excelUploader.addSucceededListener((event, items) -> {
+		ExcelUploader<LukOilGorivo> lukOilExcellUploader = new ExcelUploader<>(LukOilGorivo.class);
+		lukOilExcellUploader.setFirstRow(2);//počinje od 0
+		lukOilExcellUploader.addSucceededListener((event, items) -> {
 			List<LukOilGorivo> lukOil = (List<LukOilGorivo>)items;
 			if(lukOil.size() > 0) {
 				for(int i= 0; i < items.size(); i++) {
@@ -846,12 +884,9 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 						String reg = lukOil.get(i).getRegistracija();
 						if(reg != null && !reg.equals("")) {
 							String broj = "";
-							for(int j = 0; j < reg.length(); j++) {
-								if(Character.isDigit(reg.charAt(j))) {
-									broj = broj + reg.charAt(j);
-									}
-								}
-							broj = broj + reg.substring(reg.length() - 2, reg.length());
+							broj = reg.replaceAll(" ", "");
+							broj = broj.replaceAll("-", "");
+							//System.out.println(reg + " " + broj);
 							if(broj != null && !broj.isBlank() && !broj.isEmpty()) {
 								Objekti objekat = Servis.objekatServis.nadjiObjekatSadrzi(izabraniRacun.getSistemPretplatnici(), broj);
 								Troskovi trosak = new Troskovi();
@@ -927,6 +962,121 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 			prozorUcitavanje.close();
  		});
 		
+		//za očitavaje eko računa
+		ExcelUploader<EkoGorivo> ekoExcellUploader = new ExcelUploader<>(EkoGorivo.class);
+		ekoExcellUploader.setFirstRow(0);//počinje od 0
+		NumberFormat format = NumberFormat.getInstance(Locale.GERMAN);
+		ekoExcellUploader.addSucceededListener((event, items) -> {
+			List<EkoGorivo> ekoLista = (List<EkoGorivo>)items;
+			if(ekoLista.size() > 0) {
+				for(int i= 0; i < items.size(); i++) {
+					if(ekoLista.get(i) != null && ekoLista.get(i).getVehicleNumber() != null) {
+						String vehicleNumber = ekoLista.get(i).getVehicleNumber();
+						
+						if(vehicleNumber != null && !vehicleNumber.equals("") && !vehicleNumber.isBlank()
+								&& !vehicleNumber.isEmpty() && vehicleNumber.toLowerCase().startsWith("gb")) {
+							String broj = "";
+							String gb = "";
+							String registracija = "";
+							
+							for(int j = 0; j < vehicleNumber.length(); j++) {
+								if(Character.isLetterOrDigit(vehicleNumber.charAt(j))) {
+									broj = broj + vehicleNumber.charAt(j);
+								}
+							}
+							int k = 2;
+							if(broj != null && !broj.isBlank() && !broj.isEmpty()) {
+								while(Character.isDigit(broj.charAt(k))) {
+									gb = gb + broj.charAt(k);
+									k++;
+								}
+								registracija = broj.substring(k, broj.length());
+							}
+
+							Objekti objekat = null;
+							if(gb != null && !gb.isEmpty() && !gb.isBlank())
+								objekat = Servis.objekatServis.nadjiObjekatSadrzi(izabraniRacun.getSistemPretplatnici(), gb);
+
+							if(objekat == null && registracija != null && !registracija.isEmpty() && !registracija.isBlank()) {
+								Vozila vozilo = Servis.voziloServis.nadjiVoziloPoRegistraciji(izabraniRacun.getSistemPretplatnici(), registracija);
+								if(vozilo != null) {
+									objekat = vozilo.getObjekti();
+									}
+								}
+							
+							if(objekat != null) {
+								Troskovi trosak = new Troskovi();
+								trosak.setObjekti(objekat);
+								trosak.setSistemPretplatnici(izabraniRacun.getSistemPretplatnici());
+								trosak.setOrganizacija(izabraniRacun.getOrganizacija());
+								
+								trosak.setRacun(izabraniRacun);
+								trosak.setPartner(izabraniRacun.getPartner());
+								trosak.setBrojRacuna(izabraniRacun.getBrojRacuna());
+
+								try {
+									//SistemGoriva gorivo = Servis.sistemGorivoServis.nadjiGorivoPoNazivu(ekoLista.get(i).getDerivat());
+									for(SistemGoriva g : vrsteGoriva) {
+										if(ekoLista.get(i).getMaterialDescription().toLowerCase().contains(g.getNaziv().toLowerCase()))
+											trosak.setSistemGoriva(g);
+									}
+								}catch (Exception e) {
+									trosak.setSistemGoriva(null);
+									System.out.println("greška gorivo " + e.getMessage());
+								}
+								try {
+									SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+									Date parsedDate = dateFormat.parse(ekoLista.get(i).getFiscalDateTime().replace("'", ""));
+									Timestamp ts = new Timestamp(parsedDate.getTime());
+									trosak.setDatumVreme(ts);
+									}catch (Exception e) {
+										Timestamp ts1 = new Timestamp(izabraniRacun.getDatum().getTime());
+										trosak.setDatumVreme(ts1);
+										System.out.println("greška vreme " + ekoLista.get(i).getFiscalDateTime());
+										}
+								String kol = ekoLista.get(i).getQuantitySold().replace(",", ".");
+								//ekoLista.get(i).getQuantitySold()
+								//Float result = decimalFormat.parse(givenString).floatValue();
+								try {
+									Float kolicina = Float.parseFloat(kol);
+									trosak.setKolicina(kolicina);
+									}catch (Exception e) {
+										trosak.setKolicina(0);
+										System.out.println("greška kolicina " + ekoLista.get(i).getQuantitySold());
+										}
+								String c = ekoLista.get(i).getSalesPrice().replace(",", ".");
+								try {
+									Float cena = Float.parseFloat(c);
+									trosak.setCena(cena);
+									}catch (Exception e) {
+										trosak.setCena(0);
+										System.out.println("greška eko cena " + ekoLista.get(i).getSalesPrice());
+										}
+								try {
+									//Float ukupno = format.parse(ekoLista.get(i).getSalesValue()).floatValue();
+									//System.out.println("float:" + ukupno);
+									trosak.setUkupno(trosak.getCena() * trosak.getKolicina());
+									//System.out.println(trosak.getUkupno());
+									}catch (Exception e) {
+										trosak.setKolicina(0);
+										System.out.println("greška ukupno " + ekoLista.get(i).getSalesValue());
+										}
+								trosak.setTipServisa(0);
+								trosak.setIzbrisan(false);
+								trosak.setOpis(ekoLista.get(i).getPlant());
+								if(trosak.getUkupno() != 0.0) {
+									listaStavke.add(trosak);
+									}
+								}
+							
+							}
+						}
+					}
+				troskovi.setItems(listaStavke);
+			}
+			prozorUcitavanje.close();
+ 		});
+		
         vrsteDatoteka.addValueChangeListener(new ValueChangeListener<VrstaDatoteke>() {
 			private static final long serialVersionUID = 1L;
 			@Override
@@ -936,8 +1086,11 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
 				}else {
 					up.setEnabled(true);
 					switch (event.getValue().getId()) {
-					case 1: up.setReceiver(excelUploader);
-					        up.addSucceededListener(excelUploader);
+					case 1: up.setReceiver(lukOilExcellUploader);
+					        up.addSucceededListener(lukOilExcellUploader);
+						break;
+					case 2: up.setReceiver(ekoExcellUploader);
+							up.addSucceededListener(ekoExcellUploader);
 						break;
 					default:
 						break;
@@ -973,12 +1126,12 @@ public class ZbirniRacuniView extends Panel implements View, Serializable{
         ucitavanjeSadrzaj.addComponent(up);
         prozorUcitavanje.setContent(ucitavanjeSadrzaj);
         getUI().getUI().addWindow(prozorUcitavanje);
-	}**/
+	}
 	
 	private void ocistiRaspodelu() {
 		partneriRaspodela.clear();
 		iznosRaspodele.setValue(String.valueOf(0));
-	}
+	}*/
 
 	public LocalDate localDatum(Date datum) {
 		return (new Date(datum.getTime())).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();

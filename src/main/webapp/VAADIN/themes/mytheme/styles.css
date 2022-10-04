@@ -1077,7 +1077,7 @@
  */
 
 .v-vaadin-version:after {
-	content: "8.14.0";
+	content: "8.14.2";
 }
 
 .v-widget {
@@ -14217,7 +14217,7 @@ div.v-layout.v-horizontal.v-widget {
 .mytheme .v-table-cell-content {
 	border-left: 1px solid #d4d4d4;
 	overflow: hidden;
-	height: 32px;
+	height: 33px;
 	vertical-align: middle;
 }
 
@@ -14266,9 +14266,11 @@ div.v-layout.v-horizontal.v-widget {
 
 .mytheme .v-table-table td {
 	border-top: 1px solid #d4d4d4;
+	box-sizing: border-box;
 }
 
 .mytheme .v-table-table tr:first-child > td {
+	height: 32px;
 	border-top: none;
 }
 
@@ -14538,7 +14540,7 @@ div.v-layout.v-horizontal.v-widget {
 
 .mytheme .v-table-row-drag-bottom td.v-table-cell-content {
 	border-bottom: 2px solid #60a0ea;
-	height: 30px;
+	height: 31px;
 }
 
 .mytheme .v-table-row-drag-bottom .v-table-cell-wrapper {
@@ -14547,7 +14549,7 @@ div.v-layout.v-horizontal.v-widget {
 
 .mytheme .v-table-row-drag-top td.v-table-cell-content {
 	border-top: 2px solid #60a0ea;
-	height: 31px;
+	height: 32px;
 }
 
 .mytheme .v-table-row-drag-top .v-table-cell-wrapper {
@@ -14573,7 +14575,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .v-table-no-horizontal-lines .v-table-row-drag-top .v-table-cell-content, .mytheme .v-table-no-horizontal-lines .v-table-row-drag-bottom .v-table-cell-content {
-	height: 31px;
+	height: 32px;
 }
 
 .mytheme .v-table-no-header .v-table-header-wrap {

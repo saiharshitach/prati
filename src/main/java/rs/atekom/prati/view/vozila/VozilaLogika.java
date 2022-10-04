@@ -80,6 +80,7 @@ public class VozilaLogika implements LogikaInterface{
 					view.pokaziPorukuGreska("подаци за изабрано возило су већ унети!");
 				}
 			}catch (Exception e) {
+				e.printStackTrace();
 				view.pokaziPorukuGreska("подаци за возило због грешке нису сачувани!");
 			}
 		}

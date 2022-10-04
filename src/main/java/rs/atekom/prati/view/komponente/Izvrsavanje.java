@@ -25,8 +25,11 @@ public class Izvrsavanje {
 	
 	public void obradaAlarma(Javljanja javljanje, ArrayList<AlarmiKorisnik> alarmiKorisnici) {
 		alarmAdresa(javljanje);
+		
 		Servis.javljanjeServis.unesiJavljanja(javljanje);//ovde negde problem??
+		
         Broadcaster.broadcast(javljanje);
+        
         for(AlarmiKorisnik alarmKorisnik : alarmiKorisnici) {
         	if(alarmKorisnik.getSistemAlarmi().getId().equals(javljanje.getSistemAlarmi().getId()) && alarmKorisnik.isEmail()) {
         		String zaglavlje = "Праћење возила - " + javljanje.getObjekti().getOznaka() + " - " + javljanje.getSistemAlarmi().getNaziv();

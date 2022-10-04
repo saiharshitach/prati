@@ -10,10 +10,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
+
+import org.springframework.stereotype.Service;
+
 import pratiBaza.tabele.Javljanja;
 import pratiBaza.tabele.SistemAlarmi;
 import rs.atekom.prati.view.komponente.Izvrsavanje;
 
+@Service
 public class OpstiServer implements Runnable{
 
 	private final int listeningPort;

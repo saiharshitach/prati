@@ -1,5 +1,9 @@
 package rs.atekom.prati.view.vozila;
 
+import java.time.Duration;
+import java.time.ZoneId;
+import java.util.Date;
+
 import org.vaadin.dialogs.ConfirmDialog;
 import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.data.HasValue.ValueChangeEvent;
@@ -8,6 +12,8 @@ import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import pratiBaza.tabele.Vozila;
+import pratiBaza.tabele.JavljanjaPoslednja;
+import pratiBaza.tabele.ObdPoslednji;
 import pratiBaza.tabele.Organizacije;
 import pratiBaza.tabele.SistemPretplatnici;
 import rs.atekom.prati.server.Servis;
@@ -272,6 +278,26 @@ public class VozilaForma extends OpstaForma implements OpstaFormaInterface{
 	public void postaviPodatak(Object podatak) {
 		Vozila vozilo = (Vozila)podatak;
 		if(vozilo.getId() != null) {
+			JavljanjaPoslednja jp = Servis.javljanjePoslednjeServis.nadjiJavljanjaPoslednjaPoObjektu(vozilo.getObjekti());
+			ObdPoslednji op = Servis.obdPoslednjiServis.nadjiObdPoslednjiPoObjektu(vozilo.getObjekti());
+			if(jp != null) {
+				vozilo.setKmOdGpsMs(jp.getVirtualOdo() - vozilo.getMaliPoslednjiGPSkm());
+				vozilo.setKmOdGpsVs(jp.getVirtualOdo() - vozilo.getVelikiPoslednjiGPSkm());
+			}
+			if(op != null) {
+				vozilo.setKmOdObdMs(op.getUkupnoKm() - vozilo.getMaliPoslednjiOBDkm());
+				vozilo.setKmOdObdVs(op.getUkupnoKm() - vozilo.getVelikiPoslednjiOBDkm());
+			}
+			if(vozilo.getMaliPoslednjiDatum() != null)
+				vozilo.setDanaOdMs((int)Duration.between(vozilo.getMaliPoslednjiDatum().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), 
+						(new Date()).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()).toDays());
+			if(vozilo.getVelikiPoslednjiDatum() != null)
+				vozilo.setDanaOdVs((int)Duration.between(vozilo.getVelikiPoslednjiDatum().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), 
+						(new Date()).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()).toDays());
+			if(vozilo.getDatumPoslednjeRegistracije() != null)
+				vozilo.setDanaOdRegistracije((int)Duration.between(vozilo.getDatumPoslednjeRegistracije().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(), 
+						(new Date()).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()).toDays());
+			
 			pretplatnici.setValue(vozilo.getSistemPretplatnici());
 			organizacije.setValue(vozilo.getObjekti().getOrganizacija());
 			organizacije.setEnabled(false);

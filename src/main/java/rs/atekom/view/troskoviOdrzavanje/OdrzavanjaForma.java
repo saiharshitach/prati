@@ -1,6 +1,7 @@
 package rs.atekom.view.troskoviOdrzavanje;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import org.vaadin.dialogs.ConfirmDialog;
@@ -292,6 +293,9 @@ public class OdrzavanjaForma extends OpstaForma implements OpstaFormaInterface{
 			sveIma = false;
 		}
 		if(cena.getValue() == null || pdvProcenat == null || datum.getValue() == null) {
+			sveIma = false;
+		}
+		if(datum.getValue().isAfter(LocalDate.now())){
 			sveIma = false;
 		}
 		if(objekti.getValue() == null) {

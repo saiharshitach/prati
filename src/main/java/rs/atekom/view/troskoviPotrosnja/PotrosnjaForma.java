@@ -17,7 +17,7 @@ import rs.atekom.prati.view.OpstaForma;
 import rs.atekom.prati.view.OpstaFormaInterface;
 import rs.atekom.prati.view.OpstiView;
 import rs.atekom.prati.view.komponente.Celobrojni;
-import rs.atekom.prati.view.komponente.Datum;
+import rs.atekom.prati.view.komponente.DatumVreme;
 import rs.atekom.prati.view.komponente.Decimalni;
 import rs.atekom.prati.view.komponente.Tekst;
 import rs.atekom.prati.view.komponente.TekstArea;
@@ -33,7 +33,7 @@ public class PotrosnjaForma extends OpstaForma implements OpstaFormaInterface{
 	private TekstArea opis;
 	private Tekst brojRacuna;
 	private CheckBox izbrisan;
-	private Datum datum;
+	private DatumVreme datum;
 	private ComboGorivo gorivo;
 	private ComboPartneri partneri;
 	private Decimalni cena, pdvIznos, ukupno, kolicina;
@@ -47,7 +47,7 @@ public class PotrosnjaForma extends OpstaForma implements OpstaFormaInterface{
 		if(logika.view.zbirni != null) {
 			racuni = new ComboRacuni(pretplatnici.getValue(), organizacije.getValue(), "рачуни", false, true);
 		}
-		datum = new Datum("датум", true);
+		datum = new DatumVreme(false, "", 0, 0, 0);
 		objekti = new ComboObjektiSaVozilima(pretplatnici.getValue(), organizacije.getValue(), "објекти", true, true);
 		brojRacuna = new Tekst("број рачуна", false);
 		gorivo = new ComboGorivo("гориво", true, true);
@@ -178,7 +178,7 @@ public class PotrosnjaForma extends OpstaForma implements OpstaFormaInterface{
 		trosak.setOrganizacija(null);
 		trosak.setPartner(partneri.getValue());
 		trosak.setRacun(null);
-		trosak.setDatumVreme(new Timestamp(dateDatum(datum.getValue()).getTime()));
+		trosak.setDatumVreme(Timestamp.valueOf(datum.getValue()));
 		trosak.setBrojRacuna(brojRacuna.getValue());
 		trosak.setTipServisa(0);
 		trosak.setSistemGoriva(gorivo.getValue());
@@ -241,7 +241,7 @@ public class PotrosnjaForma extends OpstaForma implements OpstaFormaInterface{
 				}
 			}
 			if(trosak.getDatumVreme() != null) {
-				datum.setValue(localDatum(new Date(trosak.getDatumVreme().getTime())));
+				datum.setValue(localTimeDatum(new Date(trosak.getDatumVreme().getTime())));
 			}
 			try {
 				objekti.setValue(trosak.getObjekti());

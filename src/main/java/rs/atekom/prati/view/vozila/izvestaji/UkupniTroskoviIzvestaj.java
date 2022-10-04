@@ -20,6 +20,7 @@ import pratiBaza.tabele.Objekti;
 import pratiBaza.tabele.Troskovi;
 import rs.atekom.prati.server.Servis;
 
+@SuppressWarnings("deprecation")
 public class UkupniTroskoviIzvestaj extends PrintPreviewReport<Troskovi>{
 
 	private static final long serialVersionUID = 1L;
@@ -52,6 +53,13 @@ public class UkupniTroskoviIzvestaj extends PrintPreviewReport<Troskovi>{
 		AbstractColumn ukupno = ColumnBuilder.getNew()
 				.setColumnProperty("ukupno", Float.class)
 				.setTitle("укупно")
+				.setWidth(25)
+				.setStyle(broj)
+				.build();
+		
+		AbstractColumn kolicina = ColumnBuilder.getNew()
+				.setColumnProperty("kolicina", Float.class)
+				.setTitle("количина")
 				.setWidth(25)
 				.setStyle(broj)
 				.build();
@@ -89,7 +97,7 @@ public class UkupniTroskoviIzvestaj extends PrintPreviewReport<Troskovi>{
 				.setColumnProperty("marka", String.class)
 				.setTitle("марка")
 				.setStyle(tekst)
-				.setWidth(25)
+				.setWidth(30)
 				.build())
 		.addColumn(ColumnBuilder.getNew()
 				.setColumnProperty("model", String.class)
@@ -108,41 +116,40 @@ public class UkupniTroskoviIzvestaj extends PrintPreviewReport<Troskovi>{
 				.setStyle(tekst)
 				.setWidth(30)
 				.build())
-		.addColumn(ColumnBuilder.getNew()
+		/*.addColumn(ColumnBuilder.getNew()
 				.setColumnProperty("brojRacuna", String.class)
 				.setTitle("рачун")
 				.setStyle(broj)
 				.setWidth(20)
-				.build())
-		.addColumn(ColumnBuilder.getNew()
+				.build())*/
+		/*.addColumn(ColumnBuilder.getNew()
 				.setColumnProperty("kolicina", Float.class)
 				.setTitle("кол")
-				.setWidth(10)
+				.setWidth(20)
 				.setStyle(broj)
-				.build())
+				.build())*/
+		.addColumn(kolicina)
 		.addColumn(ColumnBuilder.getNew()
 				.setColumnProperty("cena", Float.class)
 				.setTitle("цена")
-				.setWidth(15)
+				.setWidth(20)
 				.setStyle(broj)
 				.build())
 		.addColumn(ukupno)
+		.addGlobalFooterVariable(kolicina, DJCalculation.SUM, broj)
 		.addGlobalFooterVariable(ukupno, DJCalculation.SUM, broj);
 		setItems(vratiListu(vozila, datumVremeOd, datumVremeDo, tipTroska));
 	}
 	
 	public List<Troskovi> vratiListu(ArrayList<Objekti> vozila, Timestamp datumVremeOd, Timestamp datumVremeDo, Integer tipTroska){
-		return obracun(vozila, datumVremeOd, datumVremeDo, tipTroska);
-	}
-	
-	public SerializableSupplier<List<? extends Troskovi>> vratiSeriju(ArrayList<Objekti> vozila, Timestamp datumVremeOd, Timestamp datumVremeDo, Integer tipTroska){
-		SerializableSupplier<List<? extends Troskovi>> serija = () -> lista;
-		return serija;
-	}
-	
-	private List<Troskovi> obracun(ArrayList<Objekti> vozila, Timestamp datumVremeOd, Timestamp datumVremeDo, Integer tipTroska){
 		lista.clear();
 		lista = Servis.trosakServis.nadjiSveTroskoveUkupno(vozila, datumVremeOd, datumVremeDo, tipTroska);
 		return lista;
 	}
+	
+	public SerializableSupplier<List<? extends Troskovi>> vratiSeriju(){
+		SerializableSupplier<List<? extends Troskovi>> serija = () -> lista;
+		return serija;
+	}
+
 }

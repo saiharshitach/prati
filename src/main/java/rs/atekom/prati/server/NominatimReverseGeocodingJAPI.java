@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-
 import javax.net.ssl.HttpsURLConnection;
 
 public class NominatimReverseGeocodingJAPI {
@@ -51,5 +50,5 @@ public class NominatimReverseGeocodingJAPI {
 			result.append(text);
 		in.close();
 		return result.toString();
-
-	}}
+		}
+	}
