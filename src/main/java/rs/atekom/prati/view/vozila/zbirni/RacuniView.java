@@ -69,8 +69,7 @@ public class RacuniView extends Opsti implements OpstiViewInterface{
 		barGrid.setExpandRatio(tabela, 1);
 		
 		addComponent(barGrid);
-		//addComponent(forma);
-		
+
 		viewLogika.init();
 	}
 	
