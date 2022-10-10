@@ -28,6 +28,12 @@
 			<url>http://maven.vaadin.com/vaadin-addons</url>
 		</repository>
 		<repository>
+			<id>local-repo</id>
+			<url>http://34.125.55.182:8081/artifactory/harshita/</url>
+			<username>admin</username>
+			<password>password</password>
+		</repository>
+		<repository>
             <id> jaspersoft-repo</id>
             <url>https://jaspersoft.jfrog.io/jaspersoft/jaspersoft-repo</url>
         </repository>
