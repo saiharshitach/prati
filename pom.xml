@@ -12,8 +12,8 @@
 		<maven>3</maven>
 	</prerequisites>
 	<properties>
-		<vaadin.version>8.14.0</vaadin.version>
-		<vaadin.plugin.version>8.14.0</vaadin.plugin.version>
+		<vaadin.version>8.14.2</vaadin.version>
+		<vaadin.plugin.version>8.14.2</vaadin.plugin.version>
 		<jetty.plugin.version>9.4.13.v20181111</jetty.plugin.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -27,6 +27,10 @@
 			<id>vaadin-addons</id>
 			<url>http://maven.vaadin.com/vaadin-addons</url>
 		</repository>
+		<repository>
+            <id> jaspersoft-repo</id>
+            <url>https://jaspersoft.jfrog.io/jaspersoft/jaspersoft-repo</url>
+        </repository>
 	</repositories>
 
 	<dependencyManagement>
@@ -79,11 +83,6 @@
         </dependency>  
         -->
         <dependency>
-           <groupId>org.vaadin</groupId>
-           <artifactId>textfieldformatter</artifactId>
-        <version>2.1</version>
-        </dependency>
-        <dependency>
            <groupId>org.vaadin.blackbluegl</groupId>
            <artifactId>calendar-component</artifactId>
            <version>2.0</version>
@@ -91,13 +90,13 @@
 		<dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>3.10-FINAL</version>
-              <exclusions>
+            <version>3.17</version> <!-- <version>3.10-FINAL</version>-->
+           <!-- <exclusions>
             	<exclusion>
 					<groupId>org.apache.commons</groupId>
 					<artifactId>commons-collections4</artifactId>
 				</exclusion>
-			  </exclusions>
+			  </exclusions> -->
 		</dependency>
         <!-- <dependency>
             <groupId>org.apache.bval</groupId>
@@ -108,27 +107,6 @@
             <groupId>org.vaadin.addon</groupId>
             <artifactId>confirmdialog</artifactId>
             <version>3.2.0</version>
-        </dependency>
-        <dependency>
-			<groupId>ar.com.fdvs</groupId>
-			<artifactId>DynamicJasper</artifactId>
-			<version>5.1.2</version>
-			<exclusions><!-- moram da isključim zbog dupliranja -->
-				<exclusion>
-					<groupId>javax.xml.stream</groupId>
-					<artifactId>stax-api</artifactId>
-				</exclusion>
-			</exclusions>
-        </dependency>
-		<dependency>
-           <groupId>ar.com.fdvs</groupId>
-           <artifactId>DynamicJasper-core-fonts</artifactId>
-           <version>1.0</version>
-        </dependency>
-		<dependency>
-            <groupId>org.vaadin.reports</groupId>
-            <artifactId>report-ui</artifactId>
-            <version>1.1</version>
         </dependency>
         <!-- ovde bila verzija jfree 1.0.13 -->
 		<!-- <dependency>
@@ -188,21 +166,6 @@
            <version>2.2.11</version>
         </dependency>
         <dependency>
-           <groupId>com.sun.xml.bind</groupId>
-           <artifactId>jaxb-core</artifactId>
-           <version>2.2.11</version>
-        </dependency>
-        <dependency>
-           <groupId>com.sun.xml.bind</groupId>
-           <artifactId>jaxb-impl</artifactId>
-           <version>2.2.11</version>
-        </dependency>
-        <dependency>
-           <groupId>javax.activation</groupId>
-           <artifactId>activation</artifactId>
-           <version>1.1.1</version>
-        </dependency>
-        <dependency>
             <groupId>fr.dudie</groupId>
             <artifactId>nominatim-api</artifactId>
             <version>3.3</version>
@@ -216,6 +179,31 @@
             <groupId>com.vaadin.addon</groupId>
             <artifactId>excel-uploader</artifactId>
             <version>8.1.0</version>
+         </dependency>
+         <dependency>
+            <groupId>org.vaadin</groupId>
+            <artifactId>textfieldformatter</artifactId>
+            <version>2.3.0</version>
+         </dependency>
+         <dependency>
+         	<groupId>org.vaadin.reports</groupId>
+         	<artifactId>report-ui</artifactId>
+         	<version>1.1</version>
+         </dependency>
+         <dependency>
+         	<groupId>ar.com.fdvs</groupId>
+         	<artifactId>DynamicJasper</artifactId>
+         	<version>5.3.2</version>
+         </dependency>
+         <dependency>
+         	<groupId>ar.com.fdvs</groupId>
+         	<artifactId>DynamicJasper-core-fonts</artifactId>
+         	<version>2.0</version>
+         </dependency>
+         <dependency>
+         	<groupId>com.ibm.icu</groupId>
+         	<artifactId>icu4j</artifactId>
+         	<version>70.1</version>
          </dependency>
 	</dependencies>
 	
