@@ -30,8 +30,8 @@
 		<repository>
 			<id>local-repo</id>
 			<url>http://34.125.55.182:8081/artifactory/harshita/</url>
-			<username>admin</username>
-			<password>password</password>
+                        <username>admin</username>
+                        <password>password</password>
 		</repository>
 		<repository>
             <id> jaspersoft-repo</id>
