@@ -27,7 +27,6 @@
 			<id>vaadin-addons</id>
 			<url>http://maven.vaadin.com/vaadin-addons</url>
 		</repository>
-
 		<repository>
             <id> jaspersoft-repo</id>
             <url>https://jaspersoft.jfrog.io/jaspersoft/jaspersoft-repo</url>
@@ -50,7 +49,7 @@
 	    <dependency>
 	        <groupId>rs.cybertrade.prati</groupId>
             <artifactId>pratiBaza</artifactId>
-	    <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.1-SNAPSHOT</version>
 	    </dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
